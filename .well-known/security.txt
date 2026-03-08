@@ -1,0 +1,4 @@
+Contact: mailto:ferenc.kovacs@gmail.com
+Preferred-Languages: hu, en
+Canonical: https://ferenckovacs.com/.well-known/security.txt
+Expires: 2027-03-08T00:00:00.000Z

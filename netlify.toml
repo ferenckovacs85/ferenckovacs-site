@@ -1,0 +1,15 @@
+[build]
+  publish = "."
+
+# Force HTTPS
+[[redirects]]
+  from = "http://ferenckovacs.com/*"
+  to = "https://ferenckovacs.com/:splat"
+  status = 301
+  force = true
+
+# Custom 404
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 404
