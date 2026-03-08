@@ -3,7 +3,7 @@
 Bitcoin Treasury frissítő script
 ---------------------------------
 Lekéri a KV Cégcsoport aktuális BTC egyenlegét és P/L értékét
-a bitcointreasuries.net oldalról és frissíti az index.html-t.
+a bitcointreasuries.net oldalról és frissíti a hu/index.html és en/index.html fájlokat.
 
 Használat:
     python3 update_btc_treasury.py
@@ -32,8 +32,12 @@ except ImportError:
 
 # --- Konfiguráció ---
 TREASURY_URL = "https://bitcointreasuries.net/private-companies/kv-cgcsoport"
-INDEX_HTML = Path(__file__).parent / "index.html"
-LOG_FILE = Path(__file__).parent / "btc_update.log"
+BASE_DIR = Path(__file__).parent
+HTML_FILES = [
+    BASE_DIR / "hu" / "index.html",
+    BASE_DIR / "en" / "index.html",
+]
+LOG_FILE = BASE_DIR / "btc_update.log"
 
 logging.basicConfig(
     level=logging.INFO,
@@ -116,11 +120,15 @@ def pl_to_display(pl_pct: float) -> str:
     return f"{rounded}%"
 
 
-def update_index_html(data: dict) -> bool:
-    """Frissíti az index.html-ben a satoshi értéket és a P/L-t."""
-    log.info(f"index.html frissítése: {INDEX_HTML}")
+def update_html_file(filepath: Path, data: dict) -> bool:
+    """Frissíti egy HTML fájlban a satoshi értéket és a P/L-t."""
+    log.info(f"Fájl frissítése: {filepath}")
 
-    html = INDEX_HTML.read_text(encoding="utf-8")
+    if not filepath.exists():
+        log.warning(f"Fájl nem található: {filepath}")
+        return False
+
+    html = filepath.read_text(encoding="utf-8")
     changed = False
 
     # --- Satoshi érték frissítése ---
@@ -137,10 +145,10 @@ def update_index_html(data: dict) -> bool:
                 lambda m: f'{m.group(1)}{new_sat}{m.group(3)}',
                 html, count=1,
             )
-            log.info(f"Satoshi frissítve: {match.group(2)} → {new_sat}")
+            log.info(f"  Satoshi frissítve: {match.group(2)} → {new_sat}")
             changed = True
         elif match:
-            log.info(f"Satoshi nem változott: {new_sat}")
+            log.info(f"  Satoshi nem változott: {new_sat}")
 
     # --- P/L frissítése ---
     pl_pattern = re.compile(
@@ -156,13 +164,13 @@ def update_index_html(data: dict) -> bool:
                 lambda m: f'{m.group(1)}{new_pl}{m.group(3)}',
                 html, count=1,
             )
-            log.info(f"P/L frissítve: {match.group(2).strip()} → {new_pl}")
+            log.info(f"  P/L frissítve: {match.group(2).strip()} → {new_pl}")
             changed = True
         elif match:
-            log.info(f"P/L nem változott: {new_pl}")
+            log.info(f"  P/L nem változott: {new_pl}")
 
     if changed:
-        INDEX_HTML.write_text(html, encoding="utf-8")
+        filepath.write_text(html, encoding="utf-8")
 
     return True
 
@@ -180,12 +188,16 @@ def main():
         if "pl_pct" in data:
             log.info(f"P/L: {pl_to_display(data['pl_pct'])}")
 
-        success = update_index_html(data)
+        all_success = True
+        for html_file in HTML_FILES:
+            success = update_html_file(html_file, data)
+            if not success:
+                all_success = False
 
-        if success:
+        if all_success:
             log.info("Frissítés sikeres!")
         else:
-            log.error("Frissítés sikertelen!")
+            log.error("Néhány fájl frissítése sikertelen!")
             sys.exit(1)
 
     except requests.RequestException as e:

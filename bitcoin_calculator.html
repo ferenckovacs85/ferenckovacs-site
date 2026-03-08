@@ -349,19 +349,38 @@
             <span class="hint" id="initSat"></span>
           </div>
           <div class="input-group">
-            <label>Teljes induló befektetés (Ft)</label>
-            <input type="text" inputmode="numeric" id="totalInvest" value="10 000 000" data-raw="10000000" class="fmt-num">
-            <span class="hint">Induló összeg (személyes kiadás + bérleti díj fedezete)</span>
+            <label>Egyszeri BTC vétel (Ft)</label>
+            <input type="text" inputmode="numeric" id="lumpSum" value="0" data-raw="0" class="fmt-num">
+            <span class="hint">Azonnal BTC-re váltva az induló áron</span>
           </div>
-          <input type="hidden" id="months" value="120">
+          <div class="input-group">
+            <label>Teljes induló keret (Ft)</label>
+            <input type="text" inputmode="numeric" id="totalInvest" value="10 000 000" data-raw="10000000" class="fmt-num">
+            <span class="hint">DCA + személyes kiadás + bérleti díj fedezete</span>
+          </div>
+          <div class="input-group">
+            <label>DCA időszak (hónapok)</label>
+            <input type="number" id="months" value="120" min="1" max="120">
+            <span class="hint">Hány hónapig fut a rendszeres vétel</span>
+          </div>
           <div class="input-group">
             <label>Személyes kiadás (Ft/hó)</label>
             <input type="text" inputmode="numeric" id="livingExp" value="200 000" data-raw="200000" class="fmt-num">
           </div>
           <div class="input-group">
+            <label>Havi megtakarítás (Ft/hó)</label>
+            <input type="text" inputmode="numeric" id="monthlySavings" value="0" data-raw="0" class="fmt-num">
+            <span class="hint">Extra BTC vétel a DCA-n felül (külön forrásból)</span>
+          </div>
+          <div class="input-group">
             <label>Lakás + autó bérleti díj (Ft/hó)</label>
             <input type="text" inputmode="numeric" id="rentHuf" value="200 000" data-raw="200000" class="fmt-num">
             <span class="hint">Évente jan. 1-i BTC áron satoshira váltva</span>
+          </div>
+          <div class="input-group">
+            <label>Kripto adó (%)</label>
+            <input type="number" id="cryptoTax" value="15" step="1" min="0" max="50">
+            <span class="hint">Éves nettó BTC eladás utáni adó (HU: 15%)</span>
           </div>
           <div class="input-group">
             <label>Kezdés (év-hó)</label>
@@ -444,8 +463,8 @@
             <tr>
               <th>#</th><th>Év</th><th>Hó</th>
               <th>BTC ár (Ft)</th><th>USD/HUF</th>
-              <th>Bérleti díj (sat/hó)</th><th>Lakás+autó bérleti díj (Ft)</th>
-              <th>Kiadás (Ft)</th>
+              <th>Bérleti díj (sat/hó)</th><th>Bérleti díj (Ft)</th>
+              <th>Kiadás (Ft)</th><th>DCA (Ft)</th><th>DCA (sat)</th><th>Megtak. (sat)</th>
               <th>BTC eladás (sat)</th><th>Egyenleg (sat)</th>
               <th>BTC portf. (Ft)</th><th>Keret (Ft)</th>
               <th>Össz. portf. (Ft)</th><th>Hozam</th>
@@ -469,9 +488,9 @@
           <thead>
             <tr>
               <th>Év</th><th>BTC ár (Ft)</th><th>USD/HUF</th>
-              <th>Bérleti díj (Ft)</th><th>Személyes kiadás (Ft)</th>
+              <th>Bérleti díj (Ft)</th><th>Személyes kiadás (Ft)</th><th>DCA+Megtak. (Ft)</th>
               <th>Egyenleg (sat)</th><th>BTC portf. (Ft)</th>
-              <th>Felhasznált (Ft)</th><th>Nyereség (Ft)</th><th>Hozam</th><th>Portfólió ($)</th>
+              <th>Felhasznált (Ft)</th><th>Adó (Ft)</th><th>Nyereség (Ft)</th><th>Hozam</th><th>Portfólió ($)</th>
             </tr>
           </thead>
           <tbody id="yearBody"></tbody>
@@ -570,10 +589,13 @@ function setupFmtInput(el) {
 function getParams() {
   return {
     initBTC: parseFloat(document.getElementById('initBTC').value) || 0,
+    lumpSum: parseNumVal(document.getElementById('lumpSum')),
     totalInvest: parseNumVal(document.getElementById('totalInvest')),
     months: parseInt(document.getElementById('months').value) || 1,
     livingExp: parseNumVal(document.getElementById('livingExp')),
+    monthlySavings: parseNumVal(document.getElementById('monthlySavings')),
     rentHuf: parseNumVal(document.getElementById('rentHuf')),
+    cryptoTax: (parseFloat(document.getElementById('cryptoTax').value) || 0) / 100,
     startYear: parseInt(document.getElementById('startYear').value) || 2026,
     startMonth: parseInt(document.getElementById('startMonth').value) || 4,
     btcUsd: parseNumVal(document.getElementById('btcUsd')),
@@ -598,33 +620,47 @@ function runSimulation() {
   const maxM = 120; // Always run to 2036
   const priceMult = parseInt(document.getElementById('priceMultiplier').value) / 100;
 
-  // DCA amount per month
+  // DCA amount per month (from totalInvest pool)
   const dcaPerMonth = p.totalInvest / C8 - p.livingExp - p.rentHuf;
 
   // Computed values
   const btcHuf0 = p.btcUsd * p.usdHuf;
   const initSatoshi = Math.round(p.initBTC * 1e8);
-  const portfolioFt0 = p.initBTC * btcHuf0;
+
+  // Lump sum BTC purchase at start price
+  const lumpSumSat = btcHuf0 > 0 ? Math.round(p.lumpSum / btcHuf0 * 1e8) : 0;
+  const totalInitSat = initSatoshi + lumpSumSat;
+  const portfolioFt0 = totalInitSat / 1e8 * btcHuf0;
   const rentSat0 = Math.round(p.rentHuf / btcHuf0 * 1e8);
 
+  // Total invested = totalInvest pool + lump sum + monthly savings over 120 months
+  const totalInvestedAll = p.totalInvest + p.lumpSum + p.monthlySavings * 120;
+
   // Update hints
-  document.getElementById('initSat').textContent = fmtSat(initSatoshi) + ' satoshi · ' + fmtFt(portfolioFt0);
+  document.getElementById('initSat').textContent = fmtSat(initSatoshi) + ' sat'
+    + (lumpSumSat > 0 ? ' + ' + fmtSat(lumpSumSat) + ' sat (egyszeri vétel) = ' + fmtSat(totalInitSat) + ' sat' : '')
+    + ' · ' + fmtFt(portfolioFt0);
 
   simData = [];
-  let satBalance = initSatoshi;
+  let satBalance = totalInitSat;
   let remainingCash = p.totalInvest;
   let currentRentSat = rentSat0;
   let cumConsumed = 0; // Cumulative consumed: rent Ft + living Ft
+  let cumTaxPaid = 0;  // Cumulative crypto tax paid
+
+  // Yearly tax tracking: net BTC sold (sat) vs bought (sat) per calendar year
+  let yearlyBuySat = 0;  // BTC bought this year (DCA + savings)
+  let yearlySellSat = 0; // BTC sold this year (forced sales + rent)
+  let yearlySellFt = 0;  // Ft proceeds from BTC sales this year
+  let yearlyBuyFt = 0;   // Ft spent on BTC purchases this year
+  let currentTaxYear = -1;
 
   for (let m = 0; m <= maxM; m++) {
-    // Excel: E(m) = Ármodellek!J(m+3), where Ármodellek row 4 = month 0 prices
-    // So sim month m uses PRICE_MODELS[max(0, m-1)]
     const pm = Math.min(Math.max(0, m - 1), PRICE_MODELS.length - 1);
     const prices = PRICE_MODELS[pm];
 
     // Weighted USD price — multiplier scales only the GROWTH above starting price
-    // So at 100% = original forecast, 50% = half the growth, 0% = flat price forever
-    const basePrices = PRICE_MODELS[0]; // starting prices (all models, month 0)
+    const basePrices = PRICE_MODELS[0];
     let weightedUsd = 0;
     for (let i = 0; i < 4; i++) {
       const growth = prices[i] - basePrices[i];
@@ -639,26 +675,48 @@ function runSimulation() {
     const calMonth = ((p.startMonth - 1 + m) % 12) + 1;
     const calYear = p.startYear + Math.floor((p.startMonth - 1 + m) / 12);
 
-    // Yearly rent reset (January = month 1, or first month)
-    if (m === 0) {
-      currentRentSat = Math.round(p.rentHuf / btcHufM * 1e8);
-    } else if (calMonth === 1) {
+    // Reset yearly tax tracking on new year
+    if (calYear !== currentTaxYear) {
+      // End of previous year: calculate tax if net seller
+      if (currentTaxYear > 0 && yearlySellSat > yearlyBuySat && p.cryptoTax > 0) {
+        // Tax on net sale proceeds: (sellFt - buyFt) * tax rate, only if positive
+        const netSellFt = yearlySellFt - yearlyBuyFt;
+        if (netSellFt > 0) {
+          const tax = netSellFt * p.cryptoTax;
+          cumTaxPaid += tax;
+          remainingCash -= tax;
+          if (remainingCash < 0) remainingCash = 0;
+        }
+      }
+      yearlyBuySat = 0;
+      yearlySellSat = 0;
+      yearlySellFt = 0;
+      yearlyBuyFt = 0;
+      currentTaxYear = calYear;
+    }
+
+    // Yearly rent reset (January or first month)
+    if (m === 0 || calMonth === 1) {
       currentRentSat = Math.round(p.rentHuf / btcHufM * 1e8);
     }
 
     let rentSat = currentRentSat;
-    let rentFt = 0, living = 0, dcaFt = 0, dcaSat = 0, btcSaleSat = 0;
+    let rentFt = 0, living = 0, dcaFt = 0, dcaSat = 0, savingsSat = 0, btcSaleSat = 0;
+    let taxThisMonth = 0;
 
     if (m === 0) {
-      // Month 0: just initial state, no transactions
+      // Month 0: initial state + lump sum purchase already applied above
       rentFt = rentSat / 1e8 * btcHufM;
+      // Lump sum counts as year purchase
+      if (lumpSumSat > 0) {
+        yearlyBuySat += lumpSumSat;
+        yearlyBuyFt += p.lumpSum;
+      }
     } else {
-      // === Excel logic: M = L - H - N; Q = MAX(0, Q_prev - K - J + sale) ===
-
-      // I: Rent Ft (always, 120 months) — KIADÁS satoshi-ból
+      // I: Rent Ft — KIADÁS satoshi-ból (= BTC eladás a bérleti díjhoz)
       rentFt = rentSat / 1e8 * btcHufM;
 
-      // J: Living expense (always, 120 months) — KIADÁS cash-ből
+      // J: Living expense — KIADÁS cash-ből
       living = p.livingExp;
 
       // K,L: DCA only during active period (months 1..C8)
@@ -667,44 +725,66 @@ function runSimulation() {
         dcaSat = btcHufM > 0 ? Math.round(dcaFt / btcHufM * 1e8) : 0;
       }
 
+      // Extra monthly savings → BTC purchase (from external source, not from totalInvest)
+      if (p.monthlySavings > 0) {
+        savingsSat = btcHufM > 0 ? Math.round(p.monthlySavings / btcHufM * 1e8) : 0;
+      }
+
       // N: BTC sale — triggered when cash can't cover DCA + living
-      // Excel: =IF(Q_prev - K - J < 0, ROUND(-(Q_prev-K-J)/E*1e8, 0), 0)
       if (remainingCash - dcaFt - living < 0) {
         const deficit = -(remainingCash - dcaFt - living);
         btcSaleSat = btcHufM > 0 ? Math.round(deficit / btcHufM * 1e8) : 0;
       }
 
-      // M: Net sat change = DCA_sat - rent_sat - btcSale_sat
-      // Excel: =IF(B<=120, L - H - N, 0)
-      satBalance += dcaSat;        // +L: DCA vásárlás
-      satBalance -= rentSat;       // -H: bérleti díj KIADÁS (satoshi-ból!)
-      satBalance -= btcSaleSat;    // -N: kényszer BTC eladás
+      // Net sat change
+      satBalance += dcaSat;         // DCA vásárlás
+      satBalance += savingsSat;     // Havi megtakarítás → BTC
+      satBalance -= rentSat;        // Bérleti díj (satoshi-ból)
+      satBalance -= btcSaleSat;     // Kényszer BTC eladás
 
-      // Q: Remaining cash = MAX(0, Q_prev - K - J + sale_proceeds)
+      if (satBalance < 0) satBalance = 0;
+
+      // Cash pool
       remainingCash = remainingCash - dcaFt - living;
       if (btcSaleSat > 0) {
         remainingCash += btcSaleSat / 1e8 * btcHufM;
       }
       remainingCash = Math.max(0, remainingCash);
 
-      // Track consumed amounts (rent + living = what they "used up")
+      // Track yearly buys/sells for tax
+      yearlyBuySat += dcaSat + savingsSat;
+      yearlyBuyFt += dcaFt + p.monthlySavings;
+      yearlySellSat += rentSat + btcSaleSat;    // Rent = BTC spent (effectively sold)
+      yearlySellFt += rentFt + (btcSaleSat / 1e8 * btcHufM);
+
       cumConsumed += rentFt + living;
     }
 
     const btcPortfolioFt = satBalance / 1e8 * btcHufM;
     const totalPortfolioFt = btcPortfolioFt + remainingCash;
-    // Profit includes consumed amounts (rent + living that was "used up")
-    const profit = totalPortfolioFt + cumConsumed - p.totalInvest;
-    const returnPct = p.totalInvest > 0 ? profit / p.totalInvest : 0;
+    const profit = totalPortfolioFt + cumConsumed - totalInvestedAll;
+    const returnPct = totalInvestedAll > 0 ? profit / totalInvestedAll : 0;
 
     simData.push({
       m, calYear, calMonth,
       btcHufM, usdHufM, weightedUsd,
-      rentSat, rentFt, living, dcaFt, dcaSat, btcSaleSat,
+      rentSat, rentFt, living, dcaFt, dcaSat, savingsSat, btcSaleSat,
       satBalance, btcPortfolioFt, remainingCash, totalPortfolioFt,
-      profit, returnPct, cumConsumed,
+      profit, returnPct, cumConsumed, cumTaxPaid,
       prices
     });
+  }
+
+  // Final year tax settlement (last year in simulation)
+  if (yearlySellSat > yearlyBuySat && p.cryptoTax > 0) {
+    const netSellFt = yearlySellFt - yearlyBuyFt;
+    if (netSellFt > 0) {
+      cumTaxPaid += netSellFt * p.cryptoTax;
+    }
+  }
+  // Store final cumTaxPaid in last simData entry
+  if (simData.length > 0) {
+    simData[simData.length - 1].cumTaxPaid = cumTaxPaid;
   }
 
   // Calculate sustainability after simulation
@@ -812,25 +892,39 @@ function renderSummary() {
   if (!last) return;
 
   const btcHuf0 = p.btcUsd * p.usdHuf;
-  // Find the end of active period for CAGR calc
-  const activeEnd = simData.find(d => d.m === Math.min(p.months, 120)) || last;
   const months120 = last.m || 120;
-  const cagr = p.totalInvest > 0 && last.totalPortfolioFt > 0
-    ? Math.pow((last.totalPortfolioFt + last.cumConsumed) / p.totalInvest, 12 / months120) - 1 : 0;
+  const totalInvestedAll = p.totalInvest + p.lumpSum + p.monthlySavings * 120;
+  const cagr = totalInvestedAll > 0 && last.totalPortfolioFt > 0
+    ? Math.pow((last.totalPortfolioFt + last.cumConsumed) / totalInvestedAll, 12 / months120) - 1 : 0;
 
   // Date strings for context
   const startDate = `${p.startYear}. ${String(p.startMonth).padStart(2,'0')}`;
   const endDate = `${last.calYear}. ${String(last.calMonth).padStart(2,'0')}`;
+  const dcaEndM = simData.find(d => d.m === Math.min(p.months, 120));
+  const dcaEndDate = dcaEndM ? `${dcaEndM.calYear}. ${String(dcaEndM.calMonth).padStart(2,'0')}` : endDate;
+  const dcaMonthly = Math.max(0, p.totalInvest / Math.min(p.months, 120) - p.livingExp - p.rentHuf);
+
   const cards = [
-    { label: 'Induló befektetés', value: fmtFt(p.totalInvest), sub: startDate + '-tól', cls: '' },
-    { label: 'Induló BTC', value: fmtBtc(p.initBTC), sub: fmtSat(p.initBTC * 1e8) + ' sat', cls: '' },
+    { label: 'Összes befektetés', value: fmtFt(totalInvestedAll), sub: 'Keret ' + fmtFt(p.totalInvest) + (p.lumpSum > 0 ? ' + egyszer ' + fmtFt(p.lumpSum) : '') + (p.monthlySavings > 0 ? ' + ' + fmtFt(p.monthlySavings) + '/hó' : ''), cls: '' },
+    { label: 'Induló BTC', value: fmtBtc((p.initBTC * 1e8 + (btcHuf0 > 0 ? p.lumpSum / btcHuf0 * 1e8 : 0)) / 1e8), sub: fmtSat(Math.round(p.initBTC * 1e8 + (btcHuf0 > 0 ? p.lumpSum / btcHuf0 * 1e8 : 0))) + ' sat', cls: '' },
     { label: 'BTC ár (Ft)', value: fmtFt(btcHuf0), sub: fmtUsd(p.btcUsd), cls: '' },
+    { label: 'Havi DCA', value: fmtFt(dcaMonthly + p.monthlySavings), sub: (dcaMonthly > 0 ? 'Keretből ' + fmtFt(dcaMonthly) : 'Nincs keretből DCA') + (p.monthlySavings > 0 ? ' + megtak. ' + fmtFt(p.monthlySavings) : '') + ' · ' + startDate + ' – ' + dcaEndDate, cls: '' },
     { label: 'Végső portfólió', value: fmtFt(last.totalPortfolioFt), sub: endDate + ' · ' + fmtUsd(last.totalPortfolioFt / last.usdHufM), cls: 'highlight' },
     { label: 'Felhasznált összeg', value: fmtFt(last.cumConsumed), sub: startDate + ' – ' + endDate + ' · bérleti díj + személyes kiadás', cls: '' },
     { label: 'Teljes nyereség', value: fmtFt(last.profit), sub: endDate + ' · portfólió + felhasznált − befektetés', cls: last.profit >= 0 ? 'green' : 'red' },
     { label: 'Hozam', value: fmtPct(last.returnPct), sub: 'CAGR: ' + fmtPct(cagr) + ' (' + months120 + ' hó)', cls: last.returnPct >= 0 ? 'green' : 'red' },
     { label: 'BTC egyenleg', value: fmtBtc(last.satBalance / 1e8), sub: endDate + ' · ' + fmtSat(last.satBalance) + ' sat', cls: '' },
   ];
+
+  // Tax card
+  if (last.cumTaxPaid > 0) {
+    cards.push({
+      label: 'Befizetett kripto adó',
+      value: fmtFt(last.cumTaxPaid),
+      sub: (p.cryptoTax * 100) + '% · éves nettó eladás után',
+      cls: 'red'
+    });
+  }
 
   // Sustainability card
   if (sustainabilityResult) {
@@ -879,6 +973,9 @@ function renderTable() {
       <td class="fmt-sat">${fmtSat(d.rentSat)}</td>
       <td>${fmtFt(d.rentFt)}</td>
       <td>${fmtFt(d.living)}</td>
+      <td>${d.m > 0 ? fmtFt(d.dcaFt) : '-'}</td>
+      <td class="fmt-sat">${d.m > 0 ? fmtSat(d.dcaSat) : '-'}</td>
+      <td class="fmt-sat">${d.savingsSat > 0 ? fmtSat(d.savingsSat) : '-'}</td>
       <td class="${d.btcSaleSat > 0 ? 'neg' : ''}">${d.btcSaleSat > 0 ? fmtSat(d.btcSaleSat) : '-'}</td>
       <td class="fmt-btc">${fmtSat(d.satBalance)}</td>
       <td>${fmtFt(d.btcPortfolioFt)}</td>
@@ -897,10 +994,11 @@ function renderYearly() {
   const years = {};
   simData.forEach((d, i) => {
     const y = d.calYear;
-    if (!years[y]) years[y] = { rent: 0, living: 0, last: d };
+    if (!years[y]) years[y] = { rent: 0, living: 0, dcaBuy: 0, last: d };
     if (i > 0) {
       years[y].rent += d.rentFt;
       years[y].living += d.living;
+      years[y].dcaBuy += d.dcaFt + (d.savingsSat / 1e8 * d.btcHufM);
     }
     years[y].last = d;
   });
@@ -917,9 +1015,11 @@ function renderYearly() {
       <td>${d.usdHufM.toFixed(2)}</td>
       <td class="neg">${fmtFt(yd.rent)}</td>
       <td class="neg">${fmtFt(yd.living)}</td>
+      <td class="pos">${fmtFt(yd.dcaBuy)}</td>
       <td class="fmt-sat">${fmtSat(d.satBalance)}</td>
       <td style="font-weight:600">${fmtFt(d.totalPortfolioFt)}</td>
       <td>${fmtFt(d.cumConsumed)}</td>
+      <td class="neg">${fmtFt(d.cumTaxPaid)}</td>
       <td class="${profitCls}" style="font-weight:600">${fmtFt(d.profit)}</td>
       <td class="${retCls}" style="font-weight:600">${fmtPct(d.returnPct)}</td>
       <td>${fmtUsd(portUsd)}</td>
@@ -1073,6 +1173,7 @@ function renderChart() {
 
   // Find milestone indices for annotations
   const p2 = getParams();
+  const dcaEndIdx = simData.findIndex(d => d.m === Math.min(p2.months, 120));
   const cashDepletedIdx = simData.findIndex((d, i) => i > 0 && d.remainingCash <= 0);
 
   const scales = {
@@ -1112,6 +1213,10 @@ function renderChart() {
 
   // Build milestone label strings with dates
   const milestones = [];
+  if (dcaEndIdx > 0 && dcaEndIdx < simData.length - 1) {
+    const d = simData[dcaEndIdx];
+    milestones.push({ idx: dcaEndIdx, color: '#00d68f', label: 'DCA vége', date: `${d.calYear}. ${String(d.calMonth).padStart(2,'0')}` });
+  }
   if (cashDepletedIdx > 0 && cashDepletedIdx < simData.length) {
     const d = simData[cashDepletedIdx];
     milestones.push({ idx: cashDepletedIdx, color: '#ff4d6a', label: 'Ft elfogy', date: `${d.calYear}. ${String(d.calMonth).padStart(2,'0')}` });
