@@ -479,7 +479,7 @@
       </div>
       <button onclick="resetMacroDashboard()" style="margin-left:auto;background:var(--bg4);color:var(--text2);border:1px solid var(--border);border-radius:8px;padding:3px 10px;font-size:11px;cursor:pointer;transition:all 0.2s" onmouseover="this.style.borderColor='var(--btc)';this.style.color='var(--btc)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">↻ Reset</button>
       <button onclick="copyShareLink()" style="background:var(--bg4);color:var(--text2);border:1px solid var(--border);border-radius:8px;padding:3px 10px;font-size:11px;cursor:pointer;transition:all 0.2s" onmouseover="this.style.borderColor='var(--btc)';this.style.color='var(--btc)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'" id="shareLinkBtn">🔗 Link</button>
-      <button id="fetchPricesBtn" onclick="fetchLivePrices()" style="background:var(--bg4);color:var(--text2);border:1px solid var(--border);border-radius:8px;padding:3px 10px;font-size:11px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:4px" onmouseover="this.style.borderColor='var(--btc)';this.style.color='var(--btc)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'"><span id="fetchIcon">🔄</span> Live price</button>
+      <button id="fetchPricesBtn" onclick="fetchLivePrices(true)" style="background:var(--bg4);color:var(--text2);border:1px solid var(--border);border-radius:8px;padding:3px 10px;font-size:11px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:4px" onmouseover="this.style.borderColor='var(--btc)';this.style.color='var(--btc)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'"><span id="fetchIcon">🔄</span> Live price</button>
     </div>
     <!-- Row 2: Model weights + price multiplier + PV toggle -->
     <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px 12px;border-top:1px solid var(--border);padding-top:6px">
@@ -742,8 +742,8 @@
       <h2>Privacy Notice</h2>
     </div>
     <div class="section-body" style="font-size:13px;color:var(--text2);line-height:1.7">
-      <p style="margin:0 0 8px"><strong>Local storage:</strong> This calculator uses your browser's local storage (localStorage) solely to preserve saved scenarios. This data never leaves your computer — it is not transmitted to any server.</p>
-      <p style="margin:0 0 8px"><strong>External requests:</strong> The page makes a single external call: fetching the live Bitcoin price from the CoinGecko public API. This request is read-only and sends no user data.</p>
+      <p style="margin:0 0 8px"><strong>Local storage:</strong> This calculator uses your browser's local storage (localStorage) solely to preserve saved scenarios and a price cache. This data never leaves your computer — it is not transmitted to any server.</p>
+      <p style="margin:0 0 8px"><strong>External requests:</strong> The page fetches the live Bitcoin price from the CoinGecko public API, at most once per hour. The price is cached locally in your browser. This request is read-only and sends no user data.</p>
       <p style="margin:0 0 8px"><strong>Tracking:</strong> This page does not use cookies, analytics (Google Analytics, Meta Pixel, etc.), tracking scripts, or any other data collection mechanism.</p>
       <p style="margin:0"><strong>Deleting data:</strong> Saved scenarios can be removed at any time by clicking the ✕ button next to each scenario, or by clearing your browser's local storage.</p>
     </div>
@@ -882,7 +882,28 @@ function setFmtValue(id, val) {
   el.dataset.raw = val;
 }
 
-async function fetchLivePrices() {
+const PRICE_CACHE_KEY = 'btc_price_cache_en';
+const PRICE_CACHE_TTL = 60 * 60 * 1000; // 1 hour in ms
+
+function getCachedPrices() {
+  try {
+    const cached = JSON.parse(localStorage.getItem(PRICE_CACHE_KEY));
+    if (cached && Date.now() - cached.ts < PRICE_CACHE_TTL) return cached;
+  } catch {}
+  return null;
+}
+
+function applyCachedPrices(cached) {
+  setFmtValue('btcUsd', cached.btcUsd);
+  runSimulation();
+}
+
+async function fetchLivePrices(force = false) {
+  // Use cache if available and not forced
+  if (!force) {
+    const cached = getCachedPrices();
+    if (cached) { applyCachedPrices(cached); return; }
+  }
   const btn = document.getElementById('fetchPricesBtn');
   const icon = document.getElementById('fetchIcon');
   btn.style.opacity = '0.5';
@@ -894,6 +915,8 @@ async function fetchLivePrices() {
     const data = await res.json();
     if (data.bitcoin) {
       const btcUsd = Math.round(data.bitcoin.usd);
+      // Save to cache
+      localStorage.setItem(PRICE_CACHE_KEY, JSON.stringify({ btcUsd, ts: Date.now() }));
       setFmtValue('btcUsd', btcUsd);
       runSimulation();
       icon.textContent = '✅';
@@ -901,6 +924,9 @@ async function fetchLivePrices() {
     }
   } catch (e) {
     console.error('Price fetch failed:', e);
+    // Fallback to cache even if expired
+    const cached = getCachedPrices();
+    if (cached) applyCachedPrices(cached);
     icon.textContent = '❌';
     setTimeout(() => { icon.textContent = '🔄'; }, 2000);
   } finally {

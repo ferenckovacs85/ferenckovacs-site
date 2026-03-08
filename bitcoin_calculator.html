@@ -493,7 +493,7 @@
       </div>
       <button onclick="resetMacroDashboard()" style="margin-left:auto;background:var(--bg4);color:var(--text2);border:1px solid var(--border);border-radius:8px;padding:3px 10px;font-size:11px;cursor:pointer;transition:all 0.2s" onmouseover="this.style.borderColor='var(--btc)';this.style.color='var(--btc)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">↻ Reset</button>
       <button onclick="copyShareLink()" style="background:var(--bg4);color:var(--text2);border:1px solid var(--border);border-radius:8px;padding:3px 10px;font-size:11px;cursor:pointer;transition:all 0.2s" onmouseover="this.style.borderColor='var(--btc)';this.style.color='var(--btc)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'" id="shareLinkBtn">🔗 Link</button>
-      <button id="fetchPricesBtn" onclick="fetchLivePrices()" style="background:var(--bg4);color:var(--text2);border:1px solid var(--border);border-radius:8px;padding:3px 10px;font-size:11px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:4px" onmouseover="this.style.borderColor='var(--btc)';this.style.color='var(--btc)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'"><span id="fetchIcon">🔄</span> Élő ár</button>
+      <button id="fetchPricesBtn" onclick="fetchLivePrices(true)" style="background:var(--bg4);color:var(--text2);border:1px solid var(--border);border-radius:8px;padding:3px 10px;font-size:11px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:4px" onmouseover="this.style.borderColor='var(--btc)';this.style.color='var(--btc)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'"><span id="fetchIcon">🔄</span> Élő ár</button>
     </div>
     <!-- Row 2: Model weights + price multiplier + PV toggle -->
     <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px 12px;border-top:1px solid var(--border);padding-top:6px">
@@ -756,8 +756,8 @@
       <h2>Adatkezelési tájékoztató</h2>
     </div>
     <div class="section-body" style="font-size:13px;color:var(--text2);line-height:1.7">
-      <p style="margin:0 0 8px"><strong>Helyi tárolás:</strong> A kalkulátor kizárólag az Ön böngészőjének helyi tárhelyét (localStorage) használja a mentett szcenáriók megőrzéséhez. Ezek az adatok soha nem hagyják el az Ön számítógépét — semmilyen szerverre nem kerülnek továbbításra.</p>
-      <p style="margin:0 0 8px"><strong>Külső lekérdezés:</strong> Az oldal egyetlen külső hívást végez: élő Bitcoin-árfolyamot kér le a CoinGecko nyilvános API-jából. Ez a lekérdezés kizárólag olvasási célú, semmilyen felhasználói adatot nem küld.</p>
+      <p style="margin:0 0 8px"><strong>Helyi tárolás:</strong> A kalkulátor kizárólag az Ön böngészőjének helyi tárhelyét (localStorage) használja a mentett szcenáriók és az árfolyam-gyorsítótár megőrzéséhez. Ezek az adatok soha nem hagyják el az Ön számítógépét — semmilyen szerverre nem kerülnek továbbításra.</p>
+      <p style="margin:0 0 8px"><strong>Külső lekérdezés:</strong> Az oldal élő Bitcoin-árfolyamot kér le a CoinGecko nyilvános API-jából, legfeljebb óránként egyszer. Az árfolyam a böngészőben gyorsítótárazódik. Ez a lekérdezés kizárólag olvasási célú, semmilyen felhasználói adatot nem küld.</p>
       <p style="margin:0 0 8px"><strong>Nyomkövetés:</strong> Az oldal nem használ sütik (cookie-k), analitikát (Google Analytics, Meta Pixel stb.), nyomkövető kódot, sem egyéb adatgyűjtési megoldást.</p>
       <p style="margin:0"><strong>Adatok törlése:</strong> A mentett szcenáriók bármikor törölhetők a böngésző helyi tárhelyének ürítésével, vagy az egyes szcenáriók melletti ✕ gombbal.</p>
     </div>
@@ -909,7 +909,30 @@ function updateMacroBtcHuf() {
   if (el) el.textContent = fmtThousands(Math.round(btcUsd * usdHuf));
 }
 
-async function fetchLivePrices() {
+const PRICE_CACHE_KEY = 'btc_price_cache';
+const PRICE_CACHE_TTL = 60 * 60 * 1000; // 1 hour in ms
+
+function getCachedPrices() {
+  try {
+    const cached = JSON.parse(localStorage.getItem(PRICE_CACHE_KEY));
+    if (cached && Date.now() - cached.ts < PRICE_CACHE_TTL) return cached;
+  } catch {}
+  return null;
+}
+
+function applyCachedPrices(cached) {
+  setFmtValue('btcUsd', cached.btcUsd);
+  setFmtValue('usdHuf', cached.usdHuf);
+  updateMacroBtcHuf();
+  runSimulation();
+}
+
+async function fetchLivePrices(force = false) {
+  // Use cache if available and not forced
+  if (!force) {
+    const cached = getCachedPrices();
+    if (cached) { applyCachedPrices(cached); return; }
+  }
   const btn = document.getElementById('fetchPricesBtn');
   const icon = document.getElementById('fetchIcon');
   btn.style.opacity = '0.5';
@@ -917,23 +940,26 @@ async function fetchLivePrices() {
   icon.style.display = 'inline-block';
   icon.style.animation = 'spin 1s linear infinite';
   try {
-    // Fetch BTC/USD and BTC/HUF from CoinGecko (free, no key)
     const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,huf');
     const data = await res.json();
     if (data.bitcoin) {
       const btcUsd = Math.round(data.bitcoin.usd);
       const btcHuf = Math.round(data.bitcoin.huf);
-      const usdHuf = btcHuf / btcUsd;
+      const usdHuf = Math.round(btcHuf / btcUsd);
+      // Save to cache
+      localStorage.setItem(PRICE_CACHE_KEY, JSON.stringify({ btcUsd, usdHuf, ts: Date.now() }));
       setFmtValue('btcUsd', btcUsd);
-      setFmtValue('usdHuf', Math.round(usdHuf));
+      setFmtValue('usdHuf', usdHuf);
       updateMacroBtcHuf();
       runSimulation();
-      // Flash success
       icon.textContent = '✅';
       setTimeout(() => { icon.textContent = '🔄'; }, 2000);
     }
   } catch (e) {
     console.error('Price fetch failed:', e);
+    // Fallback to cache even if expired
+    const cached = getCachedPrices();
+    if (cached) applyCachedPrices(cached);
     icon.textContent = '❌';
     setTimeout(() => { icon.textContent = '🔄'; }, 2000);
   } finally {
