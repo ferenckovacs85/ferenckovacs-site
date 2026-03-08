@@ -468,12 +468,12 @@
     <!-- Row 1: Prices + live fetch -->
     <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px 16px">
       <div class="macro-item">
-        <span class="macro-label" title="Current Bitcoin price in USD">BTC<span class="info-tip">ℹ</span></span>
+        <span class="macro-label" title="Current market price of Bitcoin denominated in US Dollars (USD)">BTC<span class="info-tip">ℹ</span></span>
         <span class="macro-sep">$</span>
         <input type="text" inputmode="numeric" id="btcUsd" value="68 000" data-raw="68000" class="fmt-num macro-input" style="width:78px">
       </div>
       <div class="macro-item">
-        <span class="macro-label" title="Annual USD monetary inflation (M2 expansion) driving BTC price">USD Inflation<span class="info-tip">ℹ</span></span>
+        <span class="macro-label" title="Annual US Dollar monetary inflation rate (M2 money supply expansion). This is one of the key drivers of long-term Bitcoin price appreciation">USD Inflation<span class="info-tip">ℹ</span></span>
         <input type="text" inputmode="decimal" id="monetaryInflation" value="7" class="macro-input" style="width:40px">
         <span class="macro-unit">%/yr</span>
       </div>
@@ -486,7 +486,7 @@
       <div id="weightsContainer" style="display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px"></div>
       <span style="width:1px;height:18px;background:var(--border);margin:0 2px"></span>
       <div class="macro-item">
-        <span class="macro-label" title="Price model growth rate multiplier (100% = original)">Multiplier<span class="info-tip">ℹ</span></span>
+        <span class="macro-label" title="Growth rate adjustment for price forecast models. 100% = original model projection, 50% = conservative scenario, 200% = optimistic scenario">Multiplier<span class="info-tip">ℹ</span></span>
         <input type="range" id="priceMultiplier" min="10" max="300" value="100" style="width:50px;accent-color:var(--btc);height:14px" oninput="updateMultiplier()">
         <span id="multiplierVal" class="macro-val" style="min-width:32px">100%</span>
       </div>
@@ -521,7 +521,7 @@
       <div class="summary-row" id="summaryDetailsCards" style="margin:0;padding:16px;gap:12px;border-top:1px solid var(--border)"></div>
     </div>
     <div class="detail-toggle" id="detailToggle" onclick="toggleDetails()">
-      <span class="arrow">▼</span> Detailed analysis
+      <span class="arrow">▼</span> Detailed Portfolio Analysis
     </div>
   </div>
 
@@ -536,32 +536,32 @@
       <div class="section-body">
         <div class="input-grid">
           <div class="input-group">
-            <label title="Existing Bitcoin amount in satoshis. 1 BTC = 100,000,000 sat">Starting Bitcoin (sat)<span class="info-tip">ℹ</span></label>
-            <input type="text" inputmode="numeric" id="initSat" value="1 000 000" data-raw="1000000" class="fmt-num">
-            <span class="hint" id="initSatHint">= 0.01 BTC</span>
+            <label title="Current Bitcoin holdings expressed in satoshis. 1 BTC = 100,000,000 satoshis (sat)">Existing Bitcoin Holdings (sat)<span class="info-tip">ℹ</span></label>
+            <input type="text" inputmode="numeric" id="initSat" value="0" data-raw="0" class="fmt-num">
+            <span class="hint" id="initSatHint">= 0 BTC</span>
           </div>
           <div class="input-group">
-            <label title="One-time USD amount instantly converted to Bitcoin at starting BTC price">Lump Sum BTC Purchase ($)<span class="info-tip">ℹ</span></label>
+            <label title="A one-time capital deployment converted to Bitcoin at the current market price at the start of the simulation">Lump Sum Bitcoin Purchase ($)<span class="info-tip">ℹ</span></label>
             <input type="text" inputmode="numeric" id="lumpSum" value="0" data-raw="0" class="fmt-num">
-            <span class="hint">Instantly converted to BTC at starting price</span>
+            <span class="hint">Converted to BTC at the prevailing market price on day one</span>
           </div>
           <div class="input-group">
-            <label title="Total amount for DCA (regular purchases) over the specified months">Total Investment Pool ($)<span class="info-tip">ℹ</span></label>
-            <input type="text" inputmode="numeric" id="totalInvest" value="30,000" data-raw="30000" class="fmt-num">
-            <span class="hint" id="totalInvestHint">Amount allocated for DCA</span>
+            <label title="Total capital allocated for Dollar Cost Averaging (DCA) — a systematic investment strategy that deploys funds in equal installments over the specified period">DCA Investment Capital ($)<span class="info-tip">ℹ</span></label>
+            <input type="text" inputmode="numeric" id="totalInvest" value="0" data-raw="0" class="fmt-num">
+            <span class="hint" id="totalInvestHint">Total capital deployed via systematic DCA purchases</span>
           </div>
           <div class="input-group">
-            <label title="How many months of regular (Dollar Cost Averaging) Bitcoin purchases">DCA Period (months)<span class="info-tip">ℹ</span></label>
+            <label title="The duration of the Dollar Cost Averaging program in months. The investment capital is deployed in equal monthly installments over this period">DCA Duration (months)<span class="info-tip">ℹ</span></label>
             <input type="number" id="months" value="120" min="1" max="120">
-            <span class="hint">Duration of regular purchases</span>
+            <span class="hint">Duration of systematic investment (max. 120 months = 10 years)</span>
           </div>
           <div class="input-group">
-            <label title="Extra monthly BTC purchase on top of DCA, from separate source (e.g., salary)">Monthly Savings ($/mo)<span class="info-tip">ℹ</span></label>
+            <label title="Additional monthly Bitcoin purchases from a separate income source (e.g., salary), on top of the DCA capital allocation">Monthly Recurring Investment ($/mo)<span class="info-tip">ℹ</span></label>
             <input type="text" inputmode="numeric" id="monthlySavings" value="0" data-raw="0" class="fmt-num">
-            <span class="hint">Extra BTC purchase on top of DCA (from separate source)</span>
+            <span class="hint">Recurring monthly BTC purchase in addition to DCA (e.g., from salary)</span>
           </div>
           <div class="input-group">
-            <label title="Simulation start date">Start (year-month)<span class="info-tip">ℹ</span></label>
+            <label title="The start date of the investment simulation. The model projects a 10-year (120-month) forecast from this date">Simulation Start (year–month)<span class="info-tip">ℹ</span></label>
             <div style="display:flex;gap:8px">
               <input type="number" id="startYear" value="2026" style="flex:1">
               <input type="number" id="startMonth" value="4" min="1" max="12" style="width:70px">
@@ -575,9 +575,9 @@
     <div class="section">
       <div class="section-header" style="cursor:pointer" onclick="toggleFire()">
         <div class="icon orange">🔥</div>
-        <h2>FIRE Mode · Passive Income</h2>
+        <h2>FIRE Plan · Financial Independence</h2>
         <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
-          <span style="font-size:11px;color:var(--text3)">Expenses from pool</span>
+          <span style="font-size:11px;color:var(--text3)">Portfolio Withdrawals</span>
           <div class="toggle-switch" id="fireSwitch"></div>
         </div>
       </div>
@@ -585,17 +585,17 @@
         <div class="section-body">
           <div class="input-grid">
             <div class="input-group">
-              <label title="Monthly expense covered by BTC sales, increases annually with inflation">Monthly Fixed Expense ($/mo)<span class="info-tip">ℹ</span></label>
+              <label title="Monthly withdrawal from the Bitcoin portfolio to cover living expenses. The amount is automatically adjusted for inflation each year">Monthly Withdrawal ($/mo)<span class="info-tip">ℹ</span></label>
               <input type="text" inputmode="numeric" id="monthlyExpense" value="1,000" data-raw="1000" class="fmt-num">
-              <span class="hint">Withdrawn from BTC monthly · increases with inflation</span>
+              <span class="hint">Monthly portfolio withdrawal · inflation-adjusted annually</span>
             </div>
             <div class="input-group">
-              <label title="Larger periodic BTC withdrawal (e.g., vacation, major expense)">Periodic Withdrawal ($)<span class="info-tip">ℹ</span></label>
+              <label title="Recurring larger withdrawals from the portfolio at regular intervals (e.g., quarterly expenses, vacation, insurance). The amount is adjusted for inflation annually">Periodic Lump Withdrawal ($)<span class="info-tip">ℹ</span></label>
               <input type="text" inputmode="numeric" id="withdrawalAmount" value="2,000" data-raw="2000" class="fmt-num">
-              <span class="hint">Larger BTC withdrawal per occurrence</span>
+              <span class="hint">Recurring larger expense (e.g., quarterly, semi-annual)</span>
             </div>
             <div class="input-group">
-              <label title="How often the periodic withdrawal repeats per year">Frequency (×/yr)<span class="info-tip">ℹ</span></label>
+              <label title="How often the periodic lump withdrawal occurs during the year">Withdrawal Frequency (×/yr)<span class="info-tip">ℹ</span></label>
               <select id="withdrawalFreq" style="background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:13px;width:100%">
                 <option value="0">None</option>
                 <option value="1">Yearly (1×)</option>
@@ -603,30 +603,38 @@
                 <option value="3">Every 4 months (3×)</option>
                 <option value="4" selected>Quarterly (4×)</option>
               </select>
-              <span class="hint">How often the periodic withdrawal</span>
+              <span class="hint">Schedule of periodic withdrawals</span>
             </div>
             <div class="input-group">
-              <label title="Annual tax on net BTC sale profit">Crypto Tax (%)<span class="info-tip">ℹ</span></label>
+              <label title="Annual tax rate on net gains from Bitcoin sales. This varies by jurisdiction (e.g., Hungary: 15%, US: 0–37% depending on holding period and income)">Capital Gains Tax (%)<span class="info-tip">ℹ</span></label>
               <input type="number" id="cryptoTax" value="15" step="1" min="0" max="50">
-              <span class="hint">Annual tax on net BTC sales</span>
+              <span class="hint">Annual tax on net crypto asset gains</span>
             </div>
             <div class="input-group">
-              <label title="When enabled, your BTC balance never drops below starting level — living off gains only">Yield Only <span class="info-tip">ℹ</span></label>
+              <label title="When enabled, the portfolio's Bitcoin balance never drops below the initial level. All withdrawals are funded exclusively from price appreciation gains">Yield-Only Mode<span class="info-tip">ℹ</span></label>
               <div style="display:flex;align-items:center;gap:8px">
                 <div class="toggle-switch" id="yieldOnlySwitch" onclick="toggleYieldOnly()"></div>
                 <span style="font-size:12px;color:var(--text3)" id="yieldOnlyLabel">Off</span>
               </div>
-              <span class="hint">BTC Balance cannot drop below starting level</span>
+              <span class="hint">Protects principal BTC holdings — only withdrawing from gains</span>
             </div>
             <div class="input-group">
-              <label title="Your birth year — age shown at milestones">Birth Year<span class="info-tip">ℹ</span></label>
-              <input type="number" id="birthYear" value="1985" min="1940" max="2010">
-              <span class="hint">Age at milestones</span>
+              <label title="Your year of birth. Age is displayed at simulation milestones and used for retirement calculations">Year of Birth<span class="info-tip">ℹ</span></label>
+              <input type="number" id="birthYear" value="2000" min="1950" max="2025">
+              <span class="hint">Used for milestone age display and retirement planning</span>
             </div>
             <div class="input-group">
-              <label title="At what age do you plan to retire">Retirement Age<span class="info-tip">ℹ</span></label>
+              <label title="Planned retirement age. In 'From Retirement' mode, the simulation transitions from accumulation phase to withdrawal phase at this age">Target Retirement Age<span class="info-tip">ℹ</span></label>
               <input type="number" id="retireAge" value="65" min="40" max="85">
-              <span class="hint">Planned retirement age (default: 65)</span>
+              <span class="hint">Planned age of retirement</span>
+            </div>
+            <div class="input-group">
+              <label title="Timing of portfolio withdrawals: immediately (from the start) or deferred until retirement age. In 'From Retirement' mode, monthly savings continue until retirement and withdrawals begin only after">Withdrawal Schedule<span class="info-tip">ℹ</span></label>
+              <div style="display:flex;gap:4px">
+                <button id="expBtnImmediate" class="pv-btn active" onclick="setExpenseStart(false)">Immediately</button>
+                <button id="expBtnRetire" class="pv-btn" onclick="setExpenseStart(true)">From Retirement</button>
+              </div>
+              <span class="hint">Immediately: withdrawals begin at simulation start · From Retirement: accumulate until retirement, then begin withdrawals</span>
             </div>
           </div>
         </div>
@@ -821,11 +829,12 @@ function setupFmtInput(el) {
 let fireMode = false;
 let pvMode = false; // Present value mode
 let yieldOnlyMode = false;
+let expenseFromRetirement = false;
 
 // Default values for Starting Position
 const DEFAULTS = {
-  initSat: 1000000, lumpSum: 0, totalInvest: 30000, months: 120,
-  monthlySavings: 0, startYear: 2026, startMonth: 4, birthYear: 1985,
+  initSat: 0, lumpSum: 0, totalInvest: 0, months: 120,
+  monthlySavings: 0, startYear: 2026, startMonth: 4, birthYear: 2000,
   btcUsd: 68000, monetaryInflation: 7
 };
 
@@ -906,6 +915,13 @@ function toggleYieldOnly() {
   yieldOnlyMode = !yieldOnlyMode;
   document.getElementById('yieldOnlySwitch').classList.toggle('active', yieldOnlyMode);
   document.getElementById('yieldOnlyLabel').textContent = yieldOnlyMode ? 'On' : 'Off';
+  runSimulation();
+}
+
+function setExpenseStart(fromRetirement) {
+  expenseFromRetirement = fromRetirement;
+  document.getElementById('expBtnImmediate').classList.toggle('active', !fromRetirement);
+  document.getElementById('expBtnRetire').classList.toggle('active', fromRetirement);
   runSimulation();
 }
 
@@ -1003,8 +1019,14 @@ function runSimulation() {
   // Withdrawal interval in months (freq=4 → every 3 months, freq=1 → every 12)
   const withdrawalInterval = p.withdrawalFreq > 0 ? Math.round(12 / p.withdrawalFreq) : 0;
 
-  // Total invested = totalInvest pool + lump sum + monthly savings over 120 months
-  const totalInvestedAll = p.totalInvest + p.lumpSum + p.monthlySavings * 120;
+  // Retirement month calculation
+  const currentAge = p.startYear - p.birthYear;
+  const retireAge = parseInt(document.getElementById('retireAge')?.value) || 65;
+  const retireMonth = Math.max(0, (retireAge - currentAge) * 12);
+
+  // Total invested = totalInvest pool + lump sum + monthly savings (stop at retirement if applicable)
+  const savingsMonths = (expenseFromRetirement && retireMonth < 120) ? retireMonth : 120;
+  const totalInvestedAll = p.totalInvest + p.lumpSum + p.monthlySavings * savingsMonths;
 
   // Update hints
   document.getElementById('initSatHint').textContent = '= ' + fmtBtc(p.initBTC) + ' BTC'
@@ -1084,14 +1106,17 @@ function runSimulation() {
       const yearsSinceStart = m / 12;
       const inflFactor = Math.pow(1 + p.monetaryInflation, yearsSinceStart);
 
+      // Determine if expenses are active this month
+      const expensesActive = !expenseFromRetirement || m >= retireMonth;
+
       // Monthly fixed expense from BTC (inflation-adjusted)
-      if (p.monthlyExpense > 0) {
+      if (p.monthlyExpense > 0 && expensesActive) {
         monthlyExpFt = p.monthlyExpense * inflFactor;
         monthlyExpSat = btcHufM > 0 ? Math.round(monthlyExpFt / btcHufM * 1e8) : 0;
       }
 
       // Periodic larger withdrawal: every N months, sell BTC
-      if (withdrawalInterval > 0 && m % withdrawalInterval === 0) {
+      if (withdrawalInterval > 0 && m % withdrawalInterval === 0 && expensesActive) {
         withdrawalFt = p.withdrawalAmount * inflFactor;
         withdrawalSat = btcHufM > 0 ? Math.round(withdrawalFt / btcHufM * 1e8) : 0;
       }
@@ -1102,8 +1127,8 @@ function runSimulation() {
         dcaSat = btcHufM > 0 ? Math.round(dcaFt / btcHufM * 1e8) : 0;
       }
 
-      // Extra monthly savings → BTC purchase
-      if (p.monthlySavings > 0) {
+      // Extra monthly savings → BTC purchase (stop at retirement if expenseFromRetirement)
+      if (p.monthlySavings > 0 && !(expenseFromRetirement && m >= retireMonth)) {
         savingsSat = btcHufM > 0 ? Math.round(p.monthlySavings / btcHufM * 1e8) : 0;
       }
 
@@ -1253,6 +1278,11 @@ function calcSustainability(p, lastSim) {
   let btcUsdM = last.weightedUsd;
   const withdrawalInterval = p.withdrawalFreq > 0 ? Math.round(12 / p.withdrawalFreq) : 0;
 
+  // Retirement month for expense timing
+  const currentAge = p.startYear - p.birthYear;
+  const retireAge = parseInt(document.getElementById('retireAge')?.value) || 65;
+  const retireMonth = Math.max(0, (retireAge - currentAge) * 12);
+
   const maxExtraMonths = 600;
   let calYear = last.calYear;
   let calMonth = last.calMonth;
@@ -1261,20 +1291,24 @@ function calcSustainability(p, lastSim) {
     calMonth++;
     if (calMonth > 12) { calMonth = 1; calYear++; }
 
+    const globalMonth = 120 + em;
     btcUsdM *= monthlyBtcGrowth;
     const btcHufM = btcUsdM;
-    const yearsSinceStart = (120 + em) / 12;
+    const yearsSinceStart = globalMonth / 12;
     const inflFactor = Math.pow(1 + p.monetaryInflation, yearsSinceStart);
 
+    // Check if expenses are active
+    const expensesActive = !expenseFromRetirement || globalMonth >= retireMonth;
+
     // Monthly fixed expense from BTC
-    if (p.monthlyExpense > 0) {
+    if (p.monthlyExpense > 0 && expensesActive) {
       const mExpFt = p.monthlyExpense * inflFactor;
       const mExpSat = btcHufM > 0 ? Math.round(mExpFt / btcHufM * 1e8) : 0;
       satBal -= mExpSat;
     }
 
     // Periodic withdrawal from BTC with inflation
-    if (withdrawalInterval > 0 && (120 + em) % withdrawalInterval === 0) {
+    if (withdrawalInterval > 0 && globalMonth % withdrawalInterval === 0 && expensesActive) {
       const inflatedAmount = p.withdrawalAmount * inflFactor;
       const wSat = btcHufM > 0 ? Math.round(inflatedAmount / btcHufM * 1e8) : 0;
       satBal -= wSat;
@@ -1409,8 +1443,9 @@ function renderSummary() {
     const retireYear = p.birthYear + retireAge;
     const currentAge = p.startYear - p.birthYear;
     const yearsToRetire = retireAge - currentAge;
+    const expStartLabel = expenseFromRetirement ? ' · expenses from retirement' : ' · expenses immediately';
     if (yearsToRetire > 0) {
-      detailCards.push({ label: 'Until Retirement', value: yearsToRetire + ' yrs', sub: retireYear + ' · ' + retireAge + ' yrs old · now ' + currentAge + ' yrs old', cls: '' });
+      detailCards.push({ label: 'Until Retirement', value: yearsToRetire + ' yrs', sub: retireYear + ' · ' + retireAge + ' yrs old · now ' + currentAge + ' yrs old' + expStartLabel, cls: '' });
     } else {
       detailCards.push({ label: 'Retirement Age', value: 'Reached!', sub: retireYear + ' · portfolio: ' + fmtFtShort(pvPortfolio), cls: 'green' });
     }
@@ -2031,6 +2066,7 @@ function encodeParams() {
     p.wa = parseNumVal(document.getElementById('withdrawalAmount'));
     p.wf = parseInt(document.getElementById('withdrawalFreq').value);
     p.ct = parseFloat(document.getElementById('cryptoTax').value);
+    if (expenseFromRetirement) p.er = 1;
   }
   return btoa(JSON.stringify(p));
 }
@@ -2067,6 +2103,7 @@ function decodeParams(hash) {
     if (p.wa !== undefined) setFmtValue('withdrawalAmount', p.wa);
     if (p.wf !== undefined) document.getElementById('withdrawalFreq').value = p.wf;
     if (p.ct !== undefined) document.getElementById('cryptoTax').value = p.ct;
+    if (p.er) setExpenseStart(true);
   } catch (e) {
     console.warn('Invalid URL params:', e);
   }
