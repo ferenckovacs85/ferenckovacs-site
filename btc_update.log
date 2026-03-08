@@ -1,0 +1,9 @@
+2026-03-08 13:01:31,440 [INFO] ==================================================
+2026-03-08 13:01:31,440 [INFO] Bitcoin Treasury frissítés indítása
+2026-03-08 13:01:31,440 [INFO] Dátum: 2026-03-08 13:01
+2026-03-08 13:01:31,440 [INFO] Lekérdezés: https://bitcointreasuries.net/private-companies/kv-cgcsoport
+2026-03-08 13:01:34,672 [INFO] JSON-LD-ből kinyerve: 1.865 BTC
+2026-03-08 13:01:34,673 [INFO] Aktuális: 1.865 BTC = 186.5M sat
+2026-03-08 13:01:34,673 [INFO] index.html frissítése: /sessions/intelligent-hopeful-ritchie/mnt/ferenckovacs-site/index.html
+2026-03-08 13:01:34,677 [INFO] Frissítve: 122M sat → 186.5M sat
+2026-03-08 13:01:34,677 [INFO] Frissítés sikeres!

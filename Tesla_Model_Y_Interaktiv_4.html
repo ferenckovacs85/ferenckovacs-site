@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tesla Model Y LR — 10 éves TCO Összehasonlítás</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0b1120;--s:#0f172a;--c:#1e293b;--b:#334155;--t:#e2e8f0;--m:#94a3b8;--d:#64748b;--f:#475569;--red:#e31937;--blue:#1a73e8;--grn:#34a853;--amb:#f9ab00;--ff:'DM Sans',sans-serif;--mono:'Space Mono',monospace}
+body{background:var(--bg);color:var(--t);font-family:var(--ff);background-image:radial-gradient(ellipse at 20% 0%,#1a1a4012,transparent 50%),radial-gradient(ellipse at 80% 100%,#e319370a,transparent 50%)}
+.w{max-width:780px;margin:0 auto;padding:0 16px}
+@keyframes fu{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.an{opacity:0;animation:fu .7s cubic-bezier(.16,1,.3,1) forwards}
+.d1{animation-delay:.1s}.d2{animation-delay:.2s}.d3{animation-delay:.3s}.d4{animation-delay:.4s}.d5{animation-delay:.5s}.d6{animation-delay:.6s}.d7{animation-delay:.7s}.d8{animation-delay:.8s}.d9{animation-delay:.9s}
+.tag{font:700 10px/1 var(--mono);letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:12px}
+h1{font-size:clamp(26px,5vw,44px);font-weight:700;line-height:1.1;margin-bottom:10px;background:linear-gradient(135deg,#fff,#94a3b8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sub{font-size:clamp(13px,2.2vw,16px);color:var(--d);line-height:1.5}.sub b{color:var(--red)}
+.hero{padding:48px 24px 28px;text-align:center}
+
+/* SLIDERS */
+.ctrl{background:linear-gradient(135deg,var(--c),var(--s));border-radius:14px;padding:24px;border:1px solid var(--b);margin-bottom:32px}
+.ctrl-row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:600px){.ctrl-row{grid-template-columns:1fr}}
+.slider-g{margin-bottom:4px}
+.slider-g label{display:flex;justify-content:space-between;font-size:12px;color:var(--m);margin-bottom:6px}
+.slider-g label b{color:var(--red);font:700 14px var(--mono)}
+input[type=range]{-webkit-appearance:none;width:100%;height:6px;border-radius:3px;background:var(--b);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--red);cursor:pointer;box-shadow:0 0 10px #e3193760}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--red);cursor:pointer;border:none}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:12px}
+.kpi{text-align:center;padding:12px 6px;border-radius:10px;background:#ffffff05;border:1px solid #ffffff0a}
+.kpi.ac{background:#e3193712;border-color:#e3193730}
+.kpi small{font-size:9px;color:var(--d);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:4px}
+.kpi strong{font:700 18px var(--mono);color:#f1f5f9;display:block}
+.kpi.ac strong{color:var(--red)}
+.kpi span{font-size:9px;color:var(--f)}
+.ptot{text-align:center;padding:8px;background:#e3193710;border-radius:8px;border:1px solid #e3193725;font-size:12px;color:var(--m)}
+.ptot b{color:var(--red);font:700 16px var(--mono)}
+
+/* CARDS */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:32px}
+.card{border-radius:14px;overflow:hidden;border:1px solid var(--b);background:var(--s);transition:.3s}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 30px #00000040}
+.card.best{border-color:var(--red);box-shadow:0 0 30px #e3193715}
+.card-img{height:100px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.card-img .ico{font-size:48px;filter:drop-shadow(0 2px 8px #00000060)}
+.card-badge{position:absolute;top:8px;right:8px;font:700 9px var(--mono);padding:3px 8px;border-radius:4px;background:#000a;color:#fff;letter-spacing:1px}
+.card-body{padding:12px}
+.card-name{font-weight:700;font-size:13px;margin-bottom:2px}
+.card-sub{font-size:10px;color:var(--d);margin-bottom:8px}
+.card-specs{display:grid;gap:4px}
+.spec{display:flex;justify-content:space-between;font-size:9px;padding:2px 0;border-bottom:1px solid #ffffff06}
+.spec .k{color:var(--d)}.spec .v{color:var(--m);font-weight:600}
+.stars{color:#fbbf24;font-size:11px;letter-spacing:1px}
+.stars .off{color:#334155}
+
+/* TABS & BARS */
+.tabs{display:flex;gap:6px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
+.tab{padding:7px 16px;border-radius:7px;border:1px solid var(--b);background:transparent;color:var(--m);font:600 11px var(--ff);cursor:pointer;transition:.3s}
+.tab:hover{border-color:var(--red);color:var(--t)}
+.tab.on{background:var(--red);border-color:var(--red);color:#fff}
+.bw{background:var(--s);border-radius:14px;padding:20px;border:1px solid var(--c);margin-bottom:32px}
+.br{margin-bottom:12px}.br:last-child{margin-bottom:0}
+.bh{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px}
+.bl{color:var(--m)}.bv{color:var(--t);font-weight:600;font-family:var(--mono);font-size:11px}
+.bt{height:24px;background:var(--c);border-radius:5px;overflow:hidden}
+.bf{height:100%;border-radius:5px;transition:width 1s cubic-bezier(.16,1,.3,1)}
+
+/* TABLE */
+.tw{overflow-x:auto;margin-bottom:32px}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{padding:8px 6px;border-bottom:1px solid var(--c);font-weight:600;font-size:10px;white-space:nowrap}
+th:first-child{text-align:left;color:var(--d)}
+td{padding:7px 6px;border-bottom:1px solid #0a0f1a;text-align:right;color:var(--m);font-size:10px}
+td:first-child{text-align:left;color:var(--d);font-weight:600}
+tr.hl td{background:#ffffff04;font:700 11px var(--mono);color:#f1f5f9}
+
+/* FUEL */
+.fc{background:var(--s);border-radius:14px;padding:20px;border:1px solid var(--c);margin-bottom:32px}
+.fuel-grid{display:table;width:100%;table-layout:fixed;margin-bottom:12px}
+.fuel-col{display:table-cell;vertical-align:bottom;text-align:center;padding:0 2px}
+.fuel-price{font:400 9px var(--mono);color:var(--d);margin-bottom:4px}
+.fuel-price.warn{color:var(--red);font-weight:700}
+.fuel-bar-container{height:100px;position:relative;margin-bottom:4px}
+.fuel-bar{position:absolute;bottom:0;left:10%;width:80%;border-radius:3px 3px 0 0}
+.fuel-year{font-size:9px;color:var(--f)}
+.fn{text-align:center;font-size:11px;color:var(--m)}.fn b{color:var(--red)}
+
+/* FSD */
+.fsd{background:linear-gradient(135deg,#1a73e812,#1a73e805);border-radius:14px;padding:24px;border:1px solid #1a73e830;margin-bottom:32px}
+.fsd h3{color:#1a73e8;font-size:16px;margin-bottom:8px}
+.fsd p{font-size:12px;color:var(--m);line-height:1.6;margin-bottom:8px}
+.fsd .hl{color:#1a73e8;font-weight:700}
+.tl{display:flex;gap:12px;margin-top:12px;flex-wrap:wrap}
+.tl-item{flex:1;min-width:120px;background:#1a73e810;border-radius:8px;padding:10px;text-align:center;border:1px solid #1a73e820}
+.tl-item .yr{font:700 12px var(--mono);color:#1a73e8;margin-bottom:2px}
+.tl-item .desc{font-size:9px;color:var(--m)}
+
+/* INSIGHT */
+.ins{background:linear-gradient(135deg,#e3193715,#e3193705);border-radius:14px;padding:28px 20px;border:1px solid #e3193725;text-align:center;margin-bottom:32px}
+.ins .pre{font-size:13px;color:var(--m);margin-bottom:6px}
+.ins .txt{font-size:clamp(13px,2.5vw,17px);line-height:1.6;color:#f1f5f9;max-width:520px;margin:0 auto}
+.ins .blu{color:var(--blue);font-weight:700}.ins .rd{color:var(--red);font-weight:700}.ins .bd{font-weight:700}
+.ins .sm{margin-top:12px;font-size:12px;color:var(--d)}
+.ins .sm b{color:var(--red)}
+footer{text-align:center;padding:20px 16px 40px;color:var(--b);font-size:10px}
+</style>
+</head>
+<body>
+
+<div class="hero an d1">
+  <div class="tag">10 éves TCO elemzés · 2026–2036</div>
+  <h1>Tesla Model Y Long Range</h1>
+  <p class="sub">Bérlet vs. saját benzines autó · Magánszemély · <b>Állítható paraméterek</b></p>
+</div>
+
+<div class="w">
+
+<!-- SLIDERS -->
+<div class="ctrl an d2">
+  <div class="tag">Paraméterek</div>
+  <div class="ctrl-row">
+    <div class="slider-g">
+      <label>Bérleti díj (bruttó) <b id="sl-rent-val">240 000 Ft/hó</b></label>
+      <input type="range" id="sl-rent" min="150000" max="350000" step="5000" value="240000" oninput="update()">
+    </div>
+    <div class="slider-g">
+      <label>Éves futásteljesítmény <b id="sl-km-val">15 000 km/év</b></label>
+      <input type="range" id="sl-km" min="5000" max="40000" step="1000" value="15000" oninput="update()">
+    </div>
+  </div>
+</div>
+
+<!-- OWNER KPI -->
+<div class="an d2" id="owner-section">
+  <div class="tag">Bérbeadói eredmény (ÁFA levonva)</div>
+  <div class="kpi-grid" id="kpi-grid"></div>
+  <div class="ptot" id="ptot"></div>
+</div>
+<br>
+
+<!-- CAR CARDS -->
+<div class="an d3">
+  <div class="tag">Az autók</div>
+  <div class="cards" id="cards"></div>
+</div>
+
+<!-- FSD SECTION -->
+<div class="fsd an d4">
+  <h3>🤖 Önvezetés — a Model Y rejtett értéke</h3>
+  <p>A Tesla Full Self-Driving (FSD) rendszere <span class="hl">Amerikában már működik felügyelet mellett</span>, és hamarosan Európában is elérhető lesz. A Model Y minden szükséges hardverrel rendelkezik az önvezetéshez — 8 kamera, neurális hálózat, Tesla Vision.</p>
+  <p>Ez azt jelenti, hogy a most megvásárolt Model Y <span class="hl">szoftverfrissítéssel kapja meg</span> az önvezetési képességeket, ami drámaian növelheti a maradványértéket és használati élményt.</p>
+  <div class="tl">
+    <div class="tl-item"><div class="yr">2025–26</div><div class="desc">FSD (felügyelt) megjelenés Európában</div></div>
+    <div class="tl-item"><div class="yr">2027–28</div><div class="desc">Fokozatosan bővülő önvezetési funkciók</div></div>
+    <div class="tl-item"><div class="yr">2029–31</div><div class="desc">Várhatóan felügyelet nélküli önvezetés</div></div>
+  </div>
+</div>
+
+<!-- TABS & BARS -->
+<div class="an d5">
+  <div class="tabs" id="tabs">
+    <button class="tab on" onclick="setTab('capital',this)">Tőkelekötés</button>
+    <button class="tab" onclick="setTab('monthly',this)">Havi költség</button>
+    <button class="tab" onclick="setTab('tco',this)">10 éves TCO</button>
+  </div>
+  <div class="bw" id="bars"></div>
+</div>
+
+<!-- DETAIL TABLE -->
+<div class="an d6">
+  <div class="tag">Részletes összehasonlítás</div>
+  <div class="tw"><table id="dtable"></table></div>
+</div>
+
+<!-- FUEL CHART -->
+<div class="an d7">
+  <div class="tag">Benzinár-előrejelzés (+5%/év)</div>
+  <div class="fc">
+    <div class="cols" id="fuel-cols" style="display:table;width:100%;table-layout:fixed"></div>
+    <div class="fn">10 év alatt a benzin <b>580 → 900 Ft/L</b>-re emelkedik</div>
+  </div>
+</div>
+
+<!-- INSIGHT -->
+<div class="ins an d8">
+  <div class="pre">A legerősebb érv:</div>
+  <div class="txt">„Egy <span class="blu">BMW X3</span> — ami a Model Y-nak felel meg — <span class="rd">pontosan ugyanannyiba kerül havonta</span>, de ahhoz kell <span class="bd">14 millió Ft tőke</span>, szervizgond, és 2036-ban <span class="rd">900 Ft/L benzin</span>."</div>
+  <div class="sm">A bérlettel mindezt megkapod <b>nulla forint befektetéssel</b>.</div>
+</div>
+
+</div>
+
+<footer class="an d9">Készült: 2026. március · Magánszemély bérlő · ÁFA levonva · 10 éves extrapoláció · Benzin 580→900 Ft/L (+5%/év)</footer>
+
+<script>
+const F = n => Math.round(n).toLocaleString('hu-HU');
+const fp = [580,609,639,671,705,740,777,816,857,900];
+let curTab = 'capital';
+
+const cars = [
+  {id:'my', name:'Tesla Model Y LR', sub:'Bérlet (240k bruttó)', cat:'Prémium EV SUV', col:'#e31937', ico:'⚡',
+   best:true, ncap:5, adult:97, child:89, assist:98, kw:'258 kW (350 LE)', accel:'5,0s', range:'533 km',
+   price:14500000, resid10pct:.17, fuelL:0, kwhPer100:18, elecPrice:70,
+   cascoY1:420000, cascoDec:.94, servY1:60000, servEsc:1.05, kgfbY1:75000},
+  {id:'bmw', name:'BMW X3 xDrive20d', sub:'Saját, használt 2022', cat:'Prémium dízel SUV', col:'#1a73e8', ico:'🏎️',
+   best:false, ncap:5, adult:93, child:87, assist:79, kw:'140 kW (190 LE)', accel:'7,6s', range:'~750 km',
+   price:14000000, resid10pct:.12, fuelL:9.5, kwhPer100:0, elecPrice:0,
+   cascoY1:280000, cascoDec:.92, servY1:250000, servEsc:1.07, kgfbY1:70000},
+  {id:'tuc', name:'Hyundai Tucson 1.6T', sub:'Saját, használt 2022', cat:'Közép SUV', col:'#34a853', ico:'🚙',
+   best:false, ncap:5, adult:86, child:86, assist:88, kw:'118 kW (150 LE)', accel:'9,5s', range:'~650 km',
+   price:10000000, resid10pct:.10, fuelL:8.0, kwhPer100:0, elecPrice:0,
+   cascoY1:180000, cascoDec:.92, servY1:180000, servEsc:1.06, kgfbY1:70000},
+  {id:'kona', name:'Hyundai Kona 1.0T', sub:'Saját, új 2025', cat:'Kompakt crossover', col:'#f9ab00', ico:'🚗',
+   best:false, ncap:5, adult:84, child:83, assist:78, kw:'74 kW (100 LE)', accel:'12,0s', range:'~560 km',
+   price:8900000, resid10pct:.13, fuelL:7.5, kwhPer100:0, elecPrice:0,
+   cascoY1:150000, cascoDec:.92, servY1:140000, servEsc:1.06, kgfbY1:70000}
+];
+
+function calc() {
+  const rent = +document.getElementById('sl-rent').value;
+  const km = +document.getElementById('sl-km').value;
+  document.getElementById('sl-rent-val').textContent = F(rent)+' Ft/hó';
+  document.getElementById('sl-km-val').textContent = F(km)+' km/év';
+  const results = cars.map(c => {
+    let totalOp = 0, fuel10 = 0;
+    for (let y=0; y<10; y++) {
+      const kgfb = Math.round(c.kgfbY1 * 1.04**y);
+      const casco = Math.round(c.cascoY1 * c.cascoDec**y);
+      const serv = Math.round(c.servY1 * c.servEsc**y * (km/15000));
+      const tire = Math.round(80000 * (km/15000));
+      const mot = 15000, other = 40000;
+      let fuelYr = 0;
+      if (c.fuelL > 0) { fuelYr = Math.round(c.fuelL/100 * km * fp[y]); }
+      else if (c.kwhPer100 > 0) { fuelYr = Math.round(c.kwhPer100/100 * km * c.elecPrice); }
+      fuel10 += fuelYr;
+      totalOp += kgfb + casco + serv + tire + mot + other;
+    }
+    const resid = Math.round(c.price * c.resid10pct);
+    const endKm = (c.id==='my'?70000:c.id==='kona'?0:60000) + km*10;
+    let tco, monthly, capital;
+    if (c.id === 'my') {
+      capital = 0;
+      monthly = rent + Math.round(c.kwhPer100/100 * km * c.elecPrice / 12);
+      tco = monthly * 120;
+    } else {
+      capital = c.price;
+      tco = c.price + totalOp + fuel10 - resid;
+      monthly = Math.round(tco / 120);
+    }
+    const nettoRev = Math.round(rent / 1.27);
+    const ownerCost = Math.round((c.price + totalOp - resid) / 120);
+    return {...c, totalOp, fuel10, resid, tco, monthly, capital, endKm, nettoRev, ownerCost};
+  });
+  return results;
+}
+
+function renderKPI(r) {
+  const my = r[0];
+  const g = document.getElementById('kpi-grid');
+  const netRev = my.nettoRev;
+  const cost = my.ownerCost;
+  const profit = netRev - cost;
+  const margin = ((profit/cost)*100).toFixed(1);
+  const ok = profit > 0;
+  g.innerHTML = [
+    {l:'Önköltség',v:F(cost),u:'Ft/hó',a:false},
+    {l:'Nettó bevétel',v:F(netRev),u:'Ft/hó (ÁFA nélkül)',a:false},
+    {l:'Havi profit',v:(ok?'+':'')+F(profit),u:'Ft/hó',a:true},
+    {l:'Margin',v:margin+'%',u:parseFloat(margin)>=10?'✓ 10%+':'⚠ <10%!',a:true},
+  ].map(k=>`<div class="kpi${k.a?' ac':''}"><small>${k.l}</small><strong>${k.v}</strong><span>${k.u}</span></div>`).join('');
+  document.getElementById('ptot').innerHTML = `10 éves profit: <b>${ok?'+':''}${F(profit*120)} Ft</b>`;
+}
+
+function renderCards(r) {
+  const el = document.getElementById('cards');
+  el.innerHTML = r.map(c => {
+    const st = '★'.repeat(c.ncap)+'☆'.repeat(5-c.ncap);
+    return `<div class="card${c.best?' best':''}">
+      <div class="card-img" style="background:linear-gradient(135deg,${c.col}25,${c.col}08)">
+        <span class="ico">${c.ico}</span>
+        ${c.best?'<span class="card-badge" style="background:'+c.col+'">BÉRLET</span>':''}
+      </div>
+      <div class="card-body">
+        <div class="card-name" style="color:${c.col}">${c.name}</div>
+        <div class="card-sub">${c.cat}</div>
+        <div class="card-specs">
+          <div class="spec"><span class="k">Euro NCAP</span><span class="stars">${st}</span></div>
+          <div class="spec"><span class="k">Felnőtt védelem</span><span class="v">${c.adult}%</span></div>
+          <div class="spec"><span class="k">Bizt. asszisztens</span><span class="v">${c.assist}%</span></div>
+          <div class="spec"><span class="k">Teljesítmény</span><span class="v">${c.kw}</span></div>
+          <div class="spec"><span class="k">0-100 km/h</span><span class="v">${c.accel}</span></div>
+          <div class="spec"><span class="k">Hatótáv/tank</span><span class="v">${c.range}</span></div>
+          <div class="spec"><span class="k">Havi költség</span><span class="v" style="color:${c.col};font:700 11px var(--mono)">${F(c.monthly)} Ft</span></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderBars(r) {
+  const key = curTab;
+  const vals = r.map(c=>c[key]);
+  const mx = Math.max(...vals);
+  document.getElementById('bars').innerHTML = r.map((c,i)=>{
+    const v = c[key]; const pct = mx>0?(v/mx)*100:0;
+    const unit = key==='monthly'?'Ft/hó':'Ft';
+    return `<div class="br"><div class="bh"><span class="bl">${c.name} · ${c.sub}</span><span class="bv">${F(v)} ${unit}</span></div><div class="bt"><div class="bf" style="width:${pct}%;background:linear-gradient(90deg,${c.col},${c.col}bb);box-shadow:0 0 16px ${c.col}30"></div></div></div>`;
+  }).join('');
+}
+
+function renderTable(r) {
+  const t = document.getElementById('dtable');
+  const h = ['','Model Y LR','BMW X3 20d','Tucson 1.6T','Kona 1.0T'];
+  const rows = [
+    {l:'Ft/hónap', v:r.map(c=>F(c.monthly)), hl:true},
+    {l:'Tőkelekötés', v:r.map(c=>c.capital===0?'0 Ft ✓':F(c.capital))},
+    {l:'Kategória', v:r.map(c=>c.cat)},
+    {l:'10 év benzin/áram', v:r.map(c=>F(c.fuel10))},
+    {l:'10 éves TCO', v:r.map(c=>F(c.tco)), hl:true},
+    {l:'Szerviz', v:['Bérbeadó','Saját','Saját','Saját']},
+    {l:'Parkolás', v:['Ingyenes ✓','Fizetős','Fizetős','Fizetős']},
+    {l:'Önvezetés', v:['FSD (hamarosan!)','—','—','—']},
+  ];
+  t.innerHTML = `<thead><tr>${h.map((x,i)=>`<th style="color:${i?r[i-1].col:'var(--d)'}">${x}</th>`).join('')}</tr></thead><tbody>${rows.map(row=>`<tr${row.hl?' class="hl"':''}><td>${row.l}</td>${row.v.map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')}</tbody>`;
+}
+
+function renderFuel() {
+  const el = document.getElementById('fuel-cols');
+  const minP = 580, maxP = 900, minH = 12, maxH = 90;
+  let html = '';
+  fp.forEach((p, i) => {
+    const barH = minH + Math.round((p - minP) / (maxP - minP) * (maxH - minH));
+    const clr = p >= 800 ? '#e31937' : p >= 700 ? '#f97316' : '#1a73e8';
+    const warn = p >= 800 ? ' warn' : '';
+    html += '<div style="display:table-cell;vertical-align:bottom;text-align:center;padding:0 2px">';
+    html += '<div style="font:' + (p >= 800 ? '700' : '400') + ' 9px var(--mono);color:' + (p >= 800 ? 'var(--red)' : 'var(--d)') + ';margin-bottom:4px">' + p + '</div>';
+    html += '<div style="height:100px;position:relative;margin-bottom:4px">';
+    html += '<div style="position:absolute;bottom:0;left:10%;width:80%;height:' + barH + 'px;border-radius:3px 3px 0 0;background:linear-gradient(180deg,' + clr + ',' + clr + '55)"></div>';
+    html += '</div>';
+    html += '<div style="font-size:9px;color:var(--f)">' + (2026 + i) + '</div>';
+    html += '</div>';
+  });
+  el.innerHTML = html;
+}
+
+function setTab(key, btn) {
+  curTab = key;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  btn.classList.add('on');
+  renderBars(calc());
+}
+
+function update() {
+  const r = calc();
+  renderKPI(r); renderCards(r); renderBars(r); renderTable(r);
+}
+
+renderFuel();
+update();
+</script>
+</body>
+</html>
