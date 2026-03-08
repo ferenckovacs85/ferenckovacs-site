@@ -2,8 +2,8 @@
 """
 Bitcoin Treasury frissítő script
 ---------------------------------
-Lekéri a KV Cégcsoport aktuális BTC egyenlegét a bitcointreasuries.net oldalról
-és frissíti az index.html-ben a satoshi értéket.
+Lekéri a KV Cégcsoport aktuális BTC egyenlegét és P/L értékét
+a bitcointreasuries.net oldalról és frissíti az index.html-t.
 
 Használat:
     python3 update_btc_treasury.py
@@ -11,9 +11,8 @@ Használat:
 Függőségek:
     pip install requests beautifulsoup4
 
-Ütemezés (havonta 1x):
+Ütemezés (naponta 1x):
     - Manuálisan: python3 update_btc_treasury.py
-    - Cron: 0 9 1 * * cd /path/to/site && python3 update_btc_treasury.py
     - GitHub Actions: lásd .github/workflows/update-btc.yml
 """
 
@@ -36,10 +35,6 @@ TREASURY_URL = "https://bitcointreasuries.net/private-companies/kv-cgcsoport"
 INDEX_HTML = Path(__file__).parent / "index.html"
 LOG_FILE = Path(__file__).parent / "btc_update.log"
 
-# Regex minta az aktuális sat érték megtalálásához az index.html-ben
-# Illeszkedik pl. "122M sat", "186M sat", "186.5M sat" stb.
-SAT_PATTERN = re.compile(r'(\d+(?:\.\d+)?M\s*sat)')
-
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
@@ -51,8 +46,8 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 
-def fetch_btc_holdings() -> float:
-    """Lekéri a BTC egyenleget a bitcointreasuries.net oldalról."""
+def fetch_treasury_data() -> dict:
+    """Lekéri a BTC egyenleget és P/L értéket a bitcointreasuries.net oldalról."""
     log.info(f"Lekérdezés: {TREASURY_URL}")
 
     headers = {
@@ -63,99 +58,112 @@ def fetch_btc_holdings() -> float:
     resp.raise_for_status()
 
     soup = BeautifulSoup(resp.text, "html.parser")
+    page_text = soup.get_text()
+    data = {}
+
+    # --- BTC egyenleg kinyerése ---
 
     # 1. módszer: JSON-LD schema keresése
     for script_tag in soup.find_all("script", type="application/ld+json"):
         text = script_tag.string or ""
-        # "currently report to hold 1.865 BTC"
         match = re.search(r'hold\s+([\d.]+)\s*BTC', text)
         if match:
-            btc = float(match.group(1))
-            log.info(f"JSON-LD-ből kinyerve: {btc} BTC")
-            return btc
+            data["btc"] = float(match.group(1))
+            log.info(f"JSON-LD-ből kinyerve: {data['btc']} BTC")
+            break
 
     # 2. módszer: oldal szövegében keresés
-    page_text = soup.get_text()
-
-    # "1.865 BTC" vagy "1.865BTC" minta keresése
-    match = re.search(r'([\d,]+\.?\d*)\s*BTC', page_text)
-    if match:
-        btc_str = match.group(1).replace(",", "")
-        btc = float(btc_str)
-        log.info(f"Oldal szövegéből kinyerve: {btc} BTC")
-        return btc
-
-    # 3. módszer: táblázat cellákban keresés
-    for td in soup.find_all("td"):
-        text = td.get_text(strip=True)
-        match = re.match(r'^([\d,]+\.?\d*)\s*$', text)
+    if "btc" not in data:
+        match = re.search(r'([\d,]+\.?\d*)\s*BTC', page_text)
         if match:
-            val = float(match.group(1).replace(",", ""))
-            if 0.001 < val < 1000:  # ésszerű BTC tartomány egy kisvállalatnál
-                btc = val
-                log.info(f"Táblázat cellából kinyerve: {btc} BTC")
-                return btc
+            data["btc"] = float(match.group(1).replace(",", ""))
+            log.info(f"Oldal szövegéből kinyerve: {data['btc']} BTC")
 
-    raise ValueError("Nem sikerült kinyerni a BTC egyenleget az oldalról.")
+    if "btc" not in data:
+        raise ValueError("Nem sikerült kinyerni a BTC egyenleget.")
+
+    # --- P/L % kinyerése ---
+    # Keresés: "-23.22%" vagy "+15.5%" minta
+    pl_match = re.search(r'([+-]?\d+\.?\d*)%', page_text)
+    if pl_match:
+        data["pl_pct"] = float(pl_match.group(1))
+        log.info(f"P/L kinyerve: {data['pl_pct']}%")
+    else:
+        log.warning("Nem sikerült kinyerni a P/L értéket, kihagyva.")
+
+    return data
 
 
 def btc_to_sat_display(btc: float) -> str:
-    """
-    BTC-t satoshira konvertál és formázza megjelenítésre.
+    """BTC-t satoshira konvertál és formázza megjelenítésre."""
+    sats = int(round(btc * 1e8))
+    millions = sats / 1e6
 
-    Példák:
-        1.865     -> "186M sat"
-        0.35      -> "35M sat"
-        1.225     -> "122M sat"  (kerekítve)
-        2.5       -> "250M sat"
-    """
-    sats = int(round(btc * 1e8))       # 1 BTC = 100,000,000 sat
-    millions = sats / 1e6               # millió satoshi
-
-    # Kerekítés: ha egész szám, nincs tizedes, egyébként 1 tizedesig
     if millions == int(millions):
         return f"{int(millions)}M sat"
     else:
-        # Ha a tizedes rész nulla lenne kerekítés után, elhagyjuk
         rounded = round(millions, 1)
         if rounded == int(rounded):
             return f"{int(rounded)}M sat"
         return f"{rounded}M sat"
 
 
-def update_index_html(new_sat_value: str) -> bool:
-    """Frissíti az index.html-ben a satoshi értéket."""
+def pl_to_display(pl_pct: float) -> str:
+    """P/L százalékot formázza megjelenítésre."""
+    rounded = round(pl_pct)
+    if rounded >= 0:
+        return f"+{rounded}%"
+    return f"{rounded}%"
+
+
+def update_index_html(data: dict) -> bool:
+    """Frissíti az index.html-ben a satoshi értéket és a P/L-t."""
     log.info(f"index.html frissítése: {INDEX_HTML}")
 
     html = INDEX_HTML.read_text(encoding="utf-8")
+    changed = False
 
-    # Megkeressük a "vállalati bitcoin készlet" közelében lévő sat értéket
-    # A HTML struktúra: <div class="val">122M sat</div>
-    pattern = re.compile(
-        r'(<div\s+class="val">)'   # nyitó tag
-        r'(\d+(?:\.\d+)?M\s*sat)'  # régi érték
-        r'(</div>)'                # záró tag
+    # --- Satoshi érték frissítése ---
+    sat_pattern = re.compile(
+        r'(<div\s+class="val">)'
+        r'(\d+(?:\.\d+)?M\s*sat)'
+        r'(</div>)'
     )
+    if "btc" in data:
+        new_sat = btc_to_sat_display(data["btc"])
+        match = sat_pattern.search(html)
+        if match and match.group(2).replace(" ", "") != new_sat.replace(" ", ""):
+            html = sat_pattern.sub(
+                lambda m: f'{m.group(1)}{new_sat}{m.group(3)}',
+                html, count=1,
+            )
+            log.info(f"Satoshi frissítve: {match.group(2)} → {new_sat}")
+            changed = True
+        elif match:
+            log.info(f"Satoshi nem változott: {new_sat}")
 
-    match = pattern.search(html)
-    if not match:
-        log.error("Nem találtam a sat értéket az index.html-ben!")
-        return False
-
-    old_value = match.group(2)
-
-    if old_value.replace(" ", "") == new_sat_value.replace(" ", ""):
-        log.info(f"Nincs változás, az érték már {old_value}")
-        return True
-
-    new_html = pattern.sub(
-        lambda m: f'{m.group(1)}{new_sat_value}{m.group(3)}',
-        html,
-        count=1,
+    # --- P/L frissítése ---
+    pl_pattern = re.compile(
+        r'(<div\s+class="val"\s+id="btc-pl">)'
+        r'([^<]+)'
+        r'(</div>)'
     )
+    if "pl_pct" in data:
+        new_pl = pl_to_display(data["pl_pct"])
+        match = pl_pattern.search(html)
+        if match and match.group(2).strip() != new_pl:
+            html = pl_pattern.sub(
+                lambda m: f'{m.group(1)}{new_pl}{m.group(3)}',
+                html, count=1,
+            )
+            log.info(f"P/L frissítve: {match.group(2).strip()} → {new_pl}")
+            changed = True
+        elif match:
+            log.info(f"P/L nem változott: {new_pl}")
 
-    INDEX_HTML.write_text(new_html, encoding="utf-8")
-    log.info(f"Frissítve: {old_value} → {new_sat_value}")
+    if changed:
+        INDEX_HTML.write_text(html, encoding="utf-8")
+
     return True
 
 
@@ -165,11 +173,14 @@ def main():
     log.info(f"Dátum: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
 
     try:
-        btc = fetch_btc_holdings()
-        sat_display = btc_to_sat_display(btc)
-        log.info(f"Aktuális: {btc} BTC = {sat_display}")
+        data = fetch_treasury_data()
 
-        success = update_index_html(sat_display)
+        sat_display = btc_to_sat_display(data["btc"])
+        log.info(f"Aktuális: {data['btc']} BTC = {sat_display}")
+        if "pl_pct" in data:
+            log.info(f"P/L: {pl_to_display(data['pl_pct'])}")
+
+        success = update_index_html(data)
 
         if success:
             log.info("Frissítés sikeres!")

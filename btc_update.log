@@ -7,3 +7,15 @@
 2026-03-08 13:01:34,673 [INFO] index.html frissítése: /sessions/intelligent-hopeful-ritchie/mnt/ferenckovacs-site/index.html
 2026-03-08 13:01:34,677 [INFO] Frissítve: 122M sat → 186.5M sat
 2026-03-08 13:01:34,677 [INFO] Frissítés sikeres!
+2026-03-08 13:54:49,237 [INFO] ==================================================
+2026-03-08 13:54:49,237 [INFO] Bitcoin Treasury frissítés indítása
+2026-03-08 13:54:49,237 [INFO] Dátum: 2026-03-08 13:54
+2026-03-08 13:54:49,238 [INFO] Lekérdezés: https://bitcointreasuries.net/private-companies/kv-cgcsoport
+2026-03-08 13:54:50,438 [INFO] JSON-LD-ből kinyerve: 1.865 BTC
+2026-03-08 13:54:50,439 [INFO] P/L kinyerve: -23.41%
+2026-03-08 13:54:50,440 [INFO] Aktuális: 1.865 BTC = 186.5M sat
+2026-03-08 13:54:50,440 [INFO] P/L: -23%
+2026-03-08 13:54:50,441 [INFO] index.html frissítése: /sessions/intelligent-hopeful-ritchie/mnt/ferenckovacs-site/index.html
+2026-03-08 13:54:50,441 [INFO] Satoshi nem változott: 186.5M sat
+2026-03-08 13:54:50,442 [INFO] P/L nem változott: -23%
+2026-03-08 13:54:50,442 [INFO] Frissítés sikeres!

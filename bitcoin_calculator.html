@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>₿ Bitcoin Kalkulátor · ferenckovacs.com</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  :root {
+    --btc: #F7931A;
+    --btc-dark: #c47415;
+    --btc-glow: rgba(247, 147, 26, 0.3);
+    --bg: #0a0a0f;
+    --bg2: #12121a;
+    --bg3: #1a1a28;
+    --bg4: #222236;
+    --text: #e8e8f0;
+    --text2: #a0a0b8;
+    --text3: #686880;
+    --green: #00d68f;
+    --red: #ff4d6a;
+    --blue: #4d8dff;
+    --purple: #a855f7;
+    --cyan: #22d3ee;
+    --border: rgba(255,255,255,0.06);
+    --glass: rgba(255,255,255,0.03);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .hero {
+    position: relative;
+    padding: 48px 0 32px;
+    text-align: center;
+    background: linear-gradient(180deg, rgba(247,147,26,0.08) 0%, transparent 100%);
+    border-bottom: 1px solid var(--border);
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, var(--btc-glow) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero h1 {
+    font-size: 42px;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--btc) 0%, #ffd700 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+    position: relative;
+  }
+  .hero p {
+    font-size: 16px;
+    color: var(--text2);
+    font-weight: 300;
+  }
+
+  .container { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
+
+  /* Summary cards */
+  .summary-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 32px 0;
+  }
+  .summary-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .summary-card:hover {
+    border-color: var(--btc);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(247,147,26,0.1);
+  }
+  .summary-card .label {
+    font-size: 12px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .summary-card .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .summary-card .sub {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .summary-card.highlight { border-color: var(--btc); background: linear-gradient(135deg, rgba(247,147,26,0.08), var(--bg2)); }
+  .summary-card.green .value { color: var(--green); }
+  .summary-card.red .value { color: var(--red); }
+
+  /* Sections */
+  .section {
+    margin: 32px 0;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 20px 28px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-header h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section-header .icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+  .section-header .icon.orange { background: rgba(247,147,26,0.15); }
+  .section-header .icon.blue { background: rgba(77,141,255,0.15); }
+  .section-header .icon.green { background: rgba(0,214,143,0.15); }
+  .section-header .icon.purple { background: rgba(168,85,247,0.15); }
+  .section-body { padding: 24px 28px; }
+
+  /* Input grid */
+  .input-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .input-group label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text2);
+  }
+  .input-group input, .input-group select {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    color: var(--btc);
+    font-weight: 600;
+    outline: none;
+    transition: all 0.2s;
+  }
+  .input-group input:focus {
+    border-color: var(--btc);
+    box-shadow: 0 0 0 3px var(--btc-glow);
+  }
+  .input-group .hint {
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  /* Weight sliders */
+  .weight-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .weight-row:last-child { border: none; }
+  .weight-row .wlabel {
+    flex: 1;
+    font-size: 14px;
+    color: var(--text2);
+    cursor: pointer;
+    user-select: none;
+    transition: opacity 0.2s;
+  }
+  .weight-row .wlabel:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+  }
+  .weight-row input[type=range] {
+    width: 120px;
+    accent-color: var(--btc);
+  }
+  .weight-row .wval {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--btc);
+    width: 48px;
+    text-align: right;
+    font-weight: 600;
+  }
+
+  /* Charts */
+  .chart-container {
+    position: relative;
+    width: 100%;
+    height: 380px;
+    margin: 16px 0;
+  }
+
+  /* Table */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 16px 0;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  thead th {
+    background: var(--bg3);
+    padding: 12px 10px;
+    font-weight: 600;
+    color: var(--text2);
+    text-align: right;
+    position: sticky;
+    top: 0;
+    white-space: nowrap;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+  }
+  thead th:first-child { text-align: center; }
+  tbody td {
+    padding: 8px 10px;
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text2);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  tbody td:first-child { text-align: center; color: var(--text3); }
+  tbody tr:hover { background: rgba(247,147,26,0.04); }
+  tbody tr:nth-child(even) { background: var(--glass); }
+  .pos { color: var(--green) !important; }
+  .neg { color: var(--red) !important; }
+
+  /* Tabs */
+  .tab-bar {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    background: var(--bg);
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: transparent;
+    color: var(--text3);
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab-btn.active {
+    background: var(--btc);
+    color: #fff;
+  }
+
+  .disclaimer {
+    text-align: center;
+    padding: 24px;
+    color: var(--text3);
+    font-size: 12px;
+    border-top: 1px solid var(--border);
+    margin-top: 48px;
+  }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 800px) { .two-col { grid-template-columns: 1fr; } }
+
+  .fmt-ft { color: var(--text); }
+  .fmt-btc { color: var(--btc); }
+  .fmt-sat { color: var(--cyan); }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>₿ Bitcoin Kalkulátor</h1>
+  <p>Interaktív szimuláció · Power Law · Saylor · ARK · Standard Chartered</p>
+</div>
+
+<div class="container">
+
+  <!-- SUMMARY CARDS -->
+  <div class="summary-row" id="summaryCards"></div>
+
+  <!-- PARAMETERS -->
+  <div class="two-col">
+    <div class="section">
+      <div class="section-header">
+        <div class="icon orange">₿</div>
+        <h2>Kiinduló pozíció</h2>
+      </div>
+      <div class="section-body">
+        <div class="input-grid">
+          <div class="input-group">
+            <label>Induló Bitcoin (BTC)</label>
+            <input type="number" id="initBTC" value="0.01" step="0.001" min="0">
+            <span class="hint" id="initSat"></span>
+          </div>
+          <div class="input-group">
+            <label>Teljes induló befektetés (Ft)</label>
+            <input type="text" inputmode="numeric" id="totalInvest" value="10 000 000" data-raw="10000000" class="fmt-num">
+            <span class="hint">Induló összeg (személyes kiadás + bérleti díj fedezete)</span>
+          </div>
+          <div class="input-group">
+            <label>Időszak (hónapok)</label>
+            <input type="number" id="months" value="18" min="1" max="120">
+            <span class="hint">← Változtasd ezt (max 120)</span>
+          </div>
+          <div class="input-group">
+            <label>Személyes kiadás (Ft/hó)</label>
+            <input type="text" inputmode="numeric" id="livingExp" value="400 000" data-raw="400000" class="fmt-num">
+          </div>
+          <div class="input-group">
+            <label>Lakás + autó bérleti díj (Ft/hó)</label>
+            <input type="text" inputmode="numeric" id="rentHuf" value="400 000" data-raw="400000" class="fmt-num">
+            <span class="hint">Évente jan. 1-i BTC áron satoshira váltva</span>
+          </div>
+          <div class="input-group">
+            <label>Kezdés (év-hó)</label>
+            <div style="display:flex;gap:8px">
+              <input type="number" id="startYear" value="2026" style="flex:1">
+              <input type="number" id="startMonth" value="4" min="1" max="12" style="width:70px">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <div class="icon blue">⚙</div>
+        <h2>Árfolyam & Súlyozás</h2>
+      </div>
+      <div class="section-body">
+        <div class="input-grid" style="margin-bottom:20px">
+          <div class="input-group">
+            <label>BTC ár ($)</label>
+            <input type="text" inputmode="numeric" id="btcUsd" value="68 000" data-raw="68000" class="fmt-num">
+          </div>
+          <div class="input-group">
+            <label>USD/HUF</label>
+            <input type="text" inputmode="numeric" id="usdHuf" value="334" data-raw="334" class="fmt-num">
+          </div>
+          <div class="input-group">
+            <label>EUR/HUF (referencia)</label>
+            <input type="number" id="eurHuf" value="393" step="1" disabled style="opacity:0.5">
+          </div>
+          <div class="input-group">
+            <label>Éves USD/HUF CAGR (%)</label>
+            <input type="number" id="hufCagr" value="2.4" step="0.1">
+          </div>
+        </div>
+        <div style="margin-bottom:12px">
+          <label style="font-size:13px;color:var(--text2)">Árfolyam szorzó</label>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
+            <input type="range" id="priceMultiplier" min="10" max="300" value="100" style="flex:1;accent-color:var(--btc)" oninput="updateMultiplier()">
+            <span id="multiplierVal" style="font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--btc);min-width:48px;text-align:right">100%</span>
+          </div>
+        </div>
+        <div id="weightsContainer"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+          <button onclick="resetWeights()" style="background:var(--bg4);color:var(--text2);border:1px solid var(--border);border-radius:8px;padding:4px 12px;font-size:12px;cursor:pointer;transition:all 0.2s" onmouseover="this.style.borderColor='var(--btc)';this.style.color='var(--btc)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">↻ Reset</button>
+          <span style="font-size:12px;color:var(--text3)">Összes: <span id="totalWeight" style="color:var(--btc);font-weight:700">100%</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="icon green">📊</div>
+      <h2>Vizualizáció</h2>
+    </div>
+    <div class="section-body">
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="showChart('portfolio')">Portfólió</button>
+        <button class="tab-btn" onclick="showChart('prices')">Ármodellek</button>
+        <button class="tab-btn" onclick="showChart('rent')">Bérleti díj</button>
+        <button class="tab-btn" onclick="showChart('balance')">BTC egyenleg</button>
+      </div>
+      <div class="chart-container"><canvas id="mainChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- SIMULATION TABLE -->
+  <div class="section">
+    <div class="section-header">
+      <div class="icon purple">📋</div>
+      <h2>Havi szimuláció</h2>
+    </div>
+    <div class="section-body">
+      <div class="table-wrap" style="max-height:500px;overflow-y:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th><th>Év</th><th>Hó</th>
+              <th>BTC ár (Ft)</th><th>USD/HUF</th>
+              <th>Bérleti díj (sat/hó)</th><th>Lakás+autó bérleti díj (Ft)</th>
+              <th>Kiadás (Ft)</th><th>DCA (Ft)</th><th>DCA (sat)</th>
+              <th>BTC eladás (sat)</th><th>Egyenleg (sat)</th>
+              <th>BTC portf. (Ft)</th><th>Keret (Ft)</th>
+              <th>Össz. portf. (Ft)</th><th>Hozam</th>
+            </tr>
+          </thead>
+          <tbody id="simBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- YEARLY SUMMARY -->
+  <div class="section">
+    <div class="section-header">
+      <div class="icon orange">📅</div>
+      <h2>Éves összefoglaló</h2>
+    </div>
+    <div class="section-body">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Év</th><th>BTC ár (Ft)</th><th>USD/HUF</th>
+              <th>Bérleti díj (Ft)</th><th>Személyes kiadás (Ft)</th>
+              <th>Egyenleg (sat)</th><th>BTC portf. (Ft)</th>
+              <th>Felhasznált (Ft)</th><th>Nyereség (Ft)</th><th>Hozam</th><th>Portfólió ($)</th>
+            </tr>
+          </thead>
+          <tbody id="yearBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    ⚠️ Ez NEM pénzügyi tanácsadás! Kizárólag modellezési célra!<br>
+    Power Law: Giovanni Santostasi · Saylor: $500K-$1M 2030 · ARK Jan 2026: Base $710K · Std Ch: $250K 2028
+  </div>
+</div>
+
+<script>
+// ============================================================
+// PRICE MODEL DATA (pre-calculated, 120 months from Apr 2026)
+// ============================================================
+const PRICE_MODELS = [
+[68000,68000,68000,68000],[69903,70337,71019,71016],[71915,72754,74172,74166],[73909,75254,77465,77455],[76016,77841,80904,80891],[78173,80516,84496,84479],[80308,83283,88248,88226],[82565,86145,92166,92139],[84799,89105,96258,96226],[87160,92167,100531,100494],[89575,95335,104994,104951],[91803,98611,109656,109606],[94324,102000,114524,114467],[96818,105505,119609,119544],[99452,109131,124919,124847],[102057,112882,130465,130384],[104808,116761,136258,136167],[107621,120773,142307,142207],[110402,124924,148625,148514],[113337,129217,155224,155101],[116240,133658,162115,161981],[119303,138251,169313,169165],[122433,143002,176830,176668],[125423,147917,184680,184504],[128685,153000,192880,192688],[131909,158258,201443,201234],[135310,163697,210387,210160],[138670,169322,219727,219481],[142214,175141,229482,229216],[145833,181160,239671,239382],[149408,187386,250312,250000],[153178,193826,261425,253827],[156901,200487,273031,257713],[160826,207377,285153,261659],[164832,214503,297813,265665],[168521,221875,311035,269732],[172686,229500,324844,273861],[176796,237387,339266,278054],[181128,245545,354329,282311],[185404,253984,370060,286633],[189910,262712,386490,291021],[194507,271740,403649,295476],[199042,281079,421570,300000],[203820,290739,440286,304593],[208534,300730,459834,309256],[213500,311065,480249,313991],[218563,321755,501571,318798],[223222,332813,523839,323678],[228475,344250,547097,328634],[233656,356081,571386,333665],[239111,368318,596754,338773],[244490,380975,623248,343959],[250154,394068,650919,349225],[255925,407610,679818,354572],[261615,421618,710000,360000],[267605,436108,718318,365511],[273509,451095,726733,371107],[279722,466597,735246,376789],[286053,482633,743860,382557],[291872,499219,752574,388414],[298428,516375,761390,394360],[304889,527450,770310,400398],[311686,538762,779334,406528],[318383,550317,788464,412751],[325428,562119,797701,419070],[332602,574175,807046,425486],[339668,586489,816500,432000],[347101,599068,826065,438614],[354421,611916,835743,445329],[362119,625040,845533,452146],[369955,638445,855439,459069],[377412,652137,865460,466097],[385521,666124,875599,473232],[393504,680410,885856,480477],[401898,695003,896234,487833],[410161,709908,906733,495302],[418847,725134,917356,502884],[427685,740686,928102,510583],[436384,756571,938975,518400],[445527,772797,949975,526336],[454525,789371,961104,534394],[463981,806301,972363,542576],[473599,823594,983754,550882],[482427,841257,995279,559316],[492360,859300,1006939,567879],[502134,877729,1018735,576573],[512401,896554,1030669,585400],[522502,915782,1042743,594362],[533113,935423,1054959,603461],[543901,955485,1067318,612700],[554513,975977,1079821,622080],[565658,996908,1092471,631604],[576619,1018289,1105269,641273],[588131,1040128,1118218,651091],[599832,1062436,1131317,661059],[610565,1085222,1144571,671179],[622634,1108497,1157979,681454],[634501,1132270,1171545,691887],[646959,1156554,1185269,702480],[659208,1181359,1199155,713234],[672067,1206695,1213203,724153],[685132,1232575,1227415,735240],[697976,1259010,1241794,746496],[711456,1286012,1256342,757924],[724706,1313593,1271060,769528],[738612,1341766,1285950,781309],[752738,1370542,1301015,793270],[765689,1399936,1316256,805415],[780242,1429961,1331676,817745],[794543,1460629,1347277,830265],[809548,1491955,1363060,842976],[824292,1523953,1379028,855881],[839760,1556637,1395183,868984],[855468,1590022,1411528,882288],[870900,1624123,1428064,895795],[887087,1658955,1444793,909509],[902989,1694535,1461719,923433],[919669,1730877,1478843,937571],[936603,1768000,1496167,951924],[952677,1805918,1513695,966498]
+];
+
+const MODEL_NAMES = ['Power Law', 'Saylor', 'ARK Invest', 'Std Chartered'];
+const MODEL_COLORS = ['#F7931A', '#4d8dff', '#a855f7', '#22d3ee'];
+
+// Historical monthly BTC USD close prices (Jun 2020 – Mar 2026 = 70 months ≈ 300 weeks)
+// Used for computing real 300-week (~69-month) moving average
+const HIST_BTC_MONTHLY = [
+  // 2020: Jun–Dec
+  9100, 11350, 11600, 10800, 13800, 19700, 29000,
+  // 2021: Jan–Dec
+  33000, 45200, 58800, 57100, 37300, 35500, 41500, 47100, 43800, 61300, 56900, 46200,
+  // 2022: Jan–Dec
+  38500, 43100, 45500, 37600, 31500, 19800, 23300, 20100, 19400, 20500, 16500, 16500,
+  // 2023: Jan–Dec
+  23100, 23500, 28400, 29200, 27200, 30500, 29300, 26100, 27000, 34100, 37700, 42300,
+  // 2024: Jan–Dec
+  42600, 52000, 71300, 64300, 67500, 61500, 65800, 58900, 63500, 72400, 96400, 93400,
+  // 2025: Jan–Dec
+  102000, 96000, 83500, 94500, 103000, 106500, 98000, 93000, 86000, 80000, 75000, 72000,
+  // 2026: Jan–Mar
+  70000, 69000, 68000
+];
+
+let chart = null;
+let currentChartType = 'portfolio';
+let simData = [];
+
+// ============================================================
+// FORMAT HELPERS
+// ============================================================
+const fmtFt = (v) => Math.round(v).toLocaleString('hu-HU') + '\u00a0Ft';
+const fmtUsd = (v) => '$' + Math.round(v).toLocaleString('en-US');
+const fmtSat = (v) => Math.round(v).toLocaleString('hu-HU');
+const fmtBtc = (v) => v.toFixed(8);
+const fmtPct = (v) => (v * 100).toFixed(1) + '%';
+const fmtFtShort = (v) => {
+  if (Math.abs(v) >= 1e9) return (v/1e9).toFixed(1) + '\u00a0Mrd\u00a0Ft';
+  if (Math.abs(v) >= 1e6) return (v/1e6).toFixed(1) + 'M\u00a0Ft';
+  if (Math.abs(v) >= 1e3) return (v/1e3).toFixed(0) + 'K\u00a0Ft';
+  return Math.round(v) + '\u00a0Ft';
+};
+
+// ============================================================
+// GET PARAMS
+// ============================================================
+
+// Thousands separator helpers
+function parseNumVal(el) {
+  // For formatted text inputs, strip spaces and parse
+  if (el.classList.contains('fmt-num')) {
+    return parseFloat(String(el.value).replace(/\s/g, '')) || 0;
+  }
+  return parseFloat(el.value) || 0;
+}
+function fmtThousands(n) {
+  // Format number with space as thousands separator (Hungarian style)
+  const num = Math.round(n);
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+}
+function setupFmtInput(el) {
+  // On focus: show raw number for easy editing
+  el.addEventListener('focus', function() {
+    const raw = String(this.value).replace(/\s/g, '');
+    this.value = raw;
+    this.select();
+  });
+  // On blur: re-format with thousands separators
+  el.addEventListener('blur', function() {
+    const raw = parseFloat(String(this.value).replace(/\s/g, '')) || 0;
+    this.value = fmtThousands(raw);
+  });
+}
+
+function getParams() {
+  return {
+    initBTC: parseFloat(document.getElementById('initBTC').value) || 0,
+    totalInvest: parseNumVal(document.getElementById('totalInvest')),
+    months: parseInt(document.getElementById('months').value) || 1,
+    livingExp: parseNumVal(document.getElementById('livingExp')),
+    rentHuf: parseNumVal(document.getElementById('rentHuf')),
+    startYear: parseInt(document.getElementById('startYear').value) || 2026,
+    startMonth: parseInt(document.getElementById('startMonth').value) || 4,
+    btcUsd: parseNumVal(document.getElementById('btcUsd')),
+    usdHuf: parseNumVal(document.getElementById('usdHuf')),
+    hufCagr: parseFloat(document.getElementById('hufCagr').value) / 100 || 0.024,
+    weights: getWeights()
+  };
+}
+
+function getWeights() {
+  const w = [];
+  document.querySelectorAll('.weight-slider').forEach(s => w.push(parseFloat(s.value) / 100));
+  return w;
+}
+
+// ============================================================
+// SIMULATION
+// ============================================================
+function runSimulation() {
+  const p = getParams();
+  const C8 = Math.min(p.months, 120);
+  const maxM = 120; // Always run to 2036
+  const priceMult = parseInt(document.getElementById('priceMultiplier').value) / 100;
+
+  // DCA amount per month
+  const dcaPerMonth = p.totalInvest / C8 - p.livingExp - p.rentHuf;
+
+  // Computed values
+  const btcHuf0 = p.btcUsd * p.usdHuf;
+  const initSatoshi = Math.round(p.initBTC * 1e8);
+  const portfolioFt0 = p.initBTC * btcHuf0;
+  const rentSat0 = Math.round(p.rentHuf / btcHuf0 * 1e8);
+
+  // Update hints
+  document.getElementById('initSat').textContent = fmtSat(initSatoshi) + ' satoshi · ' + fmtFt(portfolioFt0);
+
+  simData = [];
+  let satBalance = initSatoshi;
+  let remainingCash = p.totalInvest;
+  let currentRentSat = rentSat0;
+  let cumConsumed = 0; // Cumulative consumed: rent Ft + living Ft
+
+  for (let m = 0; m <= maxM; m++) {
+    // Excel: E(m) = Ármodellek!J(m+3), where Ármodellek row 4 = month 0 prices
+    // So sim month m uses PRICE_MODELS[max(0, m-1)]
+    const pm = Math.min(Math.max(0, m - 1), PRICE_MODELS.length - 1);
+    const prices = PRICE_MODELS[pm];
+
+    // Weighted USD price — multiplier scales only the GROWTH above starting price
+    // So at 100% = original forecast, 50% = half the growth, 0% = flat price forever
+    const basePrices = PRICE_MODELS[0]; // starting prices (all models, month 0)
+    let weightedUsd = 0;
+    for (let i = 0; i < 4; i++) {
+      const growth = prices[i] - basePrices[i];
+      weightedUsd += p.weights[i] * (basePrices[i] + growth * priceMult);
+    }
+
+    // USD/HUF with CAGR
+    const usdHufM = p.usdHuf * Math.pow(1 + p.hufCagr, m / 12);
+    const btcHufM = weightedUsd * usdHufM;
+
+    // Calendar year/month
+    const calMonth = ((p.startMonth - 1 + m) % 12) + 1;
+    const calYear = p.startYear + Math.floor((p.startMonth - 1 + m) / 12);
+
+    // Yearly rent reset (January = month 1, or first month)
+    if (m === 0) {
+      currentRentSat = Math.round(p.rentHuf / btcHufM * 1e8);
+    } else if (calMonth === 1) {
+      currentRentSat = Math.round(p.rentHuf / btcHufM * 1e8);
+    }
+
+    let rentSat = currentRentSat;
+    let rentFt = 0, living = 0, dcaFt = 0, dcaSat = 0, btcSaleSat = 0;
+
+    if (m === 0) {
+      // Month 0: just initial state, no transactions
+      rentFt = rentSat / 1e8 * btcHufM;
+    } else {
+      // === Excel logic: M = L - H - N; Q = MAX(0, Q_prev - K - J + sale) ===
+
+      // I: Rent Ft (always, 120 months) — KIADÁS satoshi-ból
+      rentFt = rentSat / 1e8 * btcHufM;
+
+      // J: Living expense (always, 120 months) — KIADÁS cash-ből
+      living = p.livingExp;
+
+      // K,L: DCA only during active period (months 1..C8)
+      if (m <= C8) {
+        dcaFt = Math.max(0, dcaPerMonth);
+        dcaSat = btcHufM > 0 ? Math.round(dcaFt / btcHufM * 1e8) : 0;
+      }
+
+      // N: BTC sale — triggered when cash can't cover DCA + living
+      // Excel: =IF(Q_prev - K - J < 0, ROUND(-(Q_prev-K-J)/E*1e8, 0), 0)
+      if (remainingCash - dcaFt - living < 0) {
+        const deficit = -(remainingCash - dcaFt - living);
+        btcSaleSat = btcHufM > 0 ? Math.round(deficit / btcHufM * 1e8) : 0;
+      }
+
+      // M: Net sat change = DCA_sat - rent_sat - btcSale_sat
+      // Excel: =IF(B<=120, L - H - N, 0)
+      satBalance += dcaSat;        // +L: DCA vásárlás
+      satBalance -= rentSat;       // -H: bérleti díj KIADÁS (satoshi-ból!)
+      satBalance -= btcSaleSat;    // -N: kényszer BTC eladás
+
+      // Q: Remaining cash = MAX(0, Q_prev - K - J + sale_proceeds)
+      remainingCash = remainingCash - dcaFt - living;
+      if (btcSaleSat > 0) {
+        remainingCash += btcSaleSat / 1e8 * btcHufM;
+      }
+      remainingCash = Math.max(0, remainingCash);
+
+      // Track consumed amounts (rent + living = what they "used up")
+      cumConsumed += rentFt + living;
+    }
+
+    const btcPortfolioFt = satBalance / 1e8 * btcHufM;
+    const totalPortfolioFt = btcPortfolioFt + remainingCash;
+    // Profit includes consumed amounts (rent + living that was "used up")
+    const profit = totalPortfolioFt + cumConsumed - p.totalInvest;
+    const returnPct = p.totalInvest > 0 ? profit / p.totalInvest : 0;
+
+    simData.push({
+      m, calYear, calMonth,
+      btcHufM, usdHufM, weightedUsd,
+      rentSat, rentFt, living, dcaFt, dcaSat, btcSaleSat,
+      satBalance, btcPortfolioFt, remainingCash, totalPortfolioFt,
+      profit, returnPct, cumConsumed,
+      prices
+    });
+  }
+
+  // Calculate sustainability after simulation
+  sustainabilityResult = calcSustainability(p, simData[simData.length - 1]);
+
+  renderSummary();
+  renderTable();
+  renderYearly();
+  renderChart();
+}
+
+// ============================================================
+// SUSTAINABILITY PROJECTION
+// After month 120, how long can the portfolio sustain same spending?
+// ============================================================
+let sustainabilityResult = null;
+
+function calcSustainability(p, lastSim) {
+  if (!lastSim || lastSim.m === 0) return null;
+
+  const last = lastSim;
+  // Monthly BTC price growth rate (from last 12 months of simulation)
+  const m108 = simData.find(d => d.m === 108);
+  const m120 = simData.find(d => d.m === 120) || last;
+  let monthlyBtcGrowth = 1.005; // default ~0.5%/month fallback
+  if (m108 && m120 && m108.weightedUsd > 0) {
+    monthlyBtcGrowth = Math.pow(m120.weightedUsd / m108.weightedUsd, 1 / 12);
+  }
+  // Cap growth to reasonable range
+  monthlyBtcGrowth = Math.max(0.99, Math.min(monthlyBtcGrowth, 1.05));
+
+  let satBal = last.satBalance;
+  let cash = last.remainingCash;
+  let btcUsdM = last.weightedUsd;
+  let usdHufM = last.usdHufM;
+
+  const maxExtraMonths = 600; // 50 years max
+  let calYear = last.calYear;
+  let calMonth = last.calMonth;
+  let currentRentSat = last.rentSat;
+
+  for (let em = 1; em <= maxExtraMonths; em++) {
+    // Advance calendar
+    calMonth++;
+    if (calMonth > 12) { calMonth = 1; calYear++; }
+
+    // Price grows at same rate
+    btcUsdM *= monthlyBtcGrowth;
+    usdHufM = p.usdHuf * Math.pow(1 + p.hufCagr, (120 + em) / 12);
+    const btcHufM = btcUsdM * usdHufM;
+
+    // Yearly rent reset on January
+    if (calMonth === 1) {
+      currentRentSat = btcHufM > 0 ? Math.round(p.rentHuf / btcHufM * 1e8) : 0;
+    }
+
+    // Expenses: rent from BTC, living from cash
+    const rentSat = currentRentSat;
+    const living = p.livingExp;
+
+    // If cash can't cover living, sell BTC
+    let btcSaleSat = 0;
+    if (cash - living < 0) {
+      const deficit = -(cash - living);
+      btcSaleSat = btcHufM > 0 ? Math.round(deficit / btcHufM * 1e8) : 0;
+    }
+
+    satBal -= rentSat;
+    satBal -= btcSaleSat;
+    cash = cash - living;
+    if (btcSaleSat > 0) {
+      cash += btcSaleSat / 1e8 * btcHufM;
+    }
+    cash = Math.max(0, cash);
+
+    // Portfolio depleted?
+    if (satBal <= 0 && cash <= 0) {
+      return {
+        sustainable: false,
+        extraMonths: em,
+        totalMonths: 120 + em,
+        endYear: calYear,
+        endMonth: calMonth,
+        endDate: `${calYear}. ${String(calMonth).padStart(2, '0')}`
+      };
+    }
+  }
+
+  // Survived 50+ extra years
+  return {
+    sustainable: true,
+    extraMonths: maxExtraMonths,
+    totalMonths: 120 + maxExtraMonths,
+    endYear: calYear,
+    endMonth: calMonth
+  };
+}
+
+// ============================================================
+// RENDER SUMMARY CARDS
+// ============================================================
+function renderSummary() {
+  const p = getParams();
+  const last = simData[simData.length - 1];
+  if (!last) return;
+
+  const btcHuf0 = p.btcUsd * p.usdHuf;
+  // Find the end of active period for CAGR calc
+  const activeEnd = simData.find(d => d.m === Math.min(p.months, 120)) || last;
+  const months120 = last.m || 120;
+  const cagr = p.totalInvest > 0 && last.totalPortfolioFt > 0
+    ? Math.pow((last.totalPortfolioFt + last.cumConsumed) / p.totalInvest, 12 / months120) - 1 : 0;
+
+  // Date strings for context
+  const startDate = `${p.startYear}. ${String(p.startMonth).padStart(2,'0')}`;
+  const endDate = `${last.calYear}. ${String(last.calMonth).padStart(2,'0')}`;
+  const dcaEndM = simData.find(d => d.m === Math.min(p.months, 120));
+  const dcaEndDate = dcaEndM ? `${dcaEndM.calYear}. ${String(dcaEndM.calMonth).padStart(2,'0')}` : endDate;
+
+  const cards = [
+    { label: 'Induló befektetés', value: fmtFt(p.totalInvest), sub: startDate + '-tól', cls: '' },
+    { label: 'Induló BTC', value: fmtBtc(p.initBTC), sub: fmtSat(p.initBTC * 1e8) + ' sat', cls: '' },
+    { label: 'BTC ár (Ft)', value: fmtFt(btcHuf0), sub: fmtUsd(p.btcUsd), cls: '' },
+    { label: 'Végső portfólió', value: fmtFt(last.totalPortfolioFt), sub: endDate + ' · ' + fmtUsd(last.totalPortfolioFt / last.usdHufM), cls: 'highlight' },
+    { label: 'Felhasznált összeg', value: fmtFt(last.cumConsumed), sub: startDate + ' – ' + endDate + ' · bérleti díj + kiadás', cls: '' },
+    { label: 'Teljes nyereség', value: fmtFt(last.profit), sub: endDate + ' · portfólió + felhasznált − befektetés', cls: last.profit >= 0 ? 'green' : 'red' },
+    { label: 'Hozam', value: fmtPct(last.returnPct), sub: 'CAGR: ' + fmtPct(cagr) + ' (' + months120 + ' hó)', cls: last.returnPct >= 0 ? 'green' : 'red' },
+    { label: 'BTC egyenleg', value: fmtBtc(last.satBalance / 1e8), sub: endDate + ' · ' + fmtSat(last.satBalance) + ' sat', cls: '' },
+    { label: 'Havi DCA', value: fmtFt(Math.max(0, p.totalInvest / p.months - p.livingExp - p.rentHuf)), sub: startDate + ' – ' + dcaEndDate + ' (' + p.months + ' hó)', cls: '' },
+  ];
+
+  // Sustainability card
+  if (sustainabilityResult) {
+    const sr = sustainabilityResult;
+    if (sr.sustainable) {
+      const extraYrs = Math.floor(sr.extraMonths / 12);
+      cards.push({
+        label: 'Fenntarthatóság',
+        value: '∞ Fenntartható',
+        sub: endDate + ' után ' + extraYrs + '+ év · nem fogy el',
+        cls: 'green'
+      });
+    } else {
+      const totalYrs = (sr.totalMonths / 12).toFixed(1);
+      const extraYrs = (sr.extraMonths / 12).toFixed(1);
+      cards.push({
+        label: 'Fenntarthatóság',
+        value: sr.endDate + '-ig',
+        sub: 'Összesen ' + totalYrs + ' év (' + endDate + ' után még +' + extraYrs + ' év)',
+        cls: 'red'
+      });
+    }
+  }
+
+  document.getElementById('summaryCards').innerHTML = cards.map(c =>
+    `<div class="summary-card ${c.cls}">
+      <div class="label">${c.label}</div>
+      <div class="value">${c.value}</div>
+      ${c.sub ? `<div class="sub">${c.sub}</div>` : ''}
+    </div>`
+  ).join('');
+}
+
+// ============================================================
+// RENDER TABLE
+// ============================================================
+function renderTable() {
+  const html = simData.map(d => {
+    const retCls = d.returnPct >= 0 ? 'pos' : 'neg';
+    return `<tr>
+      <td>${d.m}</td>
+      <td>${d.calYear}</td>
+      <td>${d.calMonth}</td>
+      <td>${fmtFt(d.btcHufM)}</td>
+      <td>${d.usdHufM.toFixed(2)}</td>
+      <td class="fmt-sat">${fmtSat(d.rentSat)}</td>
+      <td>${fmtFt(d.rentFt)}</td>
+      <td>${fmtFt(d.living)}</td>
+      <td>${d.m > 0 ? fmtFt(d.dcaFt) : '-'}</td>
+      <td class="fmt-sat">${d.m > 0 ? fmtSat(d.dcaSat) : '-'}</td>
+      <td class="${d.btcSaleSat > 0 ? 'neg' : ''}">${d.btcSaleSat > 0 ? fmtSat(d.btcSaleSat) : '-'}</td>
+      <td class="fmt-btc">${fmtSat(d.satBalance)}</td>
+      <td>${fmtFt(d.btcPortfolioFt)}</td>
+      <td>${fmtFt(d.remainingCash)}</td>
+      <td style="font-weight:600">${fmtFt(d.totalPortfolioFt)}</td>
+      <td class="${retCls}" style="font-weight:600">${fmtPct(d.returnPct)}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('simBody').innerHTML = html;
+}
+
+// ============================================================
+// RENDER YEARLY
+// ============================================================
+function renderYearly() {
+  const years = {};
+  simData.forEach((d, i) => {
+    const y = d.calYear;
+    if (!years[y]) years[y] = { rent: 0, living: 0, last: d };
+    if (i > 0) {
+      years[y].rent += d.rentFt;
+      years[y].living += d.living;
+    }
+    years[y].last = d;
+  });
+
+  const p = getParams();
+  const html = Object.entries(years).map(([yr, yd]) => {
+    const d = yd.last;
+    const retCls = d.returnPct >= 0 ? 'pos' : 'neg';
+    const profitCls = d.profit >= 0 ? 'pos' : 'neg';
+    const portUsd = d.usdHufM > 0 ? d.totalPortfolioFt / d.usdHufM : 0;
+    return `<tr>
+      <td style="text-align:center;font-weight:600">${yr}</td>
+      <td>${fmtFt(d.btcHufM)}</td>
+      <td>${d.usdHufM.toFixed(2)}</td>
+      <td class="neg">${fmtFt(yd.rent)}</td>
+      <td class="neg">${fmtFt(yd.living)}</td>
+      <td class="fmt-sat">${fmtSat(d.satBalance)}</td>
+      <td style="font-weight:600">${fmtFt(d.totalPortfolioFt)}</td>
+      <td>${fmtFt(d.cumConsumed)}</td>
+      <td class="${profitCls}" style="font-weight:600">${fmtFt(d.profit)}</td>
+      <td class="${retCls}" style="font-weight:600">${fmtPct(d.returnPct)}</td>
+      <td>${fmtUsd(portUsd)}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('yearBody').innerHTML = html;
+}
+
+// ============================================================
+// CHARTS
+// ============================================================
+function showChart(type) {
+  currentChartType = type;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderChart();
+}
+
+function renderChart() {
+  const ctx = document.getElementById('mainChart').getContext('2d');
+  if (chart) chart.destroy();
+
+  const labels = simData.map(d => `${d.calYear}/${String(d.calMonth).padStart(2,'0')}`);
+  let datasets = [];
+  let yTitle = '';
+  let tooltipFmt = (v) => fmtFt(v);
+
+  if (currentChartType === 'portfolio') {
+    datasets = [
+      {
+        label: 'BTC portfólió (Ft)',
+        data: simData.map(d => d.btcPortfolioFt),
+        borderColor: '#F7931A',
+        backgroundColor: 'rgba(247,147,26,0.1)',
+        fill: true,
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0.3
+      },
+      {
+        label: 'Fennmaradó keret (Ft)',
+        data: simData.map(d => d.remainingCash),
+        borderColor: '#4d8dff',
+        backgroundColor: 'rgba(77,141,255,0.1)',
+        fill: true,
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0.3
+      },
+      {
+        label: 'Teljes portfólió (Ft)',
+        data: simData.map(d => d.totalPortfolioFt),
+        borderColor: '#00d68f',
+        borderWidth: 3,
+        pointRadius: 0,
+        tension: 0.3
+      }
+    ];
+    yTitle = 'Forint';
+  } else if (currentChartType === 'prices') {
+    const p = getParams();
+    for (let i = 0; i < 4; i++) {
+      datasets.push({
+        label: MODEL_NAMES[i] + ' ($)',
+        data: simData.map(d => d.prices[i]),
+        borderColor: MODEL_COLORS[i],
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0.3,
+        borderDash: i === 0 ? [] : [5, 3]
+      });
+    }
+    datasets.push({
+      label: 'Súlyozott ($)',
+      data: simData.map(d => d.weightedUsd),
+      borderColor: '#fff',
+      borderWidth: 3,
+      pointRadius: 0,
+      tension: 0.3
+    });
+    // 300-week MA based on REAL historical prices, projected forward
+    // HIST_BTC_MONTHLY has ~70 months of real data ending at sim start
+    // We use a rolling 69-month window (≈300 weeks)
+    const maWindow = 69;
+    // Build the rolling window: start with last 69 historical months
+    const histLen = HIST_BTC_MONTHLY.length;
+    const maQueue = HIST_BTC_MONTHLY.slice(Math.max(0, histLen - maWindow));
+    // Pad front if not enough history
+    while (maQueue.length < maWindow) maQueue.unshift(maQueue[0]);
+    const maData = simData.map((d, idx) => {
+      // For month 0, the queue is pure historical
+      // For subsequent months, we shift in the weighted model price
+      if (idx > 0) {
+        maQueue.shift();
+        maQueue.push(d.weightedUsd);
+      }
+      let sum = 0;
+      for (let k = 0; k < maQueue.length; k++) sum += maQueue[k];
+      return sum / maQueue.length;
+    });
+    datasets.push({
+      label: '300 hét MA ($)',
+      data: maData,
+      borderColor: '#ff4d6a',
+      borderWidth: 2.5,
+      pointRadius: 0,
+      tension: 0.4,
+      borderDash: [10, 5]
+    });
+    yTitle = 'USD';
+    tooltipFmt = (v) => fmtUsd(v);
+  } else if (currentChartType === 'rent') {
+    datasets = [
+      {
+        label: 'Lakás+autó bérleti díj (sat)',
+        data: simData.map(d => d.rentSat),
+        borderColor: '#22d3ee',
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0.3,
+        yAxisID: 'y'
+      },
+      {
+        label: 'Lakás+autó bérleti díj (Ft)',
+        data: simData.map(d => d.rentFt),
+        borderColor: '#F7931A',
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0.3,
+        yAxisID: 'y1',
+        hidden: true
+      }
+    ];
+    yTitle = 'Satoshi';
+  } else if (currentChartType === 'balance') {
+    datasets = [
+      {
+        label: 'BTC egyenleg (satoshi)',
+        data: simData.map(d => d.satBalance),
+        borderColor: '#F7931A',
+        backgroundColor: 'rgba(247,147,26,0.1)',
+        fill: true,
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0.3
+      }
+    ];
+    yTitle = 'Satoshi';
+    tooltipFmt = (v) => fmtSat(v) + ' sat';
+  }
+
+  // Find milestone indices for annotations
+  const p2 = getParams();
+  const dcaEndIdx = simData.findIndex(d => d.m === Math.min(p2.months, 120));
+  const cashDepletedIdx = simData.findIndex((d, i) => i > 0 && d.remainingCash <= 0);
+
+  const scales = {
+    x: {
+      grid: { color: 'rgba(255,255,255,0.04)' },
+      ticks: { color: '#686880', maxTicksLimit: 12, font: { size: 11 } }
+    },
+    y: {
+      grid: { color: 'rgba(255,255,255,0.04)' },
+      ticks: { color: '#a0a0b8', font: { family: 'JetBrains Mono', size: 11 },
+        callback: function(v) {
+          if (v >= 1e9) return (v/1e9).toFixed(0) + 'B';
+          if (v >= 1e6) return (v/1e6).toFixed(0) + 'M';
+          if (v >= 1e3) return (v/1e3).toFixed(0) + 'K';
+          return v;
+        }
+      },
+      title: { display: true, text: yTitle, color: '#686880' }
+    }
+  };
+
+  if (currentChartType === 'rent') {
+    scales.y1 = {
+      position: 'right',
+      grid: { drawOnChartArea: false },
+      ticks: { color: '#F7931A', font: { family: 'JetBrains Mono', size: 11 },
+        callback: (v) => (v/1000).toFixed(0) + 'K Ft'
+      },
+      title: { display: true, text: 'Forint', color: '#F7931A' }
+    };
+  }
+
+  // Balance chart: Y-axis starts at 0
+  if (currentChartType === 'balance') {
+    scales.y.min = 0;
+  }
+
+  // Build milestone label strings with dates
+  const milestones = [];
+  if (dcaEndIdx > 0 && dcaEndIdx < simData.length) {
+    const d = simData[dcaEndIdx];
+    milestones.push({ idx: dcaEndIdx, color: '#00d68f', label: 'DCA vége', date: `${d.calYear}. ${String(d.calMonth).padStart(2,'0')}` });
+  }
+  if (cashDepletedIdx > 0 && cashDepletedIdx < simData.length) {
+    const d = simData[cashDepletedIdx];
+    milestones.push({ idx: cashDepletedIdx, color: '#ff4d6a', label: 'Ft elfogy', date: `${d.calYear}. ${String(d.calMonth).padStart(2,'0')}` });
+  }
+
+  // Milestone vertical lines plugin with date badges
+  const milestonePlugin = {
+    id: 'milestones',
+    afterDraw(chart) {
+      const xScale = chart.scales.x;
+      const yScale = chart.scales.y;
+      const ctx2 = chart.ctx;
+      milestones.forEach((ms, mi) => {
+        if (ms.idx < 0 || ms.idx >= chart.data.labels.length) return;
+        const x = xScale.getPixelForValue(ms.idx);
+        ctx2.save();
+        // Vertical line
+        ctx2.strokeStyle = ms.color;
+        ctx2.lineWidth = 1.5;
+        ctx2.setLineDash([4, 3]);
+        ctx2.globalAlpha = 0.7;
+        ctx2.beginPath();
+        ctx2.moveTo(x, yScale.top + 24);
+        ctx2.lineTo(x, yScale.bottom);
+        ctx2.stroke();
+        ctx2.globalAlpha = 1;
+        // Badge background
+        const text = ms.label + '  ' + ms.date;
+        ctx2.font = '600 11px Inter, sans-serif';
+        const tw = ctx2.measureText(text).width;
+        const bx = x - tw / 2 - 8;
+        const by = yScale.top + 2 + mi * 22;
+        const bw = tw + 16;
+        const bh = 18;
+        ctx2.fillStyle = ms.color;
+        ctx2.globalAlpha = 0.15;
+        ctx2.beginPath();
+        ctx2.roundRect(bx, by, bw, bh, 4);
+        ctx2.fill();
+        ctx2.globalAlpha = 1;
+        // Badge border
+        ctx2.strokeStyle = ms.color;
+        ctx2.lineWidth = 1;
+        ctx2.setLineDash([]);
+        ctx2.beginPath();
+        ctx2.roundRect(bx, by, bw, bh, 4);
+        ctx2.stroke();
+        // Badge text
+        ctx2.fillStyle = ms.color;
+        ctx2.textAlign = 'center';
+        ctx2.textBaseline = 'middle';
+        ctx2.fillText(text, x, by + bh / 2);
+        ctx2.restore();
+      });
+    }
+  };
+
+  chart = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { intersect: false, mode: 'index' },
+      layout: { padding: { top: 50 } },
+      plugins: {
+        legend: { labels: { color: '#a0a0b8', usePointStyle: true, padding: 16, font: { size: 12 } } },
+        tooltip: {
+          backgroundColor: 'rgba(10,10,15,0.95)',
+          borderColor: 'rgba(247,147,26,0.3)',
+          borderWidth: 1,
+          titleFont: { size: 13 },
+          bodyFont: { family: 'JetBrains Mono', size: 12 },
+          padding: 12,
+          cornerRadius: 8
+        }
+      },
+      scales
+    },
+    plugins: [milestonePlugin]
+  });
+}
+
+// ============================================================
+// WEIGHTS UI
+// ============================================================
+const WEIGHT_DEFAULTS = [50, 20, 15, 15];
+
+function buildWeights() {
+  const container = document.getElementById('weightsContainer');
+  container.innerHTML = MODEL_NAMES.map((name, i) =>
+    `<div class="weight-row">
+      <span class="wlabel" style="color:${MODEL_COLORS[i]}" onclick="soloWeight(${i})" title="Kattints: 100% csak ${name}">${name}</span>
+      <input type="range" class="weight-slider" min="0" max="100" value="${WEIGHT_DEFAULTS[i]}" oninput="updateWeights()">
+      <span class="wval" id="w${i}">${WEIGHT_DEFAULTS[i]}%</span>
+    </div>`
+  ).join('');
+}
+
+function updateWeights() {
+  let total = 0;
+  document.querySelectorAll('.weight-slider').forEach((s, i) => {
+    const v = parseInt(s.value);
+    document.getElementById('w' + i).textContent = v + '%';
+    total += v;
+  });
+  const el = document.getElementById('totalWeight');
+  el.textContent = total + '%';
+  el.style.color = total === 100 ? 'var(--green)' : 'var(--red)';
+  runSimulation();
+}
+
+function soloWeight(idx) {
+  document.querySelectorAll('.weight-slider').forEach((s, i) => {
+    s.value = (i === idx) ? 100 : 0;
+  });
+  updateWeights();
+}
+
+function resetWeights() {
+  document.querySelectorAll('.weight-slider').forEach((s, i) => {
+    s.value = WEIGHT_DEFAULTS[i];
+  });
+  document.getElementById('priceMultiplier').value = 100;
+  document.getElementById('multiplierVal').textContent = '100%';
+  updateWeights();
+}
+
+function updateMultiplier() {
+  const v = parseInt(document.getElementById('priceMultiplier').value);
+  document.getElementById('multiplierVal').textContent = v + '%';
+  runSimulation();
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  buildWeights();
+
+  // Add event listeners to number inputs
+  document.querySelectorAll('input[type=number]').forEach(inp => {
+    inp.addEventListener('input', () => {
+      clearTimeout(inp._timer);
+      inp._timer = setTimeout(runSimulation, 300);
+    });
+  });
+
+  // Setup formatted number inputs (thousands separator)
+  document.querySelectorAll('input.fmt-num').forEach(inp => {
+    setupFmtInput(inp);
+    inp.addEventListener('input', () => {
+      clearTimeout(inp._timer);
+      inp._timer = setTimeout(runSimulation, 300);
+    });
+  });
+
+  runSimulation();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
