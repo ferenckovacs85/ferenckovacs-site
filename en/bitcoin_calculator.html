@@ -1,0 +1,2304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>₿ Bitcoin Calculator · ferenckovacs.com</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  :root {
+    --btc: #F7931A;
+    --btc-dark: #c47415;
+    --btc-glow: rgba(247, 147, 26, 0.3);
+    --bg: #0a0a0f;
+    --bg2: #12121a;
+    --bg3: #1a1a28;
+    --bg4: #222236;
+    --text: #e8e8f0;
+    --text2: #a0a0b8;
+    --text3: #686880;
+    --green: #00d68f;
+    --red: #ff4d6a;
+    --blue: #4d8dff;
+    --purple: #a855f7;
+    --cyan: #22d3ee;
+    --border: rgba(255,255,255,0.06);
+    --glass: rgba(255,255,255,0.03);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .hero {
+    position: relative;
+    padding: 48px 0 32px;
+    text-align: center;
+    background: linear-gradient(180deg, rgba(247,147,26,0.08) 0%, transparent 100%);
+    border-bottom: 1px solid var(--border);
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, var(--btc-glow) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero h1 {
+    font-size: 42px;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--btc) 0%, #ffd700 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+    position: relative;
+  }
+  .hero p {
+    font-size: 16px;
+    color: var(--text2);
+    font-weight: 300;
+  }
+
+  .container { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
+
+  /* Summary cards */
+  .summary-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 32px 0;
+  }
+  .summary-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .summary-card:hover {
+    border-color: var(--btc);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(247,147,26,0.1);
+  }
+  .summary-card .label {
+    font-size: 12px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .summary-card .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .summary-card .sub {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .summary-card.highlight { border-color: var(--btc); background: linear-gradient(135deg, rgba(247,147,26,0.08), var(--bg2)); }
+  .summary-card.green .value { color: var(--green); }
+  .summary-card.red .value { color: var(--red); }
+
+  /* Expandable detail cards */
+  .summary-details { max-height:0; overflow:hidden; transition:max-height 0.4s ease, opacity 0.3s; opacity:0; }
+  .summary-details.open { max-height:2000px; opacity:1; }
+  .detail-toggle { display:flex; align-items:center; justify-content:center; gap:6px; padding:8px; color:var(--text3); font-size:12px; font-weight:600; cursor:pointer; transition:all 0.2s; border-top:1px solid var(--border); background:var(--bg2); border-radius:0 0 14px 14px; }
+  .detail-toggle:hover { color:var(--btc); background:var(--bg3); }
+  .detail-toggle .arrow { transition:transform 0.3s; display:inline-block; }
+  .detail-toggle.open .arrow { transform:rotate(180deg); }
+
+  /* Sections */
+  .section {
+    margin: 24px 0;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 12px 16px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-header h2 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section-header .icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+  .section-header .icon.orange { background: rgba(247,147,26,0.15); }
+  .section-header .icon.blue { background: rgba(77,141,255,0.15); }
+  .section-header .icon.green { background: rgba(0,214,143,0.15); }
+  .section-header .icon.purple { background: rgba(168,85,247,0.15); }
+  .section-body { padding: 16px 20px; }
+
+  /* Input grid */
+  .input-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+  }
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .input-group label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text2);
+  }
+  .input-group input, .input-group select {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--btc);
+    font-weight: 600;
+    outline: none;
+    transition: all 0.2s;
+  }
+  .input-group input:focus {
+    border-color: var(--btc);
+    box-shadow: 0 0 0 3px var(--btc-glow);
+  }
+  .input-group .hint {
+    font-size: 10px;
+    color: var(--text3);
+  }
+
+  /* Weight sliders */
+  .weight-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .weight-row:last-child { border: none; }
+  .weight-row .wlabel {
+    flex: 1;
+    font-size: 14px;
+    color: var(--text2);
+    cursor: pointer;
+    user-select: none;
+    transition: opacity 0.2s;
+  }
+  .weight-row .wlabel:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+  }
+  .weight-row input[type=range] {
+    width: 120px;
+    accent-color: var(--btc);
+  }
+  .weight-row .wval {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--btc);
+    width: 48px;
+    text-align: right;
+    font-weight: 600;
+  }
+
+  /* Charts */
+  .chart-container {
+    position: relative;
+    width: 100%;
+    height: 380px;
+    margin: 16px 0;
+  }
+
+  /* Table */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 16px 0;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  thead th {
+    background: var(--bg3);
+    padding: 12px 10px;
+    font-weight: 600;
+    color: var(--text2);
+    text-align: right;
+    position: sticky;
+    top: 0;
+    white-space: nowrap;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+  }
+  thead th:first-child { text-align: center; }
+  tbody td {
+    padding: 8px 10px;
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text2);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  tbody td:first-child { text-align: center; color: var(--text3); }
+  tbody tr:hover { background: rgba(247,147,26,0.04); }
+  tbody tr:nth-child(even) { background: var(--glass); }
+  .pos { color: var(--green) !important; }
+  .neg { color: var(--red) !important; }
+
+  /* Tabs */
+  .tab-bar {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    background: var(--bg);
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: transparent;
+    color: var(--text3);
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab-btn.active {
+    background: var(--btc);
+    color: #fff;
+  }
+
+  .disclaimer {
+    text-align: center;
+    padding: 24px;
+    color: var(--text3);
+    font-size: 12px;
+    border-top: 1px solid var(--border);
+    margin-top: 48px;
+  }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .two-col > .section { margin: 0; }
+  @media (max-width: 800px) { .two-col { grid-template-columns: 1fr; } }
+
+  .fmt-ft { color: var(--text); }
+  .fmt-btc { color: var(--btc); }
+  .fmt-sat { color: var(--cyan); }
+
+  /* FIRE toggle */
+  .toggle-switch {
+    width: 40px; height: 22px;
+    background: var(--bg4);
+    border-radius: 11px;
+    position: relative;
+    transition: background 0.3s;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .toggle-switch.active { background: var(--btc); }
+  .toggle-switch::after {
+    content: '';
+    width: 18px; height: 18px;
+    background: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px; left: 2px;
+    transition: transform 0.3s;
+  }
+  .toggle-switch.active::after { transform: translateX(18px); }
+  .fire-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.3s;
+    opacity: 0;
+  }
+  .fire-body.open {
+    max-height: 500px;
+    opacity: 1;
+  }
+  .section.fire-off { opacity: 0.6; }
+  .section.fire-off .section-header { border-bottom: none; }
+  .pv-btn { background:var(--bg4); color:var(--text3); border:1px solid var(--border); border-radius:8px; padding:6px 16px; font-size:12px; font-weight:600; cursor:pointer; transition:all 0.2s; }
+  .pv-btn.active { background:var(--btc); color:#000; border-color:var(--btc); }
+  .pv-btn:hover:not(.active) { border-color:var(--btc); color:var(--text); }
+
+  /* Macro dashboard */
+  .macro-item { display:flex; align-items:center; gap:4px; }
+  .macro-label { font-size:10px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; }
+  .macro-input {
+    background:var(--bg); border:1px solid transparent; border-radius:6px;
+    padding:3px 6px; font-family:'JetBrains Mono',monospace; font-size:13px;
+    color:var(--btc); font-weight:600; outline:none; transition:all 0.2s;
+    text-align:right;
+  }
+  .macro-input:hover { border-color:var(--border); }
+  .macro-input:focus { border-color:var(--btc); box-shadow:0 0 0 2px var(--btc-glow); background:var(--bg2); }
+  .macro-val { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; }
+  .macro-sep { font-size:13px; color:var(--text3); font-weight:600; }
+  .macro-unit { font-size:10px; color:var(--text3); }
+
+  /* Mobile responsive */
+  @media (max-width: 768px) {
+    .hero { padding: 24px 0 16px; }
+    .hero h1 { font-size: 28px; }
+    .hero p { font-size: 13px; }
+    .container { padding: 0 12px; }
+    .summary-row { grid-template-columns: 1fr 1fr; gap: 8px; margin: 16px 0; }
+    .summary-card { padding: 12px; border-radius: 12px; }
+    .summary-card .value { font-size: 16px; }
+    .summary-card .label { font-size: 10px; }
+    .two-col { grid-template-columns: 1fr; }
+    .input-grid { grid-template-columns: 1fr; gap: 8px; }
+    .section-body { padding: 12px; }
+    .tab-bar { flex-wrap: wrap; }
+    .tab-btn { font-size: 11px; padding: 8px 4px; min-width: 0; }
+    .chart-container { height: 280px; }
+    #macroDashboard { padding: 8px 10px; }
+    #macroDashboard .macro-item { gap: 2px; }
+    #macroDashboard .macro-label { font-size: 9px; }
+    #macroDashboard .macro-input { font-size: 11px; padding: 2px 4px; }
+    #weightsContainer { gap: 2px 6px !important; }
+    .weight-slider { width: 36px !important; }
+    table { font-size: 11px; }
+    thead th { padding: 8px 6px; font-size: 10px; }
+    tbody td { padding: 6px; font-size: 11px; }
+  }
+  @media (max-width: 480px) {
+    .summary-row { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 24px; }
+    .tab-btn { font-size: 10px; padding: 6px 2px; }
+  }
+
+  /* Print styles */
+  @media print {
+    body { background: #fff; color: #000; }
+    .hero { background: none; border: none; padding: 16px 0; }
+    .hero h1 { -webkit-text-fill-color: #F7931A; font-size: 24px; }
+    .hero p { color: #666; }
+    #macroDashboard { background: #f5f5f5 !important; border: 1px solid #ccc; }
+    .macro-input, .macro-val { color: #333 !important; }
+    .macro-label { color: #666 !important; }
+    .summary-card { background: #f9f9f9; border: 1px solid #ddd; break-inside: avoid; }
+    .summary-card .value { color: #333; }
+    .summary-card .label { color: #666; }
+    .summary-card.green .value { color: #008855; }
+    .summary-card.red .value { color: #cc0000; }
+    .section { background: #fff; border: 1px solid #ddd; break-inside: avoid; }
+    .section-header { background: #f0f0f0; }
+    .section-header h2 { color: #333; }
+    table { border: 1px solid #ccc; }
+    thead th { background: #eee; color: #333; }
+    tbody td { color: #333; border-color: #ddd; }
+    .pos { color: #008855 !important; }
+    .neg { color: #cc0000 !important; }
+    .tab-bar { display: none; }
+    .chart-container { height: 300px; break-inside: avoid; }
+    .disclaimer { color: #999; }
+    button, .toggle-switch, .pv-btn { display: none !important; }
+    a { color: #F7931A; }
+  }
+  @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+  .info-tip { font-size:11px; cursor:help; opacity:0.5; margin-left:2px; }
+  .info-tip:hover { opacity:1; }
+  .export-btn { background:var(--bg4); color:var(--text2); border:1px solid var(--border); border-radius:8px; padding:4px 12px; font-size:11px; cursor:pointer; transition:all 0.2s; margin-left:auto; }
+  .export-btn:hover { border-color:var(--btc); color:var(--btc); }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>₿ Bitcoin Calculator</h1>
+  <p>Interactive simulation · Power Law · Saylor · ARK · Standard Chartered</p>
+</div>
+
+<div class="container">
+
+  <!-- MACRO DASHBOARD -->
+  <div id="macroDashboard" style="margin:24px 0 8px;padding:12px 16px;background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:14px;display:flex;flex-direction:column;gap:6px">
+    <!-- Row 1: Prices + live fetch -->
+    <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px 16px">
+      <div class="macro-item">
+        <span class="macro-label" title="Current Bitcoin price in USD">BTC<span class="info-tip">ℹ</span></span>
+        <span class="macro-sep">$</span>
+        <input type="text" inputmode="numeric" id="btcUsd" value="68 000" data-raw="68000" class="fmt-num macro-input" style="width:78px">
+      </div>
+      <div class="macro-item">
+        <span class="macro-label" title="Current USD/HUF exchange rate">USD/HUF<span class="info-tip">ℹ</span></span>
+        <input type="text" inputmode="numeric" id="usdHuf" value="334" data-raw="334" class="fmt-num macro-input" style="width:52px">
+      </div>
+      <div class="macro-item">
+        <span class="macro-label">BTC (Ft)</span>
+        <span id="macroBtcHuf" class="macro-val" style="color:var(--btc)">22 712 000</span>
+      </div>
+      <span style="width:1px;height:18px;background:var(--border)"></span>
+      <div class="macro-item">
+        <span class="macro-label" title="Annual USD monetary inflation (M2 expansion) driving BTC price">USD Inflation<span class="info-tip">ℹ</span></span>
+        <input type="text" inputmode="decimal" id="monetaryInflation" value="7" class="macro-input" style="width:40px">
+        <span class="macro-unit">%/yr</span>
+      </div>
+      <div class="macro-item">
+        <span class="macro-label" title="Annual HUF depreciation vs USD">HUF/USD Depreciation<span class="info-tip">ℹ</span></span>
+        <input type="text" inputmode="decimal" id="hufCagr" value="2.4" class="macro-input" style="width:44px">
+        <span class="macro-unit">%/yr</span>
+      </div>
+      <button onclick="resetMacroDashboard()" style="margin-left:auto;background:var(--bg4);color:var(--text2);border:1px solid var(--border);border-radius:8px;padding:3px 10px;font-size:11px;cursor:pointer;transition:all 0.2s" onmouseover="this.style.borderColor='var(--btc)';this.style.color='var(--btc)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">↻ Reset</button>
+      <button onclick="copyShareLink()" style="background:var(--bg4);color:var(--text2);border:1px solid var(--border);border-radius:8px;padding:3px 10px;font-size:11px;cursor:pointer;transition:all 0.2s" onmouseover="this.style.borderColor='var(--btc)';this.style.color='var(--btc)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'" id="shareLinkBtn">🔗 Link</button>
+      <button id="fetchPricesBtn" onclick="fetchLivePrices()" style="background:var(--bg4);color:var(--text2);border:1px solid var(--border);border-radius:8px;padding:3px 10px;font-size:11px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:4px" onmouseover="this.style.borderColor='var(--btc)';this.style.color='var(--btc)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'"><span id="fetchIcon">🔄</span> Live price</button>
+    </div>
+    <!-- Row 2: Model weights + price multiplier + PV toggle -->
+    <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px 12px;border-top:1px solid var(--border);padding-top:6px">
+      <div id="weightsContainer" style="display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px"></div>
+      <span style="width:1px;height:18px;background:var(--border);margin:0 2px"></span>
+      <div class="macro-item">
+        <span class="macro-label" title="Price model growth rate multiplier (100% = original)">Multiplier<span class="info-tip">ℹ</span></span>
+        <input type="range" id="priceMultiplier" min="10" max="300" value="100" style="width:50px;accent-color:var(--btc);height:14px" oninput="updateMultiplier()">
+        <span id="multiplierVal" class="macro-val" style="min-width:32px">100%</span>
+      </div>
+      <span style="width:1px;height:18px;background:var(--border);margin:0 2px"></span>
+      <div style="display:flex;align-items:center;gap:6px;margin-left:auto">
+        <button id="pvBtnNominal" class="pv-btn active" onclick="setPvMode(false)">Nominal</button>
+        <button id="pvBtnReal" class="pv-btn" onclick="setPvMode(true)">Present Value</button>
+      </div>
+    </div>
+    <!-- Row 3: Custom price curve inputs -->
+    <div id="customPriceRow" style="display:flex;align-items:center;flex-wrap:wrap;gap:4px 12px;border-top:1px solid var(--border);padding-top:6px">
+      <span style="font-size:10px;font-weight:600;color:#ff69b4">Custom price curve →</span>
+      <div class="macro-item">
+        <span class="macro-label">Year 3 ($)</span>
+        <input type="text" inputmode="numeric" id="customY3" value="150 000" data-raw="150000" class="fmt-num macro-input" style="width:70px">
+      </div>
+      <div class="macro-item">
+        <span class="macro-label">Year 5 ($)</span>
+        <input type="text" inputmode="numeric" id="customY5" value="350 000" data-raw="350000" class="fmt-num macro-input" style="width:70px">
+      </div>
+      <div class="macro-item">
+        <span class="macro-label">Year 10 ($)</span>
+        <input type="text" inputmode="numeric" id="customY10" value="950 000" data-raw="950000" class="fmt-num macro-input" style="width:70px">
+      </div>
+    </div>
+  </div>
+
+  <!-- SUMMARY CARDS -->
+  <div style="margin:24px 0;background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+    <div class="summary-row" id="summaryCards" style="margin:0;padding:16px;gap:12px"></div>
+    <div class="summary-details" id="summaryDetails">
+      <div class="summary-row" id="summaryDetailsCards" style="margin:0;padding:0 16px 16px;gap:12px"></div>
+    </div>
+    <div class="detail-toggle" id="detailToggle" onclick="toggleDetails()">
+      <span class="arrow">▼</span> Detailed analysis
+    </div>
+  </div>
+
+  <!-- PARAMETERS -->
+  <div class="two-col">
+    <div class="section">
+      <div class="section-header">
+        <div class="icon orange">₿</div>
+        <h2>Starting Position</h2>
+        <button onclick="resetDefaults()" style="margin-left:auto;background:var(--bg4);color:var(--text2);border:1px solid var(--border);border-radius:8px;padding:4px 12px;font-size:12px;cursor:pointer;transition:all 0.2s" onmouseover="this.style.borderColor='var(--btc)';this.style.color='var(--btc)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">↻ Reset</button>
+      </div>
+      <div class="section-body">
+        <div class="input-grid">
+          <div class="input-group">
+            <label title="Existing Bitcoin amount in satoshis. 1 BTC = 100,000,000 sat">Starting Bitcoin (sat)<span class="info-tip">ℹ</span></label>
+            <input type="text" inputmode="numeric" id="initSat" value="1 000 000" data-raw="1000000" class="fmt-num">
+            <span class="hint" id="initSatHint">= 0.01 BTC</span>
+          </div>
+          <div class="input-group">
+            <label title="One-time HUF amount instantly converted to Bitcoin at starting BTC price">Lump Sum BTC Purchase (HUF)<span class="info-tip">ℹ</span></label>
+            <input type="text" inputmode="numeric" id="lumpSum" value="0" data-raw="0" class="fmt-num">
+            <span class="hint">Instantly converted to BTC at starting price</span>
+          </div>
+          <div class="input-group">
+            <label title="Total amount for DCA (regular purchases) over the specified months">Total Investment Pool (HUF)<span class="info-tip">ℹ</span></label>
+            <input type="text" inputmode="numeric" id="totalInvest" value="10 000 000" data-raw="10000000" class="fmt-num">
+            <span class="hint" id="totalInvestHint">Amount allocated for DCA</span>
+          </div>
+          <div class="input-group">
+            <label title="How many months of regular (Dollar Cost Averaging) Bitcoin purchases">DCA Period (months)<span class="info-tip">ℹ</span></label>
+            <input type="number" id="months" value="120" min="1" max="120">
+            <span class="hint">Duration of regular purchases</span>
+          </div>
+          <div class="input-group">
+            <label title="Extra monthly BTC purchase on top of DCA, from separate source (e.g., salary)">Monthly Savings (HUF/mo)<span class="info-tip">ℹ</span></label>
+            <input type="text" inputmode="numeric" id="monthlySavings" value="0" data-raw="0" class="fmt-num">
+            <span class="hint">Extra BTC purchase on top of DCA (from separate source)</span>
+          </div>
+          <div class="input-group">
+            <label title="Simulation start date">Start (year-month)<span class="info-tip">ℹ</span></label>
+            <div style="display:flex;gap:8px">
+              <input type="number" id="startYear" value="2026" style="flex:1">
+              <input type="number" id="startMonth" value="4" min="1" max="12" style="width:70px">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FIRE section as separate panel -->
+    <div class="section">
+      <div class="section-header" style="cursor:pointer" onclick="toggleFire()">
+        <div class="icon orange">🔥</div>
+        <h2>FIRE Mode · Passive Income</h2>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+          <span style="font-size:11px;color:var(--text3)">Expenses from pool</span>
+          <div class="toggle-switch" id="fireSwitch"></div>
+        </div>
+      </div>
+      <div class="fire-body" id="fireBody">
+        <div class="section-body">
+          <div class="input-grid">
+            <div class="input-group">
+              <label title="Monthly expense covered by BTC sales, increases annually with inflation">Monthly Fixed Expense (HUF/mo)<span class="info-tip">ℹ</span></label>
+              <input type="text" inputmode="numeric" id="monthlyExpense" value="300 000" data-raw="300000" class="fmt-num">
+              <span class="hint">Withdrawn from BTC monthly · increases with inflation</span>
+            </div>
+            <div class="input-group">
+              <label title="Larger periodic BTC withdrawal (e.g., vacation, major expense)">Periodic Withdrawal (HUF)<span class="info-tip">ℹ</span></label>
+              <input type="text" inputmode="numeric" id="withdrawalAmount" value="600 000" data-raw="600000" class="fmt-num">
+              <span class="hint">Larger BTC withdrawal per occurrence</span>
+            </div>
+            <div class="input-group">
+              <label title="How often the periodic withdrawal repeats per year">Frequency (×/yr)<span class="info-tip">ℹ</span></label>
+              <select id="withdrawalFreq" style="background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:13px;width:100%">
+                <option value="0">None</option>
+                <option value="1">Yearly (1×)</option>
+                <option value="2">Semi-annual (2×)</option>
+                <option value="3">Every 4 months (3×)</option>
+                <option value="4" selected>Quarterly (4×)</option>
+              </select>
+              <span class="hint">How often the periodic withdrawal</span>
+            </div>
+            <div class="input-group">
+              <label title="Annual tax on net BTC sale profit (Hungary: 15%)">Crypto Tax (%)<span class="info-tip">ℹ</span></label>
+              <input type="number" id="cryptoTax" value="15" step="1" min="0" max="50">
+              <span class="hint">Annual tax on net BTC sales (HU: 15%)</span>
+            </div>
+            <div class="input-group">
+              <label title="When enabled, your BTC balance never drops below starting level — living off gains only">Yield Only <span class="info-tip">ℹ</span></label>
+              <div style="display:flex;align-items:center;gap:8px">
+                <div class="toggle-switch" id="yieldOnlySwitch" onclick="toggleYieldOnly()"></div>
+                <span style="font-size:12px;color:var(--text3)" id="yieldOnlyLabel">Off</span>
+              </div>
+              <span class="hint">BTC Balance cannot drop below starting level</span>
+            </div>
+            <div class="input-group">
+              <label title="Your birth year — age shown at milestones">Birth Year<span class="info-tip">ℹ</span></label>
+              <input type="number" id="birthYear" value="1985" min="1940" max="2010">
+              <span class="hint">Age at milestones</span>
+            </div>
+            <div class="input-group">
+              <label title="At what age do you plan to retire">Retirement Age<span class="info-tip">ℹ</span></label>
+              <input type="number" id="retireAge" value="65" min="40" max="85">
+              <span class="hint">Planned retirement age (default: 65)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- CHARTS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="icon green">📊</div>
+      <h2>Visualization</h2>
+    </div>
+    <div class="section-body">
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="showChart('portfolio')">Portfolio</button>
+        <button class="tab-btn" onclick="showChart('prices')">Price Models</button>
+        <button class="tab-btn" onclick="showChart('withdrawal')">Withdrawal</button>
+        <button class="tab-btn" onclick="showChart('balance')">BTC Balance</button>
+        <button class="tab-btn" onclick="showChart('purchasing')">Purchasing Power</button>
+      </div>
+      <div class="chart-container"><canvas id="mainChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- SIMULATION TABLE -->
+  <div class="section">
+    <div class="section-header">
+      <div class="icon purple">📋</div>
+      <h2>Monthly Simulation</h2>
+      <button class="export-btn" onclick="exportCSV('monthly')">📥 CSV</button>
+    </div>
+    <div class="section-body">
+      <div class="table-wrap" style="max-height:500px;overflow-y:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th><th>Year</th><th>Month</th>
+              <th>BTC Price (HUF)</th><th>USD/HUF</th>
+              <th>Monthly Exp. (HUF)</th><th>Withdrawal (Ft)</th>
+              <th>DCA (HUF)</th><th>DCA (sat)</th><th>Savings (sat)</th>
+              <th>BTC Sale (sat)</th><th>Balance (sat)</th>
+              <th>BTC Portf. (HUF)</th><th>Pool (HUF)</th>
+              <th>Total Portf. (HUF)</th><th>Return</th>
+            </tr>
+          </thead>
+          <tbody id="simBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- YEARLY SUMMARY -->
+  <div class="section">
+    <div class="section-header">
+      <div class="icon orange">📅</div>
+      <h2>Yearly Summary</h2>
+      <button class="export-btn" onclick="exportCSV('yearly')">📥 CSV</button>
+    </div>
+    <div class="section-body">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Year</th><th>BTC Price (HUF)</th><th>USD/HUF</th>
+              <th>Monthly Exp. (HUF)</th><th>Withdrawal (Ft)</th><th>DCA+Savings (HUF)</th>
+              <th>Balance (sat)</th><th>BTC Portf. (HUF)</th>
+              <th>Consumed (HUF)</th><th>Tax (HUF)</th><th>Profit (HUF)</th><th>Return</th><th>Portfolio ($)</th>
+            </tr>
+          </thead>
+          <tbody id="yearBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENARIO TOOLBAR -->
+  <div class="section" style="margin-top:24px">
+    <div class="section-header">
+      <div class="icon blue">💾</div>
+      <h2>Scenarios</h2>
+    </div>
+    <div class="section-body">
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+        <input type="text" id="scenarioName" placeholder="Scenario name..." style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 12px;color:var(--text);font-size:13px;width:180px">
+        <button onclick="saveScenario()" style="background:var(--btc);color:#000;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer">💾 Save</button>
+        <span style="width:1px;height:20px;background:var(--border)"></span>
+        <div id="scenarioSlots" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+      </div>
+      <div id="scenarioCompare" style="margin-top:12px;display:none">
+        <div class="table-wrap">
+          <table id="scenarioTable">
+            <thead><tr id="scenarioHeader"></tr></thead>
+            <tbody id="scenarioBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    ⚠️ This is NOT financial advice! For modeling purposes only!<br>
+    Power Law: Giovanni Santostasi · Saylor: $500K-$1M 2030 · ARK Jan 2026: Base $710K · Std Ch: $250K 2028<br>
+    <a href="https://ferenckovacs.com" style="color:var(--btc);text-decoration:none;opacity:0.7">ferenckovacs.com</a>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// PRICE MODEL DATA (pre-calculated, 120 months from Apr 2026)
+// ============================================================
+const PRICE_MODELS = [
+[68000,68000,68000,68000],[69903,70337,71019,71016],[71915,72754,74172,74166],[73909,75254,77465,77455],[76016,77841,80904,80891],[78173,80516,84496,84479],[80308,83283,88248,88226],[82565,86145,92166,92139],[84799,89105,96258,96226],[87160,92167,100531,100494],[89575,95335,104994,104951],[91803,98611,109656,109606],[94324,102000,114524,114467],[96818,105505,119609,119544],[99452,109131,124919,124847],[102057,112882,130465,130384],[104808,116761,136258,136167],[107621,120773,142307,142207],[110402,124924,148625,148514],[113337,129217,155224,155101],[116240,133658,162115,161981],[119303,138251,169313,169165],[122433,143002,176830,176668],[125423,147917,184680,184504],[128685,153000,192880,192688],[131909,158258,201443,201234],[135310,163697,210387,210160],[138670,169322,219727,219481],[142214,175141,229482,229216],[145833,181160,239671,239382],[149408,187386,250312,250000],[153178,193826,261425,253827],[156901,200487,273031,257713],[160826,207377,285153,261659],[164832,214503,297813,265665],[168521,221875,311035,269732],[172686,229500,324844,273861],[176796,237387,339266,278054],[181128,245545,354329,282311],[185404,253984,370060,286633],[189910,262712,386490,291021],[194507,271740,403649,295476],[199042,281079,421570,300000],[203820,290739,440286,304593],[208534,300730,459834,309256],[213500,311065,480249,313991],[218563,321755,501571,318798],[223222,332813,523839,323678],[228475,344250,547097,328634],[233656,356081,571386,333665],[239111,368318,596754,338773],[244490,380975,623248,343959],[250154,394068,650919,349225],[255925,407610,679818,354572],[261615,421618,710000,360000],[267605,436108,718318,365511],[273509,451095,726733,371107],[279722,466597,735246,376789],[286053,482633,743860,382557],[291872,499219,752574,388414],[298428,516375,761390,394360],[304889,527450,770310,400398],[311686,538762,779334,406528],[318383,550317,788464,412751],[325428,562119,797701,419070],[332602,574175,807046,425486],[339668,586489,816500,432000],[347101,599068,826065,438614],[354421,611916,835743,445329],[362119,625040,845533,452146],[369955,638445,855439,459069],[377412,652137,865460,466097],[385521,666124,875599,473232],[393504,680410,885856,480477],[401898,695003,896234,487833],[410161,709908,906733,495302],[418847,725134,917356,502884],[427685,740686,928102,510583],[436384,756571,938975,518400],[445527,772797,949975,526336],[454525,789371,961104,534394],[463981,806301,972363,542576],[473599,823594,983754,550882],[482427,841257,995279,559316],[492360,859300,1006939,567879],[502134,877729,1018735,576573],[512401,896554,1030669,585400],[522502,915782,1042743,594362],[533113,935423,1054959,603461],[543901,955485,1067318,612700],[554513,975977,1079821,622080],[565658,996908,1092471,631604],[576619,1018289,1105269,641273],[588131,1040128,1118218,651091],[599832,1062436,1131317,661059],[610565,1085222,1144571,671179],[622634,1108497,1157979,681454],[634501,1132270,1171545,691887],[646959,1156554,1185269,702480],[659208,1181359,1199155,713234],[672067,1206695,1213203,724153],[685132,1232575,1227415,735240],[697976,1259010,1241794,746496],[711456,1286012,1256342,757924],[724706,1313593,1271060,769528],[738612,1341766,1285950,781309],[752738,1370542,1301015,793270],[765689,1399936,1316256,805415],[780242,1429961,1331676,817745],[794543,1460629,1347277,830265],[809548,1491955,1363060,842976],[824292,1523953,1379028,855881],[839760,1556637,1395183,868984],[855468,1590022,1411528,882288],[870900,1624123,1428064,895795],[887087,1658955,1444793,909509],[902989,1694535,1461719,923433],[919669,1730877,1478843,937571],[936603,1768000,1496167,951924],[952677,1805918,1513695,966498]
+];
+
+const MODEL_NAMES = ['Power Law', 'Saylor', 'ARK Invest', 'Std Chartered', 'Custom'];
+const MODEL_COLORS = ['#F7931A', '#4d8dff', '#a855f7', '#22d3ee', '#ff69b4'];
+
+// Historical monthly BTC USD close prices (Jun 2020 – Mar 2026 = 70 months ≈ 300 weeks)
+// Used for computing real 300-week (~69-month) moving average
+const HIST_BTC_MONTHLY = [
+  // 2020: Jun–Dec
+  9100, 11350, 11600, 10800, 13800, 19700, 29000,
+  // 2021: Jan–Dec
+  33000, 45200, 58800, 57100, 37300, 35500, 41500, 47100, 43800, 61300, 56900, 46200,
+  // 2022: Jan–Dec
+  38500, 43100, 45500, 37600, 31500, 19800, 23300, 20100, 19400, 20500, 16500, 16500,
+  // 2023: Jan–Dec
+  23100, 23500, 28400, 29200, 27200, 30500, 29300, 26100, 27000, 34100, 37700, 42300,
+  // 2024: Jan–Dec
+  42600, 52000, 71300, 64300, 67500, 61500, 65800, 58900, 63500, 72400, 96400, 93400,
+  // 2025: Jan–Dec
+  102000, 96000, 83500, 94500, 103000, 106500, 98000, 93000, 86000, 80000, 75000, 72000,
+  // 2026: Jan–Mar
+  70000, 69000, 68000
+];
+
+let chart = null;
+let currentChartType = 'portfolio';
+let simData = [];
+let monteCarloData = null;
+let breakEvenResult = null;
+let maxDrawdownResult = null;
+
+// ============================================================
+// FORMAT HELPERS
+// ============================================================
+const fmtFt = (v) => Math.round(v).toLocaleString('en-US') + '\u00a0HUF';
+const fmtUsd = (v) => '$' + Math.round(v).toLocaleString('en-US');
+const fmtSat = (v) => Math.round(v).toLocaleString('en-US');
+const fmtBtc = (v) => v.toFixed(8);
+const fmtPct = (v) => (v * 100).toFixed(1) + '%';
+const fmtFtShort = (v) => {
+  if (Math.abs(v) >= 1e9) return (v/1e9).toFixed(1) + '\u00a0B\u00a0HUF';
+  if (Math.abs(v) >= 1e6) return (v/1e6).toFixed(1) + 'M\u00a0HUF';
+  if (Math.abs(v) >= 1e3) return (v/1e3).toFixed(0) + 'K\u00a0HUF';
+  return Math.round(v) + '\u00a0HUF';
+};
+
+// ============================================================
+// GET PARAMS
+// ============================================================
+
+// Thousands separator helpers
+function parseNumVal(el) {
+  // For formatted text inputs, strip spaces and parse
+  if (el.classList.contains('fmt-num')) {
+    return parseFloat(String(el.value).replace(/\s/g, '')) || 0;
+  }
+  return parseFloat(el.value) || 0;
+}
+function fmtThousands(n) {
+  // Format number with space as thousands separator (Hungarian style)
+  const num = Math.round(n);
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+function setupFmtInput(el) {
+  // On focus: show raw number for easy editing
+  el.addEventListener('focus', function() {
+    const raw = String(this.value).replace(/\s/g, '');
+    this.value = raw;
+    this.select();
+  });
+  // On blur: re-format with thousands separators
+  el.addEventListener('blur', function() {
+    const raw = parseFloat(String(this.value).replace(/\s/g, '')) || 0;
+    this.value = fmtThousands(raw);
+  });
+}
+
+let fireMode = false;
+let pvMode = false; // Present value mode
+let yieldOnlyMode = false;
+
+// Default values for Starting Position
+const DEFAULTS = {
+  initSat: 1000000, lumpSum: 0, totalInvest: 10000000, months: 120,
+  monthlySavings: 0, startYear: 2026, startMonth: 4, birthYear: 1985,
+  btcUsd: 68000, usdHuf: 334, monetaryInflation: 7, hufCagr: 2.4
+};
+
+function resetMacroDashboard() {
+  // Reset prices & economic params
+  setFmtValue('btcUsd', DEFAULTS.btcUsd);
+  setFmtValue('usdHuf', DEFAULTS.usdHuf);
+  document.getElementById('monetaryInflation').value = DEFAULTS.monetaryInflation;
+  document.getElementById('hufCagr').value = DEFAULTS.hufCagr;
+  // Reset weights & multiplier
+  resetWeights();
+  updateMacroBtcHuf();
+  runSimulation();
+}
+
+function resetDefaults() {
+  // Starting Position
+  setFmtValue('initSat', DEFAULTS.initSat);
+  setFmtValue('lumpSum', DEFAULTS.lumpSum);
+  setFmtValue('totalInvest', DEFAULTS.totalInvest);
+  document.getElementById('months').value = DEFAULTS.months;
+  setFmtValue('monthlySavings', DEFAULTS.monthlySavings);
+  document.getElementById('startYear').value = DEFAULTS.startYear;
+  document.getElementById('startMonth').value = DEFAULTS.startMonth;
+  document.getElementById('birthYear').value = DEFAULTS.birthYear;
+  // Exchange rates
+  setFmtValue('btcUsd', DEFAULTS.btcUsd);
+  setFmtValue('usdHuf', DEFAULTS.usdHuf);
+  document.getElementById('monetaryInflation').value = DEFAULTS.monetaryInflation;
+  document.getElementById('hufCagr').value = DEFAULTS.hufCagr;
+  updateMacroBtcHuf();
+  runSimulation();
+}
+
+function setFmtValue(id, val) {
+  const el = document.getElementById(id);
+  el.value = fmtThousands(val);
+  el.dataset.raw = val;
+}
+
+function updateMacroBtcHuf() {
+  const btcUsd = parseNumVal(document.getElementById('btcUsd'));
+  const usdHuf = parseNumVal(document.getElementById('usdHuf'));
+  const el = document.getElementById('macroBtcHuf');
+  if (el) el.textContent = fmtThousands(Math.round(btcUsd * usdHuf));
+}
+
+async function fetchLivePrices() {
+  const btn = document.getElementById('fetchPricesBtn');
+  const icon = document.getElementById('fetchIcon');
+  btn.style.opacity = '0.5';
+  btn.style.pointerEvents = 'none';
+  icon.style.display = 'inline-block';
+  icon.style.animation = 'spin 1s linear infinite';
+  try {
+    // Fetch BTC/USD and BTC/HUF from CoinGecko (free, no key)
+    const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,huf');
+    const data = await res.json();
+    if (data.bitcoin) {
+      const btcUsd = Math.round(data.bitcoin.usd);
+      const btcHuf = Math.round(data.bitcoin.huf);
+      const usdHuf = btcHuf / btcUsd;
+      setFmtValue('btcUsd', btcUsd);
+      setFmtValue('usdHuf', Math.round(usdHuf));
+      updateMacroBtcHuf();
+      runSimulation();
+      // Flash success
+      icon.textContent = '✅';
+      setTimeout(() => { icon.textContent = '🔄'; }, 2000);
+    }
+  } catch (e) {
+    console.error('Price fetch failed:', e);
+    icon.textContent = '❌';
+    setTimeout(() => { icon.textContent = '🔄'; }, 2000);
+  } finally {
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+    icon.style.animation = '';
+  }
+}
+
+function toggleFire() {
+  fireMode = !fireMode;
+  const sw = document.getElementById('fireSwitch');
+  const body = document.getElementById('fireBody');
+  const section = body.closest('.section');
+  sw.classList.toggle('active', fireMode);
+  body.classList.toggle('open', fireMode);
+  section.classList.toggle('fire-off', !fireMode);
+  document.getElementById('totalInvestHint').textContent = fireMode
+    ? 'Amount for DCA (withdrawal from BTC)'
+    : 'Amount allocated for DCA';
+  runSimulation();
+}
+
+function toggleYieldOnly() {
+  yieldOnlyMode = !yieldOnlyMode;
+  document.getElementById('yieldOnlySwitch').classList.toggle('active', yieldOnlyMode);
+  document.getElementById('yieldOnlyLabel').textContent = yieldOnlyMode ? 'On' : 'Off';
+  runSimulation();
+}
+
+function setPvMode(on) {
+  pvMode = on;
+  document.getElementById('pvBtnNominal').classList.toggle('active', !on);
+  document.getElementById('pvBtnReal').classList.toggle('active', on);
+  updateMacroBtcHuf();
+  renderSummary();
+  renderTable();
+  renderYearly();
+  renderChart();
+}
+
+// Present value deflator: nominal / (1 + inflation)^years
+function pvDeflator(monthIndex) {
+  if (!pvMode) return 1;
+  const inf = (parseFloat(document.getElementById('monetaryInflation').value) || 7) / 100;
+  return Math.pow(1 + inf, monthIndex / 12);
+}
+
+function getParams() {
+  const fire = fireMode;
+  return {
+    initBTC: (parseNumVal(document.getElementById('initSat')) || 0) / 1e8,
+    lumpSum: parseNumVal(document.getElementById('lumpSum')),
+    totalInvest: parseNumVal(document.getElementById('totalInvest')),
+    months: parseInt(document.getElementById('months').value) || 1,
+    monthlySavings: parseNumVal(document.getElementById('monthlySavings')),
+    monthlyExpense: fire ? parseNumVal(document.getElementById('monthlyExpense')) : 0,
+    withdrawalAmount: fire ? parseNumVal(document.getElementById('withdrawalAmount')) : 0,
+    withdrawalFreq: fire ? parseInt(document.getElementById('withdrawalFreq').value) || 0 : 0,
+    cryptoTax: fire ? (parseFloat(document.getElementById('cryptoTax').value) || 0) / 100 : 0,
+    yieldOnly: yieldOnlyMode,
+    monetaryInflation: (parseFloat(document.getElementById('monetaryInflation').value) || 7) / 100,
+    startYear: parseInt(document.getElementById('startYear').value) || 2026,
+    startMonth: parseInt(document.getElementById('startMonth').value) || 4,
+    birthYear: parseInt(document.getElementById('birthYear').value) || 1985,
+    btcUsd: parseNumVal(document.getElementById('btcUsd')),
+    usdHuf: parseNumVal(document.getElementById('usdHuf')),
+    hufCagr: parseFloat(document.getElementById('hufCagr').value) / 100 || 0.024,
+    weights: getWeights()
+  };
+}
+
+function getWeights() {
+  const w = [];
+  document.querySelectorAll('.weight-slider').forEach(s => w.push(parseFloat(s.value) / 100));
+  return w;
+}
+
+// ============================================================
+// CUSTOM PRICE GENERATION
+// ============================================================
+function generateCustomPrices() {
+  const startPrice = parseNumVal(document.getElementById('btcUsd'));
+  const y3 = parseNumVal(document.getElementById('customY3'));
+  const y5 = parseNumVal(document.getElementById('customY5'));
+  const y10 = parseNumVal(document.getElementById('customY10'));
+  // Keypoints: month 0=startPrice, month 36=y3, month 60=y5, month 120=y10
+  const keys = [{m:0,p:startPrice},{m:36,p:y3},{m:60,p:y5},{m:120,p:y10}];
+  const prices = [];
+  for (let m = 0; m <= 120; m++) {
+    // Find surrounding keypoints
+    let lo = keys[0], hi = keys[keys.length-1];
+    for (let k = 0; k < keys.length - 1; k++) {
+      if (m >= keys[k].m && m <= keys[k+1].m) {
+        lo = keys[k]; hi = keys[k+1]; break;
+      }
+    }
+    const t = hi.m > lo.m ? (m - lo.m) / (hi.m - lo.m) : 0;
+    prices.push(lo.p + t * (hi.p - lo.p));
+  }
+  return prices;
+}
+
+// ============================================================
+// SIMULATION
+// ============================================================
+function runSimulation() {
+  updateMacroBtcHuf();
+  const p = getParams();
+  const C8 = Math.min(p.months, 120);
+  const maxM = 120; // Always run to 2036
+  const priceMult = parseInt(document.getElementById('priceMultiplier').value) / 100;
+
+  // DCA amount per month (from totalInvest pool — all goes to BTC)
+  const dcaPerMonth = p.totalInvest / C8;
+
+  // Computed values
+  const btcHuf0 = p.btcUsd * p.usdHuf;
+  const initSatoshi = Math.round(p.initBTC * 1e8);
+
+  // Lump sum BTC purchase at start price
+  const lumpSumSat = btcHuf0 > 0 ? Math.round(p.lumpSum / btcHuf0 * 1e8) : 0;
+  const totalInitSat = initSatoshi + lumpSumSat;
+  const portfolioFt0 = totalInitSat / 1e8 * btcHuf0;
+
+  // Withdrawal interval in months (freq=4 → every 3 months, freq=1 → every 12)
+  const withdrawalInterval = p.withdrawalFreq > 0 ? Math.round(12 / p.withdrawalFreq) : 0;
+
+  // Total invested = totalInvest pool + lump sum + monthly savings over 120 months
+  const totalInvestedAll = p.totalInvest + p.lumpSum + p.monthlySavings * 120;
+
+  // Update hints
+  document.getElementById('initSatHint').textContent = '= ' + fmtBtc(p.initBTC) + ' BTC'
+    + (lumpSumSat > 0 ? ' + ' + fmtSat(lumpSumSat) + ' sat (purchase) = ' + fmtSat(totalInitSat) + ' sat' : '')
+    + ' · ' + fmtFt(portfolioFt0);
+
+  simData = [];
+  let satBalance = totalInitSat;
+  let remainingCash = p.totalInvest;
+  let cumConsumed = 0; // Cumulative consumed: withdrawal Ft
+  let cumTaxPaid = 0;  // Cumulative crypto tax paid
+
+  // Yearly tax tracking
+  let yearlyBuySat = 0;
+  let yearlySellSat = 0;
+  let yearlySellFt = 0;
+  let yearlyBuyFt = 0;
+  let currentTaxYear = -1;
+
+  for (let m = 0; m <= maxM; m++) {
+    const pm = Math.min(Math.max(0, m - 1), PRICE_MODELS.length - 1);
+    const prices = PRICE_MODELS[pm];
+
+    // Weighted USD price — multiplier scales only the GROWTH above starting price
+    const basePrices = PRICE_MODELS[0];
+    const customPrices = generateCustomPrices();
+    let weightedUsd = 0;
+    for (let i = 0; i < 4; i++) {
+      const growth = prices[i] - basePrices[i];
+      weightedUsd += p.weights[i] * (basePrices[i] + growth * priceMult);
+    }
+    // 5th model: custom price curve
+    if (p.weights.length > 4 && p.weights[4] > 0) {
+      const customM = Math.min(m, 120);
+      const startP = customPrices[0];
+      const growthC = customPrices[customM] - startP;
+      weightedUsd += p.weights[4] * (startP + growthC * priceMult);
+    }
+
+    // USD/HUF with CAGR
+    const usdHufM = p.usdHuf * Math.pow(1 + p.hufCagr, m / 12);
+    const btcHufM = weightedUsd * usdHufM;
+
+    // Calendar year/month
+    const calMonth = ((p.startMonth - 1 + m) % 12) + 1;
+    const calYear = p.startYear + Math.floor((p.startMonth - 1 + m) / 12);
+
+    // Reset yearly tax tracking on new year
+    if (calYear !== currentTaxYear) {
+      if (currentTaxYear > 0 && yearlySellSat > yearlyBuySat && p.cryptoTax > 0) {
+        const netSellFt = yearlySellFt - yearlyBuyFt;
+        if (netSellFt > 0) {
+          const tax = netSellFt * p.cryptoTax;
+          cumTaxPaid += tax;
+          remainingCash -= tax;
+          if (remainingCash < 0) remainingCash = 0;
+        }
+      }
+      yearlyBuySat = 0;
+      yearlySellSat = 0;
+      yearlySellFt = 0;
+      yearlyBuyFt = 0;
+      currentTaxYear = calYear;
+    }
+
+    // Withdrawals from BTC (FIRE mode): monthly + periodic
+    let monthlyExpSat = 0, monthlyExpFt = 0;
+    let withdrawalSat = 0, withdrawalFt = 0;
+    let dcaFt = 0, dcaSat = 0, savingsSat = 0, btcSaleSat = 0;
+
+    if (m === 0) {
+      // Month 0: initial state
+      if (lumpSumSat > 0) {
+        yearlyBuySat += lumpSumSat;
+        yearlyBuyFt += p.lumpSum;
+      }
+    } else {
+      const yearsSinceStart = m / 12;
+      const inflFactor = Math.pow(1 + p.monetaryInflation, yearsSinceStart);
+
+      // Monthly fixed expense from BTC (inflation-adjusted)
+      if (p.monthlyExpense > 0) {
+        monthlyExpFt = p.monthlyExpense * inflFactor;
+        monthlyExpSat = btcHufM > 0 ? Math.round(monthlyExpFt / btcHufM * 1e8) : 0;
+      }
+
+      // Periodic larger withdrawal: every N months, sell BTC
+      if (withdrawalInterval > 0 && m % withdrawalInterval === 0) {
+        withdrawalFt = p.withdrawalAmount * inflFactor;
+        withdrawalSat = btcHufM > 0 ? Math.round(withdrawalFt / btcHufM * 1e8) : 0;
+      }
+
+      // DCA only during active period (months 1..C8)
+      if (m <= C8) {
+        dcaFt = Math.max(0, dcaPerMonth);
+        dcaSat = btcHufM > 0 ? Math.round(dcaFt / btcHufM * 1e8) : 0;
+      }
+
+      // Extra monthly savings → BTC purchase
+      if (p.monthlySavings > 0) {
+        savingsSat = btcHufM > 0 ? Math.round(p.monthlySavings / btcHufM * 1e8) : 0;
+      }
+
+      // BTC sale — triggered when cash can't cover DCA
+      if (remainingCash - dcaFt < 0) {
+        const deficit = -(remainingCash - dcaFt);
+        btcSaleSat = btcHufM > 0 ? Math.round(deficit / btcHufM * 1e8) : 0;
+      }
+
+      // Net sat change
+      satBalance += dcaSat;
+      satBalance += savingsSat;
+
+      // Yield-only mode: BTC balance cannot drop below initial amount
+      if (p.yieldOnly && fireMode) {
+        const maxSpend = Math.max(0, satBalance - totalInitSat);
+        const totalSpend = monthlyExpSat + withdrawalSat;
+        if (totalSpend > maxSpend) {
+          const ratio = maxSpend > 0 ? maxSpend / totalSpend : 0;
+          monthlyExpSat = Math.round(monthlyExpSat * ratio);
+          monthlyExpFt = monthlyExpFt * ratio;
+          withdrawalSat = Math.round(withdrawalSat * ratio);
+          withdrawalFt = withdrawalFt * ratio;
+        }
+      }
+
+      satBalance -= monthlyExpSat;   // Monthly fixed expense from BTC
+      satBalance -= withdrawalSat;   // Periodic larger withdrawal from BTC
+      satBalance -= btcSaleSat;
+
+      if (satBalance < 0) satBalance = 0;
+
+      // Cash pool
+      remainingCash = remainingCash - dcaFt;
+      if (btcSaleSat > 0) {
+        remainingCash += btcSaleSat / 1e8 * btcHufM;
+      }
+      remainingCash = Math.max(0, remainingCash);
+
+      // Track yearly buys/sells for tax
+      yearlyBuySat += dcaSat + savingsSat;
+      yearlyBuyFt += dcaFt + p.monthlySavings;
+      yearlySellSat += monthlyExpSat + withdrawalSat + btcSaleSat;
+      yearlySellFt += monthlyExpFt + withdrawalFt + (btcSaleSat / 1e8 * btcHufM);
+
+      cumConsumed += monthlyExpFt + withdrawalFt;
+    }
+
+    const btcPortfolioFt = satBalance / 1e8 * btcHufM;
+    const totalPortfolioFt = btcPortfolioFt + remainingCash;
+    const profit = totalPortfolioFt + cumConsumed - totalInvestedAll;
+    const returnPct = totalInvestedAll > 0 ? profit / totalInvestedAll : 0;
+
+    simData.push({
+      m, calYear, calMonth,
+      btcHufM, usdHufM, weightedUsd,
+      monthlyExpSat, monthlyExpFt, withdrawalSat, withdrawalFt,
+      dcaFt, dcaSat, savingsSat, btcSaleSat,
+      satBalance, btcPortfolioFt, remainingCash, totalPortfolioFt,
+      profit, returnPct, cumConsumed, cumTaxPaid,
+      prices,
+      customPrice: customPrices[Math.min(m, 120)]
+    });
+  }
+
+  // Final year tax settlement (last year in simulation)
+  if (yearlySellSat > yearlyBuySat && p.cryptoTax > 0) {
+    const netSellFt = yearlySellFt - yearlyBuyFt;
+    if (netSellFt > 0) {
+      cumTaxPaid += netSellFt * p.cryptoTax;
+    }
+  }
+  // Store final cumTaxPaid in last simData entry
+  if (simData.length > 0) {
+    simData[simData.length - 1].cumTaxPaid = cumTaxPaid;
+  }
+
+  // Break-even: first month where portfolio + consumed > invested
+  breakEvenResult = null;
+  for (let i = 1; i < simData.length; i++) {
+    if (simData[i].totalPortfolioFt + simData[i].cumConsumed > totalInvestedAll) {
+      breakEvenResult = { month: simData[i].m, year: simData[i].calYear, calMonth: simData[i].calMonth };
+      break;
+    }
+  }
+
+  // Max drawdown from peak
+  maxDrawdownResult = { pct: 0, month: 0, year: 0, calMonth: 0 };
+  let peakPortfolio = 0;
+  for (let i = 0; i < simData.length; i++) {
+    const val = simData[i].totalPortfolioFt + simData[i].cumConsumed;
+    if (val > peakPortfolio) peakPortfolio = val;
+    if (peakPortfolio > 0) {
+      const dd = (val - peakPortfolio) / peakPortfolio;
+      if (dd < maxDrawdownResult.pct) {
+        maxDrawdownResult = { pct: dd, month: simData[i].m, year: simData[i].calYear, calMonth: simData[i].calMonth };
+      }
+    }
+  }
+
+  // Calculate sustainability after simulation
+  sustainabilityResult = calcSustainability(p, simData[simData.length - 1]);
+
+  // DCA vs Lump Sum comparison
+  // What if all totalInvest was invested at month 0?
+  const lumpAllSat = btcHuf0 > 0 ? Math.round((p.totalInvest + p.lumpSum) / btcHuf0 * 1e8) : 0;
+  const lumpAllInitSat = Math.round(p.initBTC * 1e8) + lumpAllSat;
+  const lastD = simData[simData.length - 1];
+  const lumpPortfolioFt = lumpAllInitSat / 1e8 * lastD.btcHufM;
+  const dcaPortfolioFt = lastD.btcPortfolioFt;
+  lumpSumCompare = {
+    lumpFt: lumpPortfolioFt,
+    dcaFt: dcaPortfolioFt,
+    diff: dcaPortfolioFt - lumpPortfolioFt,
+    dcaWins: dcaPortfolioFt > lumpPortfolioFt
+  };
+
+  renderSummary();
+  renderTable();
+  renderYearly();
+  runMonteCarlo();
+  renderChart();
+}
+
+// ============================================================
+// SUSTAINABILITY PROJECTION
+// After month 120, how long can the portfolio sustain same spending?
+// ============================================================
+let sustainabilityResult = null;
+let lumpSumCompare = null;
+
+function calcSustainability(p, lastSim) {
+  if (!lastSim || lastSim.m === 0) return null;
+  if (p.monthlyExpense === 0 && (p.withdrawalFreq === 0 || p.withdrawalAmount === 0)) return null; // No FIRE
+
+  const last = lastSim;
+  const m108 = simData.find(d => d.m === 108);
+  const m120 = simData.find(d => d.m === 120) || last;
+  let monthlyBtcGrowth = 1.005;
+  if (m108 && m120 && m108.weightedUsd > 0) {
+    monthlyBtcGrowth = Math.pow(m120.weightedUsd / m108.weightedUsd, 1 / 12);
+  }
+  monthlyBtcGrowth = Math.max(0.99, Math.min(monthlyBtcGrowth, 1.05));
+
+  let satBal = last.satBalance;
+  let cash = last.remainingCash;
+  let btcUsdM = last.weightedUsd;
+  let usdHufM = last.usdHufM;
+  const withdrawalInterval = p.withdrawalFreq > 0 ? Math.round(12 / p.withdrawalFreq) : 0;
+
+  const maxExtraMonths = 600;
+  let calYear = last.calYear;
+  let calMonth = last.calMonth;
+
+  for (let em = 1; em <= maxExtraMonths; em++) {
+    calMonth++;
+    if (calMonth > 12) { calMonth = 1; calYear++; }
+
+    btcUsdM *= monthlyBtcGrowth;
+    usdHufM = p.usdHuf * Math.pow(1 + p.hufCagr, (120 + em) / 12);
+    const btcHufM = btcUsdM * usdHufM;
+    const yearsSinceStart = (120 + em) / 12;
+    const inflFactor = Math.pow(1 + p.monetaryInflation, yearsSinceStart);
+
+    // Monthly fixed expense from BTC
+    if (p.monthlyExpense > 0) {
+      const mExpFt = p.monthlyExpense * inflFactor;
+      const mExpSat = btcHufM > 0 ? Math.round(mExpFt / btcHufM * 1e8) : 0;
+      satBal -= mExpSat;
+    }
+
+    // Periodic withdrawal from BTC with inflation
+    if (withdrawalInterval > 0 && (120 + em) % withdrawalInterval === 0) {
+      const inflatedAmount = p.withdrawalAmount * inflFactor;
+      const wSat = btcHufM > 0 ? Math.round(inflatedAmount / btcHufM * 1e8) : 0;
+      satBal -= wSat;
+    }
+
+    // Portfolio depleted?
+    if (satBal <= 0 && cash <= 0) {
+      return {
+        sustainable: false,
+        extraMonths: em,
+        totalMonths: 120 + em,
+        endYear: calYear,
+        endMonth: calMonth,
+        endDate: `${calYear}. ${String(calMonth).padStart(2, '0')}`
+      };
+    }
+  }
+
+  return {
+    sustainable: true,
+    extraMonths: maxExtraMonths,
+    totalMonths: 120 + maxExtraMonths,
+    endYear: calYear,
+    endMonth: calMonth
+  };
+}
+
+// ============================================================
+// TOGGLE DETAILS
+// ============================================================
+function toggleDetails() {
+  const details = document.getElementById('summaryDetails');
+  const toggle = document.getElementById('detailToggle');
+  details.classList.toggle('open');
+  toggle.classList.toggle('open');
+}
+
+// ============================================================
+// RENDER SUMMARY CARDS
+// ============================================================
+function renderSummary() {
+  const p = getParams();
+  const last = simData[simData.length - 1];
+  if (!last) return;
+
+  const btcHuf0 = p.btcUsd * p.usdHuf;
+  const months120 = last.m || 120;
+  const totalInvestedAll = p.totalInvest + p.lumpSum + p.monthlySavings * 120;
+  // Present value deflator for final month
+  const pvD = pvDeflator(last.m);
+  const pvLabel = pvMode ? ' (present value)' : '';
+  const pv = (v) => v / pvD;
+
+  // CAGR and return % — in PV mode use deflated portfolio
+  const pvPortfolio = pv(last.totalPortfolioFt);
+  const pvConsumed = pv(last.cumConsumed);
+  const pvProfit = pvPortfolio + pvConsumed - totalInvestedAll;
+  const pvReturnPct = totalInvestedAll > 0 ? pvProfit / totalInvestedAll : 0;
+  const cagr = totalInvestedAll > 0 && pvPortfolio > 0
+    ? Math.pow((pvPortfolio + pvConsumed) / totalInvestedAll, 12 / months120) - 1 : 0;
+
+  const startDate = `${p.startYear}. ${String(p.startMonth).padStart(2,'0')}`;
+  const endDate = `${last.calYear}. ${String(last.calMonth).padStart(2,'0')}`;
+  const dcaEndM = simData.find(d => d.m === Math.min(p.months, 120));
+  const dcaEndDate = dcaEndM ? `${dcaEndM.calYear}. ${String(dcaEndM.calMonth).padStart(2,'0')}` : endDate;
+  const dcaMonthly = Math.max(0, p.totalInvest / Math.min(p.months, 120));
+
+  // PRIMARY cards: only key metrics in top row
+  const primaryCards = [
+    { label: 'Total Investment', value: fmtFt(totalInvestedAll), sub: 'Pool ' + fmtFt(p.totalInvest) + (p.lumpSum > 0 ? ' + lump ' + fmtFt(p.lumpSum) : '') + (p.monthlySavings > 0 ? ' + ' + fmtFt(p.monthlySavings) + '/mo' : ''), cls: '' },
+    { label: 'Monthly DCA', value: fmtFt(dcaMonthly + p.monthlySavings), sub: startDate + ' – ' + dcaEndDate, cls: '' },
+    { label: 'Final Portfolio' + pvLabel, value: fmtFt(pvPortfolio), sub: endDate + ' · ' + fmtUsd(pvPortfolio / last.usdHufM) + (p.birthYear ? ' · ' + (last.calYear - p.birthYear) + ' yrs old' : ''), cls: 'highlight' },
+    { label: 'Return' + pvLabel, value: fmtPct(pvReturnPct), sub: 'CAGR: ' + fmtPct(cagr) + ' (' + months120 + ' mo)', cls: pvReturnPct >= 0 ? 'green' : 'red' },
+  ];
+
+  // DETAIL cards: everything else, shown on expand
+  const detailCards = [
+    { label: 'Starting BTC', value: fmtSat(Math.round(p.initBTC * 1e8 + (btcHuf0 > 0 ? p.lumpSum / btcHuf0 * 1e8 : 0))) + ' sat', sub: fmtBtc((p.initBTC * 1e8 + (btcHuf0 > 0 ? p.lumpSum / btcHuf0 * 1e8 : 0)) / 1e8) + ' BTC', cls: '' },
+    { label: 'BTC Price (HUF)', value: fmtFt(btcHuf0), sub: fmtUsd(p.btcUsd), cls: '' },
+    { label: 'Total Profit' + pvLabel, value: fmtFt(pvProfit), sub: 'portfolio + consumed − invested', cls: pvProfit >= 0 ? 'green' : 'red' },
+    { label: 'BTC Balance', value: fmtBtc(last.satBalance / 1e8), sub: fmtSat(last.satBalance) + ' sat', cls: '' },
+    { label: 'Total Consumed' + pvLabel, value: fmtFt(pvConsumed), sub: 'monthly expense + periodic withdrawal', cls: '' },
+  ];
+
+  // Break-even card
+  if (breakEvenResult) {
+    detailCards.push({ label: 'Break-even', value: breakEvenResult.month + '. monap', sub: breakEvenResult.year + '. ' + String(breakEvenResult.calMonth).padStart(2, '0') + ' · portfolio profitable', cls: 'green' });
+  } else {
+    detailCards.push({ label: 'Break-even', value: 'None', sub: 'Portfolio does not reach profitability', cls: 'red' });
+  }
+  // Max drawdown card
+  if (maxDrawdownResult && maxDrawdownResult.pct < 0) {
+    detailCards.push({ label: 'Max Drawdown', value: (maxDrawdownResult.pct * 100).toFixed(1) + '%', sub: maxDrawdownResult.month + '. mo · ' + maxDrawdownResult.year + '. ' + String(maxDrawdownResult.calMonth).padStart(2, '0'), cls: 'red' });
+  }
+
+  // Tax card
+  if (last.cumTaxPaid > 0) {
+    detailCards.push({
+      label: 'Crypto Tax Paid',
+      value: fmtFt(last.cumTaxPaid),
+      sub: (p.cryptoTax * 100) + '% · on annual net sales',
+      cls: 'red'
+    });
+  }
+
+  // Sustainability card
+  if (sustainabilityResult) {
+    const sr = sustainabilityResult;
+    if (sr.sustainable) {
+      const extraYrs = Math.floor(sr.extraMonths / 12);
+      detailCards.push({
+        label: 'Sustainability',
+        value: '∞ Sustainable',
+        sub: endDate + ' after ' + extraYrs + '+ yrs · does not deplete',
+        cls: 'green'
+      });
+    } else {
+      const totalYrs = (sr.totalMonths / 12).toFixed(1);
+      const extraYrs = (sr.extraMonths / 12).toFixed(1);
+      detailCards.push({
+        label: 'Sustainability',
+        value: sr.endDate + ' until',
+        sub: 'Total ' + totalYrs + ' yrs (' + endDate + ' after plus +' + extraYrs + ' yrs)',
+        cls: 'red'
+      });
+    }
+  }
+
+  // Retirement age countdown card
+  if (p.birthYear) {
+    const retireAge = parseInt(document.getElementById('retireAge')?.value) || 65;
+    const retireYear = p.birthYear + retireAge;
+    const currentAge = last.calYear - p.birthYear;
+    const yearsToRetire = retireYear - last.calYear;
+    if (yearsToRetire > 0) {
+      detailCards.push({ label: 'Until Retirement', value: yearsToRetire + ' yrs', sub: retireYear + ' · ' + retireAge + ' yrs old · most ' + (p.startYear - p.birthYear) + ' yrs old', cls: '' });
+    } else {
+      detailCards.push({ label: 'Retirement Age', value: 'Reached!', sub: retireYear + ' · portfolio: ' + fmtFtShort(pvPortfolio), cls: 'green' });
+    }
+  }
+
+
+  const cardHtml = (c) => `<div class="summary-card ${c.cls}">
+      <div class="label">${c.label}</div>
+      <div class="value">${c.value}</div>
+      ${c.sub ? `<div class="sub">${c.sub}</div>` : ''}
+    </div>`;
+  document.getElementById('summaryCards').innerHTML = primaryCards.map(cardHtml).join('');
+  document.getElementById('summaryDetailsCards').innerHTML = detailCards.map(cardHtml).join('');
+
+}
+
+// ============================================================
+// RENDER TABLE
+// ============================================================
+function renderTable() {
+  const p = getParams();
+  const totalInvestedAll = p.totalInvest + p.lumpSum + p.monthlySavings * 120;
+  const html = simData.map(d => {
+    const pvD = pvDeflator(d.m);
+    const pv = (v) => v / pvD;
+    const pvProfit = pv(d.totalPortfolioFt) + pv(d.cumConsumed) - totalInvestedAll;
+    const pvRet = totalInvestedAll > 0 ? pvProfit / totalInvestedAll : 0;
+    const retCls = pvRet >= 0 ? 'pos' : 'neg';
+    return `<tr>
+      <td>${d.m}</td>
+      <td>${d.calYear}</td>
+      <td>${d.calMonth}</td>
+      <td>${fmtFt(pv(d.btcHufM))}</td>
+      <td>${d.usdHufM.toFixed(2)}</td>
+      <td>${d.monthlyExpFt > 0 ? fmtFt(pv(d.monthlyExpFt)) : '-'}</td>
+      <td>${d.withdrawalFt > 0 ? fmtFt(pv(d.withdrawalFt)) : '-'}</td>
+      <td>${d.m > 0 ? fmtFt(pv(d.dcaFt)) : '-'}</td>
+      <td class="fmt-sat">${d.m > 0 ? fmtSat(d.dcaSat) : '-'}</td>
+      <td class="fmt-sat">${d.savingsSat > 0 ? fmtSat(d.savingsSat) : '-'}</td>
+      <td class="${d.btcSaleSat > 0 ? 'neg' : ''}">${d.btcSaleSat > 0 ? fmtSat(d.btcSaleSat) : '-'}</td>
+      <td class="fmt-btc">${fmtSat(d.satBalance)}</td>
+      <td>${fmtFt(pv(d.btcPortfolioFt))}</td>
+      <td>${fmtFt(pv(d.remainingCash))}</td>
+      <td style="font-weight:600">${fmtFt(pv(d.totalPortfolioFt))}</td>
+      <td class="${retCls}" style="font-weight:600">${fmtPct(pvRet)}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('simBody').innerHTML = html;
+}
+
+// ============================================================
+// RENDER YEARLY
+// ============================================================
+function renderYearly() {
+  const years = {};
+  simData.forEach((d, i) => {
+    const y = d.calYear;
+    if (!years[y]) years[y] = { monthlyExp: 0, withdrawal: 0, dcaBuy: 0, last: d };
+    if (i > 0) {
+      years[y].monthlyExp += d.monthlyExpFt;
+      years[y].withdrawal += d.withdrawalFt;
+      years[y].dcaBuy += d.dcaFt + (d.savingsSat / 1e8 * d.btcHufM);
+    }
+    years[y].last = d;
+  });
+
+  const p = getParams();
+  const totalInvestedAll = p.totalInvest + p.lumpSum + p.monthlySavings * 120;
+  const html = Object.entries(years).map(([yr, yd]) => {
+    const d = yd.last;
+    const pvD = pvDeflator(d.m);
+    const pv = (v) => v / pvD;
+    const pvProfit = pv(d.totalPortfolioFt) + pv(d.cumConsumed) - totalInvestedAll;
+    const pvRet = totalInvestedAll > 0 ? pvProfit / totalInvestedAll : 0;
+    const retCls = pvRet >= 0 ? 'pos' : 'neg';
+    const profitCls = pvProfit >= 0 ? 'pos' : 'neg';
+    const portUsd = d.usdHufM > 0 ? pv(d.totalPortfolioFt) / d.usdHufM : 0;
+    return `<tr>
+      <td style="text-align:center;font-weight:600">${yr}</td>
+      <td>${fmtFt(pv(d.btcHufM))}</td>
+      <td>${d.usdHufM.toFixed(2)}</td>
+      <td class="neg">${fmtFt(pv(yd.monthlyExp))}</td>
+      <td class="neg">${fmtFt(pv(yd.withdrawal))}</td>
+      <td class="pos">${fmtFt(pv(yd.dcaBuy))}</td>
+      <td class="fmt-sat">${fmtSat(d.satBalance)}</td>
+      <td style="font-weight:600">${fmtFt(pv(d.totalPortfolioFt))}</td>
+      <td>${fmtFt(pv(d.cumConsumed))}</td>
+      <td class="neg">${fmtFt(pv(d.cumTaxPaid))}</td>
+      <td class="${profitCls}" style="font-weight:600">${fmtFt(pvProfit)}</td>
+      <td class="${retCls}" style="font-weight:600">${fmtPct(pvRet)}</td>
+      <td>${fmtUsd(portUsd)}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('yearBody').innerHTML = html;
+}
+
+// ============================================================
+// CHARTS
+// ============================================================
+function showChart(type) {
+  currentChartType = type;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderChart();
+}
+
+// ============================================================
+// MONTE CARLO SIMULATION
+// ============================================================
+function runMonteCarlo() {
+  if (simData.length === 0) return;
+  const nRuns = 200;
+  const monthlySigma = 0.043; // ~15% annual volatility
+  const months = simData.length;
+  const allRuns = [];
+
+  for (let r = 0; r < nRuns; r++) {
+    const run = [simData[0].totalPortfolioFt];
+    for (let m = 1; m < months; m++) {
+      const baseGrowth = simData[m].totalPortfolioFt / Math.max(1, simData[m-1].totalPortfolioFt);
+      // Add random noise to growth rate
+      const noise = 1 + (Math.random() * 2 - 1) * monthlySigma * 2 + (Math.random() * 2 - 1) * monthlySigma;
+      run.push(run[m-1] * baseGrowth * noise);
+    }
+    allRuns.push(run);
+  }
+
+  // Calculate percentiles at each month
+  const p10 = [], p50 = [], p90 = [];
+  for (let m = 0; m < months; m++) {
+    const vals = allRuns.map(r => r[m]).sort((a, b) => a - b);
+    p10.push(vals[Math.floor(nRuns * 0.1)]);
+    p50.push(vals[Math.floor(nRuns * 0.5)]);
+    p90.push(vals[Math.floor(nRuns * 0.9)]);
+  }
+
+  monteCarloData = { p10, p50, p90 };
+}
+
+function renderChart() {
+  const ctx = document.getElementById('mainChart').getContext('2d');
+  if (chart) chart.destroy();
+
+  const labels = simData.map(d => `${d.calYear}/${String(d.calMonth).padStart(2,'0')}`);
+  let datasets = [];
+  let yTitle = '';
+  let tooltipFmt = (v) => fmtFt(v);
+
+  if (currentChartType === 'portfolio') {
+    const pvSuffix = pvMode ? ' (present value)' : '';
+    datasets = [
+      {
+        label: 'BTC Portfolio (HUF)' + pvSuffix,
+        data: simData.map(d => d.btcPortfolioFt / pvDeflator(d.m)),
+        borderColor: '#F7931A',
+        backgroundColor: 'rgba(247,147,26,0.1)',
+        fill: true,
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0.3
+      },
+      {
+        label: 'Remaining Pool (HUF)' + pvSuffix,
+        data: simData.map(d => d.remainingCash / pvDeflator(d.m)),
+        borderColor: '#4d8dff',
+        backgroundColor: 'rgba(77,141,255,0.1)',
+        fill: true,
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0.3
+      },
+      {
+        label: 'Total Portfolio (HUF)' + pvSuffix,
+        data: simData.map(d => d.totalPortfolioFt / pvDeflator(d.m)),
+        borderColor: '#00d68f',
+        borderWidth: 3,
+        pointRadius: 0,
+        tension: 0.3
+      }
+    ];
+    // Monte Carlo bands
+    if (monteCarloData) {
+      datasets.push({
+        label: '90th Percentile',
+        data: monteCarloData.p90,
+        borderColor: 'rgba(0,214,143,0.3)',
+        backgroundColor: 'rgba(0,214,143,0.05)',
+        fill: '+1',
+        borderWidth: 1,
+        pointRadius: 0,
+        tension: 0.3,
+        borderDash: [3, 3]
+      });
+      datasets.push({
+        label: '10th Percentile',
+        data: monteCarloData.p10,
+        borderColor: 'rgba(255,77,106,0.3)',
+        backgroundColor: 'rgba(255,77,106,0.05)',
+        fill: false,
+        borderWidth: 1,
+        pointRadius: 0,
+        tension: 0.3,
+        borderDash: [3, 3]
+      });
+    }
+    yTitle = 'HUF';
+  } else if (currentChartType === 'prices') {
+    const p = getParams();
+    for (let i = 0; i < 4; i++) {
+      datasets.push({
+        label: MODEL_NAMES[i] + ' ($)',
+        data: simData.map(d => d.prices[i]),
+        borderColor: MODEL_COLORS[i],
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0.3,
+        borderDash: i === 0 ? [] : [5, 3]
+      });
+    }
+    // Custom price model line
+    datasets.push({
+      label: MODEL_NAMES[4] + ' ($)',
+      data: simData.map(d => d.customPrice),
+      borderColor: MODEL_COLORS[4],
+      borderWidth: 2,
+      pointRadius: 0,
+      tension: 0.3,
+      borderDash: [5, 3]
+    });
+    datasets.push({
+      label: 'Weighted ($)',
+      data: simData.map(d => d.weightedUsd),
+      borderColor: '#fff',
+      borderWidth: 3,
+      pointRadius: 0,
+      tension: 0.3
+    });
+    // 300-week MA based on REAL historical prices, projected forward
+    // HIST_BTC_MONTHLY has ~70 months of real data ending at sim start
+    // We use a rolling 69-month window (≈300 weeks)
+    const maWindow = 69;
+    // Build the rolling window: start with last 69 historical months
+    const histLen = HIST_BTC_MONTHLY.length;
+    const maQueue = HIST_BTC_MONTHLY.slice(Math.max(0, histLen - maWindow));
+    // Pad front if not enough history
+    while (maQueue.length < maWindow) maQueue.unshift(maQueue[0]);
+    const maData = simData.map((d, idx) => {
+      // For month 0, the queue is pure historical
+      // For subsequent months, we shift in the weighted model price
+      if (idx > 0) {
+        maQueue.shift();
+        maQueue.push(d.weightedUsd);
+      }
+      let sum = 0;
+      for (let k = 0; k < maQueue.length; k++) sum += maQueue[k];
+      return sum / maQueue.length;
+    });
+    datasets.push({
+      label: '300 Week MA ($)',
+      data: maData,
+      borderColor: '#ff4d6a',
+      borderWidth: 2.5,
+      pointRadius: 0,
+      tension: 0.4,
+      borderDash: [10, 5]
+    });
+    yTitle = 'USD';
+    tooltipFmt = (v) => fmtUsd(v);
+  } else if (currentChartType === 'withdrawal') {
+    datasets = [
+      {
+        label: 'Monthly Expense (HUF)',
+        data: simData.map(d => d.monthlyExpFt),
+        borderColor: '#a855f7',
+        backgroundColor: 'rgba(168,85,247,0.1)',
+        fill: true,
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0.3,
+        yAxisID: 'y1'
+      },
+      {
+        label: 'Periodic Withdrawal (HUF)',
+        data: simData.map(d => d.withdrawalFt),
+        borderColor: '#F7931A',
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0.3,
+        yAxisID: 'y1'
+      },
+      {
+        label: 'Total Expense (sat)',
+        data: simData.map(d => d.monthlyExpSat + d.withdrawalSat),
+        borderColor: '#22d3ee',
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0.3,
+        yAxisID: 'y',
+        hidden: true
+      }
+    ];
+    yTitle = 'HUF';
+  } else if (currentChartType === 'balance') {
+    datasets = [
+      {
+        label: 'BTC Balance (satoshi)',
+        data: simData.map(d => d.satBalance),
+        borderColor: '#F7931A',
+        backgroundColor: 'rgba(247,147,26,0.1)',
+        fill: true,
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0.3
+      }
+    ];
+    yTitle = 'Satoshi';
+    tooltipFmt = (v) => fmtSat(v) + ' sat';
+  } else if (currentChartType === 'purchasing') {
+    // Compare: HUF cash (deflated by inflation) vs BTC portfolio (deflated)
+    const p = getParams();
+    const totalInvestedAll = p.totalInvest + p.lumpSum + p.monthlySavings * 120;
+    datasets = [
+      {
+        label: 'BTC Portfolio (real HUF)',
+        data: simData.map(d => d.totalPortfolioFt / pvDeflator(d.m)),
+        borderColor: '#F7931A',
+        backgroundColor: 'rgba(247,147,26,0.1)',
+        fill: true,
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0.3
+      },
+      {
+        label: 'HUF Cash (real HUF)',
+        data: simData.map(d => {
+          // Cash value: totalInvested but deflated by inflation over time
+          return totalInvestedAll / pvDeflator(d.m);
+        }),
+        borderColor: '#ff4d6a',
+        backgroundColor: 'rgba(255,77,106,0.08)',
+        fill: true,
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0.3,
+        borderDash: [5, 3]
+      },
+      {
+        label: 'Invested Amount',
+        data: simData.map(() => totalInvestedAll),
+        borderColor: '#686880',
+        borderWidth: 1,
+        pointRadius: 0,
+        borderDash: [3, 3]
+      }
+    ];
+    yTitle = 'Real HUF';
+  }
+
+  // Find milestone indices for annotations
+  const p2 = getParams();
+  const dcaEndIdx = simData.findIndex(d => d.m === Math.min(p2.months, 120));
+  const cashDepletedIdx = simData.findIndex((d, i) => i > 0 && d.remainingCash <= 0);
+
+  const scales = {
+    x: {
+      grid: { color: 'rgba(255,255,255,0.04)' },
+      ticks: { color: '#686880', maxTicksLimit: 12, font: { size: 11 } }
+    },
+    y: {
+      grid: { color: 'rgba(255,255,255,0.04)' },
+      ticks: { color: '#a0a0b8', font: { family: 'JetBrains Mono', size: 11 },
+        callback: function(v) {
+          if (v >= 1e9) return (v/1e9).toFixed(0) + 'B';
+          if (v >= 1e6) return (v/1e6).toFixed(0) + 'M';
+          if (v >= 1e3) return (v/1e3).toFixed(0) + 'K';
+          return v;
+        }
+      },
+      title: { display: true, text: yTitle, color: '#686880' }
+    }
+  };
+
+  if (currentChartType === 'withdrawal') {
+    scales.y1 = {
+      grid: { color: 'rgba(255,255,255,0.04)' },
+      ticks: { color: '#a0a0b8', font: { family: 'JetBrains Mono', size: 11 },
+        callback: (v) => (v/1000).toFixed(0) + 'K Ft'
+      },
+      title: { display: true, text: 'HUF', color: '#F7931A' }
+    };
+  }
+
+  // Balance chart: Y-axis starts at 0
+  if (currentChartType === 'balance') {
+    scales.y.min = 0;
+  }
+
+  // Build milestone label strings with dates
+  const milestones = [];
+  if (dcaEndIdx > 0 && dcaEndIdx < simData.length - 1) {
+    const d = simData[dcaEndIdx];
+    milestones.push({ idx: dcaEndIdx, color: '#00d68f', label: 'DCA End', date: `${d.calYear}. ${String(d.calMonth).padStart(2,'0')}` });
+  }
+  if (cashDepletedIdx > 0 && cashDepletedIdx < simData.length) {
+    const d = simData[cashDepletedIdx];
+    milestones.push({ idx: cashDepletedIdx, color: '#ff4d6a', label: 'Pool Depleted', date: `${d.calYear}. ${String(d.calMonth).padStart(2,'0')}` });
+  }
+
+  // Milestone vertical lines plugin with date badges
+  const milestonePlugin = {
+    id: 'milestones',
+    afterDraw(chart) {
+      const xScale = chart.scales.x;
+      const yScale = chart.scales.y;
+      const ctx2 = chart.ctx;
+      milestones.forEach((ms, mi) => {
+        if (ms.idx < 0 || ms.idx >= chart.data.labels.length) return;
+        const x = xScale.getPixelForValue(ms.idx);
+        ctx2.save();
+        // Vertical line
+        ctx2.strokeStyle = ms.color;
+        ctx2.lineWidth = 1.5;
+        ctx2.setLineDash([4, 3]);
+        ctx2.globalAlpha = 0.7;
+        ctx2.beginPath();
+        ctx2.moveTo(x, yScale.top + 24);
+        ctx2.lineTo(x, yScale.bottom);
+        ctx2.stroke();
+        ctx2.globalAlpha = 1;
+        // Badge background
+        const text = ms.label + '  ' + ms.date;
+        ctx2.font = '600 11px Inter, sans-serif';
+        const tw = ctx2.measureText(text).width;
+        const bx = x - tw / 2 - 8;
+        const by = yScale.top + 2 + mi * 22;
+        const bw = tw + 16;
+        const bh = 18;
+        ctx2.fillStyle = ms.color;
+        ctx2.globalAlpha = 0.15;
+        ctx2.beginPath();
+        ctx2.roundRect(bx, by, bw, bh, 4);
+        ctx2.fill();
+        ctx2.globalAlpha = 1;
+        // Badge border
+        ctx2.strokeStyle = ms.color;
+        ctx2.lineWidth = 1;
+        ctx2.setLineDash([]);
+        ctx2.beginPath();
+        ctx2.roundRect(bx, by, bw, bh, 4);
+        ctx2.stroke();
+        // Badge text
+        ctx2.fillStyle = ms.color;
+        ctx2.textAlign = 'center';
+        ctx2.textBaseline = 'middle';
+        ctx2.fillText(text, x, by + bh / 2);
+        ctx2.restore();
+      });
+    }
+  };
+
+  chart = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { intersect: false, mode: 'index' },
+      layout: { padding: { top: 50 } },
+      plugins: {
+        legend: { labels: { color: '#a0a0b8', usePointStyle: true, padding: 16, font: { size: 12 } } },
+        tooltip: {
+          backgroundColor: 'rgba(10,10,15,0.95)',
+          borderColor: 'rgba(247,147,26,0.3)',
+          borderWidth: 1,
+          titleFont: { size: 13 },
+          bodyFont: { family: 'JetBrains Mono', size: 12 },
+          padding: 12,
+          cornerRadius: 8
+        }
+      },
+      scales
+    },
+    plugins: [milestonePlugin]
+  });
+}
+
+// ============================================================
+// WEIGHTS UI
+// ============================================================
+const WEIGHT_DEFAULTS = [40, 15, 15, 15, 15];
+
+function buildWeights() {
+  const container = document.getElementById('weightsContainer');
+  container.innerHTML = MODEL_NAMES.map((name, i) =>
+    `<div class="macro-item" style="gap:3px">
+      <span style="font-size:10px;font-weight:600;color:${MODEL_COLORS[i]};cursor:pointer;min-width:28px" onclick="soloWeight(${i})" title="Click: 100% only ${name}">${name.replace(' Invest','').replace(' Chartered','')}</span>
+      <input type="range" class="weight-slider" min="0" max="100" value="${WEIGHT_DEFAULTS[i]}" style="width:48px;accent-color:${MODEL_COLORS[i]};height:14px" oninput="updateWeights()">
+      <span class="macro-val" id="w${i}" style="min-width:28px;font-size:11px">${WEIGHT_DEFAULTS[i]}%</span>
+    </div>`
+  ).join('') + '<span id="totalWeight" style="font-size:10px;font-weight:700;color:var(--green);margin-left:2px">100%</span>';
+}
+
+function updateWeights() {
+  let total = 0;
+  document.querySelectorAll('.weight-slider').forEach((s, i) => {
+    const v = parseInt(s.value);
+    document.getElementById('w' + i).textContent = v + '%';
+    total += v;
+  });
+  const el = document.getElementById('totalWeight');
+  el.textContent = total + '%';
+  el.style.color = total === 100 ? 'var(--green)' : 'var(--red)';
+  runSimulation();
+}
+
+function soloWeight(idx) {
+  document.querySelectorAll('.weight-slider').forEach((s, i) => {
+    s.value = (i === idx) ? 100 : 0;
+  });
+  updateWeights();
+}
+
+function resetWeights() {
+  document.querySelectorAll('.weight-slider').forEach((s, i) => {
+    s.value = WEIGHT_DEFAULTS[i];
+  });
+  document.getElementById('priceMultiplier').value = 100;
+  document.getElementById('multiplierVal').textContent = '100%';
+  updateWeights();
+}
+
+function updateMultiplier() {
+  const v = parseInt(document.getElementById('priceMultiplier').value);
+  document.getElementById('multiplierVal').textContent = v + '%';
+  runSimulation();
+}
+
+// ============================================================
+// CSV EXPORT
+// ============================================================
+function exportCSV(type) {
+  let csv = '';
+  if (type === 'monthly') {
+    csv = '#;Year;Month;BTC Price (HUF);USD/HUF;Monthly Exp (HUF);Withdrawal (Ft);DCA (HUF);DCA (sat);Savings (sat);BTC Sale (sat);Balance (sat);BTC Portf (HUF);Pool (HUF);Total Portf (HUF);Return\n';
+    const p = getParams();
+    const totalInvestedAll = p.totalInvest + p.lumpSum + p.monthlySavings * 120;
+    simData.forEach(d => {
+      const pvD = pvDeflator(d.m);
+      const pvProfit = d.totalPortfolioFt/pvD + d.cumConsumed/pvD - totalInvestedAll;
+      const pvRet = totalInvestedAll > 0 ? pvProfit / totalInvestedAll : 0;
+      csv += [d.m, d.calYear, d.calMonth, Math.round(d.btcHufM/pvD), d.usdHufM.toFixed(2),
+        Math.round(d.monthlyExpFt/pvD), Math.round(d.withdrawalFt/pvD),
+        Math.round(d.dcaFt/pvD), d.dcaSat, d.savingsSat, d.btcSaleSat, d.satBalance,
+        Math.round(d.btcPortfolioFt/pvD), Math.round(d.remainingCash/pvD),
+        Math.round(d.totalPortfolioFt/pvD), (pvRet*100).toFixed(1)+'%'
+      ].join(';') + '\n';
+    });
+  } else {
+    csv = 'Year;BTC Price (HUF);USD/HUF;Monthly Exp (HUF);Withdrawal (Ft);DCA+Megtak (Ft);Balance (sat);BTC Portf (HUF);Consumed (HUF);Tax (HUF);Profit (HUF);Return;Portfolio ($)\n';
+    const years = {};
+    simData.forEach((d, i) => {
+      const y = d.calYear;
+      if (!years[y]) years[y] = { monthlyExp: 0, withdrawal: 0, dcaBuy: 0, last: d };
+      if (i > 0) {
+        years[y].monthlyExp += d.monthlyExpFt;
+        years[y].withdrawal += d.withdrawalFt;
+        years[y].dcaBuy += d.dcaFt + (d.savingsSat / 1e8 * d.btcHufM);
+      }
+      years[y].last = d;
+    });
+    const p = getParams();
+    const totalInvestedAll = p.totalInvest + p.lumpSum + p.monthlySavings * 120;
+    Object.entries(years).forEach(([yr, yd]) => {
+      const d = yd.last;
+      const pvD = pvDeflator(d.m);
+      const pv = (v) => v / pvD;
+      const pvProfit = pv(d.totalPortfolioFt) + pv(d.cumConsumed) - totalInvestedAll;
+      const pvRet = totalInvestedAll > 0 ? pvProfit / totalInvestedAll : 0;
+      const portUsd = d.usdHufM > 0 ? pv(d.totalPortfolioFt) / d.usdHufM : 0;
+      csv += [yr, Math.round(pv(d.btcHufM)), d.usdHufM.toFixed(2),
+        Math.round(pv(yd.monthlyExp)), Math.round(pv(yd.withdrawal)),
+        Math.round(pv(yd.dcaBuy)), d.satBalance, Math.round(pv(d.totalPortfolioFt)),
+        Math.round(pv(d.cumConsumed)), Math.round(pv(d.cumTaxPaid)),
+        Math.round(pvProfit), (pvRet*100).toFixed(1)+'%', Math.round(portUsd)
+      ].join(';') + '\n';
+    });
+  }
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'btc_' + type + '_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+
+// ============================================================
+// URL PARAMS (shareable link)
+// ============================================================
+function encodeParams() {
+  const p = {
+    s: parseNumVal(document.getElementById('initSat')),
+    l: parseNumVal(document.getElementById('lumpSum')),
+    t: parseNumVal(document.getElementById('totalInvest')),
+    m: parseInt(document.getElementById('months').value),
+    ms: parseNumVal(document.getElementById('monthlySavings')),
+    sy: parseInt(document.getElementById('startYear').value),
+    sm: parseInt(document.getElementById('startMonth').value),
+    bu: parseNumVal(document.getElementById('btcUsd')),
+    uh: parseNumVal(document.getElementById('usdHuf')),
+    mi: parseFloat(document.getElementById('monetaryInflation').value),
+    hc: parseFloat(document.getElementById('hufCagr').value),
+    pm: parseInt(document.getElementById('priceMultiplier').value),
+    pv: pvMode ? 1 : 0,
+    f: fireMode ? 1 : 0
+  };
+  // Weights
+  const ws = [];
+  document.querySelectorAll('.weight-slider').forEach(s => ws.push(parseInt(s.value)));
+  p.w = ws.join(',');
+  // FIRE params
+  if (fireMode) {
+    p.me = parseNumVal(document.getElementById('monthlyExpense'));
+    p.wa = parseNumVal(document.getElementById('withdrawalAmount'));
+    p.wf = parseInt(document.getElementById('withdrawalFreq').value);
+    p.ct = parseFloat(document.getElementById('cryptoTax').value);
+  }
+  return btoa(JSON.stringify(p));
+}
+
+function decodeParams(hash) {
+  try {
+    const p = JSON.parse(atob(hash));
+    if (p.s !== undefined) setFmtValue('initSat', p.s);
+    if (p.l !== undefined) setFmtValue('lumpSum', p.l);
+    if (p.t !== undefined) setFmtValue('totalInvest', p.t);
+    if (p.m !== undefined) document.getElementById('months').value = p.m;
+    if (p.ms !== undefined) setFmtValue('monthlySavings', p.ms);
+    if (p.sy !== undefined) document.getElementById('startYear').value = p.sy;
+    if (p.sm !== undefined) document.getElementById('startMonth').value = p.sm;
+    if (p.bu !== undefined) setFmtValue('btcUsd', p.bu);
+    if (p.uh !== undefined) setFmtValue('usdHuf', p.uh);
+    if (p.mi !== undefined) document.getElementById('monetaryInflation').value = p.mi;
+    if (p.hc !== undefined) document.getElementById('hufCagr').value = p.hc;
+    if (p.pm !== undefined) {
+      document.getElementById('priceMultiplier').value = p.pm;
+      document.getElementById('multiplierVal').textContent = p.pm + '%';
+    }
+    if (p.pv) setPvMode(true);
+    if (p.f) {
+      fireMode = false; // toggleFire will flip it
+      toggleFire();
+    }
+    if (p.w) {
+      const ws = p.w.split(',').map(Number);
+      document.querySelectorAll('.weight-slider').forEach((s, i) => {
+        if (ws[i] !== undefined) s.value = ws[i];
+      });
+      updateWeights();
+    }
+    if (p.me !== undefined) setFmtValue('monthlyExpense', p.me);
+    if (p.wa !== undefined) setFmtValue('withdrawalAmount', p.wa);
+    if (p.wf !== undefined) document.getElementById('withdrawalFreq').value = p.wf;
+    if (p.ct !== undefined) document.getElementById('cryptoTax').value = p.ct;
+    updateMacroBtcHuf();
+  } catch (e) {
+    console.warn('Invalid URL params:', e);
+  }
+}
+
+function copyShareLink() {
+  const hash = encodeParams();
+  const url = location.origin + location.pathname + '#' + hash;
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.getElementById('shareLinkBtn');
+    btn.textContent = '✅ Copied!';
+    setTimeout(() => { btn.textContent = '🔗 Link'; }, 2000);
+  }).catch(() => {
+    prompt('Copy the link:', url);
+  });
+}
+
+// ============================================================
+// SCENARIO SAVE / LOAD / COMPARE
+// ============================================================
+const SCENARIO_KEY = 'btc_calc_scenarios';
+
+function getSavedScenarios() {
+  try { return JSON.parse(localStorage.getItem(SCENARIO_KEY)) || []; }
+  catch { return []; }
+}
+
+function saveScenario() {
+  const name = document.getElementById('scenarioName').value.trim() || ('Scenario ' + (getSavedScenarios().length + 1));
+  const scenarios = getSavedScenarios();
+  if (scenarios.length >= 3) {
+    scenarios.shift(); // Remove oldest
+  }
+  const p = getParams();
+  const last = simData[simData.length - 1];
+  const totalInvestedAll = p.totalInvest + p.lumpSum + p.monthlySavings * 120;
+  const pvD = pvDeflator(last.m);
+  scenarios.push({
+    name,
+    date: new Date().toISOString().slice(0,10),
+    params: encodeParams(),
+    summary: {
+      invested: totalInvestedAll,
+      portfolio: last.totalPortfolioFt,
+      portfolioPv: last.totalPortfolioFt / pvD,
+      consumed: last.cumConsumed,
+      profit: last.totalPortfolioFt / pvD + last.cumConsumed / pvD - totalInvestedAll,
+      btcBalance: last.satBalance,
+      btcPrice: last.btcHufM,
+      endYear: last.calYear
+    }
+  });
+  localStorage.setItem(SCENARIO_KEY, JSON.stringify(scenarios));
+  document.getElementById('scenarioName').value = '';
+  renderScenarios();
+}
+
+function loadScenario(idx) {
+  const scenarios = getSavedScenarios();
+  if (scenarios[idx] && scenarios[idx].params) {
+    decodeParams(scenarios[idx].params);
+    runSimulation();
+  }
+}
+
+function deleteScenario(idx) {
+  const scenarios = getSavedScenarios();
+  scenarios.splice(idx, 1);
+  localStorage.setItem(SCENARIO_KEY, JSON.stringify(scenarios));
+  renderScenarios();
+}
+
+function renderScenarios() {
+  const scenarios = getSavedScenarios();
+  const slots = document.getElementById('scenarioSlots');
+  slots.innerHTML = scenarios.map((s, i) =>
+    `<div style="display:flex;align-items:center;gap:4px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:4px 10px">
+      <span style="font-size:12px;color:var(--text);cursor:pointer;font-weight:500" onclick="loadScenario(${i})" title="Click to load">${s.name}</span>
+      <span style="font-size:10px;color:var(--text3)">${s.date}</span>
+      <span style="font-size:11px;cursor:pointer;color:var(--red);margin-left:4px" onclick="deleteScenario(${i})" title="Delete">✕</span>
+    </div>`
+  ).join('');
+
+  // Comparison table
+  const compare = document.getElementById('scenarioCompare');
+  if (scenarios.length >= 2) {
+    compare.style.display = 'block';
+    const header = document.getElementById('scenarioHeader');
+    header.innerHTML = '<th>Metric</th>' + scenarios.map(s => `<th style="color:var(--btc)">${s.name}</th>`).join('');
+    const metrics = [
+      { label: 'Investment', key: 'invested', fmt: fmtFtShort },
+      { label: 'Portfolio (PV)', key: 'portfolioPv', fmt: fmtFtShort },
+      { label: 'Consumed', key: 'consumed', fmt: fmtFtShort },
+      { label: 'Profit', key: 'profit', fmt: fmtFtShort },
+      { label: 'BTC Balance', key: 'btcBalance', fmt: v => fmtSat(v) + ' sat' },
+      { label: 'BTC Price (HUF)', key: 'btcPrice', fmt: v => fmtFtShort(v) },
+    ];
+    const body = document.getElementById('scenarioBody');
+    body.innerHTML = metrics.map(m =>
+      `<tr><td style="font-weight:600;color:var(--text)">${m.label}</td>` +
+      scenarios.map(s => {
+        const v = s.summary[m.key];
+        const cls = m.key === 'profit' ? (v >= 0 ? 'pos' : 'neg') : '';
+        return `<td class="${cls}">${m.fmt(v)}</td>`;
+      }).join('') + '</tr>'
+    ).join('');
+  } else {
+    compare.style.display = 'none';
+  }
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  buildWeights();
+
+  // Set initial FIRE state (off)
+  const fireSection = document.getElementById('fireBody').closest('.section');
+  if (fireSection) fireSection.classList.add('fire-off');
+
+  // Add event listeners to number inputs
+  document.querySelectorAll('input[type=number]').forEach(inp => {
+    inp.addEventListener('input', () => {
+      clearTimeout(inp._timer);
+      inp._timer = setTimeout(runSimulation, 300);
+    });
+  });
+
+  // Setup formatted number inputs (thousands separator)
+  document.querySelectorAll('input.fmt-num').forEach(inp => {
+    setupFmtInput(inp);
+    inp.addEventListener('input', () => {
+      clearTimeout(inp._timer);
+      inp._timer = setTimeout(runSimulation, 300);
+    });
+  });
+
+  // Withdrawal frequency selector
+  const freqSel = document.getElementById('withdrawalFreq');
+  if (freqSel) freqSel.addEventListener('change', runSimulation);
+
+  // Macro dashboard text inputs (inflation, hufCagr) — debounced simulation
+  ['monetaryInflation', 'hufCagr'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', () => {
+      clearTimeout(el._timer);
+      el._timer = setTimeout(runSimulation, 300);
+    });
+  });
+
+  // Custom price inputs
+  ['customY3', 'customY5', 'customY10'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      setupFmtInput(el);
+      el.addEventListener('input', () => { clearTimeout(el._timer); el._timer = setTimeout(runSimulation, 300); });
+    }
+  });
+
+  // Update macro BTC/HUF display when price inputs change
+  ['btcUsd', 'usdHuf'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('blur', updateMacroBtcHuf);
+  });
+
+  // Retire age event listener
+  const retireEl = document.getElementById('retireAge');
+  if (retireEl) retireEl.addEventListener('input', () => { clearTimeout(retireEl._timer); retireEl._timer = setTimeout(runSimulation, 300); });
+
+  // Initial macro display
+  updateMacroBtcHuf();
+
+  // Load params from URL hash
+  if (location.hash && location.hash.length > 1) {
+    decodeParams(location.hash.slice(1));
+  }
+
+  runSimulation();
+
+  renderScenarios();
+
+  // Auto-fetch live BTC and USD/HUF prices on page load
+  fetchLivePrices();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
