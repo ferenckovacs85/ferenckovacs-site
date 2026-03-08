@@ -788,9 +788,9 @@ const fmtFtShort = (v) => {
 
 // Thousands separator helpers
 function parseNumVal(el) {
-  // For formatted text inputs, strip spaces and parse
+  // For formatted text inputs, strip commas and spaces and parse
   if (el.classList.contains('fmt-num')) {
-    return parseFloat(String(el.value).replace(/\s/g, '')) || 0;
+    return parseFloat(String(el.value).replace(/[,\s]/g, '')) || 0;
   }
   return parseFloat(el.value) || 0;
 }
@@ -802,13 +802,13 @@ function fmtThousands(n) {
 function setupFmtInput(el) {
   // On focus: show raw number for easy editing
   el.addEventListener('focus', function() {
-    const raw = String(this.value).replace(/\s/g, '');
+    const raw = String(this.value).replace(/[,\s]/g, '');
     this.value = raw;
     this.select();
   });
   // On blur: re-format with thousands separators
   el.addEventListener('blur', function() {
-    const raw = parseFloat(String(this.value).replace(/\s/g, '')) || 0;
+    const raw = parseFloat(String(this.value).replace(/[,\s]/g, '')) || 0;
     this.value = fmtThousands(raw);
   });
 }
