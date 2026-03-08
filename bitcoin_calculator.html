@@ -532,7 +532,7 @@
   <div style="margin:24px 0;background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden">
     <div class="summary-row" id="summaryCards" style="margin:0;padding:16px;gap:12px"></div>
     <div class="summary-details" id="summaryDetails">
-      <div class="summary-row" id="summaryDetailsCards" style="margin:0;padding:0 16px 16px;gap:12px"></div>
+      <div class="summary-row" id="summaryDetailsCards" style="margin:0;padding:16px;gap:12px;border-top:1px solid var(--border)"></div>
     </div>
     <div class="detail-toggle" id="detailToggle" onclick="toggleDetails()">
       <span class="arrow">▼</span> Részletes elemzés
@@ -1447,10 +1447,10 @@ function renderSummary() {
   if (p.birthYear) {
     const retireAge = parseInt(document.getElementById('retireAge')?.value) || 65;
     const retireYear = p.birthYear + retireAge;
-    const currentAge = last.calYear - p.birthYear;
-    const yearsToRetire = retireYear - last.calYear;
+    const currentAge = p.startYear - p.birthYear;
+    const yearsToRetire = retireAge - currentAge;
     if (yearsToRetire > 0) {
-      detailCards.push({ label: 'Nyugdíjig', value: yearsToRetire + ' év', sub: retireYear + '-ban · ' + retireAge + ' éves · most ' + (p.startYear - p.birthYear) + ' éves', cls: '' });
+      detailCards.push({ label: 'Nyugdíjig', value: yearsToRetire + ' év', sub: retireYear + '-ban · ' + retireAge + ' éves · most ' + currentAge + ' éves', cls: '' });
     } else {
       detailCards.push({ label: 'Nyugdíjkor', value: 'Elérve!', sub: retireYear + ' · portfólió: ' + fmtFtShort(pvPortfolio), cls: 'green' });
     }
