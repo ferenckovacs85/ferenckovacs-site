@@ -353,18 +353,14 @@
             <input type="text" inputmode="numeric" id="totalInvest" value="10 000 000" data-raw="10000000" class="fmt-num">
             <span class="hint">Induló összeg (személyes kiadás + bérleti díj fedezete)</span>
           </div>
-          <div class="input-group">
-            <label>Időszak (hónapok)</label>
-            <input type="number" id="months" value="18" min="1" max="120">
-            <span class="hint">← Változtasd ezt (max 120)</span>
-          </div>
+          <input type="hidden" id="months" value="120">
           <div class="input-group">
             <label>Személyes kiadás (Ft/hó)</label>
-            <input type="text" inputmode="numeric" id="livingExp" value="400 000" data-raw="400000" class="fmt-num">
+            <input type="text" inputmode="numeric" id="livingExp" value="200 000" data-raw="200000" class="fmt-num">
           </div>
           <div class="input-group">
             <label>Lakás + autó bérleti díj (Ft/hó)</label>
-            <input type="text" inputmode="numeric" id="rentHuf" value="400 000" data-raw="400000" class="fmt-num">
+            <input type="text" inputmode="numeric" id="rentHuf" value="200 000" data-raw="200000" class="fmt-num">
             <span class="hint">Évente jan. 1-i BTC áron satoshira váltva</span>
           </div>
           <div class="input-group">
@@ -449,7 +445,7 @@
               <th>#</th><th>Év</th><th>Hó</th>
               <th>BTC ár (Ft)</th><th>USD/HUF</th>
               <th>Bérleti díj (sat/hó)</th><th>Lakás+autó bérleti díj (Ft)</th>
-              <th>Kiadás (Ft)</th><th>DCA (Ft)</th><th>DCA (sat)</th>
+              <th>Kiadás (Ft)</th>
               <th>BTC eladás (sat)</th><th>Egyenleg (sat)</th>
               <th>BTC portf. (Ft)</th><th>Keret (Ft)</th>
               <th>Össz. portf. (Ft)</th><th>Hozam</th>
@@ -486,7 +482,8 @@
 
   <div class="disclaimer">
     ⚠️ Ez NEM pénzügyi tanácsadás! Kizárólag modellezési célra!<br>
-    Power Law: Giovanni Santostasi · Saylor: $500K-$1M 2030 · ARK Jan 2026: Base $710K · Std Ch: $250K 2028
+    Power Law: Giovanni Santostasi · Saylor: $500K-$1M 2030 · ARK Jan 2026: Base $710K · Std Ch: $250K 2028<br>
+    <a href="https://ferenckovacs.com" style="color:var(--btc);text-decoration:none;opacity:0.7">ferenckovacs.com</a>
   </div>
 </div>
 
@@ -824,19 +821,15 @@ function renderSummary() {
   // Date strings for context
   const startDate = `${p.startYear}. ${String(p.startMonth).padStart(2,'0')}`;
   const endDate = `${last.calYear}. ${String(last.calMonth).padStart(2,'0')}`;
-  const dcaEndM = simData.find(d => d.m === Math.min(p.months, 120));
-  const dcaEndDate = dcaEndM ? `${dcaEndM.calYear}. ${String(dcaEndM.calMonth).padStart(2,'0')}` : endDate;
-
   const cards = [
     { label: 'Induló befektetés', value: fmtFt(p.totalInvest), sub: startDate + '-tól', cls: '' },
     { label: 'Induló BTC', value: fmtBtc(p.initBTC), sub: fmtSat(p.initBTC * 1e8) + ' sat', cls: '' },
     { label: 'BTC ár (Ft)', value: fmtFt(btcHuf0), sub: fmtUsd(p.btcUsd), cls: '' },
     { label: 'Végső portfólió', value: fmtFt(last.totalPortfolioFt), sub: endDate + ' · ' + fmtUsd(last.totalPortfolioFt / last.usdHufM), cls: 'highlight' },
-    { label: 'Felhasznált összeg', value: fmtFt(last.cumConsumed), sub: startDate + ' – ' + endDate + ' · bérleti díj + kiadás', cls: '' },
+    { label: 'Felhasznált összeg', value: fmtFt(last.cumConsumed), sub: startDate + ' – ' + endDate + ' · bérleti díj + személyes kiadás', cls: '' },
     { label: 'Teljes nyereség', value: fmtFt(last.profit), sub: endDate + ' · portfólió + felhasznált − befektetés', cls: last.profit >= 0 ? 'green' : 'red' },
     { label: 'Hozam', value: fmtPct(last.returnPct), sub: 'CAGR: ' + fmtPct(cagr) + ' (' + months120 + ' hó)', cls: last.returnPct >= 0 ? 'green' : 'red' },
     { label: 'BTC egyenleg', value: fmtBtc(last.satBalance / 1e8), sub: endDate + ' · ' + fmtSat(last.satBalance) + ' sat', cls: '' },
-    { label: 'Havi DCA', value: fmtFt(Math.max(0, p.totalInvest / p.months - p.livingExp - p.rentHuf)), sub: startDate + ' – ' + dcaEndDate + ' (' + p.months + ' hó)', cls: '' },
   ];
 
   // Sustainability card
@@ -886,8 +879,6 @@ function renderTable() {
       <td class="fmt-sat">${fmtSat(d.rentSat)}</td>
       <td>${fmtFt(d.rentFt)}</td>
       <td>${fmtFt(d.living)}</td>
-      <td>${d.m > 0 ? fmtFt(d.dcaFt) : '-'}</td>
-      <td class="fmt-sat">${d.m > 0 ? fmtSat(d.dcaSat) : '-'}</td>
       <td class="${d.btcSaleSat > 0 ? 'neg' : ''}">${d.btcSaleSat > 0 ? fmtSat(d.btcSaleSat) : '-'}</td>
       <td class="fmt-btc">${fmtSat(d.satBalance)}</td>
       <td>${fmtFt(d.btcPortfolioFt)}</td>
@@ -1082,7 +1073,6 @@ function renderChart() {
 
   // Find milestone indices for annotations
   const p2 = getParams();
-  const dcaEndIdx = simData.findIndex(d => d.m === Math.min(p2.months, 120));
   const cashDepletedIdx = simData.findIndex((d, i) => i > 0 && d.remainingCash <= 0);
 
   const scales = {
@@ -1122,10 +1112,6 @@ function renderChart() {
 
   // Build milestone label strings with dates
   const milestones = [];
-  if (dcaEndIdx > 0 && dcaEndIdx < simData.length) {
-    const d = simData[dcaEndIdx];
-    milestones.push({ idx: dcaEndIdx, color: '#00d68f', label: 'DCA vége', date: `${d.calYear}. ${String(d.calMonth).padStart(2,'0')}` });
-  }
   if (cashDepletedIdx > 0 && cashDepletedIdx < simData.length) {
     const d = simData[cashDepletedIdx];
     milestones.push({ idx: cashDepletedIdx, color: '#ff4d6a', label: 'Ft elfogy', date: `${d.calYear}. ${String(d.calMonth).padStart(2,'0')}` });
