@@ -1605,10 +1605,17 @@ function runMonteCarlo() {
   for (let r = 0; r < nRuns; r++) {
     const run = [simData[0].totalPortfolioFt];
     for (let m = 1; m < months; m++) {
-      const baseGrowth = simData[m].totalPortfolioFt / Math.max(1, simData[m-1].totalPortfolioFt);
-      // Add random noise to growth rate
-      const noise = 1 + (Math.random() * 2 - 1) * monthlySigma * 2 + (Math.random() * 2 - 1) * monthlySigma;
-      run.push(run[m-1] * baseGrowth * noise);
+      const prev = simData[m-1].totalPortfolioFt;
+      const curr = simData[m].totalPortfolioFt;
+      if (prev < 1) {
+        // Portfolio not yet funded — carry forward actual value (no noise to apply)
+        run.push(curr);
+      } else {
+        const baseGrowth = curr / prev;
+        // Add random noise to growth rate
+        const noise = 1 + (Math.random() * 2 - 1) * monthlySigma * 2 + (Math.random() * 2 - 1) * monthlySigma;
+        run.push(Math.max(0, run[m-1] * baseGrowth * noise));
+      }
     }
     allRuns.push(run);
   }
