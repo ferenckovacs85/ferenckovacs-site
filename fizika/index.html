@@ -7,266 +7,131 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0e1a;
-    --card: #1a2035;
-    --card-border: rgba(99,102,241,0.15);
-    --accent: #6366f1;
-    --accent2: #a78bfa;
-    --accent3: #34d399;
-    --accent4: #f472b6;
-    --yellow: #fbbf24;
-    --text: #e2e8f0;
-    --text-dim: #94a3b8;
-    --text-bright: #f8fafc;
-    --formula-bg: rgba(99,102,241,0.08);
+    --bg:#0a0e1a; --card:#1a2035; --card-border:rgba(99,102,241,0.15);
+    --accent:#6366f1; --accent2:#a78bfa; --accent3:#34d399; --accent4:#f472b6;
+    --yellow:#fbbf24; --text:#e2e8f0; --text-dim:#94a3b8; --text-bright:#f8fafc;
+    --formula-bg:rgba(99,102,241,0.08);
+    --ok:#34d399; --err:#f87171;
   }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  html { scroll-behavior: smooth; }
-  body {
-    font-family: 'Outfit', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.7;
-    overflow-x: hidden;
-  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden}
 
-  /* Hero */
-  .hero {
-    min-height: 100vh;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    position: relative; overflow: hidden; padding: 2rem;
-  }
-  .hero::before {
-    content:''; position:absolute; inset:0;
-    background:
-      radial-gradient(ellipse 600px 600px at 30% 40%, rgba(99,102,241,0.12) 0%, transparent 70%),
-      radial-gradient(ellipse 500px 500px at 70% 60%, rgba(167,139,250,0.08) 0%, transparent 70%);
-  }
-  .hero-orbit {
-    position:relative; width:280px; height:280px; margin-bottom:2.5rem;
-    animation: heroFloat 6s ease-in-out infinite;
-  }
-  @keyframes heroFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
-  .hero-orbit .orbit-ring {
-    position:absolute; inset:0; border:2px dashed rgba(99,102,241,0.3);
-    border-radius:50%; animation: spinSlow 20s linear infinite;
-  }
-  @keyframes spinSlow { to { transform:rotate(360deg); } }
-  .hero-orbit .center-dot {
-    position:absolute; top:50%; left:50%; width:16px; height:16px;
-    background:var(--accent2); border-radius:50%;
-    transform:translate(-50%,-50%);
-    box-shadow:0 0 30px var(--accent2);
-  }
-  .hero-orbit .planet {
-    position:absolute; top:50%; left:50%; width:24px; height:24px;
-    margin:-12px 0 0 -12px; background:var(--accent3); border-radius:50%;
-    box-shadow:0 0 20px var(--accent3); animation: orbit 4s linear infinite;
-  }
-  @keyframes orbit { to { transform:rotate(360deg) translateX(128px) rotate(-360deg); } }
-  .hero h1 {
-    font-size:clamp(2.5rem,6vw,4.2rem); font-weight:800;
-    text-align:center; letter-spacing:-0.03em;
-    background:linear-gradient(135deg,var(--text-bright),var(--accent2));
-    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-    position:relative; z-index:1;
-  }
-  .hero p {
-    font-size:1.1rem; color:var(--text-dim); text-align:center;
-    margin-top:0.6rem; max-width:480px; position:relative; z-index:1;
-  }
-  .hero .scroll-hint {
-    margin-top:2.5rem; animation:bounce 2s ease-in-out infinite;
-    color:var(--accent); font-size:1.5rem; text-decoration:none;
-    position:relative; z-index:1; cursor:pointer;
-  }
-  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }
+  .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:2rem}
+  .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 600px 600px at 30% 40%,rgba(99,102,241,0.12) 0%,transparent 70%),radial-gradient(ellipse 500px 500px at 70% 60%,rgba(167,139,250,0.08) 0%,transparent 70%)}
+  .hero-orbit{position:relative;width:260px;height:260px;margin-bottom:2rem;animation:heroFloat 6s ease-in-out infinite}
+  @keyframes heroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+  .hero-orbit .ring{position:absolute;inset:0;border:2px dashed rgba(99,102,241,0.3);border-radius:50%;animation:spin 20s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .hero-orbit .cdot{position:absolute;top:50%;left:50%;width:14px;height:14px;background:var(--accent2);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 25px var(--accent2)}
+  .hero-orbit .planet{position:absolute;top:50%;left:50%;width:22px;height:22px;margin:-11px 0 0 -11px;background:var(--accent3);border-radius:50%;box-shadow:0 0 18px var(--accent3);animation:orb 4s linear infinite}
+  @keyframes orb{to{transform:rotate(360deg) translateX(118px) rotate(-360deg)}}
+  .hero h1{font-size:clamp(2.4rem,6vw,4rem);font-weight:800;text-align:center;letter-spacing:-0.03em;background:linear-gradient(135deg,var(--text-bright),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;position:relative;z-index:1}
+  .hero p{font-size:1.05rem;color:var(--text-dim);text-align:center;margin-top:0.5rem;max-width:460px;position:relative;z-index:1}
+  .hero .arr{margin-top:2rem;animation:bnc 2s ease-in-out infinite;color:var(--accent);font-size:1.4rem;text-decoration:none;position:relative;z-index:1;cursor:pointer}
+  @keyframes bnc{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
 
-  /* Layout */
-  .container { max-width:880px; margin:0 auto; padding:0 1.5rem; }
-  section { padding:4rem 0; }
-  .section-num {
-    display:inline-block; font-family:'Space Mono',monospace;
-    font-size:0.82rem; color:var(--accent); letter-spacing:0.15em;
-    text-transform:uppercase; margin-bottom:0.4rem; opacity:0.8;
-  }
-  h2 {
-    font-size:clamp(1.7rem,4vw,2.4rem); font-weight:700;
-    letter-spacing:-0.02em; color:var(--text-bright);
-    margin-bottom:1.2rem; line-height:1.2;
-  }
-  h2 .hl { color:var(--accent2); }
+  .container{max-width:880px;margin:0 auto;padding:0 1.5rem}
+  section{padding:3.5rem 0}
+  .sn{display:inline-block;font-family:'Space Mono',monospace;font-size:0.8rem;color:var(--accent);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:0.4rem;opacity:0.8}
+  h2{font-size:clamp(1.6rem,4vw,2.3rem);font-weight:700;letter-spacing:-0.02em;color:var(--text-bright);margin-bottom:1rem;line-height:1.2}
+  h2 .hl{color:var(--accent2)}
 
-  /* Cards */
-  .card {
-    background:var(--card); border:1px solid var(--card-border);
-    border-radius:18px; padding:1.8rem; margin-bottom:1.4rem;
-    position:relative; overflow:hidden;
-  }
-  .card h3 {
-    font-size:1.2rem; font-weight:600; color:var(--text-bright);
-    margin-bottom:0.6rem; display:flex; align-items:center; gap:0.5rem;
-  }
-  .card h3 .ic {
-    width:34px; height:34px; background:var(--formula-bg);
-    border-radius:9px; display:flex; align-items:center;
-    justify-content:center; font-size:1rem; flex-shrink:0;
-  }
-  .card p, .card li { font-size:0.98rem; line-height:1.75; }
-  .card ul { list-style:none; padding:0; }
-  .card li { padding:0.2rem 0 0.2rem 1.4rem; position:relative; }
-  .card li::before { content:'\2192'; position:absolute; left:0; color:var(--accent3); }
+  .card{background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:1.6rem;margin-bottom:1.2rem;position:relative;overflow:hidden}
+  .card h3{font-size:1.15rem;font-weight:600;color:var(--text-bright);margin-bottom:0.5rem;display:flex;align-items:center;gap:0.5rem}
+  .card h3 .ic{width:32px;height:32px;background:var(--formula-bg);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.95rem;flex-shrink:0}
+  .card p,.card li{font-size:0.95rem;line-height:1.7}
+  .card ul{list-style:none;padding:0}
+  .card li{padding:0.15rem 0 0.15rem 1.3rem;position:relative}
+  .card li::before{content:'\2192';position:absolute;left:0;color:var(--accent3)}
 
-  /* Formula */
-  .formula {
-    background:var(--formula-bg); border:1px solid rgba(99,102,241,0.2);
-    border-radius:12px; padding:1rem 1.2rem; margin:0.8rem 0;
-    text-align:center; position:relative;
-  }
-  .formula-main {
-    font-family:'Space Mono',monospace; font-size:1.4rem;
-    font-weight:700; color:var(--accent2);
-  }
-  .formula-desc { font-size:0.82rem; color:var(--text-dim); margin-top:0.3rem; }
-  .formula-tag {
-    position:absolute; top:-9px; right:14px;
-    background:var(--accent); color:white; font-size:0.65rem;
-    font-weight:600; padding:2px 8px; border-radius:5px;
-    letter-spacing:0.08em; text-transform:uppercase;
-  }
+  .formula{background:var(--formula-bg);border:1px solid rgba(99,102,241,0.2);border-radius:11px;padding:0.9rem 1.1rem;margin:0.7rem 0;text-align:center;position:relative}
+  .formula-main{font-family:'Space Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--accent2)}
+  .formula-desc{font-size:0.78rem;color:var(--text-dim);margin-top:0.25rem}
+  .formula-tag{position:absolute;top:-8px;right:12px;background:var(--accent);color:white;font-size:0.6rem;font-weight:600;padding:2px 7px;border-radius:5px;letter-spacing:0.08em;text-transform:uppercase}
 
-  /* Tip */
-  .tip {
-    background:rgba(52,211,153,0.06); border-left:3px solid var(--accent3);
-    border-radius:0 10px 10px 0; padding:0.8rem 1rem; margin:0.8rem 0;
-    font-size:0.9rem;
-  }
-  .tip strong { color:var(--accent3); }
-  .warn {
-    background:rgba(244,114,182,0.06); border-left:3px solid var(--accent4);
-    border-radius:0 10px 10px 0; padding:0.8rem 1rem; margin:0.8rem 0;
-    font-size:0.9rem;
-  }
-  .warn strong { color:var(--accent4); }
+  .tip{background:rgba(52,211,153,0.06);border-left:3px solid var(--accent3);border-radius:0 10px 10px 0;padding:0.7rem 0.9rem;margin:0.7rem 0;font-size:0.88rem}
+  .tip strong{color:var(--accent3)}
+  .warn{background:rgba(244,114,182,0.06);border-left:3px solid var(--accent4);border-radius:0 10px 10px 0;padding:0.7rem 0.9rem;margin:0.7rem 0;font-size:0.88rem}
+  .warn strong{color:var(--accent4)}
 
-  /* Interactive demo blocks */
-  .demo {
-    background:var(--card); border:1px solid var(--card-border);
-    border-radius:18px; padding:1.4rem; margin:1.2rem 0;
-    overflow:hidden;
-  }
-  .demo-title {
-    font-size:0.8rem; font-weight:700; color:var(--accent);
-    text-transform:uppercase; letter-spacing:0.12em;
-    margin-bottom:0.8rem; text-align:center;
-  }
-  .demo canvas {
-    display:block; margin:0 auto; border-radius:12px;
-    background:rgba(0,0,0,0.3); max-width:100%;
-  }
-  .demo .sliders {
-    display:flex; flex-wrap:wrap; gap:1.2rem 2rem;
-    margin-top:1rem; justify-content:center; align-items:center;
-  }
-  .demo .sg {
-    display:flex; flex-direction:column; align-items:center; gap:0.2rem;
-  }
-  .demo .sg label { font-size:0.78rem; color:var(--text-dim); font-weight:500; }
-  .demo .sg .sv {
-    font-family:'Space Mono',monospace; font-size:1rem;
-    font-weight:700; color:var(--accent3);
-  }
-  input[type="range"] {
-    -webkit-appearance:none; width:140px; height:5px;
-    background:rgba(99,102,241,0.2); border-radius:3px; outline:none;
-  }
-  input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance:none; width:18px; height:18px;
-    background:var(--accent); border-radius:50%; cursor:pointer;
-    box-shadow:0 0 8px rgba(99,102,241,0.3);
-  }
-  .demo .readouts {
-    display:flex; flex-wrap:wrap; gap:0.6rem;
-    margin-top:0.8rem; justify-content:center;
-  }
-  .demo .ro {
-    background:rgba(0,0,0,0.25); border-radius:8px;
-    padding:0.5rem 0.8rem; text-align:center; min-width:100px;
-  }
-  .demo .ro .rl {
-    font-size:0.65rem; color:var(--text-dim);
-    text-transform:uppercase; letter-spacing:0.06em;
-  }
-  .demo .ro .rv {
-    font-family:'Space Mono',monospace; font-size:1rem;
-    font-weight:700; color:var(--accent2); margin-top:0.1rem;
-  }
+  /* Demo blocks */
+  .demo{background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:1.2rem;margin:1rem 0;overflow:hidden}
+  .demo-title{font-size:0.75rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.7rem;text-align:center}
+  .demo canvas{display:block;margin:0 auto;border-radius:10px;background:rgba(0,0,0,0.3);max-width:100%}
+  .demo .sliders{display:flex;flex-wrap:wrap;gap:1rem 1.8rem;margin-top:0.8rem;justify-content:center}
+  .demo .sg{display:flex;flex-direction:column;align-items:center;gap:0.15rem}
+  .demo .sg label{font-size:0.72rem;color:var(--text-dim);font-weight:500}
+  .demo .sg .sv{font-family:'Space Mono',monospace;font-size:0.95rem;font-weight:700;color:var(--accent3)}
+  input[type="range"]{-webkit-appearance:none;width:130px;height:5px;background:rgba(99,102,241,0.2);border-radius:3px;outline:none}
+  input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;background:var(--accent);border-radius:50%;cursor:pointer;box-shadow:0 0 8px rgba(99,102,241,0.3)}
+  .demo .readouts{display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.7rem;justify-content:center}
+  .demo .ro{background:rgba(0,0,0,0.25);border-radius:7px;padding:0.4rem 0.7rem;text-align:center;min-width:90px}
+  .demo .ro .rl{font-size:0.6rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.06em}
+  .demo .ro .rv{font-family:'Space Mono',monospace;font-size:0.95rem;font-weight:700;color:var(--accent2);margin-top:0.05rem}
 
-  /* Summary table */
-  .summary-table {
-    width:100%; border-collapse:separate; border-spacing:0;
-    border-radius:12px; overflow:hidden; margin:1.2rem 0;
-  }
-  .summary-table th {
-    background:rgba(99,102,241,0.15); color:var(--accent2);
-    font-weight:600; font-size:0.82rem; padding:0.8rem 0.9rem;
-    text-align:left; text-transform:uppercase; letter-spacing:0.06em;
-  }
-  .summary-table td {
-    background:var(--card); padding:0.7rem 0.9rem;
-    border-bottom:1px solid rgba(99,102,241,0.08); font-size:0.9rem;
-  }
-  .summary-table tr:last-child td { border-bottom:none; }
-  .summary-table td:nth-child(2) {
-    font-family:'Space Mono',monospace; color:var(--accent3); font-weight:700;
-  }
+  /* Practice blocks */
+  .practice{background:linear-gradient(135deg,rgba(99,102,241,0.05),rgba(52,211,153,0.04));border:1px solid rgba(52,211,153,0.15);border-radius:16px;padding:1.4rem;margin:1.2rem 0}
+  .practice-title{font-size:0.8rem;font-weight:700;color:var(--accent3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:1rem;text-align:center}
+  .practice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:0.8rem}
+  .pcard{background:rgba(0,0,0,0.2);border:1px solid rgba(99,102,241,0.1);border-radius:12px;padding:1rem;transition:border-color 0.3s}
+  .pcard.correct{border-color:var(--ok)!important}
+  .pcard.wrong{border-color:var(--err)!important}
+  .pcard .pq{font-size:0.88rem;color:var(--text);margin-bottom:0.6rem;line-height:1.5}
+  .pcard .pq strong{color:var(--accent2)}
+  .pcard .pinput{display:flex;align-items:center;gap:0.4rem}
+  .pcard .pinput input[type="number"]{width:90px;padding:0.35rem 0.5rem;border-radius:7px;border:1px solid rgba(99,102,241,0.25);background:rgba(0,0,0,0.3);color:var(--text-bright);font-family:'Space Mono',monospace;font-size:0.9rem;outline:none;-moz-appearance:textfield}
+  .pcard .pinput input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none}
+  .pcard .pinput input:focus{border-color:var(--accent)}
+  .pcard .pinput .unit{font-size:0.8rem;color:var(--text-dim)}
+  .pcard .pinput .check-btn{background:var(--accent);color:white;border:none;border-radius:7px;padding:0.35rem 0.7rem;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:background 0.2s}
+  .pcard .pinput .check-btn:hover{background:#818cf8}
+  .pcard .pfeedback{font-size:0.8rem;margin-top:0.4rem;min-height:1.2em;font-weight:500}
+  .pcard .pfeedback.ok{color:var(--ok)}
+  .pcard .pfeedback.no{color:var(--err)}
+  .practice .new-btn-wrap{text-align:center;margin-top:1rem}
+  .practice .new-btn{background:rgba(52,211,153,0.15);color:var(--accent3);border:1px solid rgba(52,211,153,0.3);border-radius:9px;padding:0.5rem 1.4rem;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:background 0.2s}
+  .practice .new-btn:hover{background:rgba(52,211,153,0.25)}
+  .practice .score{text-align:center;margin-top:0.6rem;font-size:0.82rem;color:var(--text-dim)}
+  .practice .score span{color:var(--accent3);font-weight:700;font-family:'Space Mono',monospace}
 
-  footer {
-    text-align:center; padding:2.5rem 1rem; color:var(--text-dim);
-    font-size:0.8rem; border-top:1px solid rgba(99,102,241,0.1);
-  }
+  .summary-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:11px;overflow:hidden;margin:1rem 0}
+  .summary-table th{background:rgba(99,102,241,0.15);color:var(--accent2);font-weight:600;font-size:0.78rem;padding:0.7rem 0.8rem;text-align:left;text-transform:uppercase;letter-spacing:0.06em}
+  .summary-table td{background:var(--card);padding:0.6rem 0.8rem;border-bottom:1px solid rgba(99,102,241,0.08);font-size:0.88rem}
+  .summary-table tr:last-child td{border-bottom:none}
+  .summary-table td:nth-child(2){font-family:'Space Mono',monospace;color:var(--accent3);font-weight:700}
 
-  .fade-in {
-    opacity:0; transform:translateY(25px);
-    transition:opacity 0.6s ease, transform 0.6s ease;
-  }
-  .fade-in.visible { opacity:1; transform:translateY(0); }
+  footer{text-align:center;padding:2rem 1rem;color:var(--text-dim);font-size:0.78rem;border-top:1px solid rgba(99,102,241,0.1)}
+  .fade-in{opacity:0;transform:translateY(22px);transition:opacity 0.6s ease,transform 0.6s ease}
+  .fade-in.visible{opacity:1;transform:translateY(0)}
 
-  @media (max-width:600px) {
-    .hero-orbit { width:200px; height:200px; }
-    .card,.demo { padding:1.2rem; }
-    .formula-main { font-size:1.1rem; }
-    input[type="range"] { width:110px; }
-    .demo .ro { min-width:80px; padding:0.4rem 0.5rem; }
-    .demo .ro .rv { font-size:0.85rem; }
+  @media(max-width:600px){
+    .hero-orbit{width:180px;height:180px}
+    .card,.demo,.practice{padding:1rem}
+    .formula-main{font-size:1.05rem}
+    input[type="range"]{width:100px}
+    .demo .ro{min-width:70px;padding:0.3rem 0.4rem}
+    .demo .ro .rv{font-size:0.8rem}
+    .practice-grid{grid-template-columns:1fr}
   }
 </style>
 </head>
 <body>
 
-<!-- HERO -->
 <div class="hero">
-  <div class="hero-orbit">
-    <div class="orbit-ring"></div>
-    <div class="center-dot"></div>
-    <div class="planet"></div>
-  </div>
+  <div class="hero-orbit"><div class="ring"></div><div class="cdot"></div><div class="planet"></div></div>
   <h1>Körmozgás</h1>
   <p>Minden, amit tudnod kell — egyszerűen, vizuálisan, érthetően.</p>
-  <a href="#intro" class="scroll-hint">&#8595;</a>
+  <a href="#s1" class="arr">&#8595;</a>
 </div>
 
 <!-- 01 BEVEZETŐ -->
-<section id="intro">
-<div class="container"><div class="fade-in">
-  <span class="section-num">01 — Bevezető</span>
+<section id="s1"><div class="container"><div class="fade-in">
+  <span class="sn">01 — Bevezető</span>
   <h2>Mi az a <span class="hl">körmozgás</span>?</h2>
   <div class="card">
     <h3><span class="ic">&#128260;</span> Az alapötlet</h3>
-    <p>Képzeld el, hogy egy követ kötöttél egy zsinór végére és pörgetni kezded a fejed fölött. A kő <strong>kör alakú pályán</strong> mozog — ez a körmozgás.</p>
-    <br>
-    <p>Körmozgásról beszélünk, ha egy test <strong>állandó sugarú kör alakú pályán</strong> halad. Ha a sebessége közben nem változik, azt <strong>egyenletes körmozgásnak</strong> nevezzük.</p>
+    <p>Képzeld el, hogy egy követ kötöttél egy zsinór végére és pörgetni kezded. A kő <strong>kör alakú pályán</strong> mozog — ez a körmozgás. Ha a sebessége nem változik, az <strong>egyenletes körmozgás</strong>.</p>
   </div>
   <div class="card">
     <h3><span class="ic">&#127758;</span> Hol találkozol vele?</h3>
@@ -275,633 +140,380 @@
       <li>A kerékpár kereke forog</li>
       <li>A mosógép centrifugája pörög</li>
       <li>A körhinta a vidámparkban</li>
-      <li>A műholdak keringenek a Föld körül</li>
     </ul>
   </div>
-</div></div>
-</section>
+</div></div></section>
 
-<!-- 02 PERIÓDUSIDŐ ÉS FREKVENCIA -->
-<section>
-<div class="container"><div class="fade-in">
-  <span class="section-num">02 — Periódusidő és frekvencia</span>
+<!-- 02 T ÉS f -->
+<section><div class="container"><div class="fade-in">
+  <span class="sn">02 — Periódusidő és frekvencia</span>
   <h2><span class="hl">T</span> és <span class="hl">f</span> — az idő mértékei</h2>
 
   <div class="card">
-    <h3><span class="ic">&#9201;</span> Periódusidő (T)</h3>
-    <p>Ennyi idő kell a testnek, hogy <strong>egyszer körbemenjen</strong> a teljes körön.</p>
-    <p>Jele: <strong>T</strong> | Mértékegysége: <strong>s</strong> (másodperc)</p>
+    <h3><span class="ic">&#9201;</span> Periódusidő (T) — ennyi idő egy teljes kör</h3>
+    <div class="formula"><div class="formula-tag">Alap</div><div class="formula-main">T [s]</div><div class="formula-desc">mértékegysége: másodperc</div></div>
   </div>
   <div class="card">
-    <h3><span class="ic">&#128257;</span> Frekvencia (f)</h3>
-    <p><strong>Hányszor megy körbe</strong> a test egy másodperc alatt. A periódusidő „ellentéte".</p>
-    <div class="formula">
-      <div class="formula-tag">Képlet</div>
-      <div class="formula-main">f = 1 / T</div>
-      <div class="formula-desc">frekvencia = 1 osztva a periódusidővel</div>
-    </div>
-    <p>Jele: <strong>f</strong> | Mértékegysége: <strong>Hz</strong> (Hertz) = 1/s</p>
+    <h3><span class="ic">&#128257;</span> Frekvencia (f) — hányszor megy körbe 1 s alatt</h3>
+    <div class="formula"><div class="formula-tag">Képlet</div><div class="formula-main">f = 1 / T</div><div class="formula-desc">mértékegysége: Hz (Hertz)</div></div>
   </div>
 
   <div class="demo">
-    <div class="demo-title">&#127918; Állítsd a periódusidőt!</div>
-    <canvas id="c_tf" width="600" height="340"></canvas>
-    <div class="sliders">
-      <div class="sg">
-        <label>Periódusidő (T)</label>
-        <input type="range" id="s_tf_T" min="10" max="60" value="30">
-        <span class="sv" id="v_tf_T">3.0 s</span>
-      </div>
-    </div>
+    <div class="demo-title">&#127918; Interaktív szimuláció</div>
+    <canvas id="c_tf" width="600" height="300"></canvas>
+    <div class="sliders"><div class="sg"><label>Periódusidő (T)</label><input type="range" id="s_tf_T" min="10" max="60" value="30"><span class="sv" id="v_tf_T">3.0 s</span></div></div>
     <div class="readouts">
-      <div class="ro"><div class="rl">Periódus (T)</div><div class="rv" id="r_tf_T">3.0 s</div></div>
-      <div class="ro"><div class="rl">Frekvencia (f)</div><div class="rv" id="r_tf_f">0.33 Hz</div></div>
-      <div class="ro"><div class="rl">Körök / 10s</div><div class="rv" id="r_tf_n">3.3</div></div>
+      <div class="ro"><div class="rl">T</div><div class="rv" id="r_tf_T">3.0 s</div></div>
+      <div class="ro"><div class="rl">f</div><div class="rv" id="r_tf_f">0.33 Hz</div></div>
     </div>
   </div>
-  <div class="tip"><strong>&#128161; Figyeld meg:</strong> Ha csökkented T-t (gyorsabb forgás), az f nő — és fordítva. Mindig f = 1/T!</div>
-</div></div>
-</section>
+
+  <div class="practice" id="p_tf">
+    <div class="practice-title">&#9999;&#65039; Gyakorlás — T és f</div>
+    <div class="practice-grid" id="pg_tf"></div>
+    <div class="new-btn-wrap"><button class="new-btn" id="nb_tf">&#128260; Új feladatok</button></div>
+    <div class="score" id="sc_tf"></div>
+  </div>
+</div></div></section>
 
 <!-- 03 SZÖGSEBESSÉG -->
-<section>
-<div class="container"><div class="fade-in">
-  <span class="section-num">03 — Szögsebesség</span>
+<section><div class="container"><div class="fade-in">
+  <span class="sn">03 — Szögsebesség</span>
   <h2>Milyen gyorsan <span class="hl">fordul</span>?</h2>
 
   <div class="card">
-    <h3><span class="ic">&#127744;</span> Szögsebesség (&#969; – „omega")</h3>
-    <p>Mekkora szöget „söpör végig" a test <strong>egy másodperc alatt</strong>. Egy teljes kör = 2&#960; radián (kb. 360°).</p>
-    <div class="formula">
-      <div class="formula-tag">Képlet</div>
-      <div class="formula-main">&#969; = 2&#960; / T</div>
-      <div class="formula-desc">szögsebesség = 2&#960; osztva a periódusidővel</div>
-    </div>
-    <p>Jele: <strong>&#969;</strong> | Mértékegysége: <strong>rad/s</strong></p>
+    <h3><span class="ic">&#127744;</span> Szögsebesség (&#969;)</h3>
+    <p>Mekkora szöget söpör végig a test <strong>1 másodperc alatt</strong>. Teljes kör = 2&#960; rad &#8776; 360°.</p>
+    <div class="formula"><div class="formula-tag">Képlet</div><div class="formula-main">&#969; = 2&#960; / T</div><div class="formula-desc">mértékegysége: rad/s</div></div>
+    <div class="tip"><strong>&#128161;</strong> Másképp: &#969; = 2&#960; · f</div>
   </div>
 
   <div class="demo">
-    <div class="demo-title">&#127918; Figyeld a szögelfordulást!</div>
-    <canvas id="c_omega" width="600" height="360"></canvas>
-    <div class="sliders">
-      <div class="sg">
-        <label>Periódusidő (T)</label>
-        <input type="range" id="s_om_T" min="10" max="60" value="30">
-        <span class="sv" id="v_om_T">3.0 s</span>
-      </div>
-    </div>
+    <div class="demo-title">&#127918; Interaktív szimuláció</div>
+    <canvas id="c_om" width="600" height="340"></canvas>
+    <div class="sliders"><div class="sg"><label>Periódusidő (T)</label><input type="range" id="s_om_T" min="10" max="60" value="30"><span class="sv" id="v_om_T">3.0 s</span></div></div>
     <div class="readouts">
       <div class="ro"><div class="rl">T</div><div class="rv" id="r_om_T">3.0 s</div></div>
       <div class="ro"><div class="rl">&#969;</div><div class="rv" id="r_om_w">2.09 rad/s</div></div>
-      <div class="ro"><div class="rl">&#966; (pillanatnyi)</div><div class="rv" id="r_om_phi">0°</div></div>
+      <div class="ro"><div class="rl">&#966;</div><div class="rv" id="r_om_phi">0°</div></div>
     </div>
   </div>
-  <div class="tip"><strong>&#128161; Figyeld:</strong> Kisebb T → nagyobb &#969; → gyorsabban nő a szög.</div>
-</div></div>
-</section>
+
+  <div class="practice" id="p_om">
+    <div class="practice-title">&#9999;&#65039; Gyakorlás — &#969;</div>
+    <div class="practice-grid" id="pg_om"></div>
+    <div class="new-btn-wrap"><button class="new-btn" id="nb_om">&#128260; Új feladatok</button></div>
+    <div class="score" id="sc_om"></div>
+  </div>
+</div></div></section>
 
 <!-- 04 KERÜLETI SEBESSÉG -->
-<section>
-<div class="container"><div class="fade-in">
-  <span class="section-num">04 — Kerületi sebesség</span>
+<section><div class="container"><div class="fade-in">
+  <span class="sn">04 — Kerületi sebesség</span>
   <h2>Milyen <span class="hl">gyorsan</span> halad a kör mentén?</h2>
 
   <div class="card">
     <h3><span class="ic">&#128168;</span> Kerületi sebesség (v)</h3>
-    <p>A test milyen gyorsan halad <strong>a kör mentén</strong>. A kör kerülete = 2&#960;r, és ezt T idő alatt teszi meg:</p>
-    <div class="formula">
-      <div class="formula-tag">Képlet</div>
-      <div class="formula-main">v = 2&#960;r / T = r · &#969;</div>
-      <div class="formula-desc">sebesség = kerület / periódus = sugár × szögsebesség</div>
-    </div>
-    <p>Mértékegysége: <strong>m/s</strong></p>
-    <div class="tip"><strong>&#128161; Fontos!</strong> Az iránya mindig <strong>érintő irányú</strong> — ha elengednéd a zsinórt, a kő egyenesen repülne el!</div>
+    <div class="formula"><div class="formula-tag">Képlet</div><div class="formula-main">v = 2&#960;r / T = r · &#969;</div><div class="formula-desc">mértékegysége: m/s</div></div>
+    <div class="tip"><strong>&#128161;</strong> Iránya mindig <strong>érintő irányú</strong> — merőleges a sugárra!</div>
   </div>
 
   <div class="demo">
-    <div class="demo-title">&#127918; Állítsd a sugarat és a periódust!</div>
-    <canvas id="c_v" width="600" height="400"></canvas>
+    <div class="demo-title">&#127918; Interaktív szimuláció</div>
+    <canvas id="c_v" width="600" height="380"></canvas>
     <div class="sliders">
-      <div class="sg">
-        <label>Sugár (r)</label>
-        <input type="range" id="s_v_r" min="40" max="160" value="100">
-        <span class="sv" id="v_v_r">1.00 m</span>
-      </div>
-      <div class="sg">
-        <label>Periódus (T)</label>
-        <input type="range" id="s_v_T" min="10" max="60" value="30">
-        <span class="sv" id="v_v_T">3.0 s</span>
-      </div>
+      <div class="sg"><label>Sugár (r)</label><input type="range" id="s_v_r" min="40" max="160" value="100"><span class="sv" id="v_v_r">1.00 m</span></div>
+      <div class="sg"><label>Periódus (T)</label><input type="range" id="s_v_T" min="10" max="60" value="30"><span class="sv" id="v_v_T">3.0 s</span></div>
     </div>
     <div class="readouts">
-      <div class="ro"><div class="rl">Sugár (r)</div><div class="rv" id="r_v_r">1.00 m</div></div>
-      <div class="ro"><div class="rl">Kerület (2&#960;r)</div><div class="rv" id="r_v_k">6.28 m</div></div>
+      <div class="ro"><div class="rl">r</div><div class="rv" id="r_v_r">1.00 m</div></div>
+      <div class="ro"><div class="rl">2&#960;r</div><div class="rv" id="r_v_k">6.28 m</div></div>
       <div class="ro"><div class="rl">v</div><div class="rv" id="r_v_v">2.09 m/s</div></div>
-      <div class="ro"><div class="rl">&#969;</div><div class="rv" id="r_v_w">2.09 rad/s</div></div>
     </div>
   </div>
-  <div class="tip"><strong>&#128161; Figyeld:</strong> Nagyobb sugár VAGY kisebb T → nagyobb v. A zöld nyíl mutatja a sebességet — mindig merőleges a sugárra!</div>
-</div></div>
-</section>
 
-<!-- 05 CENTRIPETÁLIS GYORSULÁS ÉS ERŐ -->
-<section>
-<div class="container"><div class="fade-in">
-  <span class="section-num">05 — Gyorsulás és erő</span>
+  <div class="practice" id="p_v">
+    <div class="practice-title">&#9999;&#65039; Gyakorlás — v</div>
+    <div class="practice-grid" id="pg_v"></div>
+    <div class="new-btn-wrap"><button class="new-btn" id="nb_v">&#128260; Új feladatok</button></div>
+    <div class="score" id="sc_v"></div>
+  </div>
+</div></div></section>
+
+<!-- 05 CENTRIPETÁLIS -->
+<section><div class="container"><div class="fade-in">
+  <span class="sn">05 — Gyorsulás és erő</span>
   <h2>Mi tartja <span class="hl">körpályán</span>?</h2>
 
   <div class="card">
-    <h3><span class="ic">&#127919;</span> Centripetális gyorsulás (a<sub>cp</sub>)</h3>
-    <p>A sebesség <strong>iránya folyton változik</strong> → gyorsulás van! Ez mindig <strong>a kör közepe felé mutat</strong>.</p>
-    <div class="formula">
-      <div class="formula-tag">Képlet</div>
-      <div class="formula-main">a<sub>cp</sub> = v² / r = &#969;² · r</div>
-      <div class="formula-desc">centripetális gyorsulás = sebesség² / sugár</div>
-    </div>
-    <p>Mértékegysége: <strong>m/s²</strong></p>
+    <h3><span class="ic">&#127919;</span> Centripetális gyorsulás</h3>
+    <div class="formula"><div class="formula-tag">Képlet</div><div class="formula-main">a<sub>cp</sub> = v² / r = &#969;² · r</div><div class="formula-desc">mértékegysége: m/s²</div></div>
   </div>
-
   <div class="card">
-    <h3><span class="ic">&#128170;</span> Centripetális erő (F<sub>cp</sub>)</h3>
-    <p>Newton II. törvénye: <strong>F = m · a</strong>. Ha van gyorsulás, erő is kell — ez <strong>befelé húz</strong>.</p>
-    <div class="formula">
-      <div class="formula-tag">Képlet</div>
-      <div class="formula-main">F<sub>cp</sub> = m · v² / r</div>
-      <div class="formula-desc">centripetális erő = tömeg × sebesség² / sugár</div>
-    </div>
-    <p>Mértékegysége: <strong>N</strong> (Newton)</p>
-    <div class="tip"><strong>&#128161; Mi adja ezt az erőt?</strong> Zsinór húzóereje, gravitáció, súrlódás — mindig valami más!</div>
+    <h3><span class="ic">&#128170;</span> Centripetális erő</h3>
+    <div class="formula"><div class="formula-tag">Képlet</div><div class="formula-main">F<sub>cp</sub> = m · v² / r</div><div class="formula-desc">mértékegysége: N (Newton)</div></div>
+    <div class="tip"><strong>&#128161;</strong> Mindig a kör közepe felé mutat!</div>
   </div>
 
   <div class="demo">
-    <div class="demo-title">&#127918; Állíts mindent — figyeld az erőt és a gyorsulást!</div>
-    <canvas id="c_cp" width="600" height="420"></canvas>
+    <div class="demo-title">&#127918; Interaktív szimuláció</div>
+    <canvas id="c_cp" width="600" height="380"></canvas>
     <div class="sliders">
-      <div class="sg">
-        <label>Sugár (r)</label>
-        <input type="range" id="s_cp_r" min="40" max="160" value="100">
-        <span class="sv" id="v_cp_r">1.00 m</span>
-      </div>
-      <div class="sg">
-        <label>Periódus (T)</label>
-        <input type="range" id="s_cp_T" min="10" max="60" value="25">
-        <span class="sv" id="v_cp_T">2.5 s</span>
-      </div>
-      <div class="sg">
-        <label>Tömeg (m)</label>
-        <input type="range" id="s_cp_m" min="1" max="10" value="3">
-        <span class="sv" id="v_cp_m">3 kg</span>
-      </div>
+      <div class="sg"><label>Sugár (r)</label><input type="range" id="s_cp_r" min="40" max="160" value="100"><span class="sv" id="v_cp_r">1.00 m</span></div>
+      <div class="sg"><label>Periódus (T)</label><input type="range" id="s_cp_T" min="10" max="60" value="25"><span class="sv" id="v_cp_T">2.5 s</span></div>
+      <div class="sg"><label>Tömeg (m)</label><input type="range" id="s_cp_m" min="1" max="10" value="3"><span class="sv" id="v_cp_m">3 kg</span></div>
     </div>
     <div class="readouts">
       <div class="ro"><div class="rl">v</div><div class="rv" id="r_cp_v">—</div></div>
-      <div class="ro"><div class="rl">&#969;</div><div class="rv" id="r_cp_w">—</div></div>
       <div class="ro"><div class="rl">a<sub>cp</sub></div><div class="rv" id="r_cp_a">—</div></div>
       <div class="ro"><div class="rl">F<sub>cp</sub></div><div class="rv" id="r_cp_F">—</div></div>
     </div>
   </div>
 
-  <div class="warn"><strong>&#9888; Gyakori tévhit:</strong> A „centrifugális erő" nem valódi erő! Amit érzünk, az a <strong>tehetetlenség</strong> — a tested egyenesen akarna menni, de a kör pályán kell maradnia.</div>
-</div></div>
-</section>
+  <div class="warn"><strong>&#9888; Tévhit:</strong> A „centrifugális erő" nem valódi erő! Amit érzünk, az a tehetetlenség.</div>
 
-<!-- 06 v = r·ω KAPCSOLAT -->
-<section>
-<div class="container"><div class="fade-in">
-  <span class="section-num">06 — A sugár hatása</span>
+  <div class="practice" id="p_cp">
+    <div class="practice-title">&#9999;&#65039; Gyakorlás — a<sub>cp</sub> és F<sub>cp</sub></div>
+    <div class="practice-grid" id="pg_cp"></div>
+    <div class="new-btn-wrap"><button class="new-btn" id="nb_cp">&#128260; Új feladatok</button></div>
+    <div class="score" id="sc_cp"></div>
+  </div>
+</div></div></section>
+
+<!-- 06 v=r·ω -->
+<section><div class="container"><div class="fade-in">
+  <span class="sn">06 — A sugár hatása</span>
   <h2><span class="hl">v = r · &#969;</span> — miért ül ki a körhintán?</h2>
 
   <div class="card">
     <h3><span class="ic">&#127904;</span> Ugyanaz az &#969;, más sugár → más sebesség!</h3>
-    <p>Ha két test <strong>ugyanakkora szögsebességgel</strong> forog (pl. egy forgó korongon állnak), a <strong>kijjebb lévő gyorsabban halad</strong>, mert v = r · &#969;.</p>
+    <p>Egy forgó korongon a kijjebb lévő test gyorsabban halad, mert v = r · &#969;.</p>
   </div>
 
   <div class="demo">
-    <div class="demo-title">&#127918; Két test, azonos &#969;, különböző sugár</div>
-    <canvas id="c_rw" width="600" height="400"></canvas>
+    <div class="demo-title">&#127918; Két test, azonos &#969;</div>
+    <canvas id="c_rw" width="600" height="380"></canvas>
     <div class="sliders">
-      <div class="sg">
-        <label>Belső sugár (r&#8321;)</label>
-        <input type="range" id="s_rw_r1" min="30" max="90" value="55">
-        <span class="sv" id="v_rw_r1">0.55 m</span>
-      </div>
-      <div class="sg">
-        <label>Külső sugár (r&#8322;)</label>
-        <input type="range" id="s_rw_r2" min="90" max="170" value="130">
-        <span class="sv" id="v_rw_r2">1.30 m</span>
-      </div>
-      <div class="sg">
-        <label>Szögsebesség (&#969;)</label>
-        <input type="range" id="s_rw_w" min="5" max="40" value="15">
-        <span class="sv" id="v_rw_w">1.50 rad/s</span>
-      </div>
+      <div class="sg"><label>r&#8321; (belső)</label><input type="range" id="s_rw_r1" min="30" max="90" value="55"><span class="sv" id="v_rw_r1">0.55 m</span></div>
+      <div class="sg"><label>r&#8322; (külső)</label><input type="range" id="s_rw_r2" min="90" max="170" value="130"><span class="sv" id="v_rw_r2">1.30 m</span></div>
+      <div class="sg"><label>&#969;</label><input type="range" id="s_rw_w" min="5" max="40" value="15"><span class="sv" id="v_rw_w">1.50 rad/s</span></div>
     </div>
     <div class="readouts">
-      <div class="ro" style="border-left:3px solid #f472b6"><div class="rl">v&#8321; (belső)</div><div class="rv" id="r_rw_v1">—</div></div>
-      <div class="ro" style="border-left:3px solid #34d399"><div class="rl">v&#8322; (külső)</div><div class="rv" id="r_rw_v2">—</div></div>
-      <div class="ro"><div class="rl">v&#8322; / v&#8321;</div><div class="rv" id="r_rw_ratio">—</div></div>
+      <div class="ro" style="border-left:3px solid #f472b6"><div class="rl">v&#8321;</div><div class="rv" id="r_rw_v1">—</div></div>
+      <div class="ro" style="border-left:3px solid #34d399"><div class="rl">v&#8322;</div><div class="rv" id="r_rw_v2">—</div></div>
+      <div class="ro"><div class="rl">v&#8322;/v&#8321;</div><div class="rv" id="r_rw_ratio">—</div></div>
     </div>
   </div>
-  <div class="tip"><strong>&#128161; Figyeld:</strong> A külső test sebessége mindig r&#8322;/r&#8321;-szer nagyobb! Ezért a körhinta szélén „nagyobbat" kapunk.</div>
-</div></div>
-</section>
+
+  <div class="practice" id="p_rw">
+    <div class="practice-title">&#9999;&#65039; Gyakorlás — v = r · &#969;</div>
+    <div class="practice-grid" id="pg_rw"></div>
+    <div class="new-btn-wrap"><button class="new-btn" id="nb_rw">&#128260; Új feladatok</button></div>
+    <div class="score" id="sc_rw"></div>
+  </div>
+</div></div></section>
 
 <!-- 07 ÖSSZEFOGLALÁS -->
-<section>
-<div class="container"><div class="fade-in">
-  <span class="section-num">07 — Összefoglalás</span>
+<section><div class="container"><div class="fade-in">
+  <span class="sn">07 — Összefoglalás</span>
   <h2>Minden képlet <span class="hl">egy helyen</span></h2>
-
   <table class="summary-table">
-    <tr><th>Mennyiség</th><th>Képlet</th><th>Mértékegység</th></tr>
+    <tr><th>Mennyiség</th><th>Képlet</th><th>Egység</th></tr>
     <tr><td>Periódusidő</td><td>T</td><td>s</td></tr>
     <tr><td>Frekvencia</td><td>f = 1/T</td><td>Hz</td></tr>
     <tr><td>Szögsebesség</td><td>&#969; = 2&#960;/T</td><td>rad/s</td></tr>
-    <tr><td>Kerületi sebesség</td><td>v = 2&#960;r/T = r&#969;</td><td>m/s</td></tr>
+    <tr><td>Ker. sebesség</td><td>v = 2&#960;r/T = r&#969;</td><td>m/s</td></tr>
     <tr><td>Centr. gyorsulás</td><td>a = v²/r = &#969;²r</td><td>m/s²</td></tr>
     <tr><td>Centr. erő</td><td>F = mv²/r</td><td>N</td></tr>
   </table>
-
-  <div class="card" style="border-color:rgba(52,211,153,0.3);">
-    <h3><span class="ic">&#129504;</span> Megjegyeznivalók a dolgozathoz</h3>
+  <div class="card" style="border-color:rgba(52,211,153,0.3)">
+    <h3><span class="ic">&#129504;</span> Tippek a dolgozathoz</h3>
     <ul>
-      <li>A sebesség <strong>iránya</strong> mindig érintő irányú</li>
-      <li>A gyorsulás és erő mindig <strong>a kör közepe felé</strong> mutat</li>
-      <li>Nagyobb v VAGY kisebb r → nagyobb centripetális erő kell</li>
-      <li>f = 1/T és T = 1/f — egymás reciprokai</li>
-      <li>A „centrifugális erő" nem valódi erő — tehetetlenség!</li>
-      <li>v = r&#969; — a sugár összeköti a kétféle sebességet</li>
+      <li>v iránya: érintő irányú | a és F iránya: befelé</li>
+      <li>Nagyobb v VAGY kisebb r → nagyobb F kell</li>
+      <li>f = 1/T és T = 1/f — reciprokok</li>
+      <li>„Centrifugális erő" = tehetetlenség, nem valódi erő!</li>
     </ul>
   </div>
-
-  <div class="tip" style="margin-top:1.5rem; text-align:center; font-size:1rem;">
-    <strong>&#127808; Sok sikert a dolgozathoz!</strong> Kezdd T-vel, abból f, &#969;, v, végül a<sub>cp</sub> és F<sub>cp</sub>!
-  </div>
-</div></div>
-</section>
+  <div class="tip" style="text-align:center;margin-top:1.2rem;font-size:1rem"><strong>&#127808; Sok sikert a dolgozathoz!</strong></div>
+</div></div></section>
 
 <footer>Készült szeretettel &#128640; Fizika – Körmozgás</footer>
 
 <script>
-// Scroll fade-in
-var obs = new IntersectionObserver(function(entries) {
-  entries.forEach(function(e) { if(e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.12 });
-document.querySelectorAll('.fade-in').forEach(function(el) { obs.observe(el); });
+// ═════ UTILS ═════
+var PI2=Math.PI*2;
+function rrect(c,x,y,w,h,r){if(w<1)return;c.beginPath();c.moveTo(x+r,y);c.lineTo(x+w-r,y);c.arcTo(x+w,y,x+w,y+r,r);c.lineTo(x+w,y+h-r);c.arcTo(x+w,y+h,x+w-r,y+h,r);c.lineTo(x+r,y+h);c.arcTo(x,y+h,x,y+h-r,r);c.lineTo(x,y+r);c.arcTo(x,y,x+r,y,r);c.closePath()}
+function drawArr(c,x1,y1,x2,y2,col,lw){var dx=x2-x1,dy=y2-y1,l=Math.sqrt(dx*dx+dy*dy);if(l<2)return;var ux=dx/l,uy=dy/l,s=Math.min(7,l*0.3);c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.strokeStyle=col;c.lineWidth=lw||2;c.stroke();c.beginPath();c.moveTo(x2,y2);c.lineTo(x2-s*ux-s*uy*0.4,y2-s*uy+s*ux*0.4);c.lineTo(x2-s*ux+s*uy*0.4,y2-s*uy-s*ux*0.4);c.closePath();c.fillStyle=col;c.fill()}
+function oD(c,cx,cy,r){c.beginPath();c.arc(cx,cy,r,0,PI2);c.strokeStyle='rgba(99,102,241,0.2)';c.lineWidth=1.5;c.setLineDash([5,7]);c.stroke();c.setLineDash([])}
+function dd(c,x,y,r,col){c.beginPath();c.arc(x,y,r,0,PI2);c.fillStyle=col;c.shadowColor=col;c.shadowBlur=r*2;c.fill();c.shadowBlur=0}
+function dl(c,t,x,y,col,sz,al){c.font=(sz||12)+'px "Space Mono",monospace';c.fillStyle=col||'#e2e8f0';c.textAlign=al||'center';c.textBaseline='middle';c.fillText(t,x,y)}
+function rc(c){c.setLineDash([]);c.shadowBlur=0;c.lineCap='butt';c.textBaseline='middle';c.textAlign='center';c.globalAlpha=1}
+function rr(a,b){return+(a+Math.random()*(b-a)).toFixed(1)}
+function ri(a,b){return Math.floor(a+Math.random()*(b-a+1))}
 
-// Helpers
-var PI2 = Math.PI * 2;
+// Scroll observer
+var obs=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)x.target.classList.add('visible')})},{threshold:0.1});
+document.querySelectorAll('.fade-in').forEach(function(el){obs.observe(el)});
 
-function rrect(c,x,y,w,h,r) {
-  if(w<1) return;
-  c.beginPath(); c.moveTo(x+r,y); c.lineTo(x+w-r,y);
-  c.arcTo(x+w,y,x+w,y+r,r); c.lineTo(x+w,y+h-r);
-  c.arcTo(x+w,y+h,x+w-r,y+h,r); c.lineTo(x+r,y+h);
-  c.arcTo(x,y+h,x,y+h-r,r); c.lineTo(x,y+r);
-  c.arcTo(x,y,x+r,y,r); c.closePath();
-}
-
-function drawArrow(c,x1,y1,x2,y2,col,lw) {
-  var dx=x2-x1, dy=y2-y1, len=Math.sqrt(dx*dx+dy*dy);
-  if(len<2) return;
-  var ux=dx/len, uy=dy/len, s=Math.min(8,len*0.3);
-  c.beginPath(); c.moveTo(x1,y1); c.lineTo(x2,y2);
-  c.strokeStyle=col; c.lineWidth=lw||2; c.stroke();
-  c.beginPath(); c.moveTo(x2,y2);
-  c.lineTo(x2-s*ux-s*uy*0.4, y2-s*uy+s*ux*0.4);
-  c.lineTo(x2-s*ux+s*uy*0.4, y2-s*uy-s*ux*0.4);
-  c.closePath(); c.fillStyle=col; c.fill();
-}
-
-function orbitDash(c,cx,cy,r) {
-  c.beginPath(); c.arc(cx,cy,r,0,PI2);
-  c.strokeStyle='rgba(99,102,241,0.2)'; c.lineWidth=1.5;
-  c.setLineDash([5,7]); c.stroke(); c.setLineDash([]);
-}
-
-function drawDot(c,x,y,r,col) {
-  c.beginPath(); c.arc(x,y,r,0,PI2); c.fillStyle=col;
-  c.shadowColor=col; c.shadowBlur=r*2; c.fill(); c.shadowBlur=0;
-}
-
-function drawLabel(c,txt,x,y,col,sz,al) {
-  c.font=(sz||12)+'px "Space Mono",monospace';
-  c.fillStyle=col||'#e2e8f0'; c.textAlign=al||'center';
-  c.textBaseline='middle'; c.fillText(txt,x,y);
-}
-
-function resetCtx(c) {
-  c.setLineDash([]); c.shadowBlur=0; c.lineCap='butt';
-  c.textBaseline='middle'; c.textAlign='center';
-}
-
-// ══════════════════════════════════════════════
-// DEMO 1: T és f
-// ══════════════════════════════════════════════
+// ═════ DEMO 1: T és f ═════
 (function(){
-  var cv=document.getElementById('c_tf'); if(!cv) return;
-  var c=cv.getContext('2d'), W=cv.width, H=cv.height;
-  var cx=W/2, cy=H/2, R=110;
-  var sT=document.getElementById('s_tf_T');
-  var T=3, angle=-Math.PI/2, lt=null, elapsed=0;
-
-  function upd(){
-    T=sT.value/10;
-    document.getElementById('v_tf_T').textContent=T.toFixed(1)+' s';
-    document.getElementById('r_tf_T').textContent=T.toFixed(1)+' s';
-    document.getElementById('r_tf_f').textContent=(1/T).toFixed(2)+' Hz';
-    document.getElementById('r_tf_n').textContent=(10/T).toFixed(1);
-  }
-  sT.addEventListener('input',upd); upd();
-
-  function draw(now){
-    if(lt===null){lt=now; requestAnimationFrame(draw); return;}
-    var dt=Math.min((now-lt)/1000,0.1); lt=now; elapsed+=dt;
-    var omega=PI2/T; angle+=omega*dt;
-    var px=cx+R*Math.cos(angle), py=cy+R*Math.sin(angle);
-
-    c.clearRect(0,0,W,H); resetCtx(c);
-    orbitDash(c,cx,cy,R);
-
-    // Progress bar
-    var barX=40, barY=H-30, barW=W-80, prog=(elapsed%T)/T;
-    c.fillStyle='rgba(99,102,241,0.1)'; rrect(c,barX,barY,barW,6,3); c.fill();
-    c.fillStyle='#6366f1'; rrect(c,barX,barY,barW*prog,6,3); c.fill();
-    drawLabel(c,'T: '+(elapsed%T).toFixed(1)+'s / '+T.toFixed(1)+'s',barX+barW/2,barY-12,'#a78bfa',11);
-
-    // Radius
-    c.beginPath(); c.moveTo(cx,cy); c.lineTo(px,py);
-    c.strokeStyle='rgba(167,139,250,0.3)'; c.lineWidth=1.5; c.stroke();
-
-    drawDot(c,cx,cy,5,'#a78bfa');
-    drawDot(c,px,py,10,'#34d399');
-
-    drawLabel(c,'f = '+(1/T).toFixed(2)+' Hz',cx,30,'#34d399',16);
-    drawLabel(c,'T = '+T.toFixed(1)+' s',cx,52,'#a78bfa',13);
-
-    requestAnimationFrame(draw);
-  }
-  requestAnimationFrame(draw);
+  var cv=document.getElementById('c_tf');if(!cv)return;
+  var c=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2,R=100;
+  var sT=document.getElementById('s_tf_T'),T=3,ang=-Math.PI/2,lt=null,el=0;
+  function up(){T=sT.value/10;document.getElementById('v_tf_T').textContent=T.toFixed(1)+' s';document.getElementById('r_tf_T').textContent=T.toFixed(1)+' s';document.getElementById('r_tf_f').textContent=(1/T).toFixed(2)+' Hz'}
+  sT.addEventListener('input',up);up();
+  function dr(now){if(lt===null){lt=now;requestAnimationFrame(dr);return}var dt=Math.min((now-lt)/1000,0.1);lt=now;el+=dt;var om=PI2/T;ang+=om*dt;var px=cx+R*Math.cos(ang),py=cy+R*Math.sin(ang);c.clearRect(0,0,W,H);rc(c);oD(c,cx,cy,R);var bX=40,bY=H-26,bW=W-80,prog=(el%T)/T;c.fillStyle='rgba(99,102,241,0.1)';rrect(c,bX,bY,bW,5,3);c.fill();c.fillStyle='#6366f1';rrect(c,bX,bY,bW*prog,5,3);c.fill();dl(c,'T: '+(el%T).toFixed(1)+'s / '+T.toFixed(1)+'s',bX+bW/2,bY-10,'#a78bfa',10);c.beginPath();c.moveTo(cx,cy);c.lineTo(px,py);c.strokeStyle='rgba(167,139,250,0.3)';c.lineWidth=1.5;c.stroke();dd(c,cx,cy,4,'#a78bfa');dd(c,px,py,9,'#34d399');dl(c,'f = '+(1/T).toFixed(2)+' Hz',cx,24,'#34d399',15);dl(c,'T = '+T.toFixed(1)+' s',cx,44,'#a78bfa',12);requestAnimationFrame(dr)}
+  requestAnimationFrame(dr);
 })();
 
-// ══════════════════════════════════════════════
-// DEMO 2: Szögsebesség
-// ══════════════════════════════════════════════
+// ═════ DEMO 2: ω ═════
 (function(){
-  var cv=document.getElementById('c_omega'); if(!cv) return;
-  var c=cv.getContext('2d'), W=cv.width, H=cv.height;
-  var cx=W/2, cy=H/2, R=120;
-  var sT=document.getElementById('s_om_T');
-  var T=3, angle=-Math.PI/2, lt=null;
-
-  function upd(){
-    T=sT.value/10;
-    var w=PI2/T;
-    document.getElementById('v_om_T').textContent=T.toFixed(1)+' s';
-    document.getElementById('r_om_T').textContent=T.toFixed(1)+' s';
-    document.getElementById('r_om_w').textContent=w.toFixed(2)+' rad/s';
-  }
-  sT.addEventListener('input',upd); upd();
-
-  function draw(now){
-    if(lt===null){lt=now; requestAnimationFrame(draw); return;}
-    var dt=Math.min((now-lt)/1000,0.1); lt=now;
-    var omega=PI2/T; angle+=omega*dt;
-    var px=cx+R*Math.cos(angle), py=cy+R*Math.sin(angle);
-
-    c.clearRect(0,0,W,H); resetCtx(c);
-    orbitDash(c,cx,cy,R);
-
-    // Reference line
-    c.beginPath(); c.moveTo(cx,cy); c.lineTo(cx,cy-R);
-    c.strokeStyle='rgba(148,163,184,0.15)'; c.lineWidth=1;
-    c.setLineDash([3,5]); c.stroke(); c.setLineDash([]);
-    drawLabel(c,'START',cx,cy-R-14,'rgba(148,163,184,0.4)',10);
-
-    // Swept angle wedge
-    var ref=-Math.PI/2;
-    var swept=((angle-ref)%(PI2)+PI2)%PI2;
-    if(swept>0.03){
-      c.beginPath(); c.moveTo(cx,cy);
-      c.arc(cx,cy,50,ref,ref+swept); c.closePath();
-      c.fillStyle='rgba(251,191,36,0.1)'; c.fill();
-      c.beginPath(); c.arc(cx,cy,50,ref,ref+swept);
-      c.strokeStyle='rgba(251,191,36,0.5)'; c.lineWidth=2; c.stroke();
-      var mid=ref+swept/2, deg=((swept/Math.PI)*180)%360;
-      drawLabel(c,'\u03C6='+deg.toFixed(0)+'\u00B0',cx+68*Math.cos(mid),cy+68*Math.sin(mid),'#fbbf24',13);
-      document.getElementById('r_om_phi').textContent=deg.toFixed(0)+'\u00B0';
-    }
-
-    // Radius
-    c.beginPath(); c.moveTo(cx,cy); c.lineTo(px,py);
-    c.strokeStyle='#f472b6'; c.lineWidth=2; c.stroke();
-
-    // Arc trail
-    c.beginPath(); c.arc(cx,cy,R,ref,ref+swept);
-    c.strokeStyle='rgba(99,102,241,0.5)'; c.lineWidth=4;
-    c.lineCap='round'; c.stroke(); c.lineCap='butt';
-
-    drawDot(c,cx,cy,5,'#a78bfa');
-    drawDot(c,px,py,10,'#34d399');
-    drawLabel(c,'\u03C9 = '+(PI2/T).toFixed(2)+' rad/s',cx,28,'#fbbf24',15);
-
-    requestAnimationFrame(draw);
-  }
-  requestAnimationFrame(draw);
+  var cv=document.getElementById('c_om');if(!cv)return;
+  var c=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2,R=110;
+  var sT=document.getElementById('s_om_T'),T=3,ang=-Math.PI/2,lt=null;
+  function up(){T=sT.value/10;document.getElementById('v_om_T').textContent=T.toFixed(1)+' s';document.getElementById('r_om_T').textContent=T.toFixed(1)+' s';document.getElementById('r_om_w').textContent=(PI2/T).toFixed(2)+' rad/s'}
+  sT.addEventListener('input',up);up();
+  function dr(now){if(lt===null){lt=now;requestAnimationFrame(dr);return}var dt=Math.min((now-lt)/1000,0.1);lt=now;var om=PI2/T;ang+=om*dt;var px=cx+R*Math.cos(ang),py=cy+R*Math.sin(ang);c.clearRect(0,0,W,H);rc(c);oD(c,cx,cy,R);c.beginPath();c.moveTo(cx,cy);c.lineTo(cx,cy-R);c.strokeStyle='rgba(148,163,184,0.12)';c.lineWidth=1;c.setLineDash([3,5]);c.stroke();c.setLineDash([]);var ref=-Math.PI/2,sw=((ang-ref)%(PI2)+PI2)%PI2;if(sw>0.03){c.beginPath();c.moveTo(cx,cy);c.arc(cx,cy,45,ref,ref+sw);c.closePath();c.fillStyle='rgba(251,191,36,0.1)';c.fill();c.beginPath();c.arc(cx,cy,45,ref,ref+sw);c.strokeStyle='rgba(251,191,36,0.5)';c.lineWidth=2;c.stroke();var mid=ref+sw/2,deg=((sw/Math.PI)*180)%360;dl(c,'\u03C6='+deg.toFixed(0)+'\u00B0',cx+65*Math.cos(mid),cy+65*Math.sin(mid),'#fbbf24',12);document.getElementById('r_om_phi').textContent=deg.toFixed(0)+'\u00B0'}c.beginPath();c.moveTo(cx,cy);c.lineTo(px,py);c.strokeStyle='#f472b6';c.lineWidth=2;c.stroke();c.beginPath();c.arc(cx,cy,R,ref,ref+sw);c.strokeStyle='rgba(99,102,241,0.5)';c.lineWidth=4;c.lineCap='round';c.stroke();c.lineCap='butt';dd(c,cx,cy,4,'#a78bfa');dd(c,px,py,9,'#34d399');dl(c,'\u03C9 = '+(PI2/T).toFixed(2)+' rad/s',cx,24,'#fbbf24',14);requestAnimationFrame(dr)}
+  requestAnimationFrame(dr);
 })();
 
-// ══════════════════════════════════════════════
-// DEMO 3: Kerületi sebesség
-// ══════════════════════════════════════════════
+// ═════ DEMO 3: v ═════
 (function(){
-  var cv=document.getElementById('c_v'); if(!cv) return;
-  var c=cv.getContext('2d'), W=cv.width, H=cv.height;
-  var cx=W/2, cy=H/2;
-  var sR=document.getElementById('s_v_r'), sT=document.getElementById('s_v_T');
-  var R=100, T=3, angle=0, lt=null;
-  var SC=0.01;
-
-  function upd(){
-    R=+sR.value; T=sT.value/10;
-    var r_m=R*SC, w=PI2/T, v=r_m*w;
-    document.getElementById('v_v_r').textContent=r_m.toFixed(2)+' m';
-    document.getElementById('v_v_T').textContent=T.toFixed(1)+' s';
-    document.getElementById('r_v_r').textContent=r_m.toFixed(2)+' m';
-    document.getElementById('r_v_k').textContent=(PI2*r_m).toFixed(2)+' m';
-    document.getElementById('r_v_v').textContent=v.toFixed(2)+' m/s';
-    document.getElementById('r_v_w').textContent=w.toFixed(2)+' rad/s';
-  }
-  sR.addEventListener('input',upd); sT.addEventListener('input',upd); upd();
-
-  function draw(now){
-    if(lt===null){lt=now; requestAnimationFrame(draw); return;}
-    var dt=Math.min((now-lt)/1000,0.1); lt=now;
-    var omega=PI2/T; angle+=omega*dt;
-    var px=cx+R*Math.cos(angle), py=cy+R*Math.sin(angle);
-
-    c.clearRect(0,0,W,H); resetCtx(c);
-    orbitDash(c,cx,cy,R);
-
-    // Radius + label
-    c.beginPath(); c.moveTo(cx,cy); c.lineTo(px,py);
-    c.strokeStyle='rgba(167,139,250,0.3)'; c.lineWidth=1.5; c.stroke();
-    var rPerp=Math.atan2(py-cy,px-cx)+Math.PI/2;
-    drawLabel(c,'r',(cx+px)/2+16*Math.cos(rPerp),(cy+py)/2+16*Math.sin(rPerp),'#a78bfa',14);
-
-    // Tangent velocity arrow
-    var vLen=Math.min(70,omega*R*0.4+20);
-    var tx=-Math.sin(angle), ty=Math.cos(angle);
-    drawArrow(c,px,py,px+tx*vLen,py+ty*vLen,'#34d399',2.5);
-    drawLabel(c,'v',px+tx*vLen+12,py+ty*vLen-8,'#34d399',13);
-
-    drawLabel(c,'ker\u00FClet = 2\u03C0r = '+(PI2*R*SC).toFixed(2)+' m',cx,cy+R+28,'rgba(99,102,241,0.5)',11);
-
-    drawDot(c,cx,cy,5,'#a78bfa');
-    drawDot(c,px,py,10,'#34d399');
-    drawLabel(c,'v = '+(R*SC*omega).toFixed(2)+' m/s',cx,26,'#34d399',15);
-
-    requestAnimationFrame(draw);
-  }
-  requestAnimationFrame(draw);
+  var cv=document.getElementById('c_v');if(!cv)return;
+  var c=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2;
+  var sR=document.getElementById('s_v_r'),sT=document.getElementById('s_v_T'),R=100,T=3,ang=0,lt=null,SC=0.01;
+  function up(){R=+sR.value;T=sT.value/10;var rm=R*SC,w=PI2/T,v=rm*w;document.getElementById('v_v_r').textContent=rm.toFixed(2)+' m';document.getElementById('v_v_T').textContent=T.toFixed(1)+' s';document.getElementById('r_v_r').textContent=rm.toFixed(2)+' m';document.getElementById('r_v_k').textContent=(PI2*rm).toFixed(2)+' m';document.getElementById('r_v_v').textContent=v.toFixed(2)+' m/s'}
+  sR.addEventListener('input',up);sT.addEventListener('input',up);up();
+  function dr(now){if(lt===null){lt=now;requestAnimationFrame(dr);return}var dt=Math.min((now-lt)/1000,0.1);lt=now;var om=PI2/T;ang+=om*dt;var px=cx+R*Math.cos(ang),py=cy+R*Math.sin(ang);c.clearRect(0,0,W,H);rc(c);oD(c,cx,cy,R);c.beginPath();c.moveTo(cx,cy);c.lineTo(px,py);c.strokeStyle='rgba(167,139,250,0.3)';c.lineWidth=1.5;c.stroke();var rP=Math.atan2(py-cy,px-cx)+Math.PI/2;dl(c,'r',(cx+px)/2+15*Math.cos(rP),(cy+py)/2+15*Math.sin(rP),'#a78bfa',13);var vL=Math.min(65,om*R*0.4+18),tx=-Math.sin(ang),ty=Math.cos(ang);drawArr(c,px,py,px+tx*vL,py+ty*vL,'#34d399',2.5);dl(c,'v',px+tx*vL+10,py+ty*vL-8,'#34d399',12);dd(c,cx,cy,4,'#a78bfa');dd(c,px,py,9,'#34d399');dl(c,'v = '+(R*SC*om).toFixed(2)+' m/s',cx,24,'#34d399',14);requestAnimationFrame(dr)}
+  requestAnimationFrame(dr);
 })();
 
-// ══════════════════════════════════════════════
-// DEMO 4: Centripetális gyorsulás és erő
-// ══════════════════════════════════════════════
+// ═════ DEMO 4: acp, Fcp ═════
 (function(){
-  var cv=document.getElementById('c_cp'); if(!cv) return;
-  var c=cv.getContext('2d'), W=cv.width, H=cv.height;
-  var cx=W/2, cy=H/2;
-  var sR=document.getElementById('s_cp_r'), sT=document.getElementById('s_cp_T'), sM=document.getElementById('s_cp_m');
-  var R=100, T=2.5, M=3, angle=0, lt=null;
-  var SC=0.01;
-
-  function upd(){
-    R=+sR.value; T=sT.value/10; M=+sM.value;
-    var r_m=R*SC, w=PI2/T, v=r_m*w, a=v*v/r_m, F=M*a;
-    document.getElementById('v_cp_r').textContent=r_m.toFixed(2)+' m';
-    document.getElementById('v_cp_T').textContent=T.toFixed(1)+' s';
-    document.getElementById('v_cp_m').textContent=M+' kg';
-    document.getElementById('r_cp_v').textContent=v.toFixed(2)+' m/s';
-    document.getElementById('r_cp_w').textContent=w.toFixed(2)+' rad/s';
-    document.getElementById('r_cp_a').textContent=a.toFixed(2)+' m/s\u00B2';
-    document.getElementById('r_cp_F').textContent=F.toFixed(1)+' N';
-  }
-  sR.addEventListener('input',upd); sT.addEventListener('input',upd); sM.addEventListener('input',upd); upd();
-
-  function draw(now){
-    if(lt===null){lt=now; requestAnimationFrame(draw); return;}
-    var dt=Math.min((now-lt)/1000,0.1); lt=now;
-    var omega=PI2/T; angle+=omega*dt;
-    var px=cx+R*Math.cos(angle), py=cy+R*Math.sin(angle);
-
-    c.clearRect(0,0,W,H); resetCtx(c);
-    orbitDash(c,cx,cy,R);
-
-    // Radius
-    c.beginPath(); c.moveTo(cx,cy); c.lineTo(px,py);
-    c.strokeStyle='rgba(167,139,250,0.2)'; c.lineWidth=1; c.stroke();
-
-    // Velocity tangent
-    var vLen=Math.min(65,omega*R*0.35+18);
-    var tx=-Math.sin(angle), ty=Math.cos(angle);
-    drawArrow(c,px,py,px+tx*vLen,py+ty*vLen,'#34d399',2.5);
-    drawLabel(c,'v',px+tx*vLen+10,py+ty*vLen-8,'#34d399',12);
-
-    // Centripetal acceleration
-    var r_m=R*SC, v_val=r_m*omega, a_val=v_val*v_val/r_m;
-    var aLen=Math.min(60,a_val*2+15);
-    var adx=cx-px, ady=cy-py, ad=Math.sqrt(adx*adx+ady*ady);
-    var anx=adx/ad, any_=ady/ad;
-    drawArrow(c,px,py,px+anx*aLen,py+any_*aLen,'#f472b6',2.5);
-    drawLabel(c,'a_cp',px+anx*aLen+16,py+any_*aLen-4,'#f472b6',11);
-
-    // Force (yellow, same dir)
-    var F_val=M*a_val, fLen=Math.min(80,F_val*0.8+10);
-    c.globalAlpha=0.4;
-    drawArrow(c,px,py,px+anx*fLen,py+any_*fLen,'#fbbf24',1.5);
-    c.globalAlpha=1;
-
-    drawDot(c,cx,cy,5,'#a78bfa');
-    var bodyR=5+M*0.8;
-    drawDot(c,px,py,bodyR,'#34d399');
-
-    drawLabel(c,'a_cp = '+a_val.toFixed(2)+' m/s\u00B2',cx,24,'#f472b6',14);
-    drawLabel(c,'F_cp = '+F_val.toFixed(1)+' N',cx,46,'#fbbf24',14);
-
-    // Legend
-    c.textAlign='left';
-    drawLabel(c,'\u25CF v (sebesség, érintő)',14,H-32,'#34d399',10,'left');
-    drawLabel(c,'\u25CF a_cp (gyorsulás, befelé)',14,H-16,'#f472b6',10,'left');
-    drawLabel(c,'\u25CF F_cp (erő, befelé)',300,H-16,'#fbbf24',10,'left');
-
-    requestAnimationFrame(draw);
-  }
-  requestAnimationFrame(draw);
+  var cv=document.getElementById('c_cp');if(!cv)return;
+  var c=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2;
+  var sR=document.getElementById('s_cp_r'),sT=document.getElementById('s_cp_T'),sM=document.getElementById('s_cp_m');
+  var R=100,T=2.5,M=3,ang=0,lt=null,SC=0.01;
+  function up(){R=+sR.value;T=sT.value/10;M=+sM.value;var rm=R*SC,w=PI2/T,v=rm*w,a=v*v/rm,F=M*a;document.getElementById('v_cp_r').textContent=rm.toFixed(2)+' m';document.getElementById('v_cp_T').textContent=T.toFixed(1)+' s';document.getElementById('v_cp_m').textContent=M+' kg';document.getElementById('r_cp_v').textContent=v.toFixed(2)+' m/s';document.getElementById('r_cp_a').textContent=a.toFixed(2)+' m/s\u00B2';document.getElementById('r_cp_F').textContent=F.toFixed(1)+' N'}
+  sR.addEventListener('input',up);sT.addEventListener('input',up);sM.addEventListener('input',up);up();
+  function dr(now){if(lt===null){lt=now;requestAnimationFrame(dr);return}var dt=Math.min((now-lt)/1000,0.1);lt=now;var om=PI2/T;ang+=om*dt;var px=cx+R*Math.cos(ang),py=cy+R*Math.sin(ang);c.clearRect(0,0,W,H);rc(c);oD(c,cx,cy,R);c.beginPath();c.moveTo(cx,cy);c.lineTo(px,py);c.strokeStyle='rgba(167,139,250,0.2)';c.lineWidth=1;c.stroke();var vL=Math.min(60,om*R*0.3+16),tx=-Math.sin(ang),ty=Math.cos(ang);drawArr(c,px,py,px+tx*vL,py+ty*vL,'#34d399',2.5);var rm=R*SC,vv=rm*om,av=vv*vv/rm,aL=Math.min(55,av*1.8+12);var adx=cx-px,ady=cy-py,ad=Math.sqrt(adx*adx+ady*ady),nx=adx/ad,ny=ady/ad;drawArr(c,px,py,px+nx*aL,py+ny*aL,'#f472b6',2.5);var Fv=M*av,fL=Math.min(75,Fv*0.6+8);c.globalAlpha=0.4;drawArr(c,px,py,px+nx*fL,py+ny*fL,'#fbbf24',1.5);c.globalAlpha=1;dd(c,cx,cy,4,'#a78bfa');dd(c,px,py,5+M*0.7,'#34d399');dl(c,'a = '+av.toFixed(2)+' m/s\u00B2',cx,22,'#f472b6',13);dl(c,'F = '+Fv.toFixed(1)+' N',cx,42,'#fbbf24',13);c.textAlign='left';dl(c,'\u25CF v (érintő)',12,H-28,'#34d399',9,'left');dl(c,'\u25CF a (befelé)',12,H-14,'#f472b6',9,'left');dl(c,'\u25CF F (befelé)',200,H-14,'#fbbf24',9,'left');requestAnimationFrame(dr)}
+  requestAnimationFrame(dr);
 })();
 
-// ══════════════════════════════════════════════
-// DEMO 5: v = r·ω — két sugár
-// ══════════════════════════════════════════════
+// ═════ DEMO 5: v=r·ω ═════
 (function(){
-  var cv=document.getElementById('c_rw'); if(!cv) return;
-  var c=cv.getContext('2d'), W=cv.width, H=cv.height;
-  var cx=W/2, cy=H/2;
-  var sR1=document.getElementById('s_rw_r1'), sR2=document.getElementById('s_rw_r2'), sW=document.getElementById('s_rw_w');
-  var R1=55, R2=130, omega=1.5, angle=0, lt=null;
-  var SC=0.01;
-
-  function upd(){
-    R1=+sR1.value; R2=+sR2.value; omega=sW.value/10;
-    var v1=R1*SC*omega, v2=R2*SC*omega;
-    document.getElementById('v_rw_r1').textContent=(R1*SC).toFixed(2)+' m';
-    document.getElementById('v_rw_r2').textContent=(R2*SC).toFixed(2)+' m';
-    document.getElementById('v_rw_w').textContent=omega.toFixed(2)+' rad/s';
-    document.getElementById('r_rw_v1').textContent=v1.toFixed(2)+' m/s';
-    document.getElementById('r_rw_v2').textContent=v2.toFixed(2)+' m/s';
-    document.getElementById('r_rw_ratio').textContent=(v1>0?(v2/v1).toFixed(1)+'x':'-');
-  }
-  sR1.addEventListener('input',upd); sR2.addEventListener('input',upd); sW.addEventListener('input',upd); upd();
-
-  function draw(now){
-    if(lt===null){lt=now; requestAnimationFrame(draw); return;}
-    var dt=Math.min((now-lt)/1000,0.1); lt=now;
-    angle+=omega*dt;
-    var p1x=cx+R1*Math.cos(angle), p1y=cy+R1*Math.sin(angle);
-    var p2x=cx+R2*Math.cos(angle), p2y=cy+R2*Math.sin(angle);
-
-    c.clearRect(0,0,W,H); resetCtx(c);
-    orbitDash(c,cx,cy,R1);
-    orbitDash(c,cx,cy,R2);
-
-    // Radius line
-    c.beginPath(); c.moveTo(cx,cy); c.lineTo(p2x,p2y);
-    c.strokeStyle='rgba(167,139,250,0.15)'; c.lineWidth=1; c.stroke();
-
-    // Tangent arrows
-    var v1Len=Math.min(55,R1*omega*0.3+10);
-    var v2Len=Math.min(70,R2*omega*0.3+10);
-    var tx=-Math.sin(angle), ty=Math.cos(angle);
-    drawArrow(c,p1x,p1y,p1x+tx*v1Len,p1y+ty*v1Len,'#f472b6',2);
-    drawArrow(c,p2x,p2y,p2x+tx*v2Len,p2y+ty*v2Len,'#34d399',2.5);
-
-    // r labels
-    var midA=angle+Math.PI/2;
-    drawLabel(c,'r\u2081',(cx+p1x)/2+12*Math.cos(midA),(cy+p1y)/2+12*Math.sin(midA),'#f472b6',11);
-    drawLabel(c,'r\u2082',(cx+p2x)/2+12*Math.cos(midA),(cy+p2y)/2+12*Math.sin(midA),'#34d399',11);
-
-    drawDot(c,cx,cy,5,'#a78bfa');
-    drawDot(c,p1x,p1y,8,'#f472b6');
-    drawDot(c,p2x,p2y,10,'#34d399');
-
-    drawLabel(c,'v\u2081',p1x+tx*v1Len+10,p1y+ty*v1Len-6,'#f472b6',11);
-    drawLabel(c,'v\u2082',p2x+tx*v2Len+10,p2y+ty*v2Len-6,'#34d399',11);
-    drawLabel(c,'\u03C9 = '+omega.toFixed(2)+' rad/s (mindkettő!)',cx,24,'#fbbf24',13);
-
-    requestAnimationFrame(draw);
-  }
-  requestAnimationFrame(draw);
+  var cv=document.getElementById('c_rw');if(!cv)return;
+  var c=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2;
+  var sR1=document.getElementById('s_rw_r1'),sR2=document.getElementById('s_rw_r2'),sW=document.getElementById('s_rw_w');
+  var R1=55,R2=130,omega=1.5,ang=0,lt=null,SC=0.01;
+  function up(){R1=+sR1.value;R2=+sR2.value;omega=sW.value/10;var v1=R1*SC*omega,v2=R2*SC*omega;document.getElementById('v_rw_r1').textContent=(R1*SC).toFixed(2)+' m';document.getElementById('v_rw_r2').textContent=(R2*SC).toFixed(2)+' m';document.getElementById('v_rw_w').textContent=omega.toFixed(2)+' rad/s';document.getElementById('r_rw_v1').textContent=v1.toFixed(2)+' m/s';document.getElementById('r_rw_v2').textContent=v2.toFixed(2)+' m/s';document.getElementById('r_rw_ratio').textContent=(v1>0?(v2/v1).toFixed(1)+'x':'-')}
+  sR1.addEventListener('input',up);sR2.addEventListener('input',up);sW.addEventListener('input',up);up();
+  function dr(now){if(lt===null){lt=now;requestAnimationFrame(dr);return}var dt=Math.min((now-lt)/1000,0.1);lt=now;ang+=omega*dt;var p1x=cx+R1*Math.cos(ang),p1y=cy+R1*Math.sin(ang),p2x=cx+R2*Math.cos(ang),p2y=cy+R2*Math.sin(ang);c.clearRect(0,0,W,H);rc(c);oD(c,cx,cy,R1);oD(c,cx,cy,R2);c.beginPath();c.moveTo(cx,cy);c.lineTo(p2x,p2y);c.strokeStyle='rgba(167,139,250,0.15)';c.lineWidth=1;c.stroke();var v1L=Math.min(50,R1*omega*0.3+8),v2L=Math.min(65,R2*omega*0.3+8),tx=-Math.sin(ang),ty=Math.cos(ang);drawArr(c,p1x,p1y,p1x+tx*v1L,p1y+ty*v1L,'#f472b6',2);drawArr(c,p2x,p2y,p2x+tx*v2L,p2y+ty*v2L,'#34d399',2.5);dd(c,cx,cy,4,'#a78bfa');dd(c,p1x,p1y,7,'#f472b6');dd(c,p2x,p2y,9,'#34d399');dl(c,'\u03C9 = '+omega.toFixed(2)+' rad/s (mindkettő)',cx,22,'#fbbf24',12);requestAnimationFrame(dr)}
+  requestAnimationFrame(dr);
 })();
+
+// ═══════════════════════════════════════
+// PRACTICE PROBLEMS ENGINE
+// ═══════════════════════════════════════
+function makeCard(id,q,unit,answer){
+  var d=document.createElement('div');d.className='pcard';d.id=id;
+  d.innerHTML='<div class="pq">'+q+'</div><div class="pinput"><input type="number" step="any" placeholder="?"><span class="unit">'+unit+'</span><button class="check-btn">Ellenőrzés</button></div><div class="pfeedback"></div>';
+  d.dataset.answer=answer;
+  var inp=d.querySelector('input'),btn=d.querySelector('.check-btn'),fb=d.querySelector('.pfeedback');
+  btn.addEventListener('click',function(){checkAnswer(d,inp,fb)});
+  inp.addEventListener('keydown',function(e){if(e.key==='Enter')checkAnswer(d,inp,fb)});
+  return d;
+}
+function checkAnswer(card,inp,fb){
+  var ans=parseFloat(card.dataset.answer),val=parseFloat(inp.value);
+  if(isNaN(val)){fb.textContent='Írj be egy számot!';fb.className='pfeedback no';return}
+  var tol=Math.max(Math.abs(ans)*0.05,0.05);
+  if(Math.abs(val-ans)<=tol){
+    fb.textContent='\u2705 Helyes! ('+ans+')';fb.className='pfeedback ok';card.className='pcard correct';
+  }else{
+    fb.textContent='\u274C Nem jó. Próbáld újra!';fb.className='pfeedback no';card.className='pcard wrong';
+  }
+}
+function showAnswer(card){
+  var fb=card.querySelector('.pfeedback');
+  fb.textContent='Megoldás: '+card.dataset.answer;fb.className='pfeedback ok';
+}
+
+// ── T & f problems ──
+function genTF(){
+  var g=document.getElementById('pg_tf');g.innerHTML='';
+  var probs=[
+    function(){var t=rr(0.5,8);return{q:'T = <strong>'+t+' s</strong>. Mekkora f?',u:'Hz',a:+(1/t).toFixed(2)}},
+    function(){var f=rr(0.2,5);return{q:'f = <strong>'+f+' Hz</strong>. Mekkora T?',u:'s',a:+(1/f).toFixed(2)}},
+    function(){var t=rr(1,10);var n=ri(3,12);return{q:'T = <strong>'+t+' s</strong>. Hány kört tesz meg <strong>'+n*t+' s</strong> alatt?',u:'db',a:n}},
+    function(){var n=ri(2,8);var tt=rr(2,10);return{q:'Egy test <strong>'+n+' kört</strong> tesz meg <strong>'+tt+' s</strong> alatt. Mekkora T?',u:'s',a:+(tt/n).toFixed(2)}},
+    function(){var n=ri(3,10);var tt=rr(3,15);return{q:'Egy test <strong>'+n+' kört</strong> tesz meg <strong>'+tt+' s</strong> alatt. Mekkora f?',u:'Hz',a:+(n/tt).toFixed(2)}}
+  ];
+  probs.sort(function(){return Math.random()-0.5});
+  for(var i=0;i<4;i++){var p=probs[i]();g.appendChild(makeCard('tf_'+i,p.q,p.u,p.a))}
+}
+document.getElementById('nb_tf').addEventListener('click',genTF);genTF();
+
+// ── ω problems ──
+function genOM(){
+  var g=document.getElementById('pg_om');g.innerHTML='';
+  var probs=[
+    function(){var t=rr(1,8);return{q:'T = <strong>'+t+' s</strong>. Mekkora &#969;?',u:'rad/s',a:+(PI2/t).toFixed(2)}},
+    function(){var f=rr(0.5,4);return{q:'f = <strong>'+f+' Hz</strong>. Mekkora &#969;?',u:'rad/s',a:+(PI2*f).toFixed(2)}},
+    function(){var w=rr(1,10);return{q:'&#969; = <strong>'+w+' rad/s</strong>. Mekkora T?',u:'s',a:+(PI2/w).toFixed(2)}},
+    function(){var w=rr(1,8);return{q:'&#969; = <strong>'+w+' rad/s</strong>. Mekkora f?',u:'Hz',a:+(w/PI2).toFixed(2)}},
+    function(){var t=rr(0.5,5);var dt=rr(0.5,3);return{q:'T = <strong>'+t+' s</strong>. Mekkora szöget (fokban) tesz meg <strong>'+dt+' s</strong> alatt?',u:'°',a:+((PI2/t*dt/Math.PI*180)%360).toFixed(1)}}
+  ];
+  probs.sort(function(){return Math.random()-0.5});
+  for(var i=0;i<4;i++){var p=probs[i]();g.appendChild(makeCard('om_'+i,p.q,p.u,p.a))}
+}
+document.getElementById('nb_om').addEventListener('click',genOM);genOM();
+
+// ── v problems ──
+function genV(){
+  var g=document.getElementById('pg_v');g.innerHTML='';
+  var probs=[
+    function(){var r=rr(0.3,3);var t=rr(1,6);return{q:'r = <strong>'+r+' m</strong>, T = <strong>'+t+' s</strong>. Mekkora v?',u:'m/s',a:+(PI2*r/t).toFixed(2)}},
+    function(){var r=rr(0.5,2.5);var w=rr(1,6);return{q:'r = <strong>'+r+' m</strong>, &#969; = <strong>'+w+' rad/s</strong>. Mekkora v?',u:'m/s',a:+(r*w).toFixed(2)}},
+    function(){var v=rr(1,10);var r=rr(0.5,3);return{q:'v = <strong>'+v+' m/s</strong>, r = <strong>'+r+' m</strong>. Mekkora &#969;?',u:'rad/s',a:+(v/r).toFixed(2)}},
+    function(){var v=rr(2,12);var t=rr(1,5);return{q:'v = <strong>'+v+' m/s</strong>, T = <strong>'+t+' s</strong>. Mekkora r?',u:'m',a:+(v*t/PI2).toFixed(2)}},
+    function(){var r=rr(0.2,2);var t=rr(0.5,4);return{q:'r = <strong>'+r+' m</strong>, T = <strong>'+t+' s</strong>. Mekkora a kör kerülete?',u:'m',a:+(PI2*r).toFixed(2)}}
+  ];
+  probs.sort(function(){return Math.random()-0.5});
+  for(var i=0;i<4;i++){var p=probs[i]();g.appendChild(makeCard('v_'+i,p.q,p.u,p.a))}
+}
+document.getElementById('nb_v').addEventListener('click',genV);genV();
+
+// ── acp & Fcp problems ──
+function genCP(){
+  var g=document.getElementById('pg_cp');g.innerHTML='';
+  var probs=[
+    function(){var v=rr(2,10);var r=rr(0.5,3);return{q:'v = <strong>'+v+' m/s</strong>, r = <strong>'+r+' m</strong>. Mekkora a<sub>cp</sub>?',u:'m/s²',a:+(v*v/r).toFixed(2)}},
+    function(){var v=rr(2,8);var r=rr(0.5,2.5);var m=ri(1,8);return{q:'v = <strong>'+v+' m/s</strong>, r = <strong>'+r+' m</strong>, m = <strong>'+m+' kg</strong>. Mekkora F<sub>cp</sub>?',u:'N',a:+(m*v*v/r).toFixed(1)}},
+    function(){var w=rr(1,6);var r=rr(0.5,2);return{q:'&#969; = <strong>'+w+' rad/s</strong>, r = <strong>'+r+' m</strong>. Mekkora a<sub>cp</sub>? (&#969;²·r)',u:'m/s²',a:+(w*w*r).toFixed(2)}},
+    function(){var m=ri(1,5);var a=rr(2,15);return{q:'m = <strong>'+m+' kg</strong>, a<sub>cp</sub> = <strong>'+a+' m/s²</strong>. Mekkora F<sub>cp</sub>?',u:'N',a:+(m*a).toFixed(1)}},
+    function(){var F=rr(5,50);var m=ri(1,6);return{q:'F<sub>cp</sub> = <strong>'+F+' N</strong>, m = <strong>'+m+' kg</strong>. Mekkora a<sub>cp</sub>?',u:'m/s²',a:+(F/m).toFixed(2)}}
+  ];
+  probs.sort(function(){return Math.random()-0.5});
+  for(var i=0;i<4;i++){var p=probs[i]();g.appendChild(makeCard('cp_'+i,p.q,p.u,p.a))}
+}
+document.getElementById('nb_cp').addEventListener('click',genCP);genCP();
+
+// ── v=r·ω problems ──
+function genRW(){
+  var g=document.getElementById('pg_rw');g.innerHTML='';
+  var probs=[
+    function(){var r1=rr(0.3,1.5);var r2=rr(1.5,3);var w=rr(1,5);return{q:'&#969; = <strong>'+w+' rad/s</strong>, r&#8321; = <strong>'+r1+' m</strong>, r&#8322; = <strong>'+r2+' m</strong>. Mekkora v&#8322;?',u:'m/s',a:+(r2*w).toFixed(2)}},
+    function(){var r1=rr(0.5,1.5);var r2=rr(2,4);var w=rr(1,4);return{q:'r&#8321; = <strong>'+r1+' m</strong>, r&#8322; = <strong>'+r2+' m</strong>, mindkettő &#969; = <strong>'+w+'</strong>. Hányszoros v&#8322; a v&#8321;-hez képest?',u:'x',a:+(r2/r1).toFixed(1)}},
+    function(){var v=rr(2,10);var w=rr(1,5);return{q:'v = <strong>'+v+' m/s</strong>, &#969; = <strong>'+w+' rad/s</strong>. Mekkora r?',u:'m',a:+(v/w).toFixed(2)}},
+    function(){var r=rr(0.5,3);var v=rr(1,10);return{q:'r = <strong>'+r+' m</strong>, v = <strong>'+v+' m/s</strong>. Mekkora &#969;?',u:'rad/s',a:+(v/r).toFixed(2)}},
+    function(){var r1=rr(0.3,1);var r2=rr(1.5,3);var w=rr(1,4);var v1=+(r1*w).toFixed(2);return{q:'Belső test: r&#8321; = <strong>'+r1+' m</strong>, v&#8321; = <strong>'+v1+' m/s</strong>. Mekkora &#969;?',u:'rad/s',a:+(v1/r1).toFixed(2)}}
+  ];
+  probs.sort(function(){return Math.random()-0.5});
+  for(var i=0;i<4;i++){var p=probs[i]();g.appendChild(makeCard('rw_'+i,p.q,p.u,p.a))}
+}
+document.getElementById('nb_rw').addEventListener('click',genRW);genRW();
 </script>
 </body>
 </html>
