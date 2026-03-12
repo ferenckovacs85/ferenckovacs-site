@@ -54,31 +54,42 @@
 
         /* HERO */
         .hero {
-            min-height: 100vh; display: flex; align-items: center; justify-content: center;
+            min-height: 100vh; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
             position: relative; overflow: hidden;
-            padding: 6rem 1.5rem 4rem;
+            padding: 0;
         }
+        /* Subtle ambient glow */
         .hero::before {
-            content: ''; position: absolute; top: -40%; right: -20%;
-            width: 700px; height: 700px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(201,165,90,0.04) 0%, transparent 70%);
-            pointer-events: none;
-        }
-        .hero::after {
-            content: ''; position: absolute; bottom: -30%; left: -15%;
+            content: ''; position: absolute; top: 10%; left: 50%; transform: translateX(-50%);
             width: 600px; height: 600px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(247,147,26,0.03) 0%, transparent 70%);
-            pointer-events: none;
+            background: radial-gradient(circle, rgba(201,165,90,0.06) 0%, transparent 70%);
+            pointer-events: none; z-index: 0;
         }
-        .hero-content {
-            text-align: center; position: relative; z-index: 1;
-            max-width: 750px;
+        .hero-image-wrap {
+            position: relative; width: 100%; display: flex;
+            justify-content: center; padding-top: 5rem;
         }
         .hero-photo {
-            width: 200px; height: 200px; border-radius: 50%;
-            object-fit: cover; border: 3px solid var(--border);
-            margin-bottom: 2rem;
-            box-shadow: 0 0 60px rgba(201,165,90,0.1);
+            width: 340px; height: 480px;
+            object-fit: cover; object-position: top center;
+            border-radius: 16px 16px 0 0;
+            display: block; position: relative; z-index: 1;
+            box-shadow: 0 0 80px rgba(201,165,90,0.08), 0 20px 60px rgba(0,0,0,0.4);
+        }
+        /* Bottom fade overlay */
+        .hero-image-wrap::after {
+            content: ''; position: absolute;
+            bottom: 0; left: 0; right: 0; height: 55%;
+            background: linear-gradient(to top, var(--bg) 0%, rgba(7,7,10,0.85) 30%, rgba(7,7,10,0.4) 60%, transparent 100%);
+            z-index: 2; pointer-events: none;
+        }
+        .hero-text {
+            position: relative; z-index: 3;
+            text-align: center;
+            margin-top: -6rem;
+            padding: 0 1.5rem 4rem;
+            max-width: 750px;
         }
         .hero h1 {
             font-size: clamp(2.2rem, 5vw, 3.6rem);
@@ -98,13 +109,13 @@
         }
         .hero .intro {
             font-size: 0.92rem; color: var(--text-dim);
-            max-width: 580px; margin: 0 auto 2.5rem;
+            max-width: 580px; margin: 0 auto 1.5rem;
             line-height: 1.85;
         }
         .scroll-hint {
             position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
             color: var(--text-dim); font-size: 0.7rem; letter-spacing: 0.1em;
-            text-transform: uppercase; opacity: 0.4;
+            text-transform: uppercase; opacity: 0.4; z-index: 3;
             animation: pulse 2s ease-in-out infinite;
         }
         @keyframes pulse { 0%,100% { opacity: 0.3; } 50% { opacity: 0.7; } }
@@ -307,6 +318,9 @@
                 background: rgba(7,7,10,0.95); padding: 1rem 1.5rem;
                 border-bottom: 1px solid var(--border);
             }
+            .hero-photo { width: 280px; height: 400px; }
+            .hero-text { margin-top: -5rem; }
+            .hero-image-wrap { padding-top: 4rem; }
             .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
             .timeline-split { grid-template-columns: 1fr; gap: 2rem; }
             section { padding: 3.5rem 1.2rem; }
@@ -336,8 +350,10 @@
 
 <!-- HERO -->
 <section class="hero" id="hero">
-    <div class="hero-content">
-        <img src="../profile.jpg" alt="Kovács Ferenc" class="hero-photo">
+    <div class="hero-image-wrap">
+        <img src="../profile-new.jpg" alt="Kovács Ferenc" class="hero-photo">
+    </div>
+    <div class="hero-text">
         <h1>Kovács Ferenc</h1>
         <div class="tagline">Vállalkozó · Építőmérnök · Bitcoin Maximalista</div>
         <div class="divider"></div>
