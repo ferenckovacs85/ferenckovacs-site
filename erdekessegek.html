@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ami engem érdekel — Kovács Ferenc</title>
+    <meta name="description" content="Interaktív tartalmak, tudományos érdekességek, oktatási anyagok — ami engem érdekel, és amit szívesen megosztok.">
+    <style>
+        :root {
+            --bg: #07070a;
+            --surface: #0f1014;
+            --border: #1a1a22;
+            --text: #e8e8ec;
+            --text-dim: #7a7a88;
+            --accent: #7c6cf0;
+            --accent-soft: rgba(124,108,240,0.10);
+            --btc: #f7931a;
+            --btc-soft: rgba(247,147,26,0.10);
+            --green: #4ade80;
+            --green-soft: rgba(74,222,128,0.10);
+            --blue: #4aa3df;
+            --blue-soft: rgba(74,163,223,0.10);
+            --radius: 12px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* NAV */
+        .top-bar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            background: rgba(7,7,10,0.92); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0.8rem 2rem;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .top-bar a { color: var(--text-dim); text-decoration: none; font-size: 0.82rem; transition: color 0.25s; }
+        .top-bar a:hover { color: var(--text); }
+        .top-bar .brand { color: var(--text); font-weight: 600; font-size: 0.9rem; letter-spacing: 0.03em; }
+        .lang-switch {
+            border: 1px solid var(--border); padding: 0.2rem 0.6rem;
+            border-radius: 4px; font-size: 0.7rem; color: var(--text-dim);
+            text-decoration: none; transition: all 0.25s;
+        }
+        .lang-switch:hover { border-color: #444; color: var(--text); }
+
+        /* HERO */
+        .hero {
+            padding: 7rem 2rem 2rem;
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .hero-icon { font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.7; }
+        .hero h1 {
+            font-size: 2rem; font-weight: 300; letter-spacing: 0.04em;
+            margin-bottom: 0.6rem;
+        }
+        .hero p {
+            font-size: 0.9rem; color: var(--text-dim); line-height: 1.8;
+            max-width: 520px; margin: 0 auto;
+        }
+
+        /* CATEGORY */
+        .category {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem 2rem;
+        }
+        .category-header {
+            display: flex; align-items: center; gap: 0.6rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .category-icon { font-size: 1.2rem; opacity: 0.7; }
+        .category-title {
+            font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em;
+            text-transform: uppercase; color: var(--text-dim);
+        }
+
+        /* CARDS GRID */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 3rem;
+        }
+        .card {
+            display: flex; flex-direction: column;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            text-decoration: none; color: var(--text);
+            transition: border-color 0.3s, transform 0.2s;
+        }
+        .card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        .card-badge {
+            display: inline-block;
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            margin-bottom: 0.8rem;
+            width: fit-content;
+        }
+        .badge-science { background: var(--accent-soft); color: var(--accent); }
+        .badge-education { background: var(--green-soft); color: var(--green); }
+        .badge-tech { background: var(--blue-soft); color: var(--blue); }
+        .badge-bitcoin { background: var(--btc-soft); color: var(--btc); }
+
+        .card h3 {
+            font-size: 1.05rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        .card p {
+            font-size: 0.82rem;
+            color: var(--text-dim);
+            line-height: 1.7;
+            flex: 1;
+        }
+        .card-cta {
+            margin-top: 1rem;
+            font-size: 0.78rem;
+            color: var(--accent);
+            font-weight: 500;
+        }
+        .card:hover .card-cta { color: var(--text); }
+
+        /* COMING SOON CARD */
+        .card.coming-soon {
+            border-style: dashed;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            border-top: 1px solid var(--border);
+        }
+        .footer a { color: var(--text-dim); text-decoration: none; }
+        .footer a:hover { color: var(--text); }
+
+        @media (max-width: 640px) {
+            .hero { padding: 6rem 1.2rem 1.5rem; }
+            .hero h1 { font-size: 1.6rem; }
+            .category { padding: 0 1.2rem 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="top-bar">
+    <a href="/hu/" class="brand">← Kovács Ferenc</a>
+    <div style="display:flex;align-items:center;gap:1rem;">
+        <a href="/en/curiosities.html" class="lang-switch">EN</a>
+    </div>
+</nav>
+
+<div class="hero">
+    <div class="hero-icon">🔭</div>
+    <h1>Ami engem érdekel</h1>
+    <p>Tudomány, oktatás, technológia — interaktív tartalmak és gondolatkísérletek a világ megértéséhez.</p>
+</div>
+
+<!-- TUDOMÁNY -->
+<div class="category">
+    <div class="category-header">
+        <span class="category-icon">🔬</span>
+        <span class="category-title">Tudomány</span>
+    </div>
+    <div class="cards">
+        <a href="erdekessegek/antianyag.html" class="card">
+            <span class="card-badge badge-science">Kozmológia</span>
+            <h3>Az egymilliárdból egy</h3>
+            <p>Miért létezik bármi? A pontos matematika az antianyag mögött, a barion-aszimmetria rejtélye, és a három lehetőség — interaktív vizualizációkkal.</p>
+            <span class="card-cta">Felfedezés →</span>
+        </a>
+
+        <div class="card coming-soon">
+            <span class="card-badge badge-science">Hamarosan</span>
+            <h3>Következő téma</h3>
+            <p>Újabb érdekességek vannak készülőben.</p>
+        </div>
+    </div>
+</div>
+
+<!-- OKTATÁS -->
+<div class="category">
+    <div class="category-header">
+        <span class="category-icon">📐</span>
+        <span class="category-title">Oktatás</span>
+    </div>
+    <div class="cards">
+        <a href="fizika/" class="card">
+            <span class="card-badge badge-education">Fizika</span>
+            <h3>Körmozgás</h3>
+            <p>Interaktív fizika oktatóanyag — periódusidő, frekvencia, szögsebesség, centripetális erő, gyakorlófeladatokkal és animációkkal.</p>
+            <span class="card-cta">Megnyitás →</span>
+        </a>
+
+        <div class="card coming-soon">
+            <span class="card-badge badge-education">Hamarosan</span>
+            <h3>Következő lecke</h3>
+            <p>Újabb oktatási anyagok készülnek.</p>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    <a href="/hu/">← Vissza a főoldalra</a>
+</div>
+
+</body>
+</html>

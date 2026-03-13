@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>One in a billion — Why does anything exist? — Kovács Ferenc</title>
+<meta name="description" content="The precise mathematics behind antimatter that proves the universe was designed. An interactive visual story.">
+<meta property="og:title" content="One in a billion — Why does anything exist?">
+<meta property="og:description" content="The precise mathematics behind antimatter. An interactive visual story.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   BASE RESET
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  -moz-text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+  hanging-punctuation: first last;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  min-height: 100dvh;
+  line-height: 1.6;
+  font-family: var(--font-body, sans-serif);
+  font-size: var(--text-base);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  padding-top: 3.5rem;
+}
+
+img, picture, video, canvas, svg { display: block; max-width: 100%; height: auto; }
+ul[role="list"], ol[role="list"] { list-style: none; }
+input, button, textarea, select { font: inherit; color: inherit; }
+
+h1, h2, h3, h4, h5, h6 { text-wrap: balance; line-height: 1.15; }
+p, li, figcaption { text-wrap: pretty; max-width: 72ch; }
+
+::selection {
+  background: oklch(from var(--color-primary) l c h / 0.25);
+  color: var(--color-text);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: 0.375rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+button { cursor: pointer; background: none; border: none; }
+table { border-collapse: collapse; width: 100%; }
+
+a, button, [role="button"], [role="link"], input, textarea, select {
+  transition: color 180ms cubic-bezier(0.16, 1, 0.3, 1),
+              background 180ms cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 180ms cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;
+}
+
+/* ============================================================
+   DESIGN TOKENS — Cosmic Dark Theme
+   ============================================================ */
+:root {
+  /* Top-bar site tokens (matching kalkulatorok.html) */
+  --bg: #07070a;
+  --surface: #0f1014;
+  --border: #1a1a22;
+  --text: #e8e8ec;
+  --text-dim: #7a7a88;
+
+  /* Type Scale */
+  --text-xs:   clamp(0.75rem,  0.7rem  + 0.25vw, 0.875rem);
+  --text-sm:   clamp(0.875rem, 0.8rem  + 0.35vw, 1rem);
+  --text-base: clamp(1rem,     0.95rem + 0.25vw, 1.125rem);
+  --text-lg:   clamp(1.125rem, 1rem    + 0.75vw, 1.5rem);
+  --text-xl:   clamp(1.5rem,   1.2rem  + 1.25vw, 2.25rem);
+  --text-2xl:  clamp(2rem,     1.2rem  + 2.5vw,  3.5rem);
+  --text-3xl:  clamp(2.5rem,   1rem    + 4vw,    5rem);
+  --text-hero: clamp(3rem,     0.5rem  + 7vw,    8rem);
+
+  /* Spacing */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* Fonts */
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --font-body: 'Inter', 'Helvetica Neue', sans-serif;
+
+  /* Cosmic Dark Palette */
+  --color-bg: #0a0a0f;
+  --color-surface: #111118;
+  --color-surface-2: #16161f;
+  --color-surface-offset: #0e0e15;
+  --color-divider: #1e1e2a;
+  --color-border: #2a2a3a;
+
+  --color-text: #e0dfe8;
+  --color-text-muted: #8888a0;
+  --color-text-faint: #55556a;
+  --color-text-inverse: #0a0a0f;
+
+  /* Accent — cosmic purple-blue */
+  --color-primary: #7c6cf0;
+  --color-primary-hover: #9488f5;
+  --color-primary-glow: rgba(124, 108, 240, 0.15);
+
+  /* Matter green */
+  --color-matter: #4ade80;
+  --color-matter-glow: rgba(74, 222, 128, 0.2);
+
+  /* Antimatter magenta */
+  --color-antimatter: #f472b6;
+  --color-antimatter-glow: rgba(244, 114, 182, 0.2);
+
+  /* Energy gold */
+  --color-energy: #fbbf24;
+  --color-energy-glow: rgba(251, 191, 36, 0.15);
+
+  /* Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  /* Transitions */
+  --transition-interactive: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.5);
+  --shadow-glow: 0 0 40px var(--color-primary-glow);
+
+  /* Content widths */
+  --content-narrow: 680px;
+  --content-default: 960px;
+  --content-wide: 1200px;
+}
+
+/* ============================================================
+   TOP BAR — matching kalkulatorok.html exactly
+   ============================================================ */
+.top-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(7,7,10,0.92); backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.top-bar a { color: var(--text-dim); text-decoration: none; font-size: 0.82rem; transition: color 0.25s; }
+.top-bar a:hover { color: var(--text); }
+.top-bar .brand { color: var(--text); font-weight: 600; font-size: 0.9rem; letter-spacing: 0.03em; }
+.top-bar .nav-left { display: flex; align-items: center; gap: 1.5rem; }
+.lang-switch {
+    border: 1px solid var(--border); padding: 0.2rem 0.6rem;
+    border-radius: 4px; font-size: 0.7rem; color: var(--text-dim);
+    text-decoration: none; transition: all 0.25s;
+}
+.lang-switch:hover { border-color: #444; color: var(--text); }
+
+/* ============================================================
+   PARTICLE CANVAS
+   ============================================================ */
+#particleCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-antimatter), var(--color-primary), var(--color-matter));
+  z-index: 101;
+  width: 0%;
+  transition: width 100ms linear;
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.container {
+  width: 100%;
+  max-width: var(--content-default);
+  margin: 0 auto;
+  padding-inline: var(--space-6);
+}
+.container.narrow {
+  max-width: var(--content-narrow);
+}
+
+.section {
+  position: relative;
+  z-index: 1;
+  padding-block: clamp(var(--space-16), 10vw, var(--space-32));
+}
+
+.center { text-align: center; margin-inline: auto; }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  position: relative;
+  z-index: 1;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-8);
+}
+.hero-content {
+  max-width: 800px;
+}
+.hero-eyebrow {
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-6);
+  font-weight: 500;
+}
+.hero-title {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  line-height: 1.25;
+  color: var(--color-text);
+  margin-bottom: var(--space-8);
+}
+.title-line {
+  display: block;
+}
+.title-line.accent {
+  color: var(--color-antimatter);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: var(--text-xl);
+  margin-block: var(--space-2);
+}
+.title-line.highlight {
+  color: var(--color-matter);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--text-xl);
+  margin-block: var(--space-2);
+}
+.hero-subtitle {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  max-width: 50ch;
+  margin-inline: auto;
+  line-height: 1.7;
+}
+
+.scroll-indicator {
+  margin-top: var(--space-12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-faint);
+  font-size: var(--text-xs);
+  animation: float 2.5s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+.section-heading {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  color: var(--color-text);
+  margin-bottom: var(--space-8);
+}
+.body-text {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  line-height: 1.75;
+  margin-bottom: var(--space-6);
+}
+.body-text strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.pull-quote {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-style: italic;
+  color: var(--color-text);
+  border-left: 3px solid var(--color-primary);
+  padding-left: var(--space-6);
+  margin-block: var(--space-10);
+  max-width: 55ch;
+}
+
+.callout {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  margin-block: var(--space-10);
+}
+.callout p {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-4);
+}
+.callout p:last-child { margin-bottom: 0; }
+.callout p strong {
+  color: var(--color-text);
+}
+
+.quote {
+  background: var(--color-surface);
+  border-left: 3px solid var(--color-primary);
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  padding: var(--space-8);
+  margin-block: var(--space-10);
+}
+.quote p {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-4);
+  font-style: italic;
+}
+.quote cite {
+  display: block;
+  font-size: var(--text-sm);
+  color: var(--color-text-faint);
+  font-style: normal;
+  margin-top: var(--space-4);
+}
+
+/* ============================================================
+   NUMBER DISPLAY
+   ============================================================ */
+.number-display {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  margin-block: var(--space-10);
+}
+.number-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4) 0;
+}
+.number-row + .number-row {
+  border-top: 1px solid var(--color-divider);
+}
+.number-label {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+}
+.number-value {
+  font-family: var(--font-body);
+  font-size: var(--text-xl);
+  font-weight: 300;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.03em;
+}
+.number-value.antimatter {
+  color: var(--color-antimatter);
+}
+.number-value.matter {
+  color: var(--color-matter);
+}
+.number-diff {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--space-4);
+  border-top: 2px solid var(--color-primary);
+  margin-top: var(--space-4);
+}
+.diff-label {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+}
+.diff-value {
+  font-family: var(--font-body);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-energy);
+}
+
+.margin-stat {
+  text-align: center;
+  margin-block: var(--space-10);
+}
+.margin-number {
+  font-family: var(--font-body);
+  font-size: var(--text-2xl);
+  font-weight: 200;
+  color: var(--color-primary);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+}
+.margin-label {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-top: var(--space-2);
+}
+
+/* ============================================================
+   ANNIHILATION DEMO
+   ============================================================ */
+.annihilation-demo {
+  max-width: var(--content-default);
+  margin: var(--space-10) auto;
+  text-align: center;
+  padding-inline: var(--space-6);
+}
+#annihilationCanvas {
+  width: 100%;
+  max-width: 800px;
+  height: auto;
+  aspect-ratio: 2 / 1;
+  margin: 0 auto var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+.demo-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+.demo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) var(--space-8);
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background var(--transition-interactive),
+              transform var(--transition-interactive),
+              box-shadow var(--transition-interactive);
+}
+.demo-btn:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-glow);
+}
+.demo-btn:active {
+  transform: translateY(0);
+}
+.demo-text {
+  font-size: var(--text-xs);
+  color: var(--color-text-faint);
+}
+
+/* ============================================================
+   FINE TUNING
+   ============================================================ */
+.fine-tuning {
+  max-width: var(--content-default);
+  margin: var(--space-10) auto;
+  padding-inline: var(--space-6);
+}
+.ft-title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  text-align: center;
+  margin-bottom: var(--space-10);
+  color: var(--color-text);
+}
+.ft-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-6);
+  margin-bottom: var(--space-12);
+}
+.ft-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  transition: border-color var(--transition-interactive),
+              box-shadow var(--transition-interactive);
+}
+.ft-card.danger {
+  border-color: var(--color-antimatter);
+  box-shadow: 0 0 20px var(--color-antimatter-glow);
+}
+.ft-card.safe {
+  border-color: var(--color-matter);
+  box-shadow: 0 0 20px var(--color-matter-glow);
+}
+.ft-icon {
+  font-size: 2rem;
+  margin-bottom: var(--space-3);
+}
+.ft-card h4 {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-4);
+}
+.ft-slider-wrap {
+  margin-bottom: var(--space-4);
+}
+.ft-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: var(--color-divider);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+.ft-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: var(--color-primary);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: box-shadow var(--transition-interactive);
+}
+.ft-slider::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 12px var(--color-primary-glow);
+}
+.ft-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: var(--color-primary);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.ft-range {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-xs);
+  color: var(--color-text-faint);
+  margin-top: var(--space-2);
+}
+.ft-current {
+  color: var(--color-matter);
+  font-weight: 600;
+}
+.ft-desc {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  min-height: 3em;
+  transition: color 300ms var(--ease-out);
+}
+.ft-desc.danger-text {
+  color: var(--color-antimatter);
+}
+
+.ft-odds {
+  text-align: center;
+  padding: var(--space-10);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+}
+.ft-odds-label {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-6);
+}
+.ft-odds-number {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+.odds-1 {
+  font-family: var(--font-body);
+  font-size: var(--text-2xl);
+  font-weight: 200;
+  color: var(--color-text);
+}
+.odds-slash {
+  font-size: var(--text-lg);
+  color: var(--color-text-faint);
+}
+.odds-big {
+  font-family: var(--font-body);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--color-primary);
+}
+.odds-big sup {
+  font-size: 0.55em;
+}
+.odds-big sup sup {
+  font-size: 0.7em;
+}
+.odds-word {
+  font-size: var(--text-lg);
+  color: var(--color-text-faint);
+}
+.ft-odds-context {
+  font-size: var(--text-sm);
+  color: var(--color-text-faint);
+  margin-top: var(--space-4);
+}
+
+/* ============================================================
+   THREE OPTIONS
+   ============================================================ */
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-6);
+  margin-top: var(--space-10);
+}
+.option-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  transition: border-color var(--transition-interactive),
+              transform var(--transition-interactive),
+              box-shadow var(--transition-interactive);
+}
+.option-card:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+.option-number {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  color: var(--color-primary);
+  margin-bottom: var(--space-4);
+  line-height: 1;
+}
+.option-card h3 {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  color: var(--color-text);
+  margin-bottom: var(--space-4);
+}
+.option-card p {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: 1.7;
+}
+.option-analogy {
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-divider);
+}
+.option-analogy p {
+  font-size: var(--text-sm);
+  color: var(--color-text-faint);
+  font-style: italic;
+}
+
+/* ============================================================
+   CASINO VISUALIZATION
+   ============================================================ */
+.casino-viz {
+  text-align: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-10);
+}
+.casino-title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  margin-bottom: var(--space-6);
+  color: var(--color-text);
+}
+.casino-counter {
+  margin-block: var(--space-8);
+}
+.casino-wins {
+  font-family: var(--font-body);
+  font-size: var(--text-3xl);
+  font-weight: 200;
+  color: var(--color-energy);
+  font-variant-numeric: tabular-nums;
+  transition: transform 150ms var(--ease-out);
+}
+.casino-wins.bump {
+  transform: scale(1.1);
+}
+.casino-counter p {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-top: var(--space-2);
+}
+.casino-note {
+  font-size: var(--text-sm);
+  color: var(--color-text-faint);
+  margin-top: var(--space-6);
+  font-style: italic;
+}
+
+/* ============================================================
+   MEANING / YOU
+   ============================================================ */
+.meaning-block {
+  background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-surface-2) 100%);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-10);
+  text-align: center;
+  margin-block: var(--space-10);
+}
+.meaning-statement {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  color: var(--color-primary);
+  font-style: italic;
+}
+
+.you-statement {
+  background: var(--color-surface);
+  border-left: 3px solid var(--color-matter);
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  padding: var(--space-8);
+  margin-block: var(--space-10);
+}
+.you-statement p {
+  font-size: var(--text-base);
+  color: var(--color-text);
+  margin-bottom: var(--space-3);
+  line-height: 1.7;
+}
+.you-statement p:last-child { margin-bottom: 0; }
+
+.final-question {
+  text-align: center;
+  padding-block: var(--space-12);
+}
+.final-question p {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-4);
+  max-width: 55ch;
+  margin-inline: auto;
+}
+.final-q {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  color: var(--color-text) !important;
+  margin-top: var(--space-8) !important;
+  font-style: italic;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer {
+  position: relative;
+  z-index: 1;
+  padding: var(--space-10) var(--space-6);
+  border-top: 1px solid var(--color-divider);
+  text-align: center;
+}
+.footer-nav {
+  margin-bottom: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+.footer-nav a {
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: var(--text-sm);
+  transition: color 0.25s;
+}
+.footer-nav a:hover {
+  color: var(--color-text);
+}
+.footer-source {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-3);
+}
+.footer-source a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+.footer-source a:hover {
+  text-decoration: underline;
+}
+.footer-attr {
+  font-size: var(--text-xs);
+  color: var(--color-text-faint);
+}
+.footer-attr a {
+  color: var(--color-text-faint);
+  text-decoration: none;
+}
+.footer-attr a:hover {
+  color: var(--color-text-muted);
+}
+
+/* ============================================================
+   SCROLL ANIMATIONS
+   ============================================================ */
+.fade-in {
+  opacity: 1;
+}
+
+@supports (animation-timeline: scroll()) {
+  .fade-in {
+    opacity: 0;
+    animation: revealFade linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 80%;
+  }
+}
+
+@keyframes revealFade {
+  to { opacity: 1; }
+}
+
+/* Fallback for browsers without scroll-driven animations */
+@supports not (animation-timeline: scroll()) {
+  .fade-in {
+    opacity: 0;
+    transition: opacity 600ms var(--ease-out);
+  }
+  .fade-in.visible {
+    opacity: 1;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 640px) {
+  .top-bar { padding: 0.8rem 1rem; }
+  .hero-title {
+    font-size: var(--text-xl);
+  }
+  .title-line.accent,
+  .title-line.highlight {
+    font-size: var(--text-lg);
+  }
+  .number-value {
+    font-size: var(--text-lg);
+  }
+  .ft-grid {
+    grid-template-columns: 1fr;
+  }
+  .options-grid {
+    grid-template-columns: 1fr;
+  }
+  .ft-odds-number {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+  }
+  .casino-wins {
+    font-size: var(--text-2xl);
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Particle Canvas Background -->
+<canvas id="particleCanvas"></canvas>
+
+<!-- Progress Bar -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- Top Bar Navigation (matching kalkulatorok.html) -->
+<nav class="top-bar">
+  <div class="nav-left">
+    <a href="/en/" class="brand">&larr; Kovács Ferenc</a>
+    <a href="/en/curiosities.html">&larr; Curiosities</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:1rem;">
+    <a href="/erdekessegek/antianyag.html" class="lang-switch">HU</a>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<header class="hero" id="hero">
+  <div class="hero-content">
+    <p class="hero-eyebrow">The precise mathematics behind antimatter</p>
+    <h1 class="hero-title">
+      <span class="title-line">For every</span>
+      <span class="title-line accent">1,000,000,000</span>
+      <span class="title-line">antimatter particles, there were</span>
+      <span class="title-line highlight">1,000,000,001</span>
+      <span class="title-line">matter particles.</span>
+    </h1>
+    <p class="hero-subtitle">That single extra particle per billion is the reason anything exists at all.</p>
+    <div class="scroll-indicator">
+      <span>Scroll down</span>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 5v14M5 12l7 7 7-7"/>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<!-- Section: The Number -->
+<section class="section section-number" id="number">
+  <div class="container narrow">
+    <h2 class="section-heading fade-in">The number that haunts physicists</h2>
+    <p class="body-text fade-in">There is a number that won't leave physicists alone. And if you understood what this number means, you would never look at your life the same way again.</p>
+    <p class="body-text fade-in">This isn't some abstract philosophical musing. I'm talking about hard mathematics. The kind of mathematics that made even Einstein uncomfortable.</p>
+
+    <div class="number-display fade-in" id="numberDisplay">
+      <div class="number-row">
+        <span class="number-label">Antimatter</span>
+        <span class="number-value antimatter" id="antimatterCount">1,000,000,000</span>
+      </div>
+      <div class="number-row">
+        <span class="number-label">Matter</span>
+        <span class="number-value matter" id="matterCount">1,000,000,001</span>
+      </div>
+      <div class="number-diff">
+        <span class="diff-label">Difference</span>
+        <span class="diff-value">+1</span>
+      </div>
+    </div>
+
+    <p class="pull-quote fade-in">&ldquo;One extra particle. Per billion. That's it. That's why you exist. That's why anything exists.&rdquo;</p>
+
+    <div class="margin-stat fade-in">
+      <div class="margin-number" id="marginCounter">0.0000001%</div>
+      <p class="margin-label">The margin of error that made existence possible</p>
+    </div>
+  </div>
+</section>
+
+<!-- Section: Annihilation -->
+<section class="section section-annihilation" id="annihilation">
+  <div class="container narrow">
+    <h2 class="section-heading fade-in">The annihilation problem</h2>
+    <p class="body-text fade-in">When the Big Bang happened, it created energy. Unimaginable amounts of energy. And when energy converts into matter — as Einstein's famous E=mc² equation describes — it always creates equal amounts of matter and antimatter.</p>
+  </div>
+
+  <!-- Interactive Annihilation Demo -->
+  <div class="annihilation-demo fade-in" id="annihilationDemo">
+    <canvas id="annihilationCanvas" width="800" height="400"></canvas>
+    <div class="demo-controls">
+      <button class="demo-btn" id="annihilateBtn">Start annihilation</button>
+      <p class="demo-text">Click the button and watch as matter and antimatter annihilate each other</p>
+    </div>
+  </div>
+
+  <div class="container narrow">
+    <p class="body-text fade-in">Antimatter is nearly identical to normal matter — same mass, same properties — only the charge is opposite. When matter and antimatter meet, they <strong>annihilate each other</strong>. Completely. Both particles vanish, releasing pure energy.</p>
+
+    <div class="callout fade-in">
+      <p>If the Big Bang created equal amounts of matter and antimatter — which is what the mathematics says it should have — then everything should have been annihilated within microseconds.</p>
+      <p><strong>The universe should be an empty field of radiation.</strong></p>
+      <p>But it isn't.</p>
+    </div>
+
+    <p class="pull-quote fade-in">&ldquo;You are made from the leftovers. The leftovers of a cosmic rounding error. Except it wasn't an error. Errors are random. This was precise.&rdquo;</p>
+  </div>
+</section>
+
+<!-- Section: Baryon Asymmetry -->
+<section class="section section-asymmetry" id="asymmetry">
+  <div class="container narrow">
+    <h2 class="section-heading fade-in">Baryon asymmetry</h2>
+    <p class="body-text fade-in">This asymmetry has been named "baryon asymmetry," and it is one of the greatest unsolved problems in physics. The Standard Model — our best description of how particles behave — cannot explain it.</p>
+
+    <p class="body-text fade-in">Something broke the symmetry. Something tipped the scales by exactly one part in a billion. Not one part in a million. Not one part in a hundred million. One part in a billion.</p>
+  </div>
+
+  <!-- Interactive Fine-Tuning Visualization -->
+  <div class="fine-tuning fade-in" id="fineTuning">
+    <h3 class="ft-title">Fine-tuning constants</h3>
+    <div class="ft-grid">
+      <div class="ft-card" id="ftStrong">
+        <div class="ft-icon">⚛️</div>
+        <h4>Strong nuclear force</h4>
+        <div class="ft-slider-wrap">
+          <input type="range" class="ft-slider" id="strongSlider" min="0" max="100" value="50">
+          <div class="ft-range">
+            <span>-2%</span>
+            <span class="ft-current" id="strongValue">Current</span>
+            <span>+0.3%</span>
+          </div>
+        </div>
+        <p class="ft-desc" id="strongDesc">Atoms barely hold together. Life is possible.</p>
+      </div>
+
+      <div class="ft-card" id="ftCosmo">
+        <div class="ft-icon">🌌</div>
+        <h4>Cosmological constant</h4>
+        <div class="ft-slider-wrap">
+          <input type="range" class="ft-slider" id="cosmoSlider" min="0" max="100" value="50">
+          <div class="ft-range">
+            <span>Too small</span>
+            <span class="ft-current" id="cosmoValue">Current</span>
+            <span>Too large</span>
+          </div>
+        </div>
+        <p class="ft-desc" id="cosmoDesc">Galaxies form. Stars burn. Life is possible.</p>
+      </div>
+
+      <div class="ft-card" id="ftBaryon">
+        <div class="ft-icon">⚖️</div>
+        <h4>Baryon asymmetry</h4>
+        <div class="ft-slider-wrap">
+          <input type="range" class="ft-slider" id="baryonSlider" min="0" max="100" value="50">
+          <div class="ft-range">
+            <span>0 leftover</span>
+            <span class="ft-current" id="baryonValue">1 per billion</span>
+            <span>Too much</span>
+          </div>
+        </div>
+        <p class="ft-desc" id="baryonDesc">Just enough matter survived to create stars, planets, and life.</p>
+      </div>
+    </div>
+
+    <div class="ft-odds fade-in">
+      <p class="ft-odds-label">The probability that all constants fall within a life-permitting range:</p>
+      <div class="ft-odds-number" id="oddsDisplay">
+        <span class="odds-1">1</span>
+        <span class="odds-slash">in</span>
+        <span class="odds-big">10<sup>10<sup>123</sup></sup></span>
+      </div>
+      <p class="ft-odds-context">This number is so large that it is practically meaningless.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Section: Three Options -->
+<section class="section section-options" id="options">
+  <div class="container">
+    <h2 class="section-heading fade-in">The three options</h2>
+    <p class="body-text center fade-in">Faced with this fine-tuning, physicists have three options:</p>
+
+    <div class="options-grid">
+      <div class="option-card fade-in" id="option1">
+        <div class="option-number">1</div>
+        <h3>Chance</h3>
+        <p>The universe just happened to get these values by accident. We were inconceivably, statistically, impossibly lucky — but lucky nonetheless.</p>
+        <div class="option-analogy">
+          <p>Like winning the lottery. Every day. For a billion years.</p>
+        </div>
+      </div>
+
+      <div class="option-card fade-in" id="option2">
+        <div class="option-number">2</div>
+        <h3>Multiverse</h3>
+        <p>An infinite number of universes exist, each with different physical constants. Most are sterile — no stars, no atoms, no life. But by sheer probability, at least one would have the right values.</p>
+        <div class="option-analogy">
+          <p>There is no evidence whatsoever for other universes. Not. A. Single. Piece. Accepting the multiverse requires the very thing its proponents reject: <strong>faith</strong>.</p>
+        </div>
+      </div>
+
+      <div class="option-card fade-in" id="option3">
+        <div class="option-number">3</div>
+        <h3>It was designed</h3>
+        <p>The constants are what they are because some intelligence, ordering principle, or consciousness set them that way.</p>
+        <div class="option-analogy">
+          <p>If you saw a casino where the house won 10<sup>10<sup>123</sup></sup> hands in a row, you wouldn't say &ldquo;wow, what luck.&rdquo; You'd say, <strong>the game was rigged</strong>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section: Casino Visualization -->
+<section class="section section-casino" id="casino">
+  <div class="container narrow">
+    <div class="casino-viz fade-in">
+      <h3 class="casino-title">The casino analogy</h3>
+      <p class="body-text">Imagine you're in a casino. The house won. Again. And again. And again...</p>
+      <div class="casino-counter">
+        <div class="casino-wins" id="casinoWins">0</div>
+        <p>consecutive wins</p>
+      </div>
+      <button class="demo-btn" id="casinoBtn">Click to spin</button>
+      <p class="casino-note" id="casinoNote">The house always wins. Just a coincidence?</p>
+    </div>
+  </div>
+</section>
+
+<!-- Section: What God Means -->
+<section class="section section-meaning" id="meaning">
+  <div class="container narrow">
+    <h2 class="section-heading fade-in">What does &ldquo;God&rdquo; mean here?</h2>
+    <p class="body-text fade-in">When I say &ldquo;designed&rdquo; or &ldquo;God,&rdquo; I'm not talking about a bearded man above the clouds. Not the mythology of any single religion. I'm talking about something much simpler and much stranger:</p>
+
+    <div class="meaning-block fade-in">
+      <p class="meaning-statement">The existence of consciousness before matter.</p>
+    </div>
+
+    <p class="body-text fade-in">The materialist assumption — the one most of us absorbed through education — is that matter came first. Dead things. Particles bouncing around. Then, after billions of years of complexity, consciousness emerged.</p>
+
+    <p class="body-text fade-in">But if the universe required precise calibration for complexity to arise... then the calibration itself presupposes someone who calibrates.</p>
+
+    <blockquote class="quote fade-in">
+      <p>&ldquo;A common sense interpretation of the facts suggests that a superintellect has monkeyed with physics, as well as with chemistry and biology, and that there are no blind forces worth speaking about in nature.&rdquo;</p>
+      <cite>— Fred Hoyle, astronomer (who coined the term &ldquo;Big Bang&rdquo;)</cite>
+    </blockquote>
+
+    <blockquote class="quote fade-in">
+      <p>Roger Penrose, one of the greatest living mathematical physicists, calculated that the odds of the universe's initial conditions arising by chance are: <strong>1 in 10<sup>10<sup>123</sup></sup></strong>.</p>
+      <p>His conclusion? <strong>Chance is not a serious explanation.</strong></p>
+    </blockquote>
+  </div>
+</section>
+
+<!-- Section: You -->
+<section class="section section-you" id="you">
+  <div class="container narrow">
+    <h2 class="section-heading fade-in">The one in a billion that is you</h2>
+
+    <p class="body-text fade-in">The same logic that applies to the universe applies to you.</p>
+
+    <p class="body-text fade-in">The odds of your existence — not just any human being, but specifically you — are so small they border on impossibility. That particular egg and that particular sperm coming together. Thousands of generations of ancestors who survived long enough to reproduce.</p>
+
+    <div class="you-statement fade-in">
+      <p>You are the one in a billion that made it through.</p>
+      <p>Not by accident. Not by luck.</p>
+      <p>By the same principle that tipped the cosmic scales toward matter rather than annihilation.</p>
+    </div>
+
+    <div class="final-question fade-in">
+      <p>You are not a random arrangement of particles that accidentally became conscious.</p>
+      <p>You are consciousness experiencing what it's like to be this particular arrangement of particles.</p>
+      <p class="final-q">The question is: what will you do with this knowledge?</p>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-nav">
+      <a href="/en/curiosities.html">&larr; Back to curiosities</a>
+      <a href="/en/">&larr; Back to homepage</a>
+    </div>
+    <p class="footer-source">
+      Original text: <a href="https://x.com/thecurioustales/status/2032142940068594005" target="_blank" rel="noopener noreferrer">@thecurioustales</a>
+    </p>
+    <p class="footer-attr">
+      <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+// ============================================================
+// PARTICLE CANVAS — Background star field
+// ============================================================
+const canvas = document.getElementById('particleCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+let animFrame;
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+
+function createParticles() {
+  particles = [];
+  const count = Math.min(200, Math.floor(canvas.width * canvas.height / 8000));
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.5 + 0.3,
+      alpha: Math.random() * 0.6 + 0.1,
+      speed: Math.random() * 0.15 + 0.02,
+      pulse: Math.random() * Math.PI * 2,
+      pulseSpeed: Math.random() * 0.01 + 0.003,
+    });
+  }
+}
+
+function drawParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (const p of particles) {
+    p.y -= p.speed;
+    p.pulse += p.pulseSpeed;
+    if (p.y < -5) {
+      p.y = canvas.height + 5;
+      p.x = Math.random() * canvas.width;
+    }
+    const glow = p.alpha * (0.6 + 0.4 * Math.sin(p.pulse));
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(200, 200, 240, ${glow})`;
+    ctx.fill();
+  }
+  animFrame = requestAnimationFrame(drawParticles);
+}
+
+resizeCanvas();
+createParticles();
+drawParticles();
+window.addEventListener('resize', () => { resizeCanvas(); createParticles(); });
+
+// ============================================================
+// PROGRESS BAR
+// ============================================================
+const progressBar = document.getElementById('progressBar');
+
+function updateProgress() {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  progressBar.style.width = progress + '%';
+}
+
+// ============================================================
+// SCROLL ANIMATION FALLBACK (for browsers without scroll-driven animations)
+// ============================================================
+function setupScrollObserver() {
+  if (CSS.supports && CSS.supports('animation-timeline', 'scroll()')) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+}
+
+// ============================================================
+// ANNIHILATION CANVAS DEMO
+// ============================================================
+const annCanvas = document.getElementById('annihilationCanvas');
+const annCtx = annCanvas.getContext('2d');
+const annBtn = document.getElementById('annihilateBtn');
+
+let annParticles = [];
+let annRunning = false;
+let annAnimFrame;
+
+function initAnnihilation() {
+  // Actual render dimensions
+  const rect = annCanvas.getBoundingClientRect();
+  annCanvas.width = rect.width * window.devicePixelRatio;
+  annCanvas.height = rect.height * window.devicePixelRatio;
+  annCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+  const w = rect.width;
+  const h = rect.height;
+
+  annParticles = [];
+  const count = 30;
+
+  // Matter particles (right side, green)
+  for (let i = 0; i < count; i++) {
+    annParticles.push({
+      x: w * 0.65 + Math.random() * w * 0.25,
+      y: h * 0.15 + Math.random() * h * 0.7,
+      vx: (Math.random() - 0.8) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
+      r: 4 + Math.random() * 3,
+      type: 'matter',
+      alive: true,
+      alpha: 1,
+    });
+  }
+
+  // Antimatter particles (left side, magenta)
+  for (let i = 0; i < count; i++) {
+    annParticles.push({
+      x: w * 0.1 + Math.random() * w * 0.25,
+      y: h * 0.15 + Math.random() * h * 0.7,
+      vx: (Math.random() + 0.3) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
+      r: 4 + Math.random() * 3,
+      type: 'antimatter',
+      alive: true,
+      alpha: 1,
+    });
+  }
+
+  // One extra matter particle (bigger, glowing)
+  annParticles.push({
+    x: w * 0.75,
+    y: h * 0.5,
+    vx: -0.2,
+    vy: 0,
+    r: 7,
+    type: 'matter',
+    alive: true,
+    alpha: 1,
+    special: true,
+  });
+
+  drawAnnihilation(w, h);
+}
+
+let energyBursts = [];
+
+function drawAnnihilation(w, h) {
+  annCtx.clearRect(0, 0, w, h);
+
+  // Labels
+  annCtx.font = '13px Inter, sans-serif';
+  annCtx.fillStyle = '#f472b6';
+  annCtx.textAlign = 'center';
+  annCtx.fillText('Antimatter', w * 0.22, 24);
+  annCtx.fillStyle = '#4ade80';
+  annCtx.fillText('Matter', w * 0.78, 24);
+
+  // Energy bursts
+  for (let i = energyBursts.length - 1; i >= 0; i--) {
+    const b = energyBursts[i];
+    b.r += 2;
+    b.alpha -= 0.03;
+    if (b.alpha <= 0) {
+      energyBursts.splice(i, 1);
+      continue;
+    }
+    annCtx.beginPath();
+    annCtx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+    annCtx.fillStyle = `rgba(251, 191, 36, ${b.alpha * 0.3})`;
+    annCtx.fill();
+  }
+
+  // Particles
+  for (const p of annParticles) {
+    if (!p.alive) continue;
+
+    annCtx.beginPath();
+    annCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+
+    if (p.type === 'matter') {
+      const glow = p.special ? 'rgba(74, 222, 128, 0.3)' : 'rgba(74, 222, 128, 0.15)';
+      annCtx.shadowColor = glow;
+      annCtx.shadowBlur = p.special ? 15 : 8;
+      annCtx.fillStyle = `rgba(74, 222, 128, ${p.alpha})`;
+    } else {
+      annCtx.shadowColor = 'rgba(244, 114, 182, 0.15)';
+      annCtx.shadowBlur = 8;
+      annCtx.fillStyle = `rgba(244, 114, 182, ${p.alpha})`;
+    }
+    annCtx.fill();
+    annCtx.shadowBlur = 0;
+
+    // + / - label
+    if (p.r > 3) {
+      annCtx.fillStyle = '#0a0a0f';
+      annCtx.font = `bold ${Math.round(p.r)}px Inter, sans-serif`;
+      annCtx.textAlign = 'center';
+      annCtx.textBaseline = 'middle';
+      annCtx.fillText(p.type === 'matter' ? '+' : '\u2212', p.x, p.y);
+    }
+  }
+}
+
+function animateAnnihilation() {
+  const rect = annCanvas.getBoundingClientRect();
+  const w = rect.width;
+  const h = rect.height;
+
+  // Move particles
+  for (const p of annParticles) {
+    if (!p.alive) continue;
+    p.x += p.vx;
+    p.y += p.vy;
+    // Bounce off edges
+    if (p.x < p.r || p.x > w - p.r) p.vx *= -1;
+    if (p.y < p.r + 30 || p.y > h - p.r) p.vy *= -1;
+  }
+
+  // Collision detection
+  for (let i = 0; i < annParticles.length; i++) {
+    for (let j = i + 1; j < annParticles.length; j++) {
+      const a = annParticles[i];
+      const b = annParticles[j];
+      if (!a.alive || !b.alive) continue;
+      if (a.type === b.type) continue;
+
+      const dx = a.x - b.x;
+      const dy = a.y - b.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist < a.r + b.r + 3) {
+        // Both annihilate
+        a.alive = false;
+        b.alive = false;
+        energyBursts.push({
+          x: (a.x + b.x) / 2,
+          y: (a.y + b.y) / 2,
+          r: 5,
+          alpha: 1,
+        });
+      }
+    }
+  }
+
+  drawAnnihilation(w, h);
+
+  const aliveCount = annParticles.filter(p => p.alive).length;
+  if (aliveCount <= 1 || energyBursts.length > 0 || aliveCount > 1) {
+    if (annParticles.some(p => p.alive) || energyBursts.length > 0) {
+      annAnimFrame = requestAnimationFrame(animateAnnihilation);
+    } else {
+      annRunning = false;
+      // Show the survivor
+      drawAnnihilation(rect.width, rect.height);
+      annBtn.textContent = 'Restart';
+    }
+
+    // Check if only the special one remains
+    const alive = annParticles.filter(p => p.alive);
+    if (alive.length === 1 && alive[0].special && energyBursts.length === 0) {
+      annRunning = false;
+      cancelAnimationFrame(annAnimFrame);
+      // Final draw with label
+      drawAnnihilation(rect.width, rect.height);
+      annCtx.font = '14px Inter, sans-serif';
+      annCtx.fillStyle = '#4ade80';
+      annCtx.textAlign = 'center';
+      annCtx.fillText('\u2190 The sole survivor', alive[0].x + 80, alive[0].y);
+      annBtn.textContent = 'Restart';
+    }
+  }
+}
+
+annBtn.addEventListener('click', () => {
+  if (annRunning) {
+    cancelAnimationFrame(annAnimFrame);
+    annRunning = false;
+  }
+  energyBursts = [];
+  initAnnihilation();
+  annRunning = true;
+
+  // Speed up particles toward center
+  const rect = annCanvas.getBoundingClientRect();
+  const centerX = rect.width / 2;
+  for (const p of annParticles) {
+    const dir = p.x < centerX ? 1 : -1;
+    p.vx = dir * (1 + Math.random() * 1.5);
+    p.vy = (Math.random() - 0.5) * 1;
+  }
+
+  annBtn.textContent = 'In progress...';
+  animateAnnihilation();
+});
+
+// Initialize demo on load
+setTimeout(() => initAnnihilation(), 100);
+
+// ============================================================
+// FINE TUNING SLIDERS
+// ============================================================
+const strongSlider = document.getElementById('strongSlider');
+const cosmoSlider = document.getElementById('cosmoSlider');
+const baryonSlider = document.getElementById('baryonSlider');
+
+const strongDesc = document.getElementById('strongDesc');
+const cosmoDesc = document.getElementById('cosmoDesc');
+const baryonDesc = document.getElementById('baryonDesc');
+
+const strongValue = document.getElementById('strongValue');
+const cosmoValue = document.getElementById('cosmoValue');
+const baryonValue = document.getElementById('baryonValue');
+
+const ftStrong = document.getElementById('ftStrong');
+const ftCosmo = document.getElementById('ftCosmo');
+const ftBaryon = document.getElementById('ftBaryon');
+
+function updateSlider(slider, desc, value, card, configs) {
+  const v = parseInt(slider.value);
+  const safe = v >= 40 && v <= 60;
+
+  card.classList.toggle('danger', !safe);
+  card.classList.toggle('safe', safe);
+
+  if (v < 30) {
+    desc.textContent = configs.low;
+    desc.classList.add('danger-text');
+    value.textContent = configs.lowLabel;
+    value.style.color = '#f472b6';
+  } else if (v > 70) {
+    desc.textContent = configs.high;
+    desc.classList.add('danger-text');
+    value.textContent = configs.highLabel;
+    value.style.color = '#f472b6';
+  } else {
+    desc.textContent = configs.mid;
+    desc.classList.remove('danger-text');
+    value.textContent = configs.midLabel;
+    value.style.color = '#4ade80';
+  }
+}
+
+strongSlider.addEventListener('input', () => {
+  updateSlider(strongSlider, strongDesc, strongValue, ftStrong, {
+    low: 'Atoms fall apart. No chemistry. No life. The universe is a sterile particle soup.',
+    lowLabel: '\u22122% (Too weak)',
+    high: 'All hydrogen fuses into helium. No water. No organic chemistry. No life.',
+    highLabel: '+0.3% (Too strong)',
+    mid: 'Atoms barely hold together. Life is possible.',
+    midLabel: 'Current',
+  });
+});
+
+cosmoSlider.addEventListener('input', () => {
+  updateSlider(cosmoSlider, cosmoDesc, cosmoValue, ftCosmo, {
+    low: 'The universe collapses back into a single point. Everything is destroyed.',
+    lowLabel: 'Negative (Collapse)',
+    high: 'The universe expands too fast. No galaxies form. Nothing.',
+    highLabel: '\u00d710\u00b9\u00b2\u2070 (Dispersal)',
+    mid: 'Galaxies form. Stars burn. Life is possible.',
+    midLabel: 'Current',
+  });
+});
+
+baryonSlider.addEventListener('input', () => {
+  updateSlider(baryonSlider, baryonDesc, baryonValue, ftBaryon, {
+    low: 'Nothing survives. Total annihilation. The universe is an empty radiation field.',
+    lowLabel: '0 leftover (Void)',
+    high: 'Too much matter. The universe collapses into black holes.',
+    highLabel: 'Too much (Collapse)',
+    mid: 'Just enough matter survived to create stars, planets, and life.',
+    midLabel: '1 per billion',
+  });
+});
+
+// ============================================================
+// CASINO COUNTER
+// ============================================================
+const casinoWins = document.getElementById('casinoWins');
+const casinoBtn = document.getElementById('casinoBtn');
+const casinoNote = document.getElementById('casinoNote');
+let casinoCount = 0;
+
+const casinoMessages = [
+  { count: 5, msg: 'Five in a row? Hmm...' },
+  { count: 15, msg: 'Fifteen. This is getting suspicious.' },
+  { count: 30, msg: 'Thirty. This can\'t be random.' },
+  { count: 50, msg: 'Fifty. The house is obviously cheating.' },
+  { count: 100, msg: 'A hundred. Now imagine this 10^10^123 times.' },
+  { count: 200, msg: 'Still clicking? The universe did exactly this. Billions of times.' },
+];
+
+casinoBtn.addEventListener('click', () => {
+  casinoCount++;
+  casinoWins.textContent = casinoCount.toLocaleString();
+  casinoWins.classList.add('bump');
+  setTimeout(() => casinoWins.classList.remove('bump'), 150);
+
+  for (const m of casinoMessages) {
+    if (casinoCount === m.count) {
+      casinoNote.textContent = m.msg;
+      casinoNote.style.color = '#f472b6';
+      setTimeout(() => { casinoNote.style.color = ''; }, 1500);
+    }
+  }
+});
+
+// ============================================================
+// SCROLL HANDLER
+// ============================================================
+let ticking = false;
+window.addEventListener('scroll', () => {
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      updateProgress();
+      ticking = false;
+    });
+    ticking = true;
+  }
+});
+
+// ============================================================
+// INIT
+// ============================================================
+setupScrollObserver();
+updateProgress();
+</script>
+</body>
+</html>
