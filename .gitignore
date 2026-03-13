@@ -19,3 +19,6 @@ node_modules/
 __pycache__/
 *.pyc
 .env
+
+# MCP configuration (contains secrets)
+.mcp.json

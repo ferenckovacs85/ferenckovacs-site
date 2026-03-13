@@ -8,6 +8,13 @@
   status = 301
   force = true
 
+# www redirect
+[[redirects]]
+  from = "http://www.ferenckovacs.com/*"
+  to = "https://ferenckovacs.com/:splat"
+  status = 301
+  force = true
+
 # Custom 404
 [[redirects]]
   from = "/*"

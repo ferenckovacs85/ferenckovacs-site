@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>₿ Bitcoin Kalkulátor · ferenckovacs.com</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" integrity="sha512-CQBWl4fJHWbryGE+Pc7UAxWMUMNMWzWxF4SQo9CgkJIN1kx6djDQZjh3Y8SZ1d+6I+1zze6Z7kHXO7q3UyZAWw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
@@ -771,6 +771,12 @@
 </div>
 
 <script>
+function escHtml(str) {
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
 // ============================================================
 // PRICE MODEL DATA (pre-calculated, 120 months from Apr 2026)
 // ============================================================
@@ -956,7 +962,6 @@ async function fetchLivePrices(force = false) {
       setTimeout(() => { icon.textContent = '🔄'; }, 2000);
     }
   } catch (e) {
-    console.error('Price fetch failed:', e);
     // Fallback to cache even if expired
     const cached = getCachedPrices();
     if (cached) applyCachedPrices(cached);
@@ -2201,7 +2206,6 @@ function decodeParams(hash) {
     if (p.er) setExpenseStart(true);
     updateMacroBtcHuf();
   } catch (e) {
-    console.warn('Invalid URL params:', e);
   }
 }
 
@@ -2277,8 +2281,8 @@ function renderScenarios() {
   const slots = document.getElementById('scenarioSlots');
   slots.innerHTML = scenarios.map((s, i) =>
     `<div style="display:flex;align-items:center;gap:4px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:4px 10px">
-      <span style="font-size:12px;color:var(--text);cursor:pointer;font-weight:500" onclick="loadScenario(${i})" title="Kattints a betöltéshez">${s.name}</span>
-      <span style="font-size:10px;color:var(--text3)">${s.date}</span>
+      <span style="font-size:12px;color:var(--text);cursor:pointer;font-weight:500" onclick="loadScenario(${i})" title="Kattints a betöltéshez">${escHtml(s.name)}</span>
+      <span style="font-size:10px;color:var(--text3)">${escHtml(s.date)}</span>
       <span style="font-size:11px;cursor:pointer;color:var(--red);margin-left:4px" onclick="deleteScenario(${i})" title="Törlés">✕</span>
     </div>`
   ).join('');
@@ -2288,7 +2292,7 @@ function renderScenarios() {
   if (scenarios.length >= 2) {
     compare.style.display = 'block';
     const header = document.getElementById('scenarioHeader');
-    header.innerHTML = '<th>Mutató</th>' + scenarios.map(s => `<th style="color:var(--btc)">${s.name}</th>`).join('');
+    header.innerHTML = '<th>Mutató</th>' + scenarios.map(s => `<th style="color:var(--btc)">${escHtml(s.name)}</th>`).join('');
     const metrics = [
       { label: 'Befektetés', key: 'invested', fmt: fmtFtShort },
       { label: 'Portfólió (PV)', key: 'portfolioPv', fmt: fmtFtShort },
