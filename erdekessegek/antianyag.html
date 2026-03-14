@@ -1115,4 +1115,1148 @@ a, button, [role="button"], [role="link"], input, textarea, select {
         <span class="number-label">Anyag</span>
         <span class="number-value matter" id="matterCount">1,000,000,001</span>
       </div>
-      <div class="number-diff"
+      <div class="number-diff">
+        <span class="diff-label">Különbség</span>
+        <span class="diff-value">+1</span>
+      </div>
+    </div>
+
+    <p class="pull-quote fade-in">&ldquo;Egy extra részecske. Milliárdonként. Ennyi. Ezért létezel. Ezért létezik bármi.&rdquo;</p>
+
+    <div class="margin-stat fade-in">
+      <div class="margin-number" id="marginCounter">0.0000001%</div>
+      <p class="margin-label">A hibahatár, ami lehetővé tette a létezést</p>
+    </div>
+  </div>
+</section>
+
+<!-- Section: Annihilation -->
+<section class="section section-annihilation" id="annihilation">
+  <div class="container narrow">
+    <h2 class="section-heading fade-in">A megsemmisülés problémája</h2>
+    <p class="body-text fade-in">Amikor az Ősrobbanás megtörtént, energiát hozott létre. Elképzelhetetlen mennyiségű energiát. És amikor az energia anyaggá alakul — amit Einstein híres E=mc² képlete szerint tesz — mindig egyenlő mennyiségű anyagot és antianyagot hoz létre.</p>
+  </div>
+
+  <!-- Interactive Annihilation Demo -->
+  <div class="annihilation-demo fade-in" id="annihilationDemo">
+    <canvas id="annihilationCanvas" width="800" height="400"></canvas>
+    <div class="demo-controls">
+      <button class="demo-btn" id="annihilateBtn">Megsemmisítés indítása</button>
+      <p class="demo-text">Kattints a gombra és figyeld, ahogy az anyag és antianyag megsemmisíti egymást</p>
+    </div>
+  </div>
+
+  <div class="container narrow">
+    <p class="body-text fade-in">Az antianyag szinte mindenben azonos a normál anyaggal — azonos tömeg, azonos tulajdonságok — csak a töltése ellentétes. Amikor az anyag és antianyag találkozik, <strong>megsemmisítik egymást</strong>. Teljesen. Mindkét részecske eltűnik és tiszta energiát bocsát ki.</p>
+
+    <div class="callout fade-in">
+      <p>Ha az Ősrobbanás egyenlő mennyiségű anyagot és antianyagot hozott létre — amit a matematika szerint kellett volna —, akkor mindennek meg kellett volna semmisülnie mikroszekundumokon belül.</p>
+      <p><strong>A világegyetemnek üres sugárzás-mezőnek kellene lennie.</strong></p>
+      <p>De nem az.</p>
+    </div>
+
+    <p class="pull-quote fade-in">&ldquo;Te a maradékából vagy. Egy kozmikus kerekítési hiba maradékából. Csakhogy ez nem hiba volt. A hibák véletlenszerűek. Ez pedig pontos volt.&rdquo;</p>
+  </div>
+</section>
+
+<!-- Section: Baryon Asymmetry -->
+<section class="section section-asymmetry" id="asymmetry">
+  <div class="container narrow">
+    <h2 class="section-heading fade-in">Barion-aszimmetria</h2>
+    <p class="body-text fade-in">Ez az aszimmetria a „barion-aszimmetria" nevet kapta, és a fizika egyik legnagyobb megoldatlan problémája. A Standard Modell — a részecskék viselkedésének legjobb leírása — nem tudja megmagyarázni.</p>
+
+    <p class="body-text fade-in">Valami megtörte a szimmetriát. Valami pontosan egymilliárdad résznyivel billentette meg a mérleget. Nem egymillimod részt. Nem egyszázmillimod részt. Egymilliárdod részt.</p>
+  </div>
+
+  <!-- Interactive Fine-Tuning Visualization -->
+  <div class="fine-tuning fade-in" id="fineTuning">
+    <h3 class="ft-title">Finomhangolási konstansok</h3>
+    <div class="ft-grid">
+      <div class="ft-card" id="ftStrong">
+        <div class="ft-icon">⚛️</div>
+        <h4>Erős nukleáris erő</h4>
+        <div class="ft-slider-wrap">
+          <input type="range" class="ft-slider" id="strongSlider" min="0" max="100" value="50">
+          <div class="ft-range">
+            <span>-2%</span>
+            <span class="ft-current" id="strongValue">Jelenlegi</span>
+            <span>+0.3%</span>
+          </div>
+        </div>
+        <p class="ft-desc" id="strongDesc">Az atomok éppen összetartanak. Az élet lehetséges.</p>
+        <button class="ft-expand-btn" onclick="toggleDeepDive(this)" data-target="deepStrong">Tudj meg többet ▼</button>
+        <div class="ft-deep-dive" id="deepStrong">
+          <div class="ft-deep-dive-inner">
+            <p class="ft-deep-text">Az erős nukleáris erő az, ami az atommagban a protonokat és neutronokat összetartja. Ez az erő kb. 137-szer erősebb az elektromágneses erőnél, de csak az atommag parányi méretén belül hat. Ha mindössze 2%-kal gyengébb lenne, a protonok nem tudnának egymáshoz kötődni — nem léteznének atomok a hidrogénen kívül. Ha 0.3%-kal erősebb lenne, minden hidrogén azonnal héliummá alakulna — nem lenne víz, nem lenne szerves kémia.</p>
+            <canvas class="ft-mini-canvas" id="canvasStrong"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="ft-card" id="ftCosmo">
+        <div class="ft-icon">🌌</div>
+        <h4>Kozmológiai állandó</h4>
+        <div class="ft-slider-wrap">
+          <input type="range" class="ft-slider" id="cosmoSlider" min="0" max="100" value="50">
+          <div class="ft-range">
+            <span>Túl kicsi</span>
+            <span class="ft-current" id="cosmoValue">Jelenlegi</span>
+            <span>Túl nagy</span>
+          </div>
+        </div>
+        <p class="ft-desc" id="cosmoDesc">Galaxisok képződnek. A csillagok égnek. Az élet lehetséges.</p>
+        <button class="ft-expand-btn" onclick="toggleDeepDive(this)" data-target="deepCosmo">Tudj meg többet ▼</button>
+        <div class="ft-deep-dive" id="deepCosmo">
+          <div class="ft-deep-dive-inner">
+            <p class="ft-deep-text">A kozmológiai állandó (Λ) az űr „energiasűrűsége" — az a rejtélyes sötét energia, amely az univerzum tágulását gyorsítja. Értéke hihetetlen pontossággal van beállítva: 10¹²⁰-szor kisebb, mint amit a fizikai elméletek jósolnak. Ha nagyobb lenne, az univerzum olyan gyorsan tágulna, hogy a galaxisok, csillagok és bolygók soha nem jöhetnének létre. Ha negatív lenne, az univerzum visszaomlana önmagába.</p>
+            <canvas class="ft-mini-canvas" id="canvasCosmo"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="ft-card" id="ftBaryon">
+        <div class="ft-icon">⚖️</div>
+        <h4>Barion-aszimmetria</h4>
+        <div class="ft-slider-wrap">
+          <input type="range" class="ft-slider" id="baryonSlider" min="0" max="100" value="50">
+          <div class="ft-range">
+            <span>0 maradék</span>
+            <span class="ft-current" id="baryonValue">1 per milliárd</span>
+            <span>Túl sok</span>
+          </div>
+        </div>
+        <p class="ft-desc" id="baryonDesc">Pont elég anyag maradt a csillagok, bolygók és az élet létrehozásához.</p>
+        <button class="ft-expand-btn" onclick="toggleDeepDive(this)" data-target="deepBaryon">Tudj meg többet ▼</button>
+        <div class="ft-deep-dive" id="deepBaryon">
+          <div class="ft-deep-dive-inner">
+            <p class="ft-deep-text">A barion-aszimmetria az az apró eltérés, amely miatt minden 1 000 000 000 antianyag-részecskére 1 000 000 001 anyag-részecske jutott az Ősrobbanás után. Ez az egyetlen plusz részecske milliárdonként a mi létezésünk oka. Ha ez az arány nulla lenne, az anyag és antianyag teljesen megsemmisítette volna egymást — üres sugárzás maradna. Ha túl nagy lenne, az univerzum olyan sűrű lenne, hogy fekete lyukakba omlana.</p>
+            <canvas class="ft-mini-canvas" id="canvasBaryon"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ft-odds fade-in">
+      <p class="ft-odds-label">Az összes konstans életet megengedő tartományba esésének valószínűsége:</p>
+      <div class="ft-odds-number" id="oddsDisplay">
+        <span class="odds-1">1</span>
+        <span class="odds-slash">a</span>
+        <span class="odds-big">10<sup>10<sup>123</sup></sup></span>
+        <span class="odds-word">-hez</span>
+      </div>
+      <p class="ft-odds-context">Ez a szám annyira nagy, hogy gyakorlatilag értelmetlen.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Section: Three Options -->
+<section class="section section-options" id="options">
+  <div class="container">
+    <h2 class="section-heading fade-in">A három lehetőség</h2>
+    <p class="body-text center fade-in">A finomhangolás előtt a fizikusoknak három lehetőségük van:</p>
+
+    <div class="options-grid">
+      <div class="option-card fade-in" id="option1">
+        <div class="option-number">1</div>
+        <h3>Véletlen</h3>
+        <p>A világegyetem csak úgy véletlenül ezeket az értékeket kapta. Elképzelhetetlenül, statisztikailag, lehetetlenül szerencsések voltunk — de mégis szerencsések.</p>
+        <div class="option-analogy">
+          <p>Mint megnyerni a lottót. Minden nap. Egymilliárd éven át.</p>
+        </div>
+      </div>
+
+      <div class="option-card fade-in" id="option2">
+        <div class="option-number">2</div>
+        <h3>Multiverzum</h3>
+        <p>Végtelen számú univerzum létezik, mindegyik eltérő fizikai állandókkal. A legtöbb steril — nincsenek csillagok, atomok, élet. De a puszta valószínűség alapján legalább egynek megfelelő értékei lennének.</p>
+        <div class="option-analogy">
+          <p>Nincs semmilyen bizonyíték más univerzumokra. Egy. Darab. Sem. A multiverzum elfogadása ugyanazt igényli, amit a hívei elutasítanak: <strong>hitet</strong>.</p>
+        </div>
+      </div>
+
+      <div class="option-card fade-in" id="option3">
+        <div class="option-number">3</div>
+        <h3>Tervezve lett</h3>
+        <p>Az állandók azért olyanok, amilyenek, mert valamilyen intelligencia, rendezési elv vagy tudat úgy állította be őket.</p>
+        <div class="option-analogy">
+          <p>Ha látnál egy kaszinót, ahol a ház 10<sup>10<sup>123</sup></sup> kézben nyert egymás után, nem azt mondanád, hogy &ldquo;hú, micsoda szerencse&rdquo;. Azt mondanád, <strong>a játék meg volt bundázva</strong>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section: Casino Visualization -->
+<section class="section section-casino" id="casino">
+  <div class="container narrow">
+    <div class="casino-viz fade-in">
+      <h3 class="casino-title">A kaszinó-analógia</h3>
+      <p class="body-text">Képzeld el, hogy egy kaszinóban vagy. A ház nyert. Újra. Meg újra. Meg újra...</p>
+      <div class="casino-counter">
+        <div class="casino-wins" id="casinoWins">0</div>
+        <p>egymást követő nyerés</p>
+      </div>
+      <button class="demo-btn" id="casinoBtn">Kattints a pörgetéshez</button>
+      <p class="casino-note" id="casinoNote">A ház mindig nyer. Véletlen lenne?</p>
+    </div>
+  </div>
+</section>
+
+<!-- Section: What God Means -->
+<section class="section section-meaning" id="meaning">
+  <div class="container narrow">
+    <h2 class="section-heading fade-in">Mit jelent itt az &ldquo;Isten&rdquo;?</h2>
+    <p class="body-text fade-in">Amikor azt mondom, &ldquo;tervezve&rdquo; vagy &ldquo;Isten&rdquo;, nem egy szakállas emberről beszélek a felhők felett. Nem egyetlen vallás mitológiájáról. Valami sokkal egyszerűbbről és sokkal furcsábbról beszélek:</p>
+
+    <div class="meaning-block fade-in">
+      <p class="meaning-statement">A tudat létezése az anyag előtt.</p>
+    </div>
+
+    <p class="body-text fade-in">A materialista feltételezés — amit a legtöbbünk az oktatáson keresztül szívott magába — az, hogy az anyag volt először. Holt dolgok. Részecskék, amik ide-oda pattognak. Aztán milliárd évnyi bonyolultság után megjelent a tudat.</p>
+
+    <p class="body-text fade-in">De ha a világegyetem pontos kalibrálást igényelt ahhoz, hogy a bonyolultság létrejöhessen... akkor maga a kalibrálás feltételez valakit, aki kalibrál.</p>
+
+    <blockquote class="quote fade-in">
+      <p>&ldquo;A tények józan értelmezése azt sugallja, hogy egy szuperintelligencia belenyúlt a fizikába, valamint a kémiába és a biológiába, és nincsenek említésre méltó vak erők a természetben.&rdquo;</p>
+      <cite>— Fred Hoyle, csillagász (aki az &ldquo;Ősrobbanás&rdquo; kifejezést alkotta)</cite>
+    </blockquote>
+
+    <blockquote class="quote fade-in">
+      <p>Roger Penrose, az egyik legnagyobb élő matematikai fizikus kiszámolta, hogy a világegyetem kezdeti feltételeinek véletlenül való kialakulásának esélye: <strong>1 a 10<sup>10<sup>123</sup></sup>-hoz</strong>.</p>
+      <p>Következtetése? <strong>A véletlen nem komoly magyarázat.</strong></p>
+    </blockquote>
+  </div>
+</section>
+
+<!-- Section: You -->
+<section class="section section-you" id="you">
+  <div class="container narrow">
+    <h2 class="section-heading fade-in">Az egymilliárdból egy, aki te vagy</h2>
+
+    <p class="body-text fade-in">Ugyanaz a logika, ami a világegyetemre érvényes, rád is érvényes.</p>
+
+    <p class="body-text fade-in">A te létezésed esélye — nem egy általános emberé, hanem konkrétan a tiéd — olyan kicsi, hogy a lehetetlenség határát súrolja. Az a bizonyos petesejt és hímivarsejt, ami összeállt. Az ősök ezernyi generációja, akik túléltek elég sokáig ahhoz, hogy szaporodjanak.</p>
+
+    <div class="you-statement fade-in">
+      <p>Te vagy az egymilliárdból egy, aki átjutott.</p>
+      <p>Nem véletlenül. Nem szerencséből.</p>
+      <p>Ugyanazzal az elvvel, ami a kozmikus mérleget az anyag, nem pedig a megsemmisülés felé billentette.</p>
+    </div>
+
+    <div class="final-question fade-in">
+      <p>Nem vagy részecskék véletlenszerű elrendeződése, ami véletlenül vált tudatossá.</p>
+      <p>Te a tudat vagy, ami megtapasztalja, milyen ennek a bizonyos részecske-elrendeződésnek lenni.</p>
+      <p class="final-q">A kérdés az: mit kezdesz ezzel a tudással?</p>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-nav">
+      <a href="/erdekessegek.html">&larr; Vissza az érdekességekhez</a>
+      <a href="/hu/">&larr; Vissza a főoldalra</a>
+    </div>
+    <p class="footer-source">
+      Eredeti szöveg: <a href="https://x.com/thecurioustales/status/2032142940068594005" target="_blank" rel="noopener noreferrer">@thecurioustales</a>
+    </p>
+    <p class="footer-attr">
+      <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+/* THEME TOGGLE */
+(function(){
+  const btn = document.getElementById('themeToggle');
+  const root = document.documentElement;
+  let theme = 'dark';
+  function updateIcon() {
+    if (!btn) return;
+    btn.innerHTML = theme === 'dark'
+      ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
+      : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  }
+  if (btn) {
+    btn.addEventListener('click', () => {
+      theme = theme === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', theme);
+      updateIcon();
+    });
+  }
+  updateIcon();
+})();
+
+// ============================================================
+// PARTICLE CANVAS — Background star field
+// ============================================================
+const canvas = document.getElementById('particleCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+let animFrame;
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+
+function createParticles() {
+  particles = [];
+  const count = Math.min(200, Math.floor(canvas.width * canvas.height / 8000));
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.5 + 0.3,
+      alpha: Math.random() * 0.6 + 0.1,
+      speed: Math.random() * 0.15 + 0.02,
+      pulse: Math.random() * Math.PI * 2,
+      pulseSpeed: Math.random() * 0.01 + 0.003,
+    });
+  }
+}
+
+function drawParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (const p of particles) {
+    p.y -= p.speed;
+    p.pulse += p.pulseSpeed;
+    if (p.y < -5) {
+      p.y = canvas.height + 5;
+      p.x = Math.random() * canvas.width;
+    }
+    const glow = p.alpha * (0.6 + 0.4 * Math.sin(p.pulse));
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(200, 200, 240, ${glow})`;
+    ctx.fill();
+  }
+  animFrame = requestAnimationFrame(drawParticles);
+}
+
+resizeCanvas();
+createParticles();
+drawParticles();
+window.addEventListener('resize', () => { resizeCanvas(); createParticles(); });
+
+// ============================================================
+// PROGRESS BAR
+// ============================================================
+const progressBar = document.getElementById('progressBar');
+
+function updateProgress() {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  progressBar.style.width = progress + '%';
+}
+
+// ============================================================
+// SCROLL ANIMATION FALLBACK (for browsers without scroll-driven animations)
+// ============================================================
+function setupScrollObserver() {
+  if (CSS.supports && CSS.supports('animation-timeline', 'scroll()')) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+}
+
+// ============================================================
+// ANNIHILATION CANVAS DEMO
+// ============================================================
+const annCanvas = document.getElementById('annihilationCanvas');
+const annCtx = annCanvas.getContext('2d');
+const annBtn = document.getElementById('annihilateBtn');
+
+let annParticles = [];
+let annRunning = false;
+let annAnimFrame;
+
+function initAnnihilation() {
+  // Actual render dimensions
+  const rect = annCanvas.getBoundingClientRect();
+  annCanvas.width = rect.width * window.devicePixelRatio;
+  annCanvas.height = rect.height * window.devicePixelRatio;
+  annCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+  const w = rect.width;
+  const h = rect.height;
+
+  annParticles = [];
+  const count = 30;
+
+  // Matter particles (right side, green)
+  for (let i = 0; i < count; i++) {
+    annParticles.push({
+      x: w * 0.65 + Math.random() * w * 0.25,
+      y: h * 0.15 + Math.random() * h * 0.7,
+      vx: (Math.random() - 0.8) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
+      r: 4 + Math.random() * 3,
+      type: 'matter',
+      alive: true,
+      alpha: 1,
+    });
+  }
+
+  // Antimatter particles (left side, magenta)
+  for (let i = 0; i < count; i++) {
+    annParticles.push({
+      x: w * 0.1 + Math.random() * w * 0.25,
+      y: h * 0.15 + Math.random() * h * 0.7,
+      vx: (Math.random() + 0.3) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
+      r: 4 + Math.random() * 3,
+      type: 'antimatter',
+      alive: true,
+      alpha: 1,
+    });
+  }
+
+  // One extra matter particle (bigger, glowing)
+  annParticles.push({
+    x: w * 0.75,
+    y: h * 0.5,
+    vx: -0.2,
+    vy: 0,
+    r: 7,
+    type: 'matter',
+    alive: true,
+    alpha: 1,
+    special: true,
+  });
+
+  drawAnnihilation(w, h);
+}
+
+let energyBursts = [];
+
+function drawAnnihilation(w, h) {
+  annCtx.clearRect(0, 0, w, h);
+
+  // Labels
+  annCtx.font = '13px Inter, sans-serif';
+  annCtx.fillStyle = '#f472b6';
+  annCtx.textAlign = 'center';
+  annCtx.fillText('Antianyag', w * 0.22, 24);
+  annCtx.fillStyle = '#4ade80';
+  annCtx.fillText('Anyag', w * 0.78, 24);
+
+  // Energy bursts
+  for (let i = energyBursts.length - 1; i >= 0; i--) {
+    const b = energyBursts[i];
+    b.r += 2;
+    b.alpha -= 0.03;
+    if (b.alpha <= 0) {
+      energyBursts.splice(i, 1);
+      continue;
+    }
+    annCtx.beginPath();
+    annCtx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+    annCtx.fillStyle = `rgba(251, 191, 36, ${b.alpha * 0.3})`;
+    annCtx.fill();
+  }
+
+  // Particles
+  for (const p of annParticles) {
+    if (!p.alive) continue;
+
+    annCtx.beginPath();
+    annCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+
+    if (p.type === 'matter') {
+      const glow = p.special ? 'rgba(74, 222, 128, 0.3)' : 'rgba(74, 222, 128, 0.15)';
+      annCtx.shadowColor = glow;
+      annCtx.shadowBlur = p.special ? 15 : 8;
+      annCtx.fillStyle = `rgba(74, 222, 128, ${p.alpha})`;
+    } else {
+      annCtx.shadowColor = 'rgba(244, 114, 182, 0.15)';
+      annCtx.shadowBlur = 8;
+      annCtx.fillStyle = `rgba(244, 114, 182, ${p.alpha})`;
+    }
+    annCtx.fill();
+    annCtx.shadowBlur = 0;
+
+    // + / - label
+    if (p.r > 3) {
+      annCtx.fillStyle = '#0a0a0f';
+      annCtx.font = `bold ${Math.round(p.r)}px Inter, sans-serif`;
+      annCtx.textAlign = 'center';
+      annCtx.textBaseline = 'middle';
+      annCtx.fillText(p.type === 'matter' ? '+' : '\u2212', p.x, p.y);
+    }
+  }
+}
+
+function animateAnnihilation() {
+  const rect = annCanvas.getBoundingClientRect();
+  const w = rect.width;
+  const h = rect.height;
+
+  // Move particles
+  for (const p of annParticles) {
+    if (!p.alive) continue;
+    p.x += p.vx;
+    p.y += p.vy;
+    // Bounce off edges
+    if (p.x < p.r || p.x > w - p.r) p.vx *= -1;
+    if (p.y < p.r + 30 || p.y > h - p.r) p.vy *= -1;
+  }
+
+  // Collision detection
+  for (let i = 0; i < annParticles.length; i++) {
+    for (let j = i + 1; j < annParticles.length; j++) {
+      const a = annParticles[i];
+      const b = annParticles[j];
+      if (!a.alive || !b.alive) continue;
+      if (a.type === b.type) continue;
+
+      const dx = a.x - b.x;
+      const dy = a.y - b.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist < a.r + b.r + 3) {
+        // Both annihilate
+        a.alive = false;
+        b.alive = false;
+        energyBursts.push({
+          x: (a.x + b.x) / 2,
+          y: (a.y + b.y) / 2,
+          r: 5,
+          alpha: 1,
+        });
+      }
+    }
+  }
+
+  drawAnnihilation(w, h);
+
+  const aliveCount = annParticles.filter(p => p.alive).length;
+  if (aliveCount <= 1 || energyBursts.length > 0 || aliveCount > 1) {
+    if (annParticles.some(p => p.alive) || energyBursts.length > 0) {
+      annAnimFrame = requestAnimationFrame(animateAnnihilation);
+    } else {
+      annRunning = false;
+      // Show the survivor
+      drawAnnihilation(rect.width, rect.height);
+      annBtn.textContent = 'Újraindítás';
+    }
+
+    // Check if only the special one remains
+    const alive = annParticles.filter(p => p.alive);
+    if (alive.length === 1 && alive[0].special && energyBursts.length === 0) {
+      annRunning = false;
+      cancelAnimationFrame(annAnimFrame);
+      // Final draw with label
+      drawAnnihilation(rect.width, rect.height);
+      annCtx.font = '14px Inter, sans-serif';
+      annCtx.fillStyle = '#4ade80';
+      annCtx.textAlign = 'center';
+      annCtx.fillText('\u2190 Az egyetlen t\u00FAl\u00E9l\u0151', alive[0].x + 80, alive[0].y);
+      annBtn.textContent = 'Újraindítás';
+    }
+  }
+}
+
+annBtn.addEventListener('click', () => {
+  if (annRunning) {
+    cancelAnimationFrame(annAnimFrame);
+    annRunning = false;
+  }
+  energyBursts = [];
+  initAnnihilation();
+  annRunning = true;
+
+  // Speed up particles toward center
+  const rect = annCanvas.getBoundingClientRect();
+  const centerX = rect.width / 2;
+  for (const p of annParticles) {
+    const dir = p.x < centerX ? 1 : -1;
+    p.vx = dir * (1 + Math.random() * 1.5);
+    p.vy = (Math.random() - 0.5) * 1;
+  }
+
+  annBtn.textContent = 'Folyamatban...';
+  animateAnnihilation();
+});
+
+// Initialize demo on load
+setTimeout(() => initAnnihilation(), 100);
+
+// ============================================================
+// FINE TUNING SLIDERS
+// ============================================================
+const strongSlider = document.getElementById('strongSlider');
+const cosmoSlider = document.getElementById('cosmoSlider');
+const baryonSlider = document.getElementById('baryonSlider');
+
+const strongDesc = document.getElementById('strongDesc');
+const cosmoDesc = document.getElementById('cosmoDesc');
+const baryonDesc = document.getElementById('baryonDesc');
+
+const strongValue = document.getElementById('strongValue');
+const cosmoValue = document.getElementById('cosmoValue');
+const baryonValue = document.getElementById('baryonValue');
+
+const ftStrong = document.getElementById('ftStrong');
+const ftCosmo = document.getElementById('ftCosmo');
+const ftBaryon = document.getElementById('ftBaryon');
+
+function updateSlider(slider, desc, value, card, configs) {
+  const v = parseInt(slider.value);
+  const safe = v >= 40 && v <= 60;
+
+  card.classList.toggle('danger', !safe);
+  card.classList.toggle('safe', safe);
+
+  if (v < 30) {
+    desc.textContent = configs.low;
+    desc.classList.add('danger-text');
+    value.textContent = configs.lowLabel;
+    value.style.color = '#f472b6';
+  } else if (v > 70) {
+    desc.textContent = configs.high;
+    desc.classList.add('danger-text');
+    value.textContent = configs.highLabel;
+    value.style.color = '#f472b6';
+  } else {
+    desc.textContent = configs.mid;
+    desc.classList.remove('danger-text');
+    value.textContent = configs.midLabel;
+    value.style.color = '#4ade80';
+  }
+}
+
+strongSlider.addEventListener('input', () => {
+  updateSlider(strongSlider, strongDesc, strongValue, ftStrong, {
+    low: 'Az atomok szétesnek. Nincs kémia. Nincs élet. A világegyetem steril részecske-leves.',
+    lowLabel: '\u22122% (Túl gyenge)',
+    high: 'Minden hidrogén héliumba olvad. Nincs víz. Nincs szerves kémia. Nincs élet.',
+    highLabel: '+0.3% (Túl erős)',
+    mid: 'Az atomok éppen összetartanak. Az élet lehetséges.',
+    midLabel: 'Jelenlegi',
+  });
+});
+
+cosmoSlider.addEventListener('input', () => {
+  updateSlider(cosmoSlider, cosmoDesc, cosmoValue, ftCosmo, {
+    low: 'A világegyetem visszaomlik egyetlen pontba. Minden elpusztul.',
+    lowLabel: 'Negatív (Összeomlás)',
+    high: 'A világegyetem túl gyorsan tágul. Nem képződnek galaxisok. Nincs semmi.',
+    highLabel: '\u00d710\u00b9\u00b2\u2070 (Szétszóródás)',
+    mid: 'Galaxisok képződnek. A csillagok égnek. Az élet lehetséges.',
+    midLabel: 'Jelenlegi',
+  });
+});
+
+baryonSlider.addEventListener('input', () => {
+  updateSlider(baryonSlider, baryonDesc, baryonValue, ftBaryon, {
+    low: 'Semmi nem marad. Teljes megsemmisülés. A világegyetem üres sugárzási mező.',
+    lowLabel: '0 maradék (Üresség)',
+    high: 'Túl sűrű anyag. Az univerzum fekete lyukakba omlik.',
+    highLabel: 'Túl sok (Összeomlás)',
+    mid: 'Pont elég anyag maradt a csillagok, bolygók és az élet létrehozásához.',
+    midLabel: '1 per milliárd',
+  });
+});
+
+// ============================================================
+// CASINO COUNTER
+// ============================================================
+const casinoWins = document.getElementById('casinoWins');
+const casinoBtn = document.getElementById('casinoBtn');
+const casinoNote = document.getElementById('casinoNote');
+let casinoCount = 0;
+
+const casinoMessages = [
+  { count: 5, msg: 'Öt egymás után? Hm...' },
+  { count: 15, msg: 'Tizenöt. Ez kezd gyanús lenni.' },
+  { count: 30, msg: 'Harminc. Ez nem lehet véletlen.' },
+  { count: 50, msg: 'Ötven. A ház nyilvánvalóan csal.' },
+  { count: 100, msg: 'Száz. Most képzeld el ezt 10^10^123 alkalommal.' },
+  { count: 200, msg: 'Még mindig kattintgatsz? A világegyetem pontosan ezt csinálta. Milliárdszor.' },
+];
+
+casinoBtn.addEventListener('click', () => {
+  casinoCount++;
+  casinoWins.textContent = casinoCount.toLocaleString();
+  casinoWins.classList.add('bump');
+  setTimeout(() => casinoWins.classList.remove('bump'), 150);
+
+  for (const m of casinoMessages) {
+    if (casinoCount === m.count) {
+      casinoNote.textContent = m.msg;
+      casinoNote.style.color = '#f472b6';
+      setTimeout(() => { casinoNote.style.color = ''; }, 1500);
+    }
+  }
+});
+
+// ============================================================
+// SCROLL HANDLER
+// ============================================================
+let ticking = false;
+window.addEventListener('scroll', () => {
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      updateProgress();
+      ticking = false;
+    });
+    ticking = true;
+  }
+});
+
+
+// ============================================================
+// DEEP-DIVE TOGGLE + CANVAS ANIMATIONS
+// ============================================================
+function toggleDeepDive(btn) {
+  const target = document.getElementById(btn.dataset.target);
+  const isOpen = target.classList.toggle('open');
+  btn.classList.toggle('active', isOpen);
+  btn.textContent = isOpen ? 'Bezárás ▲' : 'Tudj meg többet ▼';
+  // Start canvas animation when opened
+  if (isOpen) {
+    const canvasId = target.querySelector('.ft-mini-canvas')?.id;
+    if (canvasId && deepDiveAnimations[canvasId]) {
+      deepDiveAnimations[canvasId].start();
+    }
+  }
+}
+
+const deepDiveAnimations = {};
+
+// ── Canvas 1: Strong Nuclear Force ──
+(function() {
+  const canvas = document.getElementById('canvasStrong');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let animId = null;
+  const particles = [];
+  const NUM = 12;
+
+  function resize() {
+    canvas.width = canvas.offsetWidth * devicePixelRatio;
+    canvas.height = canvas.offsetHeight * devicePixelRatio;
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+  }
+
+  function init() {
+    resize();
+    particles.length = 0;
+    const w = canvas.offsetWidth;
+    const h = canvas.offsetHeight;
+    const cx = w / 2;
+    const cy = h / 2;
+    for (let i = 0; i < NUM; i++) {
+      const angle = (i / NUM) * Math.PI * 2;
+      const r = 20 + Math.random() * 10;
+      particles.push({
+        x: cx + Math.cos(angle) * r,
+        y: cy + Math.sin(angle) * r,
+        baseX: cx + Math.cos(angle) * r,
+        baseY: cy + Math.sin(angle) * r,
+        radius: 5 + Math.random() * 3,
+        isProton: i % 2 === 0,
+        angle: angle,
+        orbitR: r,
+        phase: Math.random() * Math.PI * 2,
+      });
+    }
+  }
+
+  function draw(t) {
+    const w = canvas.offsetWidth;
+    const h = canvas.offsetHeight;
+    const cx = w / 2;
+    const cy = h / 2;
+    ctx.clearRect(0, 0, w, h);
+    const slider = parseInt(strongSlider.value);
+    const safe = slider >= 30 && slider <= 70;
+    const driftFactor = slider < 30 ? (30 - slider) / 30 : 0;
+    const crushFactor = slider > 70 ? (slider - 70) / 30 : 0;
+
+    particles.forEach((p, i) => {
+      const vibrate = Math.sin(t * 0.003 + p.phase) * 3;
+      const maxR = Math.min(w, h) / 2 - 16;
+      let targetR = p.orbitR;
+      if (driftFactor > 0) {
+        targetR = p.orbitR + driftFactor * Math.min(60, maxR - p.orbitR);
+      } else if (crushFactor > 0) {
+        targetR = p.orbitR * (1 - crushFactor * 0.7);
+      }
+      const currentR = Math.min(targetR + vibrate, maxR);
+      p.x = cx + Math.cos(p.angle + t * 0.001) * currentR;
+      p.y = cy + Math.sin(p.angle + t * 0.001) * currentR;
+
+      // Draw bonds
+      if (!safe && driftFactor > 0.3) {
+        // Bonds breaking - draw dashed
+        ctx.setLineDash([3, 5]);
+      } else {
+        ctx.setLineDash([]);
+      }
+      if (i > 0) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i-1].x, particles[i-1].y);
+        ctx.lineTo(p.x, p.y);
+        const bondAlpha = safe ? 0.3 : Math.max(0, 0.3 - driftFactor * 0.8);
+        ctx.strokeStyle = `rgba(124, 108, 240, ${bondAlpha})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+      ctx.setLineDash([]);
+
+      // Draw particle
+      const glow = safe ? '#4ade80' : '#f472b6';
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = p.isProton ? '#4ade80' : '#7c6cf0';
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius + 4, 0, Math.PI * 2);
+      const glowAlpha = safe ? 0.15 : 0.3;
+      ctx.fillStyle = safe ? `rgba(74, 222, 128, ${glowAlpha})` : `rgba(244, 114, 182, ${glowAlpha})`;
+      ctx.fill();
+    });
+
+    // Close bond ring
+    if (particles.length > 1) {
+      const first = particles[0];
+      const last = particles[particles.length - 1];
+      const bondAlpha = safe ? 0.3 : Math.max(0, 0.3 - driftFactor * 0.8);
+      ctx.beginPath();
+      ctx.moveTo(last.x, last.y);
+      ctx.lineTo(first.x, first.y);
+      ctx.strokeStyle = `rgba(124, 108, 240, ${bondAlpha})`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    // Status label
+    ctx.fillStyle = safe ? 'rgba(74, 222, 128, 0.6)' : 'rgba(244, 114, 182, 0.6)';
+    ctx.font = '11px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    if (driftFactor > 0.3) ctx.fillText('Az atomok szétesnek...', cx, h - 12);
+    else if (crushFactor > 0.3) ctx.fillText('Minden összeolvad...', cx, h - 12);
+    else ctx.fillText('Stabil atommag', cx, h - 12);
+
+    animId = requestAnimationFrame(draw);
+  }
+
+  deepDiveAnimations.canvasStrong = {
+    start() { init(); if (animId) cancelAnimationFrame(animId); draw(performance.now()); },
+  };
+})();
+
+// ── Canvas 2: Cosmological Constant ──
+(function() {
+  const canvas = document.getElementById('canvasCosmo');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let animId = null;
+  const dots = [];
+  const NUM = 60;
+
+  function resize() {
+    canvas.width = canvas.offsetWidth * devicePixelRatio;
+    canvas.height = canvas.offsetHeight * devicePixelRatio;
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+  }
+
+  function init() {
+    resize();
+    dots.length = 0;
+    const w = canvas.offsetWidth;
+    const h = canvas.offsetHeight;
+    const cx = w / 2;
+    const cy = h / 2;
+    for (let i = 0; i < NUM; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const r = Math.random() * 40 + 5;
+      dots.push({
+        x: cx + Math.cos(angle) * r,
+        y: cy + Math.sin(angle) * r,
+        baseAngle: angle,
+        baseR: r,
+        size: 1.5 + Math.random() * 2,
+        brightness: 0.4 + Math.random() * 0.6,
+      });
+    }
+  }
+
+  function draw(t) {
+    const w = canvas.offsetWidth;
+    const h = canvas.offsetHeight;
+    const cx = w / 2;
+    const cy = h / 2;
+    ctx.clearRect(0, 0, w, h);
+    const slider = parseInt(cosmoSlider.value);
+    const safe = slider >= 30 && slider <= 70;
+    const expandFactor = slider > 70 ? (slider - 70) / 30 : 0;
+    const collapseFactor = slider < 30 ? (30 - slider) / 30 : 0;
+
+    // Gentle base expansion for normal state
+    const baseExpansion = 1 + t * 0.00003;
+
+    const maxR = Math.min(w, h) / 2 - 8;
+    dots.forEach(d => {
+      let r = d.baseR * baseExpansion;
+      if (expandFactor > 0) {
+        r = d.baseR * (1 + expandFactor * 3);
+      } else if (collapseFactor > 0) {
+        r = d.baseR * (1 - collapseFactor * 0.9);
+      }
+      r = Math.min(r, maxR);
+      d.x = cx + Math.cos(d.baseAngle + t * 0.0002) * r;
+      d.y = cy + Math.sin(d.baseAngle + t * 0.0002) * r;
+
+      // Draw galaxy dot
+      const color = safe ? `rgba(124, 108, 240, ${d.brightness})` : `rgba(244, 114, 182, ${d.brightness})`;
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.size, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+
+      // Glow
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.size + 3, 0, Math.PI * 2);
+      ctx.fillStyle = safe ? `rgba(124, 108, 240, 0.08)` : `rgba(244, 114, 182, 0.08)`;
+      ctx.fill();
+    });
+
+    // Draw cluster connections for safe state
+    if (safe) {
+      dots.forEach((a, i) => {
+        dots.forEach((b, j) => {
+          if (j <= i) return;
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < 25) {
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.strokeStyle = `rgba(124, 108, 240, ${0.15 * (1 - dist/25)})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        });
+      });
+    }
+
+    ctx.fillStyle = safe ? 'rgba(74, 222, 128, 0.6)' : 'rgba(244, 114, 182, 0.6)';
+    ctx.font = '11px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    if (expandFactor > 0.3) ctx.fillText('A galaxisok szétszóródnak...', cx, h - 12);
+    else if (collapseFactor > 0.3) ctx.fillText('Az univerzum összeomlik...', cx, h - 12);
+    else ctx.fillText('Galaxisok képződnek', cx, h - 12);
+
+    animId = requestAnimationFrame(draw);
+  }
+
+  deepDiveAnimations.canvasCosmo = {
+    start() { init(); if (animId) cancelAnimationFrame(animId); draw(performance.now()); },
+  };
+})();
+
+// ── Canvas 3: Baryon Asymmetry ──
+(function() {
+  const canvas = document.getElementById('canvasBaryon');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let animId = null;
+  const particles = [];
+  const NUM_PAIRS = 30;
+
+  function resize() {
+    canvas.width = canvas.offsetWidth * devicePixelRatio;
+    canvas.height = canvas.offsetHeight * devicePixelRatio;
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+  }
+
+  function init() {
+    resize();
+    particles.length = 0;
+    const w = canvas.offsetWidth;
+    const h = canvas.offsetHeight;
+    // Create matter (+1) and antimatter (-1) particles
+    for (let i = 0; i < NUM_PAIRS; i++) {
+      // Antimatter particle
+      particles.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.8,
+        vy: (Math.random() - 0.5) * 0.8,
+        type: -1,
+        radius: 3,
+        alive: true,
+        flash: 0,
+      });
+      // Matter particle
+      particles.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.8,
+        vy: (Math.random() - 0.5) * 0.8,
+        type: 1,
+        radius: 3,
+        alive: true,
+        flash: 0,
+      });
+    }
+    // The one extra matter particle (the survivor)
+    particles.push({
+      x: w / 2,
+      y: h / 2,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
+      type: 1,
+      radius: 3,
+      alive: true,
+      flash: 0,
+      survivor: true,
+    });
+  }
+
+  function draw(t) {
+    const w = canvas.offsetWidth;
+    const h = canvas.offsetHeight;
+    ctx.clearRect(0, 0, w, h);
+    const slider = parseInt(baryonSlider.value);
+    const safe = slider >= 30 && slider <= 70;
+    const tooLow = slider < 30;
+    const tooHigh = slider > 70;
+    const lowFactor = tooLow ? (30 - slider) / 30 : 0;
+    const highFactor = tooHigh ? (slider - 70) / 30 : 0;
+
+    // Determine how many survivors to show
+    let survivorCount;
+    if (tooLow) {
+      survivorCount = 0;
+    } else if (tooHigh) {
+      survivorCount = Math.floor(highFactor * NUM_PAIRS * 1.5) + 1;
+    } else {
+      survivorCount = 1;
+    }
+
+    let matterAlive = 0;
+    let antimatterAlive = 0;
+
+    particles.forEach((p, i) => {
+      // Move
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0 || p.x > w) p.vx *= -1;
+      if (p.y < 0 || p.y > h) p.vy *= -1;
+      p.x = Math.max(0, Math.min(w, p.x));
+      p.y = Math.max(0, Math.min(h, p.y));
+      if (p.flash > 0) p.flash -= 0.02;
+    });
+
+    // In safe mode: show pairs annihilating, 1 survivor
+    // Count particles by type
+    particles.forEach(p => {
+      if (p.type === 1) matterAlive++;
+      else antimatterAlive++;
+    });
+
+    // Draw particles
+    particles.forEach((p, i) => {
+      // Decide visibility based on mode
+      const pairIndex = Math.floor(i / 2);
+      const isExtraSurvivor = p.survivor;
+
+      let visible = true;
+      let opacity = 1;
+
+      if (safe) {
+        // In safe mode: show about half the pairs already annihilated (faint)
+        // and the survivor glowing
+        if (!isExtraSurvivor && pairIndex < NUM_PAIRS * 0.6) {
+          opacity = 0.15 + Math.sin(t * 0.002 + i) * 0.05;
+        }
+      } else if (tooLow) {
+        // All particles fade out (complete annihilation)
+        opacity = Math.max(0.05, 1 - lowFactor * 0.9);
+        if (isExtraSurvivor) opacity = Math.max(0.05, 1 - lowFactor);
+      } else if (tooHigh) {
+        // Extra matter particles become visible and clump
+        if (p.type === 1) {
+          opacity = 1;
+        } else {
+          opacity = Math.max(0.1, 1 - highFactor * 0.8);
+        }
+      }
+
+      // Draw
+      const color = p.type === 1 ? '#4ade80' : '#f472b6';
+      ctx.globalAlpha = opacity;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+
+      // Survivor glow
+      if (isExtraSurvivor && safe) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius + 6 + Math.sin(t * 0.005) * 2, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(74, 222, 128, 0.2)';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius + 12, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(74, 222, 128, 0.07)';
+        ctx.fill();
+      }
+
+      // Too high: clumping into dark masses
+      if (tooHigh && p.type === 1 && highFactor > 0.5) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius + highFactor * 6, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(20, 20, 30, ${highFactor * 0.5})`;
+        ctx.fill();
+      }
+
+      ctx.globalAlpha = 1;
+    });
+
+    // Flash effect for annihilation when too low
+    if (tooLow && lowFactor > 0.5) {
+      const flashAlpha = Math.sin(t * 0.01) * 0.1 * lowFactor;
+      ctx.fillStyle = `rgba(244, 114, 182, ${Math.abs(flashAlpha)})`;
+      ctx.fillRect(0, 0, w, h);
+    }
+
+    // Status label
+    ctx.fillStyle = safe ? 'rgba(74, 222, 128, 0.6)' : 'rgba(244, 114, 182, 0.6)';
+    ctx.font = '11px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    if (tooLow && lowFactor > 0.3) ctx.fillText('Teljes megsemmisülés...', w/2, h - 12);
+    else if (tooHigh && highFactor > 0.3) ctx.fillText('Túl sok anyag — fekete lyukak...', w/2, h - 12);
+    else ctx.fillText('1 túlélő milliárdonként', w/2, h - 12);
+
+    animId = requestAnimationFrame(draw);
+  }
+
+  deepDiveAnimations.canvasBaryon = {
+    start() { init(); if (animId) cancelAnimationFrame(animId); draw(performance.now()); },
+  };
+})();
+
+// ============================================================
+// INIT
+// ============================================================
+setupScrollObserver();
+updateProgress();
+</script>
+</body>
+</html>
