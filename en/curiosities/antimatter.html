@@ -175,6 +175,37 @@ a, button, [role="button"], [role="link"], input, textarea, select {
 }
 
 /* ============================================================
+   LIGHT THEME
+   ============================================================ */
+[data-theme="light"] {
+  --bg: #f0f1f5;
+  --surface: #ffffff;
+  --border: #d1d3de;
+  --text: #1a1b2e;
+  --text-dim: #5a5c72;
+
+  --color-bg: #f0f1f5;
+  --color-surface: #ffffff;
+  --color-surface-2: #f8f9fc;
+  --color-surface-offset: #edeef3;
+  --color-divider: #d1d3de;
+  --color-border: #c0c2d0;
+  --color-text: #1a1b2e;
+  --color-text-muted: #5a5c72;
+  --color-text-faint: #8b8da0;
+  --color-text-inverse: #f0f1f5;
+  --color-primary: #6d5ce0;
+  --color-primary-hover: #5b49d0;
+  --color-primary-glow: rgba(109, 92, 224, 0.12);
+  --color-matter: #16a34a;
+  --color-matter-glow: rgba(22, 163, 74, 0.15);
+  --color-antimatter: #db2777;
+  --color-antimatter-glow: rgba(219, 39, 119, 0.15);
+  --color-energy: #d97706;
+  --color-energy-glow: rgba(217, 119, 6, 0.12);
+}
+
+/* ============================================================
    TOP BAR — matching kalkulatorok.html exactly
    ============================================================ */
 .top-bar {
@@ -195,6 +226,14 @@ a, button, [role="button"], [role="link"], input, textarea, select {
     text-decoration: none; transition: all 0.25s;
 }
 .lang-switch:hover { border-color: #444; color: var(--text); }
+
+[data-theme="light"] .top-bar {
+    background: rgba(240,241,245,0.92);
+    border-bottom-color: var(--border);
+}
+[data-theme="light"] .top-bar a { color: var(--text-dim); }
+[data-theme="light"] .top-bar a:hover { color: var(--text); }
+[data-theme="light"] .top-bar .brand { color: var(--text); }
 
 /* ============================================================
    PARTICLE CANVAS
@@ -985,9 +1024,42 @@ a, button, [role="button"], [role="link"], input, textarea, select {
     font-size: var(--text-2xl);
   }
 }
+
+/* Theme toggle floating button */
+.theme-toggle-float {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 99;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+.theme-toggle-float:hover {
+  color: var(--color-text);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 40px var(--color-primary-glow);
+}
+@media (max-width: 640px) {
+  .theme-toggle-float {
+    bottom: 1rem;
+    right: 1rem;
+  }
+}
 </style>
 </head>
 <body>
+
+<button class="theme-toggle-float" id="themeToggle" aria-label="Toggle theme"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></button>
 
 <!-- Particle Canvas Background -->
 <canvas id="particleCanvas"></canvas>
@@ -1044,1123 +1116,770 @@ a, button, [role="button"], [role="link"], input, textarea, select {
         <span class="number-value matter" id="matterCount">1,000,000,001</span>
       </div>
       <div class="number-diff">
-        <span class="diff-label">Difference</span>
-        <span class="diff-value">+1</span>
+        <span class="diff-label">Survivors</span>
+        <span class="diff-value">1</span>
       </div>
     </div>
 
-    <p class="pull-quote fade-in">&ldquo;One extra particle. Per billion. That's it. That's why you exist. That's why anything exists.&rdquo;</p>
+    <p class="body-text fade-in">In the first moments after the Big Bang, the universe created matter and antimatter in almost perfectly equal amounts. When they met, they annihilated each other — converting entirely into pure energy.</p>
+    <p class="body-text fade-in">Almost perfectly equal. <strong>Almost.</strong></p>
+    <p class="body-text fade-in">For every billion antimatter particles, there were one billion and one matter particles. That tiny excess — one part in a billion — is the entire physical universe you live in.</p>
 
     <div class="margin-stat fade-in">
-      <div class="margin-number" id="marginCounter">0.0000001%</div>
-      <p class="margin-label">The margin of error that made existence possible</p>
+      <div class="margin-number">0.0000001%</div>
+      <div class="margin-label">The margin by which matter beat antimatter</div>
     </div>
+
+    <p class="body-text fade-in">Everything you see — every star, every planet, every atom in your body — is the leftover from that cosmic annihilation. You are made of the universe's rounding error.</p>
   </div>
 </section>
 
-<!-- Section: Annihilation -->
-<section class="section section-annihilation" id="annihilation">
+<!-- Section: The Annihilation -->
+<section class="section" id="annihilation">
   <div class="container narrow">
-    <h2 class="section-heading fade-in">The annihilation problem</h2>
-    <p class="body-text fade-in">When the Big Bang happened, it created energy. Unimaginable amounts of energy. And when energy converts into matter — as Einstein's famous E=mc² equation describes — it always creates equal amounts of matter and antimatter.</p>
+    <h2 class="section-heading fade-in">Watch it happen</h2>
+    <p class="body-text fade-in">This is what antimatter annihilation looks like. Matter and antimatter particles collide and convert entirely to gamma-ray photons. Nothing physical survives.</p>
   </div>
 
-  <!-- Interactive Annihilation Demo -->
-  <div class="annihilation-demo fade-in" id="annihilationDemo">
+  <div class="annihilation-demo">
     <canvas id="annihilationCanvas" width="800" height="400"></canvas>
     <div class="demo-controls">
-      <button class="demo-btn" id="annihilateBtn">Start annihilation</button>
-      <p class="demo-text">Click the button and watch as matter and antimatter annihilate each other</p>
+      <button class="demo-btn" id="annihilateBtn">Trigger Annihilation</button>
+      <p class="demo-text">Watch matter (green) and antimatter (pink) destroy each other</p>
     </div>
   </div>
 
   <div class="container narrow">
-    <p class="body-text fade-in">Antimatter is nearly identical to normal matter — same mass, same properties — only the charge is opposite. When matter and antimatter meet, they <strong>annihilate each other</strong>. Completely. Both particles vanish, releasing pure energy.</p>
-
-    <div class="callout fade-in">
-      <p>If the Big Bang created equal amounts of matter and antimatter — which is what the mathematics says it should have — then everything should have been annihilated within microseconds.</p>
-      <p><strong>The universe should be an empty field of radiation.</strong></p>
-      <p>But it isn't.</p>
-    </div>
-
-    <p class="pull-quote fade-in">&ldquo;You are made from the leftovers. The leftovers of a cosmic rounding error. Except it wasn't an error. Errors are random. This was precise.&rdquo;</p>
+    <p class="body-text fade-in">The mathematics is unforgiving. A universe with equal amounts of matter and antimatter would be a universe of nothing but light — and then not even that, as the photons cool and spread infinitely thin.</p>
+    <p class="body-text fade-in">Without that 1-in-10⁹ asymmetry, there would be no atoms. No chemistry. No stars. No time for evolution to work. No you.</p>
   </div>
 </section>
 
-<!-- Section: Baryon Asymmetry -->
-<section class="section section-asymmetry" id="asymmetry">
-  <div class="container narrow">
-    <h2 class="section-heading fade-in">Baryon asymmetry</h2>
-    <p class="body-text fade-in">This asymmetry has been named "baryon asymmetry," and it is one of the greatest unsolved problems in physics. The Standard Model — our best description of how particles behave — cannot explain it.</p>
-
-    <p class="body-text fade-in">Something broke the symmetry. Something tipped the scales by exactly one part in a billion. Not one part in a million. Not one part in a hundred million. One part in a billion.</p>
+<!-- Section: How Fine-Tuned Is It? -->
+<section class="section" id="finetuning">
+  <div class="container">
+    <h2 class="section-heading center fade-in">How precisely was this dialed in?</h2>
+    <p class="body-text center fade-in" style="margin-inline:auto;">The matter-antimatter asymmetry isn't the only number that had to be right. Adjust any of these constants slightly and we don't exist.</p>
   </div>
 
-  <!-- Interactive Fine-Tuning Visualization -->
-  <div class="fine-tuning fade-in" id="fineTuning">
-    <h3 class="ft-title">Fine-tuning constants</h3>
+  <div class="fine-tuning">
     <div class="ft-grid">
-      <div class="ft-card" id="ftStrong">
-        <div class="ft-icon">⚛️</div>
-        <h4>Strong nuclear force</h4>
-        <div class="ft-slider-wrap">
-          <input type="range" class="ft-slider" id="strongSlider" min="0" max="100" value="50">
-          <div class="ft-range">
-            <span>-2%</span>
-            <span class="ft-current" id="strongValue">Current</span>
-            <span>+0.3%</span>
-          </div>
-        </div>
-        <p class="ft-desc" id="strongDesc">Atoms barely hold together. Life is possible.</p>
-        <button class="ft-expand-btn" onclick="toggleDeepDive(this)" data-target="deepStrong">Learn more ▼</button>
-        <div class="ft-deep-dive" id="deepStrong">
-          <div class="ft-deep-dive-inner">
-            <p class="ft-deep-text">The strong nuclear force is what holds protons and neutrons together inside atomic nuclei. It's about 137 times stronger than the electromagnetic force, but only acts within the tiny scale of the nucleus. If it were just 2% weaker, protons couldn't bond together — no atoms beyond hydrogen would exist. If it were 0.3% stronger, all hydrogen would instantly fuse into helium — no water, no organic chemistry.</p>
-            <canvas class="ft-mini-canvas" id="canvasStrong"></canvas>
-          </div>
-        </div>
-      </div>
 
-      <div class="ft-card" id="ftCosmo">
-        <div class="ft-icon">🌌</div>
-        <h4>Cosmological constant</h4>
-        <div class="ft-slider-wrap">
-          <input type="range" class="ft-slider" id="cosmoSlider" min="0" max="100" value="50">
-          <div class="ft-range">
-            <span>Too small</span>
-            <span class="ft-current" id="cosmoValue">Current</span>
-            <span>Too large</span>
-          </div>
-        </div>
-        <p class="ft-desc" id="cosmoDesc">Galaxies form. Stars burn. Life is possible.</p>
-        <button class="ft-expand-btn" onclick="toggleDeepDive(this)" data-target="deepCosmo">Learn more ▼</button>
-        <div class="ft-deep-dive" id="deepCosmo">
-          <div class="ft-deep-dive-inner">
-            <p class="ft-deep-text">The cosmological constant (Λ) is the 'energy density' of empty space — the mysterious dark energy accelerating the expansion of the universe. Its value is fine-tuned to incredible precision: 10¹²⁰ times smaller than what physical theories predict. If it were larger, the universe would expand so rapidly that galaxies, stars, and planets could never form. If it were negative, the universe would collapse back on itself.</p>
-            <canvas class="ft-mini-canvas" id="canvasCosmo"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <div class="ft-card" id="ftBaryon">
+      <div class="ft-card" id="ftCard0">
         <div class="ft-icon">⚖️</div>
-        <h4>Baryon asymmetry</h4>
+        <h4>Matter-Antimatter Asymmetry (η)</h4>
         <div class="ft-slider-wrap">
-          <input type="range" class="ft-slider" id="baryonSlider" min="0" max="100" value="50">
+          <input type="range" class="ft-slider" id="ftSlider0" min="-50" max="50" value="0" step="1">
           <div class="ft-range">
-            <span>0 leftover</span>
-            <span class="ft-current" id="baryonValue">1 per billion</span>
-            <span>Too much</span>
+            <span>10× less</span>
+            <span class="ft-current" id="ftVal0">Current value</span>
+            <span>10× more</span>
           </div>
         </div>
-        <p class="ft-desc" id="baryonDesc">Just enough matter survived to create stars, planets, and life.</p>
-        <button class="ft-expand-btn" onclick="toggleDeepDive(this)" data-target="deepBaryon">Learn more ▼</button>
-        <div class="ft-deep-dive" id="deepBaryon">
+        <p class="ft-desc" id="ftDesc0">η ≈ 6×10⁻¹⁰: One extra matter particle per billion. Without this exact value, no atoms would exist.</p>
+        <button class="ft-expand-btn" id="ftExpand0">▸ Deep dive</button>
+        <div class="ft-deep-dive" id="ftDeep0">
           <div class="ft-deep-dive-inner">
-            <p class="ft-deep-text">Baryon asymmetry is the tiny imbalance that left 1,000,000,001 matter particles for every 1,000,000,000 antimatter particles after the Big Bang. That single extra particle per billion is the reason we exist. If this ratio were zero, matter and antimatter would have completely annihilated each other — leaving only empty radiation. If it were too large, the universe would be so dense it would collapse into black holes.</p>
-            <canvas class="ft-mini-canvas" id="canvasBaryon"></canvas>
+            <p class="ft-deep-text">The baryon asymmetry η = (n_b - n_b̄)/n_γ ≈ 6.1×10⁻¹⁰ is measured from the Cosmic Microwave Background. This number encodes the Sakharov conditions: C and CP violation, baryon number violation, and departure from thermal equilibrium — all of which must have operated simultaneously in the early universe at just the right levels.</p>
+            <p class="ft-deep-text">Current physics (the Standard Model) cannot explain why η has this precise value. It's one of the deepest open problems in cosmology.</p>
+            <canvas class="ft-mini-canvas" id="ftCanvas0"></canvas>
           </div>
         </div>
       </div>
+
+      <div class="ft-card" id="ftCard1">
+        <div class="ft-icon">⚡</div>
+        <h4>Strong Nuclear Force</h4>
+        <div class="ft-slider-wrap">
+          <input type="range" class="ft-slider" id="ftSlider1" min="-50" max="50" value="0" step="1">
+          <div class="ft-range">
+            <span>2% weaker</span>
+            <span class="ft-current" id="ftVal1">Current value</span>
+            <span>2% stronger</span>
+          </div>
+        </div>
+        <p class="ft-desc" id="ftDesc1">α_s ≈ 0.118: Binds quarks into protons and neutrons. Slightly weaker: no atoms. Slightly stronger: no hydrogen, no water.</p>
+        <button class="ft-expand-btn" id="ftExpand1">▸ Deep dive</button>
+        <div class="ft-deep-dive" id="ftDeep1">
+          <div class="ft-deep-dive-inner">
+            <p class="ft-deep-text">The strong coupling constant α_s determines how tightly quarks are bound. If it were ~2% weaker, protons and neutrons wouldn't form stably. If ~0.5% stronger, all hydrogen would fuse to helium-2 in the early universe — no water, no stars burning steadily for billions of years.</p>
+            <p class="ft-deep-text">The carbon-12 resonance (the Hoyle State) requires α_s to be within 0.5% of its current value to allow stellar nucleosynthesis of carbon — the foundation of all organic chemistry.</p>
+            <canvas class="ft-mini-canvas" id="ftCanvas1"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="ft-card" id="ftCard2">
+        <div class="ft-icon">🌌</div>
+        <h4>Cosmological Constant (Λ)</h4>
+        <div class="ft-slider-wrap">
+          <input type="range" class="ft-slider" id="ftSlider2" min="-50" max="50" value="0" step="1">
+          <div class="ft-range">
+            <span>Slightly larger</span>
+            <span class="ft-current" id="ftVal2">Current value</span>
+            <span>Slightly negative</span>
+          </div>
+        </div>
+        <p class="ft-desc" id="ftDesc2">Λ ≈ 10⁻¹²² (Planck units): The "vacuum energy." One part in 10¹²² fine-tuning. Larger: universe expands too fast for galaxies. Negative: immediate collapse.</p>
+        <button class="ft-expand-btn" id="ftExpand2">▸ Deep dive</button>
+        <div class="ft-deep-dive" id="ftDeep2">
+          <div class="ft-deep-dive-inner">
+            <p class="ft-deep-text">This is arguably the most extreme fine-tuning problem in all of physics. Quantum field theory predicts the vacuum energy should be ~10¹²² times larger than what we observe. The fact that it isn't — that it has essentially exactly the value needed for structure to form — is called the "cosmological constant problem."</p>
+            <p class="ft-deep-text">Steven Weinberg predicted in 1987 that Λ must be small enough to allow galaxies to form. The observed value sits precisely in this window. No current physical theory explains why.</p>
+            <canvas class="ft-mini-canvas" id="ftCanvas2"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="ft-card" id="ftCard3">
+        <div class="ft-icon">🔋</div>
+        <h4>Electron-Proton Mass Ratio</h4>
+        <div class="ft-slider-wrap">
+          <input type="range" class="ft-slider" id="ftSlider3" min="-50" max="50" value="0" step="1">
+          <div class="ft-range">
+            <span>Heavier electron</span>
+            <span class="ft-current" id="ftVal3">Current value</span>
+            <span>Lighter electron</span>
+          </div>
+        </div>
+        <p class="ft-desc" id="ftDesc3">m_e/m_p ≈ 1/1836: Electrons are 1836× lighter than protons. This ratio determines atomic size, chemical bonding, and molecular structure.</p>
+        <button class="ft-expand-btn" id="ftExpand3">▸ Deep dive</button>
+        <div class="ft-deep-dive" id="ftDeep3">
+          <div class="ft-deep-dive-inner">
+            <p class="ft-deep-text">The ratio m_e/m_p = 1/1836.15 determines the size of atoms (the Bohr radius scales as 1/m_e) and the energy scales of chemical reactions. If electrons were significantly heavier, atoms would be smaller and chemical bonds would be different — likely preventing the complex chemistry needed for life. If much lighter, molecules would be too loosely bound.</p>
+            <p class="ft-deep-text">The fact that this ratio is neither 1 nor astronomically small — but sits at exactly 1/1836 — has no known theoretical explanation.</p>
+            <canvas class="ft-mini-canvas" id="ftCanvas3"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="ft-card" id="ftCard4">
+        <div class="ft-icon">💡</div>
+        <h4>Electromagnetic Force</h4>
+        <div class="ft-slider-wrap">
+          <input type="range" class="ft-slider" id="ftSlider4" min="-50" max="50" value="0" step="1">
+          <div class="ft-range">
+            <span>Weaker</span>
+            <span class="ft-current" id="ftVal4">Current value</span>
+            <span>Stronger</span>
+          </div>
+        </div>
+        <p class="ft-desc" id="ftDesc4">α ≈ 1/137: The fine-structure constant. Controls how atoms interact with light and each other. Slightly different: chemistry doesn't work.</p>
+        <button class="ft-expand-btn" id="ftExpand4">▸ Deep dive</button>
+        <div class="ft-deep-dive" id="ftDeep4">
+          <div class="ft-deep-dive-inner">
+            <p class="ft-deep-text">The fine-structure constant α = e²/ℏc ≈ 1/137.036 is perhaps the most mysterious dimensionless number in physics. It governs how charged particles interact with light and with each other. Richard Feynman called it "one of the greatest damn mysteries of physics."</p>
+            <p class="ft-deep-text">If α were ~4% larger, stellar fusion would produce no carbon. If it were ~twice as large, no stable atoms could exist at all. The value 1/137 has no known derivation from first principles.</p>
+            <canvas class="ft-mini-canvas" id="ftCanvas4"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="ft-card" id="ftCard5">
+        <div class="ft-icon">🌡️</div>
+        <h4>Initial Entropy of the Universe</h4>
+        <div class="ft-slider-wrap">
+          <input type="range" class="ft-slider" id="ftSlider5" min="-50" max="50" value="0" step="1">
+          <div class="ft-range">
+            <span>Higher entropy</span>
+            <span class="ft-current" id="ftVal5">Current value</span>
+            <span>Lower entropy</span>
+          </div>
+        </div>
+        <p class="ft-desc" id="ftDesc5">S_initial: Roger Penrose calculated the odds of our low-entropy Big Bang at 1 in 10^(10^123). Any higher entropy: no stars, no structure.</p>
+        <button class="ft-expand-btn" id="ftExpand5">▸ Deep dive</button>
+        <div class="ft-deep-dive" id="ftDeep5">
+          <div class="ft-deep-dive-inner">
+            <p class="ft-deep-text">Roger Penrose calculated that the phase-space volume corresponding to our universe's initial conditions is 1 in 10^(10^123) of all possible initial states consistent with the same energy. This is not a typo. The exponent is itself 10¹²³.</p>
+            <p class="ft-deep-text">The Second Law of Thermodynamics only works — stars shine, life metabolizes, time has a direction — because the initial state was so extraordinarily low entropy. A random initial state would have produced a universe of maximum entropy: no structure, no gradient, no energy flow, no life.</p>
+            <canvas class="ft-mini-canvas" id="ftCanvas5"></canvas>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <div class="ft-odds fade-in">
-      <p class="ft-odds-label">The probability that all constants fall within a life-permitting range:</p>
-      <div class="ft-odds-number" id="oddsDisplay">
+      <p class="ft-odds-label">Probability of getting all six constants right by chance:</p>
+      <div class="ft-odds-number">
         <span class="odds-1">1</span>
         <span class="odds-slash">in</span>
         <span class="odds-big">10<sup>10<sup>123</sup></sup></span>
+        <span class="odds-word">+</span>
       </div>
-      <p class="ft-odds-context">This number is so large that it is practically meaningless.</p>
+      <p class="ft-odds-context">For reference, the number of atoms in the observable universe is ~10⁸⁰</p>
     </div>
   </div>
 </section>
 
 <!-- Section: Three Options -->
-<section class="section section-options" id="options">
+<section class="section" id="options">
   <div class="container">
-    <h2 class="section-heading fade-in">The three options</h2>
-    <p class="body-text center fade-in">Faced with this fine-tuning, physicists have three options:</p>
+    <h2 class="section-heading center fade-in">Three explanations. Pick one.</h2>
+    <p class="body-text center fade-in" style="margin-inline:auto;">Every physicist, philosopher, and honest person has to face these numbers. There are only three serious responses.</p>
 
     <div class="options-grid">
-      <div class="option-card fade-in" id="option1">
+
+      <div class="option-card fade-in">
         <div class="option-number">1</div>
-        <h3>Chance</h3>
-        <p>The universe just happened to get these values by accident. We were inconceivably, statistically, impossibly lucky — but lucky nonetheless.</p>
+        <h3>It's a cosmic lottery</h3>
+        <p>We got astronomically lucky. The constants happened to land in the narrow life-permitting range entirely by chance. No explanation needed — or possible.</p>
         <div class="option-analogy">
-          <p>Like winning the lottery. Every day. For a billion years.</p>
+          <p>Like shuffling a deck and getting them perfectly ordered — 52 times in a row.</p>
         </div>
       </div>
 
-      <div class="option-card fade-in" id="option2">
+      <div class="option-card fade-in">
         <div class="option-number">2</div>
-        <h3>Multiverse</h3>
-        <p>An infinite number of universes exist, each with different physical constants. Most are sterile — no stars, no atoms, no life. But by sheer probability, at least one would have the right values.</p>
+        <h3>The Multiverse</h3>
+        <p>There are 10⁵⁰⁰ or more universes, each with different constants. We can only exist in one where the constants allow life — so naturally, that's where we find ourselves.</p>
         <div class="option-analogy">
-          <p>There is no evidence whatsoever for other universes. Not. A. Single. Piece. Accepting the multiverse requires the very thing its proponents reject: <strong>faith</strong>.</p>
+          <p>The anthropic principle. But it requires an unobservable, unfalsifiable infinity of universes.</p>
         </div>
       </div>
 
-      <div class="option-card fade-in" id="option3">
+      <div class="option-card fade-in">
         <div class="option-number">3</div>
         <h3>It was designed</h3>
-        <p>The constants are what they are because some intelligence, ordering principle, or consciousness set them that way.</p>
+        <p>The constants were set deliberately by an intelligence that intended for a life-permitting universe to exist. The precision isn't a coincidence — it's a specification.</p>
         <div class="option-analogy">
-          <p>If you saw a casino where the house won 10<sup>10<sup>123</sup></sup> hands in a row, you wouldn't say &ldquo;wow, what luck.&rdquo; You'd say, <strong>the game was rigged</strong>.</p>
+          <p>The position historically held by most physicists who have actually grappled with these numbers.</p>
         </div>
       </div>
+
     </div>
   </div>
 </section>
 
-<!-- Section: Casino Visualization -->
-<section class="section section-casino" id="casino">
-  <div class="container narrow">
+<!-- Section: The Casino -->
+<section class="section" id="casino">
+  <div class="container">
+    <h2 class="section-heading center fade-in">The casino that never loses</h2>
+    <p class="body-text center fade-in" style="margin-inline:auto;">To understand what "one in 10^10^123" means, consider a simpler lottery. At 1-in-a-billion odds, how many times would you need to play before winning?</p>
+
     <div class="casino-viz fade-in">
-      <h3 class="casino-title">The casino analogy</h3>
-      <p class="body-text">Imagine you're in a casino. The house won. Again. And again. And again...</p>
+      <div class="casino-title">You win once every billion flips</div>
       <div class="casino-counter">
         <div class="casino-wins" id="casinoWins">0</div>
-        <p>consecutive wins</p>
+        <p>total wins in <span id="casinoFlips">0</span> flips</p>
       </div>
-      <button class="demo-btn" id="casinoBtn">Click to spin</button>
-      <p class="casino-note" id="casinoNote">The house always wins. Just a coincidence?</p>
+      <button class="demo-btn" id="casinoBtn">Flip 1,000,000 times</button>
+      <p class="casino-note">Expected wins: ~0.001 per million flips. You'd need to flip a billion times to expect one win.</p>
     </div>
+
+    <p class="body-text fade-in" style="margin-top:var(--space-10);">Now multiply that by 10^10^123. There is no analogy for this number. The number of atoms in the universe, raised to its own power, raised to its own power, raised to its own power — forever — doesn't come close.</p>
   </div>
 </section>
 
-<!-- Section: What God Means -->
-<section class="section section-meaning" id="meaning">
+<!-- Section: What This Means -->
+<section class="section" id="meaning">
   <div class="container narrow">
-    <h2 class="section-heading fade-in">What does &ldquo;God&rdquo; mean here?</h2>
-    <p class="body-text fade-in">When I say &ldquo;designed&rdquo; or &ldquo;God,&rdquo; I'm not talking about a bearded man above the clouds. Not the mythology of any single religion. I'm talking about something much simpler and much stranger:</p>
+    <h2 class="section-heading fade-in">What it means that you're here</h2>
 
     <div class="meaning-block fade-in">
-      <p class="meaning-statement">The existence of consciousness before matter.</p>
+      <p class="meaning-statement">"The universe is not only stranger than we suppose, it is stranger than we can suppose."</p>
     </div>
 
-    <p class="body-text fade-in">The materialist assumption — the one most of us absorbed through education — is that matter came first. Dead things. Particles bouncing around. Then, after billions of years of complexity, consciousness emerged.</p>
+    <p class="body-text fade-in">Here is what the mathematics actually says:</p>
+    <p class="body-text fade-in">The probability of a life-permitting universe arising by chance is not just small — it's the kind of number that has no referent in physical reality. It's smaller than the probability of randomly selecting a specific atom from all the atoms in all the universes in a multiverse containing 10^500 universes.</p>
 
-    <p class="body-text fade-in">But if the universe required precise calibration for complexity to arise... then the calibration itself presupposes someone who calibrates.</p>
+    <div class="callout fade-in">
+      <p><strong>The conservative position</strong>, taken by physicists like Roger Penrose, Paul Davies, and Freeman Dyson, is that the fine-tuning is real and requires explanation. The naive "it just happened" answer is not scientifically satisfying.</p>
+      <p>The debate is about <em>what</em> the explanation is — not whether explanation is needed.</p>
+    </div>
 
-    <blockquote class="quote fade-in">
-      <p>&ldquo;A common sense interpretation of the facts suggests that a superintellect has monkeyed with physics, as well as with chemistry and biology, and that there are no blind forces worth speaking about in nature.&rdquo;</p>
-      <cite>— Fred Hoyle, astronomer (who coined the term &ldquo;Big Bang&rdquo;)</cite>
-    </blockquote>
+    <p class="body-text fade-in">Stephen Hawking wrote: "The laws of science, as we know them at present, contain many fundamental numbers... The remarkable fact is that the values of these numbers seem to have been very finely adjusted to make possible the development of life."</p>
 
-    <blockquote class="quote fade-in">
-      <p>Roger Penrose, one of the greatest living mathematical physicists, calculated that the odds of the universe's initial conditions arising by chance are: <strong>1 in 10<sup>10<sup>123</sup></sup></strong>.</p>
-      <p>His conclusion? <strong>Chance is not a serious explanation.</strong></p>
-    </blockquote>
-  </div>
-</section>
-
-<!-- Section: You -->
-<section class="section section-you" id="you">
-  <div class="container narrow">
-    <h2 class="section-heading fade-in">The one in a billion that is you</h2>
-
-    <p class="body-text fade-in">The same logic that applies to the universe applies to you.</p>
-
-    <p class="body-text fade-in">The odds of your existence — not just any human being, but specifically you — are so small they border on impossibility. That particular egg and that particular sperm coming together. Thousands of generations of ancestors who survived long enough to reproduce.</p>
+    <div class="quote fade-in">
+      <p>"The universe seems to have known we were coming."</p>
+      <cite>— Freeman Dyson, physicist</cite>
+    </div>
 
     <div class="you-statement fade-in">
-      <p>You are the one in a billion that made it through.</p>
-      <p>Not by accident. Not by luck.</p>
-      <p>By the same principle that tipped the cosmic scales toward matter rather than annihilation.</p>
+      <p>You exist because one extra matter particle in a billion survived.</p>
+      <p>You exist because six fundamental constants landed in a range so narrow that the odds of it happening by chance are beyond any number language can reach.</p>
+      <p>You exist at the exact intersection of every one of those improbabilities.</p>
+      <p><strong>That is not nothing.</strong></p>
     </div>
 
     <div class="final-question fade-in">
-      <p>You are not a random arrangement of particles that accidentally became conscious.</p>
-      <p>You are consciousness experiencing what it's like to be this particular arrangement of particles.</p>
-      <p class="final-q">The question is: what will you do with this knowledge?</p>
+      <p>The physicist's question isn't whether the universe is fine-tuned.</p>
+      <p>The physicist's question is:</p>
+      <p class="final-q">Why is it fine-tuned for <em>us?</em></p>
     </div>
   </div>
 </section>
 
 <!-- Footer -->
 <footer class="footer">
-  <div class="container">
-    <div class="footer-nav">
-      <a href="/en/curiosities.html">&larr; Back to curiosities</a>
-      <a href="/en/">&larr; Back to homepage</a>
-    </div>
-    <p class="footer-source">
-      Original text: <a href="https://x.com/thecurioustales/status/2032142940068594005" target="_blank" rel="noopener noreferrer">@thecurioustales</a>
-    </p>
-    <p class="footer-attr">
-      <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
-    </p>
-  </div>
+  <nav class="footer-nav">
+    <a href="/en/curiosities.html">&larr; Back to Curiosities</a>
+    <a href="/en/">Home</a>
+  </nav>
+  <p class="footer-source">
+    Sources: <a href="https://arxiv.org/abs/hep-ph/9905221" target="_blank" rel="noopener">Sakharov Conditions (1967)</a> ·
+    <a href="https://www.cambridge.org/core/books/road-to-reality/" target="_blank" rel="noopener">Penrose, The Road to Reality</a> ·
+    <a href="https://www.cambridge.org/core/books/brief-history-of-time/" target="_blank" rel="noopener">Hawking, A Brief History of Time</a> ·
+    <a href="https://pdg.lbl.gov/" target="_blank" rel="noopener">Particle Data Group</a>
+  </p>
+  <p class="footer-attr">© 2025 <a href="/en/">Kovács Ferenc</a></p>
 </footer>
 
 <script>
-// ============================================================
-// PARTICLE CANVAS — Background star field
-// ============================================================
-const canvas = document.getElementById('particleCanvas');
-const ctx = canvas.getContext('2d');
-let particles = [];
-let animFrame;
+/* ============================================================
+   THEME TOGGLE
+   ============================================================ */
+const themeToggle = document.getElementById('themeToggle');
+const html = document.documentElement;
 
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
+const savedTheme = localStorage.getItem('theme') || 'dark';
+html.setAttribute('data-theme', savedTheme);
 
-function createParticles() {
-  particles = [];
-  const count = Math.min(200, Math.floor(canvas.width * canvas.height / 8000));
-  for (let i = 0; i < count; i++) {
-    particles.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      r: Math.random() * 1.5 + 0.3,
-      alpha: Math.random() * 0.6 + 0.1,
-      speed: Math.random() * 0.15 + 0.02,
-      pulse: Math.random() * Math.PI * 2,
-      pulseSpeed: Math.random() * 0.01 + 0.003,
-    });
-  }
-}
+themeToggle.addEventListener('click', () => {
+  const current = html.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+});
 
-function drawParticles() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  for (const p of particles) {
-    p.y -= p.speed;
-    p.pulse += p.pulseSpeed;
-    if (p.y < -5) {
-      p.y = canvas.height + 5;
-      p.x = Math.random() * canvas.width;
-    }
-    const glow = p.alpha * (0.6 + 0.4 * Math.sin(p.pulse));
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(200, 200, 240, ${glow})`;
-    ctx.fill();
-  }
-  animFrame = requestAnimationFrame(drawParticles);
-}
-
-resizeCanvas();
-createParticles();
-drawParticles();
-window.addEventListener('resize', () => { resizeCanvas(); createParticles(); });
-
-// ============================================================
-// PROGRESS BAR
-// ============================================================
-const progressBar = document.getElementById('progressBar');
-
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
 function updateProgress() {
   const scrollTop = window.scrollY;
   const docHeight = document.documentElement.scrollHeight - window.innerHeight;
   const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-  progressBar.style.width = progress + '%';
+  document.getElementById('progressBar').style.width = progress + '%';
 }
+window.addEventListener('scroll', updateProgress, { passive: true });
 
-// ============================================================
-// SCROLL ANIMATION FALLBACK (for browsers without scroll-driven animations)
-// ============================================================
-function setupScrollObserver() {
-  if (CSS.supports && CSS.supports('animation-timeline', 'scroll()')) return;
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
-    });
-  }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
-
-  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-}
-
-// ============================================================
-// ANNIHILATION CANVAS DEMO
-// ============================================================
-const annCanvas = document.getElementById('annihilationCanvas');
-const annCtx = annCanvas.getContext('2d');
-const annBtn = document.getElementById('annihilateBtn');
-
-let annParticles = [];
-let annRunning = false;
-let annAnimFrame;
-
-function initAnnihilation() {
-  // Actual render dimensions
-  const rect = annCanvas.getBoundingClientRect();
-  annCanvas.width = rect.width * window.devicePixelRatio;
-  annCanvas.height = rect.height * window.devicePixelRatio;
-  annCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
-
-  const w = rect.width;
-  const h = rect.height;
-
-  annParticles = [];
-  const count = 30;
-
-  // Matter particles (right side, green)
-  for (let i = 0; i < count; i++) {
-    annParticles.push({
-      x: w * 0.65 + Math.random() * w * 0.25,
-      y: h * 0.15 + Math.random() * h * 0.7,
-      vx: (Math.random() - 0.8) * 0.5,
-      vy: (Math.random() - 0.5) * 0.5,
-      r: 4 + Math.random() * 3,
-      type: 'matter',
-      alive: true,
-      alpha: 1,
-    });
-  }
-
-  // Antimatter particles (left side, magenta)
-  for (let i = 0; i < count; i++) {
-    annParticles.push({
-      x: w * 0.1 + Math.random() * w * 0.25,
-      y: h * 0.15 + Math.random() * h * 0.7,
-      vx: (Math.random() + 0.3) * 0.5,
-      vy: (Math.random() - 0.5) * 0.5,
-      r: 4 + Math.random() * 3,
-      type: 'antimatter',
-      alive: true,
-      alpha: 1,
-    });
-  }
-
-  // One extra matter particle (bigger, glowing)
-  annParticles.push({
-    x: w * 0.75,
-    y: h * 0.5,
-    vx: -0.2,
-    vy: 0,
-    r: 7,
-    type: 'matter',
-    alive: true,
-    alpha: 1,
-    special: true,
-  });
-
-  drawAnnihilation(w, h);
-}
-
-let energyBursts = [];
-
-function drawAnnihilation(w, h) {
-  annCtx.clearRect(0, 0, w, h);
-
-  // Labels
-  annCtx.font = '13px Inter, sans-serif';
-  annCtx.fillStyle = '#f472b6';
-  annCtx.textAlign = 'center';
-  annCtx.fillText('Antimatter', w * 0.22, 24);
-  annCtx.fillStyle = '#4ade80';
-  annCtx.fillText('Matter', w * 0.78, 24);
-
-  // Energy bursts
-  for (let i = energyBursts.length - 1; i >= 0; i--) {
-    const b = energyBursts[i];
-    b.r += 2;
-    b.alpha -= 0.03;
-    if (b.alpha <= 0) {
-      energyBursts.splice(i, 1);
-      continue;
-    }
-    annCtx.beginPath();
-    annCtx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-    annCtx.fillStyle = `rgba(251, 191, 36, ${b.alpha * 0.3})`;
-    annCtx.fill();
-  }
-
-  // Particles
-  for (const p of annParticles) {
-    if (!p.alive) continue;
-
-    annCtx.beginPath();
-    annCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-
-    if (p.type === 'matter') {
-      const glow = p.special ? 'rgba(74, 222, 128, 0.3)' : 'rgba(74, 222, 128, 0.15)';
-      annCtx.shadowColor = glow;
-      annCtx.shadowBlur = p.special ? 15 : 8;
-      annCtx.fillStyle = `rgba(74, 222, 128, ${p.alpha})`;
-    } else {
-      annCtx.shadowColor = 'rgba(244, 114, 182, 0.15)';
-      annCtx.shadowBlur = 8;
-      annCtx.fillStyle = `rgba(244, 114, 182, ${p.alpha})`;
-    }
-    annCtx.fill();
-    annCtx.shadowBlur = 0;
-
-    // + / - label
-    if (p.r > 3) {
-      annCtx.fillStyle = '#0a0a0f';
-      annCtx.font = `bold ${Math.round(p.r)}px Inter, sans-serif`;
-      annCtx.textAlign = 'center';
-      annCtx.textBaseline = 'middle';
-      annCtx.fillText(p.type === 'matter' ? '+' : '\u2212', p.x, p.y);
-    }
-  }
-}
-
-function animateAnnihilation() {
-  const rect = annCanvas.getBoundingClientRect();
-  const w = rect.width;
-  const h = rect.height;
-
-  // Move particles
-  for (const p of annParticles) {
-    if (!p.alive) continue;
-    p.x += p.vx;
-    p.y += p.vy;
-    // Bounce off edges
-    if (p.x < p.r || p.x > w - p.r) p.vx *= -1;
-    if (p.y < p.r + 30 || p.y > h - p.r) p.vy *= -1;
-  }
-
-  // Collision detection
-  for (let i = 0; i < annParticles.length; i++) {
-    for (let j = i + 1; j < annParticles.length; j++) {
-      const a = annParticles[i];
-      const b = annParticles[j];
-      if (!a.alive || !b.alive) continue;
-      if (a.type === b.type) continue;
-
-      const dx = a.x - b.x;
-      const dy = a.y - b.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-
-      if (dist < a.r + b.r + 3) {
-        // Both annihilate
-        a.alive = false;
-        b.alive = false;
-        energyBursts.push({
-          x: (a.x + b.x) / 2,
-          y: (a.y + b.y) / 2,
-          r: 5,
-          alpha: 1,
-        });
-      }
-    }
-  }
-
-  drawAnnihilation(w, h);
-
-  const aliveCount = annParticles.filter(p => p.alive).length;
-  if (aliveCount <= 1 || energyBursts.length > 0 || aliveCount > 1) {
-    if (annParticles.some(p => p.alive) || energyBursts.length > 0) {
-      annAnimFrame = requestAnimationFrame(animateAnnihilation);
-    } else {
-      annRunning = false;
-      // Show the survivor
-      drawAnnihilation(rect.width, rect.height);
-      annBtn.textContent = 'Restart';
-    }
-
-    // Check if only the special one remains
-    const alive = annParticles.filter(p => p.alive);
-    if (alive.length === 1 && alive[0].special && energyBursts.length === 0) {
-      annRunning = false;
-      cancelAnimationFrame(annAnimFrame);
-      // Final draw with label
-      drawAnnihilation(rect.width, rect.height);
-      annCtx.font = '14px Inter, sans-serif';
-      annCtx.fillStyle = '#4ade80';
-      annCtx.textAlign = 'center';
-      annCtx.fillText('\u2190 The sole survivor', alive[0].x + 80, alive[0].y);
-      annBtn.textContent = 'Restart';
-    }
-  }
-}
-
-annBtn.addEventListener('click', () => {
-  if (annRunning) {
-    cancelAnimationFrame(annAnimFrame);
-    annRunning = false;
-  }
-  energyBursts = [];
-  initAnnihilation();
-  annRunning = true;
-
-  // Speed up particles toward center
-  const rect = annCanvas.getBoundingClientRect();
-  const centerX = rect.width / 2;
-  for (const p of annParticles) {
-    const dir = p.x < centerX ? 1 : -1;
-    p.vx = dir * (1 + Math.random() * 1.5);
-    p.vy = (Math.random() - 0.5) * 1;
-  }
-
-  annBtn.textContent = 'In progress...';
-  animateAnnihilation();
-});
-
-// Initialize demo on load
-setTimeout(() => initAnnihilation(), 100);
-
-// ============================================================
-// FINE TUNING SLIDERS
-// ============================================================
-const strongSlider = document.getElementById('strongSlider');
-const cosmoSlider = document.getElementById('cosmoSlider');
-const baryonSlider = document.getElementById('baryonSlider');
-
-const strongDesc = document.getElementById('strongDesc');
-const cosmoDesc = document.getElementById('cosmoDesc');
-const baryonDesc = document.getElementById('baryonDesc');
-
-const strongValue = document.getElementById('strongValue');
-const cosmoValue = document.getElementById('cosmoValue');
-const baryonValue = document.getElementById('baryonValue');
-
-const ftStrong = document.getElementById('ftStrong');
-const ftCosmo = document.getElementById('ftCosmo');
-const ftBaryon = document.getElementById('ftBaryon');
-
-function updateSlider(slider, desc, value, card, configs) {
-  const v = parseInt(slider.value);
-  const safe = v >= 40 && v <= 60;
-
-  card.classList.toggle('danger', !safe);
-  card.classList.toggle('safe', safe);
-
-  if (v < 30) {
-    desc.textContent = configs.low;
-    desc.classList.add('danger-text');
-    value.textContent = configs.lowLabel;
-    value.style.color = '#f472b6';
-  } else if (v > 70) {
-    desc.textContent = configs.high;
-    desc.classList.add('danger-text');
-    value.textContent = configs.highLabel;
-    value.style.color = '#f472b6';
-  } else {
-    desc.textContent = configs.mid;
-    desc.classList.remove('danger-text');
-    value.textContent = configs.midLabel;
-    value.style.color = '#4ade80';
-  }
-}
-
-strongSlider.addEventListener('input', () => {
-  updateSlider(strongSlider, strongDesc, strongValue, ftStrong, {
-    low: 'Atoms fall apart. No chemistry. No life. The universe is a sterile particle soup.',
-    lowLabel: '\u22122% (Too weak)',
-    high: 'All hydrogen fuses into helium. No water. No organic chemistry. No life.',
-    highLabel: '+0.3% (Too strong)',
-    mid: 'Atoms barely hold together. Life is possible.',
-    midLabel: 'Current',
-  });
-});
-
-cosmoSlider.addEventListener('input', () => {
-  updateSlider(cosmoSlider, cosmoDesc, cosmoValue, ftCosmo, {
-    low: 'The universe collapses back into a single point. Everything is destroyed.',
-    lowLabel: 'Negative (Collapse)',
-    high: 'The universe expands too fast. No galaxies form. Nothing.',
-    highLabel: '\u00d710\u00b9\u00b2\u2070 (Dispersal)',
-    mid: 'Galaxies form. Stars burn. Life is possible.',
-    midLabel: 'Current',
-  });
-});
-
-baryonSlider.addEventListener('input', () => {
-  updateSlider(baryonSlider, baryonDesc, baryonValue, ftBaryon, {
-    low: 'Nothing survives. Total annihilation. The universe is an empty radiation field.',
-    lowLabel: '0 leftover (Void)',
-    high: 'Too much matter. The universe collapses into black holes.',
-    highLabel: 'Too much (Collapse)',
-    mid: 'Just enough matter survived to create stars, planets, and life.',
-    midLabel: '1 per billion',
-  });
-});
-
-// ============================================================
-// CASINO COUNTER
-// ============================================================
-const casinoWins = document.getElementById('casinoWins');
-const casinoBtn = document.getElementById('casinoBtn');
-const casinoNote = document.getElementById('casinoNote');
-let casinoCount = 0;
-
-const casinoMessages = [
-  { count: 5, msg: 'Five in a row? Hmm...' },
-  { count: 15, msg: 'Fifteen. This is getting suspicious.' },
-  { count: 30, msg: 'Thirty. This can\'t be random.' },
-  { count: 50, msg: 'Fifty. The house is obviously cheating.' },
-  { count: 100, msg: 'A hundred. Now imagine this 10^10^123 times.' },
-  { count: 200, msg: 'Still clicking? The universe did exactly this. Billions of times.' },
-];
-
-casinoBtn.addEventListener('click', () => {
-  casinoCount++;
-  casinoWins.textContent = casinoCount.toLocaleString();
-  casinoWins.classList.add('bump');
-  setTimeout(() => casinoWins.classList.remove('bump'), 150);
-
-  for (const m of casinoMessages) {
-    if (casinoCount === m.count) {
-      casinoNote.textContent = m.msg;
-      casinoNote.style.color = '#f472b6';
-      setTimeout(() => { casinoNote.style.color = ''; }, 1500);
-    }
-  }
-});
-
-// ============================================================
-// SCROLL HANDLER
-// ============================================================
-let ticking = false;
-window.addEventListener('scroll', () => {
-  if (!ticking) {
-    requestAnimationFrame(() => {
-      updateProgress();
-      ticking = false;
-    });
-    ticking = true;
-  }
-});
-
-
-// ============================================================
-// DEEP-DIVE TOGGLE + CANVAS ANIMATIONS
-// ============================================================
-function toggleDeepDive(btn) {
-  const target = document.getElementById(btn.dataset.target);
-  const isOpen = target.classList.toggle('open');
-  btn.classList.toggle('active', isOpen);
-  btn.textContent = isOpen ? 'Close ▲' : 'Learn more ▼';
-  // Start canvas animation when opened
-  if (isOpen) {
-    const canvasId = target.querySelector('.ft-mini-canvas')?.id;
-    if (canvasId && deepDiveAnimations[canvasId]) {
-      deepDiveAnimations[canvasId].start();
-    }
-  }
-}
-
-const deepDiveAnimations = {};
-
-// ── Canvas 1: Strong Nuclear Force ──
+/* ============================================================
+   PARTICLE CANVAS BACKGROUND
+   ============================================================ */
 (function() {
-  const canvas = document.getElementById('canvasStrong');
-  if (!canvas) return;
+  const canvas = document.getElementById('particleCanvas');
   const ctx = canvas.getContext('2d');
-  let animId = null;
-  const particles = [];
-  const NUM = 12;
+  let particles = [];
+  let animId;
+  let W, H;
 
   function resize() {
-    canvas.width = canvas.offsetWidth * devicePixelRatio;
-    canvas.height = canvas.offsetHeight * devicePixelRatio;
-    ctx.scale(devicePixelRatio, devicePixelRatio);
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize, { passive: true });
+  resize();
+
+  const COLORS = [
+    'rgba(124,108,240,0.5)',
+    'rgba(244,114,182,0.4)',
+    'rgba(74,222,128,0.35)',
+    'rgba(251,191,36,0.3)'
+  ];
+
+  function createParticle() {
+    return {
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.5 + 0.5,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      life: Math.random()
+    };
   }
 
-  function init() {
-    resize();
-    particles.length = 0;
-    const w = canvas.offsetWidth;
-    const h = canvas.offsetHeight;
-    const cx = w / 2;
-    const cy = h / 2;
-    for (let i = 0; i < NUM; i++) {
-      const angle = (i / NUM) * Math.PI * 2;
-      const r = 20 + Math.random() * 10;
-      particles.push({
-        x: cx + Math.cos(angle) * r,
-        y: cy + Math.sin(angle) * r,
-        baseX: cx + Math.cos(angle) * r,
-        baseY: cy + Math.sin(angle) * r,
-        radius: 5 + Math.random() * 3,
-        isProton: i % 2 === 0,
-        angle: angle,
-        orbitR: r,
-        phase: Math.random() * Math.PI * 2,
-      });
-    }
-  }
+  for (let i = 0; i < 120; i++) particles.push(createParticle());
 
-  function draw(t) {
-    const w = canvas.offsetWidth;
-    const h = canvas.offsetHeight;
-    const cx = w / 2;
-    const cy = h / 2;
-    ctx.clearRect(0, 0, w, h);
-    const slider = parseInt(strongSlider.value);
-    const safe = slider >= 30 && slider <= 70;
-    const driftFactor = slider < 30 ? (30 - slider) / 30 : 0;
-    const crushFactor = slider > 70 ? (slider - 70) / 30 : 0;
-
-    particles.forEach((p, i) => {
-      const vibrate = Math.sin(t * 0.003 + p.phase) * 3;
-      const maxR = Math.min(w, h) / 2 - 16;
-      let targetR = p.orbitR;
-      if (driftFactor > 0) {
-        targetR = p.orbitR + driftFactor * Math.min(60, maxR - p.orbitR);
-      } else if (crushFactor > 0) {
-        targetR = p.orbitR * (1 - crushFactor * 0.7);
-      }
-      const currentR = Math.min(targetR + vibrate, maxR);
-      p.x = cx + Math.cos(p.angle + t * 0.001) * currentR;
-      p.y = cy + Math.sin(p.angle + t * 0.001) * currentR;
-
-      // Draw bonds
-      if (!safe && driftFactor > 0.3) {
-        // Bonds breaking - draw dashed
-        ctx.setLineDash([3, 5]);
-      } else {
-        ctx.setLineDash([]);
-      }
-      if (i > 0) {
-        ctx.beginPath();
-        ctx.moveTo(particles[i-1].x, particles[i-1].y);
-        ctx.lineTo(p.x, p.y);
-        const bondAlpha = safe ? 0.3 : Math.max(0, 0.3 - driftFactor * 0.8);
-        ctx.strokeStyle = `rgba(124, 108, 240, ${bondAlpha})`;
-        ctx.lineWidth = 1;
-        ctx.stroke();
-      }
-      ctx.setLineDash([]);
-
-      // Draw particle
-      const glow = safe ? '#4ade80' : '#f472b6';
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-      ctx.fillStyle = p.isProton ? '#4ade80' : '#7c6cf0';
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.radius + 4, 0, Math.PI * 2);
-      const glowAlpha = safe ? 0.15 : 0.3;
-      ctx.fillStyle = safe ? `rgba(74, 222, 128, ${glowAlpha})` : `rgba(244, 114, 182, ${glowAlpha})`;
-      ctx.fill();
-    });
-
-    // Close bond ring
-    if (particles.length > 1) {
-      const first = particles[0];
-      const last = particles[particles.length - 1];
-      const bondAlpha = safe ? 0.3 : Math.max(0, 0.3 - driftFactor * 0.8);
-      ctx.beginPath();
-      ctx.moveTo(last.x, last.y);
-      ctx.lineTo(first.x, first.y);
-      ctx.strokeStyle = `rgba(124, 108, 240, ${bondAlpha})`;
-      ctx.lineWidth = 1;
-      ctx.stroke();
-    }
-
-    // Status label
-    ctx.fillStyle = safe ? 'rgba(74, 222, 128, 0.6)' : 'rgba(244, 114, 182, 0.6)';
-    ctx.font = '11px Inter, sans-serif';
-    ctx.textAlign = 'center';
-    if (driftFactor > 0.3) ctx.fillText('Atoms falling apart...', cx, h - 12);
-    else if (crushFactor > 0.3) ctx.fillText('Everything fusing together...', cx, h - 12);
-    else ctx.fillText('Stable nucleus', cx, h - 12);
-
-    animId = requestAnimationFrame(draw);
-  }
-
-  deepDiveAnimations.canvasStrong = {
-    start() { init(); if (animId) cancelAnimationFrame(animId); draw(performance.now()); },
-  };
-})();
-
-// ── Canvas 2: Cosmological Constant ──
-(function() {
-  const canvas = document.getElementById('canvasCosmo');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  let animId = null;
-  const dots = [];
-  const NUM = 60;
-
-  function resize() {
-    canvas.width = canvas.offsetWidth * devicePixelRatio;
-    canvas.height = canvas.offsetHeight * devicePixelRatio;
-    ctx.scale(devicePixelRatio, devicePixelRatio);
-  }
-
-  function init() {
-    resize();
-    dots.length = 0;
-    const w = canvas.offsetWidth;
-    const h = canvas.offsetHeight;
-    const cx = w / 2;
-    const cy = h / 2;
-    for (let i = 0; i < NUM; i++) {
-      const angle = Math.random() * Math.PI * 2;
-      const r = Math.random() * 40 + 5;
-      dots.push({
-        x: cx + Math.cos(angle) * r,
-        y: cy + Math.sin(angle) * r,
-        baseAngle: angle,
-        baseR: r,
-        size: 1.5 + Math.random() * 2,
-        brightness: 0.4 + Math.random() * 0.6,
-      });
-    }
-  }
-
-  function draw(t) {
-    const w = canvas.offsetWidth;
-    const h = canvas.offsetHeight;
-    const cx = w / 2;
-    const cy = h / 2;
-    ctx.clearRect(0, 0, w, h);
-    const slider = parseInt(cosmoSlider.value);
-    const safe = slider >= 30 && slider <= 70;
-    const expandFactor = slider > 70 ? (slider - 70) / 30 : 0;
-    const collapseFactor = slider < 30 ? (30 - slider) / 30 : 0;
-
-    // Gentle base expansion for normal state
-    const baseExpansion = 1 + t * 0.00003;
-
-    const maxR = Math.min(w, h) / 2 - 8;
-    dots.forEach(d => {
-      let r = d.baseR * baseExpansion;
-      if (expandFactor > 0) {
-        r = d.baseR * (1 + expandFactor * 3);
-      } else if (collapseFactor > 0) {
-        r = d.baseR * (1 - collapseFactor * 0.9);
-      }
-      r = Math.min(r, maxR);
-      d.x = cx + Math.cos(d.baseAngle + t * 0.0002) * r;
-      d.y = cy + Math.sin(d.baseAngle + t * 0.0002) * r;
-
-      // Draw galaxy dot
-      const color = safe ? `rgba(124, 108, 240, ${d.brightness})` : `rgba(244, 114, 182, ${d.brightness})`;
-      ctx.beginPath();
-      ctx.arc(d.x, d.y, d.size, 0, Math.PI * 2);
-      ctx.fillStyle = color;
-      ctx.fill();
-
-      // Glow
-      ctx.beginPath();
-      ctx.arc(d.x, d.y, d.size + 3, 0, Math.PI * 2);
-      ctx.fillStyle = safe ? `rgba(124, 108, 240, 0.08)` : `rgba(244, 114, 182, 0.08)`;
-      ctx.fill();
-    });
-
-    // Draw cluster connections for safe state
-    if (safe) {
-      dots.forEach((a, i) => {
-        dots.forEach((b, j) => {
-          if (j <= i) return;
-          const dx = a.x - b.x;
-          const dy = a.y - b.y;
-          const dist = Math.sqrt(dx*dx + dy*dy);
-          if (dist < 25) {
-            ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
-            ctx.strokeStyle = `rgba(124, 108, 240, ${0.15 * (1 - dist/25)})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-          }
-        });
-      });
-    }
-
-    ctx.fillStyle = safe ? 'rgba(74, 222, 128, 0.6)' : 'rgba(244, 114, 182, 0.6)';
-    ctx.font = '11px Inter, sans-serif';
-    ctx.textAlign = 'center';
-    if (expandFactor > 0.3) ctx.fillText('Galaxies scattering apart...', cx, h - 12);
-    else if (collapseFactor > 0.3) ctx.fillText('The universe is collapsing...', cx, h - 12);
-    else ctx.fillText('Galaxies forming', cx, h - 12);
-
-    animId = requestAnimationFrame(draw);
-  }
-
-  deepDiveAnimations.canvasCosmo = {
-    start() { init(); if (animId) cancelAnimationFrame(animId); draw(performance.now()); },
-  };
-})();
-
-// ── Canvas 3: Baryon Asymmetry ──
-(function() {
-  const canvas = document.getElementById('canvasBaryon');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  let animId = null;
-  const particles = [];
-  const NUM_PAIRS = 30;
-
-  function resize() {
-    canvas.width = canvas.offsetWidth * devicePixelRatio;
-    canvas.height = canvas.offsetHeight * devicePixelRatio;
-    ctx.scale(devicePixelRatio, devicePixelRatio);
-  }
-
-  function init() {
-    resize();
-    particles.length = 0;
-    const w = canvas.offsetWidth;
-    const h = canvas.offsetHeight;
-    // Create matter (+1) and antimatter (-1) particles
-    for (let i = 0; i < NUM_PAIRS; i++) {
-      // Antimatter particle
-      particles.push({
-        x: Math.random() * w,
-        y: Math.random() * h,
-        vx: (Math.random() - 0.5) * 0.8,
-        vy: (Math.random() - 0.5) * 0.8,
-        type: -1,
-        radius: 3,
-        alive: true,
-        flash: 0,
-      });
-      // Matter particle
-      particles.push({
-        x: Math.random() * w,
-        y: Math.random() * h,
-        vx: (Math.random() - 0.5) * 0.8,
-        vy: (Math.random() - 0.5) * 0.8,
-        type: 1,
-        radius: 3,
-        alive: true,
-        flash: 0,
-      });
-    }
-    // The one extra matter particle (the survivor)
-    particles.push({
-      x: w / 2,
-      y: h / 2,
-      vx: (Math.random() - 0.5) * 0.5,
-      vy: (Math.random() - 0.5) * 0.5,
-      type: 1,
-      radius: 3,
-      alive: true,
-      flash: 0,
-      survivor: true,
-    });
-  }
-
-  function draw(t) {
-    const w = canvas.offsetWidth;
-    const h = canvas.offsetHeight;
-    ctx.clearRect(0, 0, w, h);
-    const slider = parseInt(baryonSlider.value);
-    const safe = slider >= 30 && slider <= 70;
-    const tooLow = slider < 30;
-    const tooHigh = slider > 70;
-    const lowFactor = tooLow ? (30 - slider) / 30 : 0;
-    const highFactor = tooHigh ? (slider - 70) / 30 : 0;
-
-    // Determine how many survivors to show
-    let survivorCount;
-    if (tooLow) {
-      survivorCount = 0;
-    } else if (tooHigh) {
-      survivorCount = Math.floor(highFactor * NUM_PAIRS * 1.5) + 1;
-    } else {
-      survivorCount = 1;
-    }
-
-    let matterAlive = 0;
-    let antimatterAlive = 0;
-
-    particles.forEach((p, i) => {
-      // Move
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+    for (let p of particles) {
       p.x += p.vx;
       p.y += p.vy;
-      if (p.x < 0 || p.x > w) p.vx *= -1;
-      if (p.y < 0 || p.y > h) p.vy *= -1;
-      p.x = Math.max(0, Math.min(w, p.x));
-      p.y = Math.max(0, Math.min(h, p.y));
-      if (p.flash > 0) p.flash -= 0.02;
-    });
-
-    // In safe mode: show pairs annihilating, 1 survivor
-    // Count particles by type
-    particles.forEach(p => {
-      if (p.type === 1) matterAlive++;
-      else antimatterAlive++;
-    });
-
-    // Draw particles
-    particles.forEach((p, i) => {
-      // Decide visibility based on mode
-      const pairIndex = Math.floor(i / 2);
-      const isExtraSurvivor = p.survivor;
-
-      let visible = true;
-      let opacity = 1;
-
-      if (safe) {
-        // In safe mode: show about half the pairs already annihilated (faint)
-        // and the survivor glowing
-        if (!isExtraSurvivor && pairIndex < NUM_PAIRS * 0.6) {
-          opacity = 0.15 + Math.sin(t * 0.002 + i) * 0.05;
-        }
-      } else if (tooLow) {
-        // All particles fade out (complete annihilation)
-        opacity = Math.max(0.05, 1 - lowFactor * 0.9);
-        if (isExtraSurvivor) opacity = Math.max(0.05, 1 - lowFactor);
-      } else if (tooHigh) {
-        // Extra matter particles become visible and clump
-        if (p.type === 1) {
-          opacity = 1;
-        } else {
-          opacity = Math.max(0.1, 1 - highFactor * 0.8);
-        }
+      p.life += 0.002;
+      if (p.x < -10 || p.x > W + 10 || p.y < -10 || p.y > H + 10) {
+        Object.assign(p, createParticle(), { x: Math.random() * W, y: Math.random() * H });
       }
-
-      // Draw
-      const color = p.type === 1 ? '#4ade80' : '#f472b6';
-      ctx.globalAlpha = opacity;
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-      ctx.fillStyle = color;
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
       ctx.fill();
-
-      // Survivor glow
-      if (isExtraSurvivor && safe) {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius + 6 + Math.sin(t * 0.005) * 2, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(74, 222, 128, 0.2)';
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius + 12, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(74, 222, 128, 0.07)';
-        ctx.fill();
-      }
-
-      // Too high: clumping into dark masses
-      if (tooHigh && p.type === 1 && highFactor > 0.5) {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius + highFactor * 6, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(20, 20, 30, ${highFactor * 0.5})`;
-        ctx.fill();
-      }
-
-      ctx.globalAlpha = 1;
-    });
-
-    // Flash effect for annihilation when too low
-    if (tooLow && lowFactor > 0.5) {
-      const flashAlpha = Math.sin(t * 0.01) * 0.1 * lowFactor;
-      ctx.fillStyle = `rgba(244, 114, 182, ${Math.abs(flashAlpha)})`;
-      ctx.fillRect(0, 0, w, h);
     }
-
-    // Status label
-    ctx.fillStyle = safe ? 'rgba(74, 222, 128, 0.6)' : 'rgba(244, 114, 182, 0.6)';
-    ctx.font = '11px Inter, sans-serif';
-    ctx.textAlign = 'center';
-    if (tooLow && lowFactor > 0.3) ctx.fillText('Total annihilation...', w/2, h - 12);
-    else if (tooHigh && highFactor > 0.3) ctx.fillText('Too much matter — black holes...', w/2, h - 12);
-    else ctx.fillText('1 survivor per billion', w/2, h - 12);
-
-    animId = requestAnimationFrame(draw);
+    animId = requestAnimationFrame(animate);
   }
-
-  deepDiveAnimations.canvasBaryon = {
-    start() { init(); if (animId) cancelAnimationFrame(animId); draw(performance.now()); },
-  };
+  animate();
 })();
 
-// ============================================================
-// INIT
-// ============================================================
+/* ============================================================
+   ANNIHILATION CANVAS
+   ============================================================ */
+(function() {
+  const canvas = document.getElementById('annihilationCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = 800, H = 400;
+  canvas.width = W;
+  canvas.height = H;
+
+  let particles = [];
+  let photons = [];
+  let animId = null;
+  let phase = 'idle';
+
+  function getThemeColors() {
+    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+    return {
+      bg: isDark ? '#111118' : '#f8f9fc',
+      matter: isDark ? '#4ade80' : '#16a34a',
+      antimatter: isDark ? '#f472b6' : '#db2777',
+      photon: isDark ? '#fbbf24' : '#d97706',
+      text: isDark ? '#8888a0' : '#5a5c72'
+    };
+  }
+
+  function initParticles() {
+    particles = [];
+    photons = [];
+    const count = 30;
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * (W * 0.35) + 30,
+        y: Math.random() * (H - 60) + 30,
+        vx: 0, vy: 0,
+        r: 5,
+        type: 'matter',
+        alive: true,
+        opacity: 1
+      });
+      particles.push({
+        x: Math.random() * (W * 0.35) + W * 0.65 - 30,
+        y: Math.random() * (H - 60) + 30,
+        vx: 0, vy: 0,
+        r: 5,
+        type: 'antimatter',
+        alive: true,
+        opacity: 1
+      });
+    }
+    // Add the survivor
+    particles.push({
+      x: W * 0.1,
+      y: H / 2,
+      vx: 0, vy: 0,
+      r: 6,
+      type: 'survivor',
+      alive: true,
+      opacity: 1
+    });
+  }
+
+  function drawIdle() {
+    const colors = getThemeColors();
+    ctx.fillStyle = colors.bg;
+    ctx.fillRect(0, 0, W, H);
+    const count = 30;
+    for (let i = 0; i < count; i++) {
+      const x1 = 30 + (i / count) * (W * 0.4);
+      const x2 = W - 30 - (i / count) * (W * 0.4);
+      const y = 30 + Math.random() * (H - 60);
+      ctx.beginPath();
+      ctx.arc(x1, y, 5, 0, Math.PI * 2);
+      ctx.fillStyle = colors.matter;
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(x2, y, 5, 0, Math.PI * 2);
+      ctx.fillStyle = colors.antimatter;
+      ctx.fill();
+    }
+    ctx.font = '14px Inter, sans-serif';
+    ctx.fillStyle = colors.text;
+    ctx.textAlign = 'center';
+    ctx.fillText('Matter', W * 0.2, H - 12);
+    ctx.fillText('Antimatter', W * 0.8, H - 12);
+    ctx.fillText('1,000,000,001', W * 0.2, H - 28);
+    ctx.fillText('1,000,000,000', W * 0.8, H - 28);
+  }
+
+  initParticles();
+  drawIdle();
+
+  document.getElementById('annihilateBtn').addEventListener('click', function() {
+    if (phase === 'running') return;
+    phase = 'running';
+    if (animId) cancelAnimationFrame(animId);
+    initParticles();
+
+    const matterParticles = particles.filter(p => p.type === 'matter');
+    const antimatterParticles = particles.filter(p => p.type === 'antimatter');
+    const center = { x: W / 2, y: H / 2 };
+
+    matterParticles.forEach(p => {
+      const dx = center.x - p.x, dy = center.y - p.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      p.vx = (dx / dist) * 3;
+      p.vy = (dy / dist) * 3;
+    });
+    antimatterParticles.forEach(p => {
+      const dx = center.x - p.x, dy = center.y - p.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      p.vx = (dx / dist) * 3;
+      p.vy = (dy / dist) * 3;
+    });
+
+    let frame = 0;
+    const ANNIHILATION_FRAME = 60;
+
+    function loop() {
+      const colors = getThemeColors();
+      ctx.fillStyle = colors.bg;
+      ctx.fillRect(0, 0, W, H);
+      frame++;
+
+      if (frame < ANNIHILATION_FRAME) {
+        particles.forEach(p => {
+          if (!p.alive) return;
+          p.x += p.vx;
+          p.y += p.vy;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          if (p.type === 'matter') ctx.fillStyle = colors.matter;
+          else if (p.type === 'antimatter') ctx.fillStyle = colors.antimatter;
+          else ctx.fillStyle = colors.matter;
+          ctx.fill();
+        });
+      } else if (frame === ANNIHILATION_FRAME) {
+        const flash = 20;
+        for (let i = 0; i < flash; i++) {
+          const angle = (i / flash) * Math.PI * 2;
+          photons.push({
+            x: center.x, y: center.y,
+            vx: Math.cos(angle) * 5, vy: Math.sin(angle) * 5,
+            life: 1
+          });
+        }
+        particles.filter(p => p.type !== 'survivor').forEach(p => p.alive = false);
+      } else {
+        photons.forEach(ph => {
+          ph.x += ph.vx;
+          ph.y += ph.vy;
+          ph.life -= 0.015;
+          if (ph.life > 0) {
+            ctx.beginPath();
+            ctx.arc(ph.x, ph.y, 3, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${colors.photon === '#fbbf24' ? '251,191,36' : '217,119,6'},${ph.life})`;
+            ctx.fill();
+          }
+        });
+        const survivor = particles.find(p => p.type === 'survivor');
+        if (survivor) {
+          ctx.beginPath();
+          ctx.arc(survivor.x, survivor.y, survivor.r, 0, Math.PI * 2);
+          ctx.fillStyle = colors.matter;
+          ctx.fill();
+          ctx.font = '12px Inter, sans-serif';
+          ctx.fillStyle = colors.text;
+          ctx.textAlign = 'left';
+          ctx.fillText('← The survivor', survivor.x + 12, survivor.y + 4);
+        }
+        if (photons.every(ph => ph.life <= 0) && frame > ANNIHILATION_FRAME + 20) {
+          phase = 'idle';
+          setTimeout(() => { initParticles(); drawIdle(); }, 1500);
+          return;
+        }
+      }
+      animId = requestAnimationFrame(loop);
+    }
+    loop();
+  });
+})();
+
+/* ============================================================
+   FINE TUNING SLIDERS
+   ============================================================ */
+const ftData = [
+  {
+    label: 'Matter-Antimatter Asymmetry (η)',
+    safe: { range: [-5, 5], msg: 'Safe zone: structure can form, atoms exist.' },
+    danger: { msg: 'Danger: either total annihilation (symmetric) or too much matter clumping (asymmetric collapse).' },
+    unit: 'η × 10⁻¹⁰'
+  },
+  {
+    label: 'Strong Nuclear Force',
+    safe: { range: [-3, 3], msg: 'Safe zone: stable nuclei, stellar fusion produces carbon.' },
+    danger: { msg: 'Danger: no stable nuclei, or no hydrogen — water and organic chemistry become impossible.' },
+    unit: 'α_s'
+  },
+  {
+    label: 'Cosmological Constant',
+    safe: { range: [-2, 2], msg: 'Safe zone: universe expands at the right rate for galaxies to form.' },
+    danger: { msg: 'Danger: either runaway expansion shreds all structure, or immediate gravitational collapse.' },
+    unit: 'Λ (Planck units)'
+  },
+  {
+    label: 'Electron-Proton Mass Ratio',
+    safe: { range: [-10, 10], msg: 'Safe zone: stable atoms, viable chemistry.' },
+    danger: { msg: 'Danger: atoms too small for chemistry, or too unstable to hold electrons.' },
+    unit: 'm_e / m_p'
+  },
+  {
+    label: 'Fine-Structure Constant',
+    safe: { range: [-8, 8], msg: 'Safe zone: stable atoms, stellar carbon production possible.' },
+    danger: { msg: 'Danger: no carbon synthesis in stars, or electrons escape all nuclei.' },
+    unit: 'α'
+  },
+  {
+    label: 'Initial Entropy',
+    safe: { range: [-1, 1], msg: 'Safe zone: low entropy initial state — structure, stars, life possible.' },
+    danger: { msg: 'Danger: maximum entropy — heat death from the start, or singular collapse.' },
+    unit: 'S_initial'
+  }
+];
+
+ftData.forEach((data, i) => {
+  const slider = document.getElementById(`ftSlider${i}`);
+  const val = document.getElementById(`ftVal${i}`);
+  const desc = document.getElementById(`ftDesc${i}`);
+  const card = document.getElementById(`ftCard${i}`);
+  const expandBtn = document.getElementById(`ftExpand${i}`);
+  const deepDive = document.getElementById(`ftDeep${i}`);
+
+  slider.addEventListener('input', function() {
+    const v = parseInt(this.value);
+    const inSafe = v >= data.safe.range[0] && v <= data.safe.range[1];
+    val.textContent = v === 0 ? 'Current value' : (v > 0 ? `+${v}%` : `${v}%`);
+    desc.textContent = inSafe ? data.safe.msg : data.danger.msg;
+    desc.classList.toggle('danger-text', !inSafe);
+    card.classList.toggle('danger', !inSafe);
+    card.classList.toggle('safe', inSafe && v !== 0);
+    if (v === 0) card.classList.remove('safe', 'danger');
+  });
+
+  expandBtn.addEventListener('click', function() {
+    const isOpen = deepDive.classList.toggle('open');
+    expandBtn.classList.toggle('active', isOpen);
+    expandBtn.textContent = isOpen ? '▾ Close' : '▸ Deep dive';
+    if (isOpen) {
+      const miniCanvas = document.getElementById(`ftCanvas${i}`);
+      drawMiniGraph(miniCanvas, data, i);
+    }
+  });
+});
+
+function drawMiniGraph(canvas, data, idx) {
+  const ctx = canvas.getContext('2d');
+  const W = canvas.offsetWidth || 280;
+  const H = 240;
+  canvas.width = W;
+  canvas.height = H;
+
+  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+  const bgColor = isDark ? 'rgba(0,0,0,0.3)' : 'rgba(240,241,245,0.8)';
+  const textColor = isDark ? '#8888a0' : '#5a5c72';
+  const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.08)';
+  const safeColor = isDark ? 'rgba(74,222,128,0.15)' : 'rgba(22,163,74,0.12)';
+  const dangerColor = isDark ? 'rgba(244,114,182,0.15)' : 'rgba(219,39,119,0.12)';
+  const lineColor = isDark ? '#7c6cf0' : '#6d5ce0';
+
+  ctx.fillStyle = bgColor;
+  ctx.fillRect(0, 0, W, H);
+
+  const pad = 40;
+  const graphW = W - pad * 2;
+  const graphH = H - pad * 2;
+
+  // Grid lines
+  ctx.strokeStyle = gridColor;
+  ctx.lineWidth = 1;
+  for (let j = 0; j <= 4; j++) {
+    const y = pad + (j / 4) * graphH;
+    ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(W - pad, y); ctx.stroke();
+  }
+
+  // Safe zone
+  const [safeMin, safeMax] = data.safe.range;
+  const xToGraph = x => pad + ((x + 50) / 100) * graphW;
+  const safeX1 = xToGraph(safeMin);
+  const safeX2 = xToGraph(safeMax);
+  ctx.fillStyle = safeColor;
+  ctx.fillRect(safeX1, pad, safeX2 - safeX1, graphH);
+  ctx.fillStyle = dangerColor;
+  ctx.fillRect(pad, pad, safeX1 - pad, graphH);
+  ctx.fillRect(safeX2, pad, W - pad - safeX2, graphH);
+
+  // Curve: gaussian centered at 0
+  ctx.beginPath();
+  ctx.strokeStyle = lineColor;
+  ctx.lineWidth = 2;
+  for (let px = 0; px <= graphW; px++) {
+    const xVal = ((px / graphW) * 100) - 50;
+    const yVal = Math.exp(-(xVal * xVal) / (2 * 8 * 8));
+    const screenY = pad + graphH - yVal * graphH * 0.85;
+    if (px === 0) ctx.moveTo(pad + px, screenY);
+    else ctx.lineTo(pad + px, screenY);
+  }
+  ctx.stroke();
+
+  // Current value marker
+  const curX = xToGraph(0);
+  ctx.beginPath();
+  ctx.strokeStyle = isDark ? '#4ade80' : '#16a34a';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([4, 4]);
+  ctx.moveTo(curX, pad);
+  ctx.lineTo(curX, pad + graphH);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Labels
+  ctx.font = '11px Inter, sans-serif';
+  ctx.fillStyle = textColor;
+  ctx.textAlign = 'center';
+  ctx.fillText('← Danger', pad + (safeX1 - pad) / 2, pad + graphH + 18);
+  ctx.fillText('Safe', (safeX1 + safeX2) / 2, pad + graphH + 18);
+  ctx.fillText('Danger →', safeX2 + (W - pad - safeX2) / 2, pad + graphH + 18);
+  ctx.fillText('Life-permitting range', (safeX1 + safeX2) / 2, pad - 8);
+}
+
+/* ============================================================
+   CASINO SIMULATION
+   ============================================================ */
+(function() {
+  let totalFlips = 0;
+  let totalWins = 0;
+  const winsEl = document.getElementById('casinoWins');
+  const flipsEl = document.getElementById('casinoFlips');
+
+  document.getElementById('casinoBtn').addEventListener('click', function() {
+    const flips = 1_000_000;
+    let wins = 0;
+    for (let i = 0; i < flips; i++) {
+      if (Math.random() < 1e-9) wins++;
+    }
+    totalFlips += flips;
+    totalWins += wins;
+    flipsEl.textContent = totalFlips.toLocaleString();
+    winsEl.textContent = totalWins.toLocaleString();
+    if (wins > 0) {
+      winsEl.classList.add('bump');
+      setTimeout(() => winsEl.classList.remove('bump'), 200);
+    }
+  });
+})();
+
+/* ============================================================
+   SCROLL OBSERVER FALLBACK
+   ============================================================ */
+function setupScrollObserver() {
+  if (CSS.supports('animation-timeline', 'scroll()')) return;
+  const els = document.querySelectorAll('.fade-in');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  els.forEach(el => obs.observe(el));
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
 setupScrollObserver();
 updateProgress();
 </script>
