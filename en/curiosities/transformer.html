@@ -17,3 +17,2117 @@
 <meta name="author" content="Perplexity Computer">
 <meta property="og:see_also" content="https://www.perplexity.ai/computer">
 <link rel="author" href="https://www.perplexity.ai/computer">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Transformer Architecture — Interactive Study — Kovács Ferenc</title>
+<meta name="description" content="An interactive educational study of the Transformer neural network architecture that revolutionized artificial intelligence.">
+<meta property="og:title" content="The Transformer Architecture — Interactive Study">
+<meta property="og:description" content="Explore interactively how the Transformer model works, the self-attention mechanism, and the milestones of AI development.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   BASE RESET
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  -moz-text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+  hanging-punctuation: first last;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  min-height: 100dvh;
+  line-height: 1.6;
+  font-family: var(--font-body, sans-serif);
+  font-size: var(--text-base);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  padding-top: 3.5rem;
+}
+
+img, picture, video, canvas, svg { display: block; max-width: 100%; height: auto; }
+ul[role="list"], ol[role="list"] { list-style: none; }
+input, button, textarea, select { font: inherit; color: inherit; }
+
+h1, h2, h3, h4, h5, h6 { text-wrap: balance; line-height: 1.15; }
+p, li, figcaption { text-wrap: pretty; max-width: 72ch; }
+
+::selection {
+  background: rgba(59,130,246,0.25);
+  color: var(--color-text);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: 0.375rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+button { cursor: pointer; background: none; border: none; }
+table { border-collapse: collapse; width: 100%; }
+
+a, button, [role="button"], [role="link"], input, textarea, select {
+  transition: color 180ms cubic-bezier(0.16, 1, 0.3, 1),
+              background 180ms cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 180ms cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;
+}
+
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  /* Top-bar site tokens */
+  --bg: #07070a;
+  --surface: #0f1014;
+  --border: #1a1a22;
+  --text: #e8e8ec;
+  --text-dim: #7a7a88;
+
+  /* Type Scale */
+  --text-xs:   clamp(0.75rem,  0.7rem  + 0.25vw, 0.875rem);
+  --text-sm:   clamp(0.875rem, 0.8rem  + 0.35vw, 1rem);
+  --text-base: clamp(1rem,     0.95rem + 0.25vw, 1.125rem);
+  --text-lg:   clamp(1.125rem, 1rem    + 0.75vw, 1.5rem);
+  --text-xl:   clamp(1.5rem,   1.2rem  + 1.25vw, 2.25rem);
+  --text-2xl:  clamp(2rem,     1.2rem  + 2.5vw,  3.5rem);
+  --text-3xl:  clamp(2.5rem,   1rem    + 4vw,    5rem);
+  --text-hero: clamp(3rem,     0.5rem  + 7vw,    8rem);
+
+  /* Spacing */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* Fonts */
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --font-body: 'Inter', 'Helvetica Neue', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Tech Dark Palette */
+  --color-bg: #0a0a0f;
+  --color-surface: #111118;
+  --color-surface-2: #16161f;
+  --color-surface-offset: #0e0e15;
+  --color-divider: #1e1e2a;
+  --color-border: #2a2a3a;
+
+  --color-text: #e0dfe8;
+  --color-text-muted: #8888a0;
+  --color-text-faint: #55556a;
+  --color-text-inverse: #0a0a0f;
+
+  /* Accent — tech blue */
+  --color-primary: #3b82f6;
+  --color-primary-hover: #2563eb;
+  --color-primary-glow: rgba(59, 130, 246, 0.15);
+
+  /* Secondary — cyan */
+  --color-accent: #06b6d4;
+  --color-accent-2: #8b5cf6;
+
+  /* Status */
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+
+  /* Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-interactive: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.5);
+  --shadow-glow: 0 0 40px var(--color-primary-glow);
+
+  /* Content widths */
+  --content-narrow: 680px;
+  --content-default: 960px;
+  --content-wide: 1200px;
+}
+
+/* ============================================================
+   LIGHT THEME
+   ============================================================ */
+[data-theme="light"] {
+  --bg: #f0f1f5;
+  --surface: #ffffff;
+  --border: #d1d3de;
+  --text: #1a1b2e;
+  --text-dim: #5a5c72;
+
+  --color-bg: #f0f1f5;
+  --color-surface: #ffffff;
+  --color-surface-2: #f8f9fc;
+  --color-surface-offset: #edeef3;
+  --color-divider: #d1d3de;
+  --color-border: #c0c2d0;
+  --color-text: #1a1b2e;
+  --color-text-muted: #5a5c72;
+  --color-text-faint: #8b8da0;
+  --color-text-inverse: #f0f1f5;
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-glow: rgba(37, 99, 235, 0.12);
+  --color-accent: #0891b2;
+  --color-accent-2: #7c3aed;
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-error: #dc2626;
+}
+
+/* ============================================================
+   TOP BAR — matching site exactly
+   ============================================================ */
+.top-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(7,7,10,0.92); backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.top-bar a { color: var(--text-dim); text-decoration: none; font-size: 0.82rem; transition: color 0.25s; }
+.top-bar a:hover { color: var(--text); }
+.top-bar .brand { color: var(--text); font-weight: 600; font-size: 0.9rem; letter-spacing: 0.03em; }
+.top-bar .nav-left { display: flex; align-items: center; gap: 1.5rem; }
+
+[data-theme="light"] .top-bar {
+    background: rgba(240,241,245,0.92);
+    border-bottom-color: var(--border);
+}
+[data-theme="light"] .top-bar a { color: var(--text-dim); }
+[data-theme="light"] .top-bar a:hover { color: var(--text); }
+[data-theme="light"] .top-bar .brand { color: var(--text); }
+
+/* ============================================================
+   PARTICLE CANVAS
+   ============================================================ */
+#particleCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-primary), var(--color-accent-2));
+  z-index: 101;
+  width: 0%;
+  transition: width 100ms linear;
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.container {
+  width: 100%;
+  max-width: var(--content-default);
+  margin: 0 auto;
+  padding-inline: var(--space-6);
+}
+.container.narrow {
+  max-width: var(--content-narrow);
+}
+.container--wide {
+  max-width: var(--content-wide);
+}
+
+.section {
+  position: relative;
+  z-index: 1;
+  padding-block: clamp(var(--space-16), 10vw, var(--space-32));
+}
+
+.center { text-align: center; margin-inline: auto; }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  position: relative;
+  z-index: 1;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-8);
+  overflow: hidden;
+}
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.hero__bg canvas {
+  width: 100%;
+  height: 100%;
+}
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+}
+.hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-4);
+  border-radius: var(--radius-full);
+  background: rgba(59,130,246,0.12);
+  border: 1px solid rgba(59,130,246,0.25);
+  color: var(--color-primary);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-6);
+}
+.hero__title {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: 400;
+  line-height: 1.1;
+  margin-bottom: var(--space-6);
+  color: var(--color-text);
+}
+.hero__title .highlight {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero__subtitle {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  max-width: 50ch;
+  margin-inline: auto;
+  line-height: 1.7;
+  margin-bottom: var(--space-8);
+}
+.hero__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  text-decoration: none;
+  transition: background var(--transition-interactive), transform var(--transition-interactive);
+}
+.hero__cta:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+}
+.hero__cta:active {
+  transform: translateY(0);
+}
+
+/* Theme toggle floating button */
+.theme-toggle-float {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 99;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-interactive);
+  box-shadow: var(--shadow-md);
+}
+.theme-toggle-float:hover {
+  color: var(--color-text);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-glow);
+}
+
+/* ============================================================
+   TYPOGRAPHY — sections
+   ============================================================ */
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-primary);
+  margin-bottom: var(--space-4);
+}
+.section-label__line {
+  display: inline-block;
+  width: 24px;
+  height: 2px;
+  background: var(--color-primary);
+  border-radius: 1px;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 400;
+  margin-bottom: var(--space-4);
+  color: var(--color-text);
+}
+.section-desc {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  max-width: 640px;
+  margin-bottom: var(--space-10);
+}
+
+/* ============================================================
+   QUOTE BLOCK
+   ============================================================ */
+.quote-block {
+  position: relative;
+  padding: var(--space-8) var(--space-10);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--color-surface), var(--color-surface-offset));
+  border: 1px solid var(--color-border);
+  margin-bottom: var(--space-10);
+}
+.quote-block::before {
+  content: '\201C';
+  position: absolute;
+  top: -8px;
+  left: var(--space-6);
+  font-size: 4rem;
+  font-family: var(--font-display);
+  color: var(--color-primary);
+  opacity: 0.5;
+  line-height: 1;
+}
+.quote-block__text {
+  font-size: var(--text-lg);
+  font-style: italic;
+  line-height: 1.7;
+  margin-bottom: var(--space-4);
+  color: var(--color-text);
+}
+.quote-block__author {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+/* ============================================================
+   STATS ROW
+   ============================================================ */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-6);
+  padding: var(--space-8) 0;
+}
+.stat { text-align: center; }
+.stat__number {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 400;
+  color: var(--color-primary);
+  line-height: 1.1;
+  margin-bottom: var(--space-2);
+}
+.stat__label {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+/* ============================================================
+   TIMELINE
+   ============================================================ */
+.timeline {
+  position: relative;
+  padding-left: var(--space-10);
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 14px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--color-primary), var(--color-accent-2), var(--color-accent));
+  opacity: 0.4;
+}
+.timeline__item {
+  position: relative;
+  padding-bottom: var(--space-10);
+}
+.timeline__dot {
+  position: absolute;
+  left: calc(-1 * var(--space-10) + 8px);
+  top: 6px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-bg);
+  border: 3px solid var(--color-primary);
+  z-index: 2;
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+.timeline__item.active .timeline__dot {
+  background: var(--color-primary);
+  box-shadow: 0 0 12px rgba(59,130,246,0.5);
+}
+.timeline__year {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-primary);
+  font-weight: 600;
+  margin-bottom: var(--space-2);
+}
+.timeline__title {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 400;
+  margin-bottom: var(--space-2);
+  color: var(--color-text);
+}
+.timeline__desc {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  max-width: 560px;
+}
+
+/* ============================================================
+   INTERACTIVE TRANSFORMER DIAGRAM
+   ============================================================ */
+.transformer-viz {
+  position: relative;
+  width: 100%;
+  min-height: 600px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.transformer-viz canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-divider);
+}
+.viz-btn {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-interactive);
+}
+.viz-btn:hover {
+  border-color: var(--color-primary);
+  background: rgba(59,130,246,0.08);
+}
+.viz-btn.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+/* Split layout */
+.split-layout {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  min-height: 640px;
+}
+
+/* Info panel */
+.info-panel {
+  padding: var(--space-6);
+  background: var(--color-surface);
+  border-left: 1px solid var(--color-divider);
+  overflow-y: auto;
+}
+.info-panel__tag {
+  display: inline-block;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  background: rgba(6,182,212,0.15);
+  color: var(--color-accent);
+  margin-bottom: var(--space-4);
+}
+.info-panel__title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 400;
+  margin-bottom: var(--space-3);
+  color: var(--color-text);
+}
+.info-panel__text {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  line-height: 1.7;
+  margin-bottom: var(--space-4);
+}
+.info-panel__text strong {
+  color: var(--color-text);
+}
+
+/* ============================================================
+   ATTENTION DEMO
+   ============================================================ */
+.attention-demo {
+  padding: var(--space-8);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+.attention-sentence {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  justify-content: center;
+}
+.attention-word {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid transparent;
+  background: var(--color-surface-2);
+  transition: all 0.3s var(--ease-out);
+  user-select: none;
+  color: var(--color-text);
+}
+.attention-word:hover {
+  border-color: var(--color-border);
+}
+.attention-word.selected {
+  border-color: var(--color-primary);
+  background: rgba(59,130,246,0.15);
+  color: var(--color-primary);
+  box-shadow: 0 0 16px rgba(59,130,246,0.2);
+}
+.attention-word.related {
+  border-color: var(--color-accent);
+  background: rgba(6,182,212,0.1);
+}
+.attention-matrix {
+  display: grid;
+  gap: 2px;
+  margin-top: var(--space-6);
+  justify-content: center;
+}
+.attention-cell {
+  width: clamp(32px, 6vw, 48px);
+  height: clamp(32px, 6vw, 48px);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-xs);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  transition: all 0.4s var(--ease-out);
+  cursor: pointer;
+}
+
+/* ============================================================
+   TABS
+   ============================================================ */
+.tabs {
+  display: flex;
+  gap: var(--space-1);
+  background: var(--color-surface-offset);
+  border-radius: var(--radius-lg);
+  padding: var(--space-1);
+  margin-bottom: var(--space-6);
+  overflow-x: auto;
+}
+.tab-btn {
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--color-text-muted);
+  transition: all var(--transition-interactive);
+}
+.tab-btn:hover {
+  color: var(--color-text);
+}
+.tab-btn.active {
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ============================================================
+   CONCEPT CARDS
+   ============================================================ */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-6);
+}
+.concept-card {
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  border: 1px solid rgba(42,42,58,0.5);
+  transition: border-color var(--transition-interactive), box-shadow var(--transition-interactive), transform var(--transition-interactive);
+}
+.concept-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 24px rgba(59,130,246,0.1);
+  transform: translateY(-2px);
+}
+.concept-card__icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background: rgba(59,130,246,0.1);
+  color: var(--color-primary);
+  margin-bottom: var(--space-4);
+}
+.concept-card__icon svg {
+  width: 22px;
+  height: 22px;
+}
+.concept-card__title {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 400;
+  margin-bottom: var(--space-2);
+  color: var(--color-text);
+}
+.concept-card__text {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+/* ============================================================
+   COMPARISON TABLE
+   ============================================================ */
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+.comparison-table th {
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  font-weight: 700;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  border-bottom: 2px solid var(--color-divider);
+  background: var(--color-surface);
+}
+.comparison-table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid rgba(30,30,42,0.5);
+  vertical-align: top;
+  color: var(--color-text-muted);
+}
+.comparison-table td strong {
+  color: var(--color-text);
+}
+.comparison-table tr:hover td {
+  background: rgba(59,130,246,0.03);
+}
+.check { color: var(--color-success); font-weight: 700; }
+.cross { color: var(--color-error); font-weight: 700; }
+
+/* ============================================================
+   FOOTER — matching site pattern
+   ============================================================ */
+.footer {
+  position: relative;
+  z-index: 1;
+  padding: var(--space-10) var(--space-6);
+  border-top: 1px solid var(--color-divider);
+  text-align: center;
+}
+.footer-nav {
+  margin-bottom: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+.footer-nav a {
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: var(--text-sm);
+  transition: color 0.25s;
+}
+.footer-nav a:hover {
+  color: var(--color-text);
+}
+.footer-source {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-3);
+}
+.footer-source a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+.footer-source a:hover {
+  text-decoration: underline;
+}
+.footer-attr {
+  font-size: var(--text-xs);
+  color: var(--color-text-faint);
+}
+.footer-attr a {
+  color: var(--color-text-faint);
+  text-decoration: none;
+}
+.footer-attr a:hover {
+  color: var(--color-text-muted);
+}
+
+/* ============================================================
+   SCROLL ANIMATIONS
+   ============================================================ */
+.fade-in {
+  opacity: 1;
+}
+
+@supports (animation-timeline: scroll()) {
+  .fade-in {
+    opacity: 0;
+    animation: revealFade linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 80%;
+  }
+}
+
+@keyframes revealFade {
+  to { opacity: 1; }
+}
+
+@supports not (animation-timeline: scroll()) {
+  .fade-in {
+    opacity: 0;
+    transition: opacity 600ms var(--ease-out);
+  }
+  .fade-in.visible {
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(59,130,246,0.2); }
+  50% { box-shadow: 0 0 20px rgba(59,130,246,0.5); }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 900px) {
+  .split-layout {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+  .info-panel {
+    border-left: none;
+    border-top: 1px solid var(--color-divider);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    min-height: auto;
+    padding-block: var(--space-12);
+  }
+  .hero__title {
+    font-size: var(--text-2xl);
+  }
+  .stats-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .transformer-viz {
+    min-height: 400px;
+  }
+  .quote-block {
+    padding: var(--space-6);
+  }
+  .container {
+    padding-inline: var(--space-4);
+  }
+}
+
+@media (max-width: 640px) {
+  .top-bar { padding: 0.8rem 1rem; }
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+  .theme-toggle-float {
+    bottom: 1rem;
+    right: 1rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Particle Canvas Background -->
+<canvas id="particleCanvas"></canvas>
+
+<!-- Progress Bar -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- Top Bar Navigation (matching site exactly) -->
+<nav class="top-bar">
+  <div class="nav-left">
+    <a href="/en/" class="brand">&larr; Kovács Ferenc</a>
+    <a href="/en/curiosities.html">&larr; Curiosities</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:1rem;">
+    <a href="/erdekessegek/transformer.html" class="lang-switch">HU</a>
+  </div>
+</nav>
+
+<!-- Theme Toggle Floating Button -->
+<button class="theme-toggle-float" id="themeToggle" aria-label="Toggle theme">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+</button>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="top">
+  <div class="hero__bg">
+    <canvas id="hero-canvas"></canvas>
+  </div>
+  <div class="hero-content">
+    <div class="hero__badge">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a8 8 0 0 0-8 8c0 3.4 2.1 6.3 5 7.5V20h6v-2.5c2.9-1.2 5-4.1 5-7.5a8 8 0 0 0-8-8z"/><path d="M9 22h6"/><path d="M10 2v1"/><path d="M14 2v1"/></svg>
+      AI Development Milestone
+    </div>
+    <h1 class="hero__title">
+      The <span class="highlight">Transformer</span> Revolution
+    </h1>
+    <p class="hero__subtitle">
+      In 2017, Google researchers introduced a radically new neural network architecture that fundamentally changed the direction of artificial intelligence development. Explore interactively how it works.
+    </p>
+    <a href="#architecture" class="hero__cta">
+      Explore the architecture
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- ===== CONTEXT: Connor Leahy quote ===== -->
+<section class="section" id="context">
+  <div class="container narrow">
+    <div class="quote-block fade-in">
+      <p class="quote-block__text">
+        "We don't understand intelligence. We don't know how the brain works… and we don't really understand these neural networks either. It's like looking into a Petri dish."
+      </p>
+      <p class="quote-block__author">— Connor Leahy, AI researcher</p>
+    </div>
+
+    <div class="stats-row fade-in">
+      <div class="stat">
+        <div class="stat__number">2017</div>
+        <div class="stat__label">Transformer introduced</div>
+      </div>
+      <div class="stat">
+        <div class="stat__number">8</div>
+        <div class="stat__label">Author team (Google)</div>
+      </div>
+      <div class="stat">
+        <div class="stat__number">175B</div>
+        <div class="stat__label">GPT-3 parameters</div>
+      </div>
+      <div class="stat">
+        <div class="stat__number">100+</div>
+        <div class="stat__label">Thousand citations</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TIMELINE ===== -->
+<section class="section" id="timeline">
+  <div class="container narrow">
+    <div class="section-label fade-in">
+      <span class="section-label__line"></span>
+      History
+    </div>
+    <h2 class="section-title fade-in">Milestones in AI Development</h2>
+    <p class="section-desc fade-in">From deep learning to the Transformer revolution and today's generative AI.</p>
+
+    <div class="timeline fade-in">
+      <div class="timeline__item" data-year="2012">
+        <div class="timeline__dot"></div>
+        <div class="timeline__year">2012</div>
+        <div class="timeline__title">AlexNet and the Deep Learning Breakthrough</div>
+        <div class="timeline__desc">Alex Krizhevsky's deep neural network wins the ImageNet competition with half the error rate of the runner-up. This moment launches the deep learning revolution.</div>
+      </div>
+      <div class="timeline__item" data-year="2014">
+        <div class="timeline__dot"></div>
+        <div class="timeline__year">2014</div>
+        <div class="timeline__title">The Emergence of the Attention Mechanism</div>
+        <div class="timeline__desc">Bahdanau and colleagues introduce the attention mechanism into RNN-based translation models, enabling selective focus on relevant parts of the input sequence.</div>
+      </div>
+      <div class="timeline__item active" data-year="2017">
+        <div class="timeline__dot"></div>
+        <div class="timeline__year">2017 — The Turning Point</div>
+        <div class="timeline__title">"Attention Is All You Need"</div>
+        <div class="timeline__desc">Vaswani and colleagues present the Transformer architecture, built entirely on self-attention, abandoning RNNs and convolutions. This paper is one of the most-cited publications in AI history.</div>
+      </div>
+      <div class="timeline__item" data-year="2018">
+        <div class="timeline__dot"></div>
+        <div class="timeline__year">2018</div>
+        <div class="timeline__title">GPT-1 and BERT</div>
+        <div class="timeline__desc">OpenAI creates the GPT-1 model (117M parameters) and Google creates BERT. Both build on the Transformer architecture but with different approaches: GPT is decoder-based, BERT is encoder-based.</div>
+      </div>
+      <div class="timeline__item" data-year="2020">
+        <div class="timeline__dot"></div>
+        <div class="timeline__year">2020</div>
+        <div class="timeline__title">GPT-3: 175 Billion Parameters</div>
+        <div class="timeline__desc">OpenAI's GPT-3 model demonstrates remarkable text understanding and generation without task-specific fine-tuning. This model makes AI capabilities visible to a broader audience.</div>
+      </div>
+      <div class="timeline__item" data-year="2022">
+        <div class="timeline__dot"></div>
+        <div class="timeline__year">2022-2023</div>
+        <div class="timeline__title">ChatGPT and the Generative AI Explosion</div>
+        <div class="timeline__desc">The launch of ChatGPT (GPT-3.5/GPT-4) sparks explosive interest in large language models. The Transformer is now capable of generating images, audio, and video (DALL-E, Stable Diffusion, Sora).</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== INTERACTIVE TRANSFORMER ARCHITECTURE ===== -->
+<section class="section" id="architecture">
+  <div class="container container--wide">
+    <div class="section-label fade-in">
+      <span class="section-label__line"></span>
+      Architecture
+    </div>
+    <h2 class="section-title fade-in">The Structure of the Transformer</h2>
+    <p class="section-desc fade-in">Click on individual components to view detailed explanations. The architecture is draggable and zoomable.</p>
+
+    <div class="split-layout fade-in">
+      <div class="transformer-viz" id="transformer-viz">
+        <canvas id="arch-canvas"></canvas>
+        <div class="viz-controls">
+          <button class="viz-btn active" data-view="full">Full model</button>
+          <button class="viz-btn" data-view="encoder">Encoder</button>
+          <button class="viz-btn" data-view="decoder">Decoder</button>
+          <button class="viz-btn" data-view="attention">Self-Attention</button>
+          <button class="viz-btn" data-reset>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:-2px"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+            Reset
+          </button>
+        </div>
+      </div>
+      <div class="info-panel" id="info-panel">
+        <div class="info-panel__tag">Interactive Diagram</div>
+        <h3 class="info-panel__title" id="panel-title">Transformer Architecture</h3>
+        <div id="panel-content">
+          <p class="info-panel__text">
+            The Transformer architecture is an encoder-decoder structure introduced by the Google Brain team in 2017 in the paper "Attention Is All You Need."
+          </p>
+          <p class="info-panel__text">
+            Its most important innovation is the <strong>self-attention mechanism</strong>, which allows the model to focus on any part of the input sequence regardless of its distance.
+          </p>
+          <p class="info-panel__text">
+            <strong>Click on the architecture elements</strong> to view their detailed descriptions, or choose from the buttons to highlight individual components.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SELF-ATTENTION INTERACTIVE DEMO ===== -->
+<section class="section" id="attention">
+  <div class="container">
+    <div class="section-label fade-in">
+      <span class="section-label__line"></span>
+      Interactive Demo
+    </div>
+    <h2 class="section-title fade-in">Self-Attention Mechanism</h2>
+    <p class="section-desc fade-in">Click on a word to see how the Transformer model attends to the rest of the sentence to understand context.</p>
+
+    <div class="attention-demo fade-in" id="attention-demo">
+      <div class="tabs">
+        <button class="tab-btn active" data-sentence="0">Sentence 1</button>
+        <button class="tab-btn" data-sentence="1">Sentence 2</button>
+        <button class="tab-btn" data-sentence="2">Sentence 3</button>
+      </div>
+      <div class="attention-sentence" id="attention-sentence"></div>
+      <div style="text-align:center; margin-bottom: var(--space-4)">
+        <p style="font-size: var(--text-sm); color: var(--color-text-muted)" id="attention-hint">
+          Click a word to display attention weights
+        </p>
+      </div>
+      <div class="attention-matrix" id="attention-matrix"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== KEY CONCEPTS ===== -->
+<section class="section" id="concepts">
+  <div class="container">
+    <div class="section-label fade-in">
+      <span class="section-label__line"></span>
+      Key Concepts
+    </div>
+    <h2 class="section-title fade-in">Building Blocks of the Transformer</h2>
+    <p class="section-desc fade-in">Fundamental concepts needed to understand the architecture.</p>
+
+    <div class="card-grid fade-in">
+      <div class="concept-card">
+        <div class="concept-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
+        </div>
+        <h3 class="concept-card__title">Token Embedding</h3>
+        <p class="concept-card__text">Converts the words of a text into numerical vectors that encode semantic meaning in a high-dimensional space.</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <h3 class="concept-card__title">Positional Encoding</h3>
+        <p class="concept-card__text">Since the Transformer processes words in parallel, it encodes word order using sine and cosine functions.</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.78 7.78 5.5 5.5 0 0 1 7.78-7.78zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+        </div>
+        <h3 class="concept-card__title">Query, Key, Value</h3>
+        <p class="concept-card__text">Self-attention learns three matrices: Q (what am I looking for?), K (what am I?), V (what value do I carry?). Together they determine the attention weights.</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <h3 class="concept-card__title">Multi-Head Attention</h3>
+        <p class="concept-card__text">Multiple parallel attention "heads" operate simultaneously, each capturing different aspects: syntactic, semantic, and positional relationships.</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 3v18"/></svg>
+        </div>
+        <h3 class="concept-card__title">Feed-Forward Network</h3>
+        <p class="concept-card__text">After each attention layer, a fully connected network enriches the representation with nonlinear transformations.</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 0 0 9 9"/></svg>
+        </div>
+        <h3 class="concept-card__title">Residual Connection</h3>
+        <p class="concept-card__text">Add &amp; Norm layers ensure unobstructed gradient flow and preserve the original information in the deep network.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== COMPARISON TABLE ===== -->
+<section class="section" id="impact">
+  <div class="container narrow">
+    <div class="section-label fade-in">
+      <span class="section-label__line"></span>
+      Impact
+    </div>
+    <h2 class="section-title fade-in">Why Is It Revolutionary?</h2>
+    <p class="section-desc fade-in">A comparison of the world before and after the Transformer.</p>
+
+    <div class="fade-in" style="overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--color-border);">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Aspect</th>
+            <th>RNN / LSTM (before)</th>
+            <th>Transformer (after)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Processing</strong></td>
+            <td>Sequential (word by word)</td>
+            <td><span class="check">&#10003;</span> Parallel (all at once)</td>
+          </tr>
+          <tr>
+            <td><strong>Long-range dependencies</strong></td>
+            <td><span class="cross">&#10007;</span> Handles poorly</td>
+            <td><span class="check">&#10003;</span> With global attention</td>
+          </tr>
+          <tr>
+            <td><strong>Training speed</strong></td>
+            <td>Slow, difficult to leverage GPUs</td>
+            <td><span class="check">&#10003;</span> Fast, massively parallel</td>
+          </tr>
+          <tr>
+            <td><strong>Scalability</strong></td>
+            <td>Limited scalability</td>
+            <td><span class="check">&#10003;</span> Billions of parameters</td>
+          </tr>
+          <tr>
+            <td><strong>Transferability</strong></td>
+            <td><span class="cross">&#10007;</span> Retrain per task</td>
+            <td><span class="check">&#10003;</span> General purpose, fine-tuning</td>
+          </tr>
+          <tr>
+            <td><strong>Multimodality</strong></td>
+            <td><span class="cross">&#10007;</span> Mostly text</td>
+            <td><span class="check">&#10003;</span> Text, image, audio, video</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="quote-block fade-in" style="margin-top: var(--space-10)">
+      <p class="quote-block__text">
+        "GPT was a general-purpose pattern learner. Before that there was very little transferability — you had to retrain for every task. GPT changed that."
+      </p>
+      <p class="quote-block__author">— Connor Leahy, on AI development</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SOURCES ===== -->
+<section class="section" id="sources">
+  <div class="container narrow">
+    <div class="section-label fade-in">
+      <span class="section-label__line"></span>
+      References
+    </div>
+    <h2 class="section-title fade-in">Citations</h2>
+    <div class="fade-in" style="display:flex; flex-direction:column; gap: var(--space-3);">
+      <p class="info-panel__text">
+        <strong>1.</strong> Vaswani, A. et al. (2017). "Attention Is All You Need." <em>NeurIPS 2017.</em>
+        <a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener noreferrer" style="color: var(--color-primary)">arxiv.org/abs/1706.03762</a>
+      </p>
+      <p class="info-panel__text">
+        <strong>2.</strong> Connor Leahy — "AI is MUTATING: And We Don't Know What It is Doing."
+        <a href="https://youtu.be/rf2KFVcKQdQ" target="_blank" rel="noopener noreferrer" style="color: var(--color-primary)">YouTube video</a>
+      </p>
+      <p class="info-panel__text">
+        <strong>3.</strong> Polo Club of Data Science. "LLM Transformer Model Visually Explained."
+        <a href="https://poloclub.github.io/transformer-explainer/" target="_blank" rel="noopener noreferrer" style="color: var(--color-primary)">poloclub.github.io</a>
+      </p>
+      <p class="info-panel__text">
+        <strong>4.</strong> Wikipedia. "Timeline of artificial intelligence."
+        <a href="https://en.wikipedia.org/wiki/Timeline_of_artificial_intelligence" target="_blank" rel="noopener noreferrer" style="color: var(--color-primary)">wikipedia.org</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-nav">
+      <a href="/en/curiosities.html">&larr; Back to curiosities</a>
+      <a href="/en/">&larr; Back to main page</a>
+    </div>
+    <p class="footer-source">
+      Sources: <a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener noreferrer">Vaswani et al. (2017)</a> &middot;
+      <a href="https://youtu.be/rf2KFVcKQdQ" target="_blank" rel="noopener noreferrer">Connor Leahy video</a>
+    </p>
+    <p class="footer-attr">
+      <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   THEME TOGGLE
+   ============================================================ */
+(function(){
+  const btn = document.getElementById('themeToggle');
+  const root = document.documentElement;
+  let theme = 'dark';
+
+  function updateIcon() {
+    if (!btn) return;
+    btn.innerHTML = theme === 'dark'
+      ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
+      : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  }
+
+  if (btn) {
+    btn.addEventListener('click', () => {
+      theme = theme === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', theme);
+      updateIcon();
+      // Redraw canvases
+      if (window.heroParticles) window.heroParticles.updateColors();
+      if (window.archDiagram) window.archDiagram.draw();
+      // Re-render attention demo
+      if (window.attentionDemo) window.attentionDemo.render();
+    });
+  }
+  updateIcon();
+})();
+
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+(function(){
+  const bar = document.getElementById('progressBar');
+  window.addEventListener('scroll', () => {
+    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const progress = (scrollTop / scrollHeight) * 100;
+    bar.style.width = progress + '%';
+  }, { passive: true });
+})();
+
+/* ============================================================
+   BACKGROUND PARTICLE CANVAS
+   ============================================================ */
+(function(){
+  const canvas = document.getElementById('particleCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w, h, particles = [];
+  const COUNT = 35;
+  const CONNECT = 200;
+
+  function getColors() {
+    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+    return {
+      particle: isDark ? 'rgba(59,130,246,0.25)' : 'rgba(37,99,235,0.15)',
+      line: isDark ? 'rgba(59,130,246,0.06)' : 'rgba(37,99,235,0.04)',
+    };
+  }
+
+  function resize() {
+    w = window.innerWidth;
+    h = window.innerHeight;
+    canvas.width = w * devicePixelRatio;
+    canvas.height = h * devicePixelRatio;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+  }
+
+  function init() {
+    resize();
+    particles = [];
+    for (let i = 0; i < COUNT; i++) {
+      particles.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        r: Math.random() * 1.5 + 0.8,
+      });
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    const colors = getColors();
+
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < CONNECT) {
+          const alpha = 1 - dist / CONNECT;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = colors.line;
+          ctx.globalAlpha = alpha;
+          ctx.lineWidth = 0.6;
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
+      }
+    }
+
+    for (const p of particles) {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0 || p.x > w) p.vx *= -1;
+      if (p.y < 0 || p.y > h) p.vy *= -1;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = colors.particle;
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  init();
+  draw();
+})();
+
+/* ============================================================
+   HERO PARTICLE NETWORK
+   ============================================================ */
+(function() {
+  const canvas = document.getElementById('hero-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w, h, particles = [], mouse = { x: -1000, y: -1000 };
+  const PARTICLE_COUNT = 60;
+  const CONNECTION_DIST = 160;
+
+  function getColors() {
+    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+    return {
+      particle: isDark ? 'rgba(59,130,246,0.6)' : 'rgba(37,99,235,0.5)',
+      line: isDark ? 'rgba(59,130,246,0.12)' : 'rgba(37,99,235,0.08)',
+      lineHover: isDark ? 'rgba(6,182,212,0.35)' : 'rgba(8,145,178,0.25)',
+    };
+  }
+
+  function resize() {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width * devicePixelRatio;
+    canvas.height = rect.height * devicePixelRatio;
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = rect.height + 'px';
+    ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+    w = rect.width;
+    h = rect.height;
+  }
+
+  function init() {
+    resize();
+    particles = [];
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      particles.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        r: Math.random() * 2 + 1.5,
+      });
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    const colors = getColors();
+
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < CONNECTION_DIST) {
+          const alpha = 1 - dist / CONNECTION_DIST;
+          const mx = (particles[i].x + particles[j].x) / 2;
+          const my = (particles[i].y + particles[j].y) / 2;
+          const mouseDist = Math.sqrt((mx - mouse.x) ** 2 + (my - mouse.y) ** 2);
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = mouseDist < 150 ? colors.lineHover : colors.line;
+          ctx.globalAlpha = alpha;
+          ctx.lineWidth = mouseDist < 150 ? 1.5 : 0.8;
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
+      }
+    }
+
+    for (const p of particles) {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0 || p.x > w) p.vx *= -1;
+      if (p.y < 0 || p.y > h) p.vy *= -1;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = colors.particle;
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+
+  canvas.parentElement.addEventListener('mousemove', (e) => {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+  });
+  canvas.parentElement.addEventListener('mouseleave', () => {
+    mouse.x = -1000;
+    mouse.y = -1000;
+  });
+
+  window.addEventListener('resize', () => { resize(); });
+  init();
+  draw();
+
+  window.heroParticles = { updateColors: () => {} };
+})();
+
+/* ============================================================
+   INTERACTIVE TRANSFORMER ARCHITECTURE DIAGRAM
+   ============================================================ */
+(function() {
+  const canvas = document.getElementById('arch-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w, h;
+  let offsetX = 0, offsetY = 0, scale = 1;
+  let isDragging = false, dragStartX, dragStartY;
+  let hoveredBlock = null;
+  let activeView = 'full';
+
+  const blocks = {
+    inputEmbed: { x: 100, y: 520, w: 160, h: 50, label: 'Input Embedding', color: '#3b82f6', side: 'encoder', desc: 'embedding' },
+    posEnc1: { x: 100, y: 450, w: 160, h: 40, label: 'Positional Encoding', color: '#06b6d4', side: 'encoder', desc: 'positional' },
+    multiHead1: { x: 100, y: 360, w: 160, h: 55, label: 'Multi-Head\nSelf-Attention', color: '#8b5cf6', side: 'encoder', desc: 'multihead' },
+    addNorm1: { x: 100, y: 290, w: 160, h: 40, label: 'Add & Norm', color: '#22c55e', side: 'encoder', desc: 'residual' },
+    ffn1: { x: 100, y: 220, w: 160, h: 45, label: 'Feed-Forward\nNetwork', color: '#f59e0b', side: 'encoder', desc: 'ffn' },
+    addNorm2: { x: 100, y: 155, w: 160, h: 40, label: 'Add & Norm', color: '#22c55e', side: 'encoder', desc: 'residual' },
+    encLabel: { x: 100, y: 105, w: 160, h: 30, label: 'ENCODER ×N', color: 'transparent', side: 'encoder', isLabel: true },
+    outputEmbed: { x: 400, y: 520, w: 160, h: 50, label: 'Output Embedding', color: '#3b82f6', side: 'decoder', desc: 'embedding' },
+    posEnc2: { x: 400, y: 450, w: 160, h: 40, label: 'Positional Encoding', color: '#06b6d4', side: 'decoder', desc: 'positional' },
+    maskedMHA: { x: 400, y: 360, w: 160, h: 55, label: 'Masked\nSelf-Attention', color: '#ec4899', side: 'decoder', desc: 'masked' },
+    addNorm3: { x: 400, y: 290, w: 160, h: 40, label: 'Add & Norm', color: '#22c55e', side: 'decoder', desc: 'residual' },
+    crossAttn: { x: 400, y: 220, w: 160, h: 55, label: 'Cross-Attention\n(Enc → Dec)', color: '#a855f7', side: 'decoder', desc: 'cross' },
+    addNorm4: { x: 400, y: 150, w: 160, h: 40, label: 'Add & Norm', color: '#22c55e', side: 'decoder', desc: 'residual' },
+    ffn2: { x: 400, y: 90, w: 160, h: 45, label: 'Feed-Forward\nNetwork', color: '#f59e0b', side: 'decoder', desc: 'ffn' },
+    addNorm5: { x: 400, y: 35, w: 160, h: 40, label: 'Add & Norm', color: '#22c55e', side: 'decoder', desc: 'residual' },
+    linear: { x: 400, y: -25, w: 160, h: 40, label: 'Linear Layer', color: '#64748b', side: 'decoder', desc: 'linear' },
+    softmax: { x: 400, y: -80, w: 160, h: 40, label: 'Softmax', color: '#ef4444', side: 'decoder', desc: 'softmax' },
+  };
+
+  const descriptions = {
+    embedding: {
+      title: 'Token Embedding',
+      text: 'Converts the input text\'s words (tokens) into numerical vectors. Each token gets a high-dimensional vector (e.g., 512 dimensions) that encodes the semantic meaning of the word. During training, these vectors are arranged so that words with similar meanings are placed close together in the vector space.',
+      tag: 'Input processing'
+    },
+    positional: {
+      title: 'Positional Encoding',
+      text: 'Since the Transformer processes all tokens in parallel, it needs a way to signal the order of words. Positional encoding adds position information to the embedding vectors using sine and cosine functions. This allows the model to distinguish between "The dog chased the cat" and "The cat chased the dog."',
+      tag: 'Position information'
+    },
+    multihead: {
+      title: 'Multi-Head Self-Attention',
+      text: 'This is the heart of the Transformer. Multiple parallel attention "heads" operate, each with its own Q, K, V matrices. One head may be sensitive to syntactic relationships, another to semantic similarity, another to nearby words. The original model uses 8 heads in parallel, then concatenates the results. Formula: Attention(Q,K,V) = softmax(QK^T / √d_k) × V',
+      tag: 'Self-attention'
+    },
+    ffn: {
+      title: 'Feed-Forward Network',
+      text: 'After each attention layer, a two-layer fully connected network enriches the representation with nonlinear transformations (ReLU or GELU activation). The inner dimension is typically 4× larger (2048 → 8192), then projects back to the original dimension. This layer is where the model stores its "knowledge."',
+      tag: 'Nonlinear transformation'
+    },
+    residual: {
+      title: 'Add & Norm (Residual Connection)',
+      text: 'The residual connection directly adds the input of a given layer to its output (skip connection), followed by layer normalization. This ensures unobstructed gradient flow in the deep network, preserves the original information, and stabilizes the training process. Without it, deep Transformer models would not train effectively.',
+      tag: 'Gradient stabilization'
+    },
+    masked: {
+      title: 'Masked Self-Attention',
+      text: 'A special attention used in the decoder where the model only "sees" previous and current positions — future tokens are hidden by a mask (with negative infinity values). This ensures autoregressive generation: the model never "cheats" by looking ahead in the sequence.',
+      tag: 'Autoregressive'
+    },
+    cross: {
+      title: 'Cross-Attention (Encoder-Decoder)',
+      text: 'The decoder\'s attention layer that uses the encoder output as Key and Value matrices, while Query comes from the decoder\'s internal representation. This connection allows the decoder to "look at" the entire input sequence when generating output, for example in machine translation.',
+      tag: 'Encoder → Decoder'
+    },
+    linear: {
+      title: 'Linear Layer',
+      text: 'Projects the decoder output to the vocabulary size (e.g., 32,000 dimensions for GPT models). For each position, a vocabulary-sized vector of logit values is created — these indicate how likely each word is to appear at the next position.',
+      tag: 'Output projection'
+    },
+    softmax: {
+      title: 'Softmax Output',
+      text: 'Converts logit values into a probability distribution: assigns each word a probability between 0 and 1, summing to 1. The model uses the most probable token (greedy), or a more sophisticated strategy (beam search, top-k, top-p) to select the next word.',
+      tag: 'Probability'
+    },
+  };
+
+  function resize() {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    w = rect.width;
+    h = rect.height;
+    canvas.width = w * devicePixelRatio;
+    canvas.height = h * devicePixelRatio;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+  }
+
+  function getStyle() {
+    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+    return {
+      bg: isDark ? '#0a0a0f' : '#f0f1f5',
+      text: isDark ? '#e0dfe8' : '#1a1b2e',
+      textMuted: isDark ? '#8888a0' : '#5a5c72',
+      border: isDark ? '#2a2a3a' : '#c0c2d0',
+      surface: isDark ? '#16161f' : '#ffffff',
+      labelBg: isDark ? 'rgba(59,130,246,0.08)' : 'rgba(37,99,235,0.06)',
+    };
+  }
+
+  function getBlockOpacity(b) {
+    if (activeView === 'full') return 1;
+    if (activeView === 'encoder') return b.side === 'encoder' ? 1 : 0.15;
+    if (activeView === 'decoder') return b.side === 'decoder' ? 1 : 0.15;
+    if (activeView === 'attention') {
+      return (b.desc === 'multihead' || b.desc === 'masked' || b.desc === 'cross') ? 1 : 0.15;
+    }
+    return 1;
+  }
+
+  function drawBlock(b, key, style) {
+    const opacity = getBlockOpacity(b);
+    if (opacity === 0) return;
+    ctx.save();
+    ctx.globalAlpha = opacity;
+    const isHovered = hoveredBlock === key;
+    const r = 8;
+
+    if (isHovered) {
+      ctx.shadowColor = b.color;
+      ctx.shadowBlur = 18;
+    }
+
+    ctx.beginPath();
+    ctx.roundRect(b.x, b.y, b.w, b.h, r);
+    if (b.isLabel) {
+      ctx.fillStyle = style.labelBg;
+    } else {
+      ctx.fillStyle = style.surface;
+    }
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    ctx.strokeStyle = isHovered ? b.color : style.border;
+    ctx.lineWidth = isHovered ? 2 : 1;
+    ctx.stroke();
+
+    if (!b.isLabel) {
+      ctx.beginPath();
+      ctx.roundRect(b.x, b.y, 4, b.h, [r, 0, 0, r]);
+      ctx.fillStyle = b.color;
+      ctx.fill();
+    }
+
+    ctx.fillStyle = b.isLabel ? b.color || style.textMuted : style.text;
+    ctx.font = b.isLabel ? 'bold 11px "JetBrains Mono", monospace' : '600 12px "Inter", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const lines = b.label.split('\n');
+    const lineH = b.isLabel ? 14 : 15;
+    const startY = b.y + b.h / 2 - (lines.length - 1) * lineH / 2;
+    lines.forEach((line, i) => {
+      ctx.fillText(line, b.x + b.w / 2, startY + i * lineH);
+    });
+
+    ctx.restore();
+  }
+
+  function drawArrow(from, to, style, dashed) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.strokeStyle = style.textMuted;
+    ctx.lineWidth = 1.5;
+    ctx.globalAlpha = 0.5;
+    if (dashed) ctx.setLineDash([4, 4]);
+    ctx.moveTo(from.x, from.y);
+    ctx.lineTo(to.x, to.y);
+    ctx.stroke();
+    const angle = Math.atan2(to.y - from.y, to.x - from.x);
+    ctx.beginPath();
+    ctx.moveTo(to.x, to.y);
+    ctx.lineTo(to.x - 8 * Math.cos(angle - 0.4), to.y - 8 * Math.sin(angle - 0.4));
+    ctx.lineTo(to.x - 8 * Math.cos(angle + 0.4), to.y - 8 * Math.sin(angle + 0.4));
+    ctx.closePath();
+    ctx.fillStyle = style.textMuted;
+    ctx.fill();
+    ctx.setLineDash([]);
+    ctx.restore();
+  }
+
+  function draw() {
+    const style = getStyle();
+    ctx.save();
+    ctx.clearRect(0, 0, w, h);
+
+    ctx.translate(w / 2 + offsetX, h / 2 + offsetY);
+    ctx.scale(scale, scale);
+    ctx.translate(-330, -230);
+
+    // Encoder bracket
+    ctx.save();
+    ctx.strokeStyle = style.border;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.roundRect(80, 90, 200, 500, 12);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    // Decoder bracket
+    ctx.save();
+    ctx.strokeStyle = style.border;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.roundRect(380, -100, 200, 690, 12);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    // Arrows
+    const b = blocks;
+    drawArrow({ x: 180, y: b.inputEmbed.y }, { x: 180, y: b.posEnc1.y + b.posEnc1.h }, style);
+    drawArrow({ x: 180, y: b.posEnc1.y }, { x: 180, y: b.multiHead1.y + b.multiHead1.h }, style);
+    drawArrow({ x: 180, y: b.multiHead1.y }, { x: 180, y: b.addNorm1.y + b.addNorm1.h }, style);
+    drawArrow({ x: 180, y: b.addNorm1.y }, { x: 180, y: b.ffn1.y + b.ffn1.h }, style);
+    drawArrow({ x: 180, y: b.ffn1.y }, { x: 180, y: b.addNorm2.y + b.addNorm2.h }, style);
+
+    drawArrow({ x: 480, y: b.outputEmbed.y }, { x: 480, y: b.posEnc2.y + b.posEnc2.h }, style);
+    drawArrow({ x: 480, y: b.posEnc2.y }, { x: 480, y: b.maskedMHA.y + b.maskedMHA.h }, style);
+    drawArrow({ x: 480, y: b.maskedMHA.y }, { x: 480, y: b.addNorm3.y + b.addNorm3.h }, style);
+    drawArrow({ x: 480, y: b.addNorm3.y }, { x: 480, y: b.crossAttn.y + b.crossAttn.h }, style);
+    drawArrow({ x: 480, y: b.crossAttn.y }, { x: 480, y: b.addNorm4.y + b.addNorm4.h }, style);
+    drawArrow({ x: 480, y: b.addNorm4.y }, { x: 480, y: b.ffn2.y + b.ffn2.h }, style);
+    drawArrow({ x: 480, y: b.ffn2.y }, { x: 480, y: b.addNorm5.y + b.addNorm5.h }, style);
+    drawArrow({ x: 480, y: b.addNorm5.y }, { x: 480, y: b.linear.y + b.linear.h }, style);
+    drawArrow({ x: 480, y: b.linear.y }, { x: 480, y: b.softmax.y + b.softmax.h }, style);
+
+    // Cross-attention arrow
+    drawArrow({ x: 260, y: b.addNorm2.y + b.addNorm2.h / 2 }, { x: 400, y: b.crossAttn.y + b.crossAttn.h / 2 }, style, true);
+
+    // Draw blocks
+    for (const [key, block] of Object.entries(blocks)) {
+      drawBlock(block, key, style);
+    }
+
+    ctx.restore();
+  }
+
+  function hitTest(mx, my) {
+    const tx = (mx - w / 2 - offsetX) / scale + 330;
+    const ty = (my - h / 2 - offsetY) / scale + 230;
+    for (const [key, b] of Object.entries(blocks)) {
+      if (b.isLabel) continue;
+      if (tx >= b.x && tx <= b.x + b.w && ty >= b.y && ty <= b.y + b.h) {
+        return key;
+      }
+    }
+    return null;
+  }
+
+  function updatePanel(descKey) {
+    const d = descriptions[descKey];
+    if (!d) return;
+    document.getElementById('panel-title').textContent = d.title;
+    document.getElementById('panel-content').innerHTML =
+      '<p class="info-panel__text">' + d.text + '</p>' +
+      '<span class="info-panel__tag">' + d.tag + '</span>';
+  }
+
+  // Mouse events
+  canvas.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    dragStartX = e.clientX - offsetX;
+    dragStartY = e.clientY - offsetY;
+    canvas.style.cursor = 'grabbing';
+  });
+
+  canvas.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+      offsetX = e.clientX - dragStartX;
+      offsetY = e.clientY - dragStartY;
+      draw();
+      return;
+    }
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    const hit = hitTest(mx, my);
+    if (hit !== hoveredBlock) {
+      hoveredBlock = hit;
+      canvas.style.cursor = hit ? 'pointer' : 'grab';
+      draw();
+    }
+  });
+
+  canvas.addEventListener('mouseup', () => {
+    isDragging = false;
+    canvas.style.cursor = hoveredBlock ? 'pointer' : 'grab';
+  });
+
+  canvas.addEventListener('mouseleave', () => {
+    isDragging = false;
+    hoveredBlock = null;
+    draw();
+  });
+
+  canvas.addEventListener('click', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    const hit = hitTest(mx, my);
+    if (hit && blocks[hit].desc) {
+      updatePanel(blocks[hit].desc);
+    }
+  });
+
+  // Zoom
+  canvas.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    scale = Math.max(0.4, Math.min(2.5, scale * delta));
+    draw();
+  }, { passive: false });
+
+  // Touch events
+  let touchStartDist = 0;
+  let touchStartScale = 1;
+  canvas.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 1) {
+      isDragging = true;
+      dragStartX = e.touches[0].clientX - offsetX;
+      dragStartY = e.touches[0].clientY - offsetY;
+    } else if (e.touches.length === 2) {
+      touchStartDist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      touchStartScale = scale;
+    }
+  }, { passive: true });
+
+  canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    if (e.touches.length === 1 && isDragging) {
+      offsetX = e.touches[0].clientX - dragStartX;
+      offsetY = e.touches[0].clientY - dragStartY;
+      draw();
+    } else if (e.touches.length === 2) {
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      scale = Math.max(0.4, Math.min(2.5, touchStartScale * (dist / touchStartDist)));
+      draw();
+    }
+  }, { passive: false });
+
+  canvas.addEventListener('touchend', () => { isDragging = false; });
+
+  // View buttons
+  document.querySelectorAll('.viz-btn[data-view]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.viz-btn[data-view]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeView = btn.dataset.view;
+      draw();
+    });
+  });
+
+  document.querySelector('.viz-btn[data-reset]')?.addEventListener('click', () => {
+    offsetX = 0;
+    offsetY = 0;
+    scale = 1;
+    draw();
+  });
+
+  resize();
+  canvas.style.cursor = 'grab';
+  draw();
+
+  window.addEventListener('resize', () => { resize(); draw(); });
+  window.archDiagram = { draw };
+})();
+
+/* ============================================================
+   SELF-ATTENTION INTERACTIVE DEMO
+   ============================================================ */
+(function() {
+  const sentences = [
+    {
+      words: ['The', 'cat', 'sat', 'on', 'the', 'mat', 'and', 'watched', 'the', 'bird'],
+      matrix: [
+        [0.12, 0.25, 0.08, 0.10, 0.07, 0.05, 0.08, 0.10, 0.08, 0.07],
+        [0.05, 0.40, 0.10, 0.03, 0.05, 0.08, 0.02, 0.10, 0.05, 0.12],
+        [0.04, 0.30, 0.20, 0.05, 0.08, 0.12, 0.03, 0.08, 0.04, 0.06],
+        [0.08, 0.05, 0.08, 0.15, 0.30, 0.15, 0.05, 0.05, 0.05, 0.04],
+        [0.05, 0.08, 0.05, 0.20, 0.25, 0.18, 0.05, 0.05, 0.05, 0.04],
+        [0.03, 0.12, 0.15, 0.15, 0.18, 0.25, 0.02, 0.04, 0.04, 0.02],
+        [0.06, 0.08, 0.06, 0.06, 0.08, 0.06, 0.15, 0.25, 0.10, 0.10],
+        [0.03, 0.18, 0.05, 0.03, 0.05, 0.05, 0.06, 0.20, 0.10, 0.25],
+        [0.08, 0.05, 0.04, 0.08, 0.08, 0.05, 0.06, 0.10, 0.16, 0.30],
+        [0.02, 0.15, 0.03, 0.03, 0.04, 0.03, 0.06, 0.22, 0.10, 0.32],
+      ]
+    },
+    {
+      words: ['The', 'Transformer', 'model', 'revolutionized', 'AI', 'research'],
+      matrix: [
+        [0.15, 0.35, 0.20, 0.05, 0.12, 0.13],
+        [0.03, 0.40, 0.20, 0.15, 0.12, 0.10],
+        [0.04, 0.30, 0.25, 0.18, 0.12, 0.11],
+        [0.02, 0.20, 0.10, 0.25, 0.20, 0.23],
+        [0.05, 0.12, 0.08, 0.20, 0.30, 0.25],
+        [0.03, 0.12, 0.10, 0.22, 0.22, 0.31],
+      ]
+    },
+    {
+      words: ['This', 'sentence', 'uses', 'self-attention'],
+      matrix: [
+        [0.25, 0.30, 0.25, 0.20],
+        [0.10, 0.35, 0.30, 0.25],
+        [0.08, 0.22, 0.35, 0.35],
+        [0.05, 0.15, 0.25, 0.55],
+      ]
+    }
+  ];
+
+  let currentSentence = 0;
+  let selectedWord = -1;
+
+  function render() {
+    const s = sentences[currentSentence];
+    const sentenceEl = document.getElementById('attention-sentence');
+    const matrixEl = document.getElementById('attention-matrix');
+    const hintEl = document.getElementById('attention-hint');
+    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+
+    sentenceEl.innerHTML = '';
+    s.words.forEach((word, i) => {
+      const span = document.createElement('span');
+      span.className = 'attention-word';
+      span.textContent = word;
+      if (i === selectedWord) span.classList.add('selected');
+      if (selectedWord >= 0 && i !== selectedWord) {
+        const val = s.matrix[selectedWord][i];
+        if (val > 0.15) span.classList.add('related');
+      }
+      span.addEventListener('click', () => {
+        selectedWord = selectedWord === i ? -1 : i;
+        render();
+      });
+      sentenceEl.appendChild(span);
+    });
+
+    const n = s.words.length;
+    matrixEl.style.gridTemplateColumns = 'repeat(' + (n + 1) + ', 1fr)';
+    matrixEl.innerHTML = '';
+
+    const emptyCorner = document.createElement('div');
+    emptyCorner.className = 'attention-cell';
+    emptyCorner.style.background = 'transparent';
+    matrixEl.appendChild(emptyCorner);
+
+    s.words.forEach((word, i) => {
+      const hdr = document.createElement('div');
+      hdr.className = 'attention-cell';
+      hdr.style.background = 'transparent';
+      hdr.style.fontWeight = '600';
+      hdr.style.color = i === selectedWord ? 'var(--color-primary)' : 'var(--color-text-muted)';
+      hdr.textContent = word.length > 4 ? word.substring(0, 3) + '..' : word;
+      hdr.title = word;
+      matrixEl.appendChild(hdr);
+    });
+
+    s.words.forEach((rowWord, i) => {
+      const rowLabel = document.createElement('div');
+      rowLabel.className = 'attention-cell';
+      rowLabel.style.background = 'transparent';
+      rowLabel.style.fontWeight = '600';
+      rowLabel.style.color = i === selectedWord ? 'var(--color-primary)' : 'var(--color-text-muted)';
+      rowLabel.textContent = rowWord.length > 4 ? rowWord.substring(0, 3) + '..' : rowWord;
+      rowLabel.title = rowWord;
+      matrixEl.appendChild(rowLabel);
+
+      s.words.forEach((colWord, j) => {
+        const cell = document.createElement('div');
+        cell.className = 'attention-cell';
+        const val = s.matrix[i][j];
+
+        if (selectedWord >= 0 && i === selectedWord) {
+          const alpha = 0.15 + val * 0.85;
+          cell.style.background = isDark
+            ? 'rgba(59,130,246,' + alpha + ')'
+            : 'rgba(37,99,235,' + alpha + ')';
+          cell.style.color = alpha > 0.4 ? '#fff' : (isDark ? '#e0dfe8' : '#1a1b2e');
+        } else if (selectedWord < 0) {
+          const alpha = 0.05 + val * 0.5;
+          cell.style.background = isDark
+            ? 'rgba(59,130,246,' + alpha + ')'
+            : 'rgba(37,99,235,' + alpha + ')';
+          cell.style.color = isDark ? '#e0dfe8' : '#1a1b2e';
+        } else {
+          cell.style.background = isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)';
+          cell.style.color = isDark ? '#55556a' : '#8b8da0';
+        }
+
+        cell.textContent = val.toFixed(2);
+        cell.title = rowWord + ' → ' + colWord + ': ' + val.toFixed(3);
+        cell.addEventListener('click', () => {
+          selectedWord = selectedWord === i ? -1 : i;
+          render();
+        });
+        matrixEl.appendChild(cell);
+      });
+    });
+
+    if (selectedWord >= 0) {
+      const topAttn = s.matrix[selectedWord]
+        .map((v, i) => ({ word: s.words[i], val: v }))
+        .sort((a, b) => b.val - a.val)
+        .slice(0, 3);
+      hintEl.innerHTML = '<strong>"' + s.words[selectedWord] + '"</strong> pays most attention to: ' + topAttn.map(t => '<strong>' + t.word + '</strong> (' + (t.val * 100).toFixed(0) + '%)').join(', ');
+    } else {
+      hintEl.textContent = 'Click a word to display attention weights';
+    }
+  }
+
+  document.querySelectorAll('.tab-btn[data-sentence]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn[data-sentence]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentSentence = parseInt(btn.dataset.sentence);
+      selectedWord = -1;
+      render();
+    });
+  });
+
+  render();
+  window.attentionDemo = { render };
+})();
+
+/* ============================================================
+   TIMELINE SCROLL ANIMATION
+   ============================================================ */
+(function() {
+  const items = document.querySelectorAll('.timeline__item');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('active');
+      }
+    });
+  }, { threshold: 0.5 });
+  items.forEach(item => observer.observe(item));
+})();
+
+/* ============================================================
+   SCROLL REVEAL FALLBACK (for browsers without scroll-driven animations)
+   ============================================================ */
+(function() {
+  if (CSS.supports && CSS.supports('animation-timeline: scroll()')) return;
+  const els = document.querySelectorAll('.fade-in');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  els.forEach(el => observer.observe(el));
+})();
+
+/* ============================================================
+   SMOOTH SCROLL FOR NAV LINKS
+   ============================================================ */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', (e) => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+});
+</script>
+</body>
+</html>
