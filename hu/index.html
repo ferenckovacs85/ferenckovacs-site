@@ -734,200 +734,194 @@
     });
 
     // ============================================================
-    // CARD CANVAS ANIMATIONS
+    // CARD CANVAS ANIMATIONS (lazy-init via IntersectionObserver)
     // ============================================================
     (function() {
         var dpr = window.devicePixelRatio || 1;
-        function setupCanvas(id) {
+        var running = {}; // track which canvases are initialized
+
+        function initCanvas(id) {
             var c = document.getElementById(id);
-            if (!c) return null;
-            var r = c.parentElement.getBoundingClientRect();
-            c.width = r.width * dpr;
-            c.height = r.height * dpr;
+            if (!c || running[id]) return;
+            var parent = c.parentElement;
+            var w = parent.offsetWidth;
+            var h = parent.offsetHeight;
+            if (w < 10 || h < 10) return; // not laid out yet
+            c.width = w * dpr;
+            c.height = h * dpr;
             var ctx = c.getContext('2d');
             ctx.scale(dpr, dpr);
-            return { c: c, ctx: ctx, w: r.width, h: r.height };
+            running[id] = true;
+
+            if (id === 'canvasDCA') startDCA(ctx, w, h);
+            else if (id === 'canvasAntianyag') startAntianyag(ctx, w, h);
+            else if (id === 'canvasKormozgas') startKormozgas(ctx, w, h);
+            else if (id === 'canvasTransformer') startTransformer(ctx, w, h);
         }
 
         // --- DCA: Rising chart line ---
-        (function() {
-            var s = setupCanvas('canvasDCA');
-            if (!s) return;
-            var points = [];
-            var N = 24;
+        function startDCA(ctx, w, h) {
+            var points = [], N = 24;
             for (var i = 0; i < N; i++) {
                 var progress = i / (N - 1);
-                var base = s.h * 0.85 - progress * s.h * 0.55;
-                points.push({ x: (i / (N - 1)) * s.w, y: base + (Math.random() - 0.3) * s.h * 0.12 });
+                var base = h * 0.85 - progress * h * 0.55;
+                points.push({ x: progress * w, y: base + (Math.random() - 0.3) * h * 0.12 });
             }
             var offset = 0;
-            function draw() {
+            (function draw() {
                 offset += 0.005;
-                s.ctx.clearRect(0, 0, s.w, s.h);
-                s.ctx.beginPath();
-                s.ctx.moveTo(points[0].x, points[0].y + Math.sin(offset) * 3);
+                ctx.clearRect(0, 0, w, h);
+                ctx.beginPath();
+                ctx.moveTo(points[0].x, points[0].y + Math.sin(offset) * 3);
                 for (var i = 1; i < N; i++) {
-                    var dy = Math.sin(offset + i * 0.3) * 2.5;
-                    s.ctx.lineTo(points[i].x, points[i].y + dy);
+                    ctx.lineTo(points[i].x, points[i].y + Math.sin(offset + i * 0.3) * 2.5);
                 }
-                s.ctx.strokeStyle = '#f7931a';
-                s.ctx.lineWidth = 1.5;
-                s.ctx.stroke();
-                // Fill area under
-                s.ctx.lineTo(s.w, s.h);
-                s.ctx.lineTo(0, s.h);
-                s.ctx.closePath();
-                s.ctx.fillStyle = 'rgba(247,147,26,0.08)';
-                s.ctx.fill();
+                ctx.strokeStyle = '#f7931a';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+                ctx.lineTo(w, h);
+                ctx.lineTo(0, h);
+                ctx.closePath();
+                ctx.fillStyle = 'rgba(247,147,26,0.08)';
+                ctx.fill();
                 requestAnimationFrame(draw);
-            }
-            draw();
-        })();
+            })();
+        }
 
-        // --- Antianyag: Particle pairs annihilating ---
-        (function() {
-            var s = setupCanvas('canvasAntianyag');
-            if (!s) return;
+        // --- Antianyag: Particle pairs ---
+        function startAntianyag(ctx, w, h) {
             var particles = [];
             for (var i = 0; i < 16; i++) {
                 particles.push({
-                    x: Math.random() * s.w, y: Math.random() * s.h,
+                    x: Math.random() * w, y: Math.random() * h,
                     vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
-                    r: 2 + Math.random() * 2,
-                    type: i % 2 === 0 ? 1 : -1
+                    r: 2 + Math.random() * 2, type: i % 2 === 0 ? 1 : -1
                 });
             }
-            function draw() {
-                s.ctx.clearRect(0, 0, s.w, s.h);
+            (function draw() {
+                ctx.clearRect(0, 0, w, h);
                 for (var i = 0; i < particles.length; i++) {
                     var p = particles[i];
                     p.x += p.vx; p.y += p.vy;
-                    if (p.x < 0 || p.x > s.w) p.vx *= -1;
-                    if (p.y < 0 || p.y > s.h) p.vy *= -1;
-                    s.ctx.beginPath();
-                    s.ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                    s.ctx.fillStyle = p.type > 0 ? '#4ade80' : '#f472b6';
-                    s.ctx.fill();
-                    // Glow
-                    s.ctx.beginPath();
-                    s.ctx.arc(p.x, p.y, p.r + 3, 0, Math.PI * 2);
-                    s.ctx.fillStyle = p.type > 0 ? 'rgba(74,222,128,0.15)' : 'rgba(244,114,182,0.15)';
-                    s.ctx.fill();
+                    if (p.x < 0 || p.x > w) p.vx *= -1;
+                    if (p.y < 0 || p.y > h) p.vy *= -1;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = p.type > 0 ? '#4ade80' : '#f472b6';
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r + 3, 0, Math.PI * 2);
+                    ctx.fillStyle = p.type > 0 ? 'rgba(74,222,128,0.15)' : 'rgba(244,114,182,0.15)';
+                    ctx.fill();
                 }
                 requestAnimationFrame(draw);
-            }
-            draw();
-        })();
+            })();
+        }
 
         // --- Körmozgás: Orbiting dot ---
-        (function() {
-            var s = setupCanvas('canvasKormozgas');
-            if (!s) return;
-            var angle = 0;
-            var cx = s.w / 2;
-            var cy = s.h / 2;
-            var radius = Math.min(s.w, s.h) * 0.3;
-            function draw() {
+        function startKormozgas(ctx, w, h) {
+            var angle = 0, cx = w / 2, cy = h / 2, radius = Math.min(w, h) * 0.3;
+            (function draw() {
                 angle += 0.02;
-                s.ctx.clearRect(0, 0, s.w, s.h);
-                // Orbit path
-                s.ctx.beginPath();
-                s.ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-                s.ctx.strokeStyle = 'rgba(74,222,128,0.15)';
-                s.ctx.lineWidth = 1;
-                s.ctx.stroke();
-                // Center dot
-                s.ctx.beginPath();
-                s.ctx.arc(cx, cy, 3, 0, Math.PI * 2);
-                s.ctx.fillStyle = 'rgba(74,222,128,0.3)';
-                s.ctx.fill();
-                // Orbiting dot
+                ctx.clearRect(0, 0, w, h);
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(74,222,128,0.15)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(74,222,128,0.3)';
+                ctx.fill();
                 var dx = cx + Math.cos(angle) * radius;
                 var dy = cy + Math.sin(angle) * radius;
-                s.ctx.beginPath();
-                s.ctx.arc(dx, dy, 4, 0, Math.PI * 2);
-                s.ctx.fillStyle = '#4ade80';
-                s.ctx.fill();
-                // Trail
+                ctx.beginPath();
+                ctx.arc(dx, dy, 4, 0, Math.PI * 2);
+                ctx.fillStyle = '#4ade80';
+                ctx.fill();
                 for (var i = 1; i <= 8; i++) {
                     var ta = angle - i * 0.08;
-                    var tx = cx + Math.cos(ta) * radius;
-                    var ty = cy + Math.sin(ta) * radius;
-                    s.ctx.beginPath();
-                    s.ctx.arc(tx, ty, 4 - i * 0.4, 0, Math.PI * 2);
-                    s.ctx.fillStyle = 'rgba(74,222,128,' + (0.3 - i * 0.035) + ')';
-                    s.ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(cx + Math.cos(ta) * radius, cy + Math.sin(ta) * radius, 4 - i * 0.4, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(74,222,128,' + (0.3 - i * 0.035) + ')';
+                    ctx.fill();
                 }
                 requestAnimationFrame(draw);
-            }
-            draw();
-        })();
+            })();
+        }
 
         // --- Transformer: Neural network nodes ---
-        (function() {
-            var s = setupCanvas('canvasTransformer');
-            if (!s) return;
-            var nodes = [];
-            var layers = [3, 4, 4, 3];
-            var layerSpacing = s.w / (layers.length + 1);
+        function startTransformer(ctx, w, h) {
+            var nodes = [], layers = [3, 4, 4, 3];
+            var layerSpacing = w / (layers.length + 1);
             for (var l = 0; l < layers.length; l++) {
-                var n = layers[l];
-                var ySpacing = s.h / (n + 1);
+                var n = layers[l], ySpacing = h / (n + 1);
                 for (var i = 0; i < n; i++) {
                     nodes.push({ x: (l + 1) * layerSpacing, y: (i + 1) * ySpacing, layer: l });
                 }
             }
             var pulseOffset = 0;
-            function draw() {
+            (function draw() {
                 pulseOffset += 0.02;
-                s.ctx.clearRect(0, 0, s.w, s.h);
-                // Draw connections
-                var idx = 0;
+                ctx.clearRect(0, 0, w, h);
                 for (var l = 0; l < layers.length - 1; l++) {
                     var startIdx = 0;
                     for (var ll = 0; ll < l; ll++) startIdx += layers[ll];
                     var endIdx = startIdx + layers[l];
-                    var nextStart = endIdx;
-                    var nextEnd = nextStart + layers[l + 1];
+                    var nextStart = endIdx, nextEnd = nextStart + layers[l + 1];
                     for (var i = startIdx; i < endIdx; i++) {
                         for (var j = nextStart; j < nextEnd; j++) {
                             var pulse = Math.sin(pulseOffset + i * 0.5 + j * 0.3) * 0.5 + 0.5;
-                            s.ctx.beginPath();
-                            s.ctx.moveTo(nodes[i].x, nodes[i].y);
-                            s.ctx.lineTo(nodes[j].x, nodes[j].y);
-                            s.ctx.strokeStyle = 'rgba(74,163,223,' + (0.06 + pulse * 0.12) + ')';
-                            s.ctx.lineWidth = 0.5 + pulse * 0.5;
-                            s.ctx.stroke();
+                            ctx.beginPath();
+                            ctx.moveTo(nodes[i].x, nodes[i].y);
+                            ctx.lineTo(nodes[j].x, nodes[j].y);
+                            ctx.strokeStyle = 'rgba(74,163,223,' + (0.06 + pulse * 0.12) + ')';
+                            ctx.lineWidth = 0.5 + pulse * 0.5;
+                            ctx.stroke();
                         }
                     }
                 }
-                // Draw nodes
                 for (var i = 0; i < nodes.length; i++) {
                     var pulse = Math.sin(pulseOffset + i * 0.7) * 0.5 + 0.5;
-                    s.ctx.beginPath();
-                    s.ctx.arc(nodes[i].x, nodes[i].y, 3 + pulse * 1.5, 0, Math.PI * 2);
-                    s.ctx.fillStyle = 'rgba(74,163,223,' + (0.4 + pulse * 0.4) + ')';
-                    s.ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(nodes[i].x, nodes[i].y, 3 + pulse * 1.5, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(74,163,223,' + (0.4 + pulse * 0.4) + ')';
+                    ctx.fill();
                 }
                 requestAnimationFrame(draw);
-            }
-            draw();
-        })();
+            })();
+        }
 
-        // Resize handler
-        var resizeTimer;
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(function() {
-                ['canvasDCA','canvasAntianyag','canvasKormozgas','canvasTransformer'].forEach(function(id) {
-                    var c = document.getElementById(id);
-                    if (!c) return;
-                    var r = c.parentElement.getBoundingClientRect();
-                    c.width = r.width * dpr;
-                    c.height = r.height * dpr;
+        // Use IntersectionObserver to start animations only when visible
+        var ids = ['canvasDCA','canvasAntianyag','canvasKormozgas','canvasTransformer'];
+        if ('IntersectionObserver' in window) {
+            var observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        var id = entry.target.id;
+                        initCanvas(id);
+                    }
                 });
-            }, 200);
-        });
+            }, { rootMargin: '200px' });
+            ids.forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el) observer.observe(el);
+            });
+        }
+
+        // Fallback: also try on load + scroll (for older browsers / edge cases)
+        function tryInitAll() {
+            ids.forEach(function(id) { initCanvas(id); });
+        }
+        window.addEventListener('load', tryInitAll);
+        window.addEventListener('scroll', function() {
+            if (!running.canvasDCA || !running.canvasAntianyag || !running.canvasKormozgas || !running.canvasTransformer) {
+                tryInitAll();
+            }
+        }, { passive: true });
+        // Also try after short delay (covers edge cases with slow layout)
+        setTimeout(tryInitAll, 500);
+        setTimeout(tryInitAll, 2000);
     })();
 </script>
 
