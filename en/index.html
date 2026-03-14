@@ -1,1 +1,925 @@
-PLACEHOLDER_EN
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ferenc Kovács — Entrepreneur · Civil Engineer · Bitcoin Maximalist</title>
+    <meta name="description" content="Ferenc Kovács — CEO of KV Group, hotel owner, KV Homes founder, Bitcoin educator.">
+    <style>
+        :root {
+            --bg: #07070a;
+            --surface: #0f1014;
+            --border: #1a1a22;
+            --text: #e8e8ec;
+            --text-dim: #7a7a88;
+            --gold: #c9a55a;
+            --gold-soft: rgba(201,165,90,0.12);
+            --btc: #f7931a;
+            --btc-soft: rgba(247,147,26,0.10);
+            --blue: #4aa3df;
+            --blue-soft: rgba(74,163,223,0.10);
+            --radius: 12px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* NAV */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            background: rgba(7,7,10,0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+        nav .inner {
+            max-width: 1100px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0.8rem 1.5rem;
+        }
+        nav .brand { font-weight: 600; font-size: 0.95rem; letter-spacing: 0.06em; color: #fff; text-decoration: none; }
+        nav .links { display: flex; gap: 1.6rem; align-items: center; }
+        nav .links a {
+            color: var(--text-dim); text-decoration: none; font-size: 0.78rem;
+            letter-spacing: 0.04em; text-transform: uppercase; transition: color 0.25s;
+        }
+        nav .links a:hover { color: #fff; }
+        .hamburger { display: none; background: none; border: none; color: #fff; font-size: 1.4rem; cursor: pointer; padding: 0.3rem; }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            position: relative; overflow: hidden;
+            padding: 0;
+        }
+        /* Subtle ambient glow */
+        .hero::before {
+            content: ''; position: absolute; top: 10%; left: 50%; transform: translateX(-50%);
+            width: 600px; height: 600px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(201,165,90,0.06) 0%, transparent 70%);
+            pointer-events: none; z-index: 0;
+        }
+        .hero-image-wrap {
+            position: relative; width: 100%; display: flex;
+            justify-content: center; padding-top: 5rem;
+        }
+        .hero-photo {
+            width: 340px; height: 480px;
+            object-fit: cover; object-position: top center;
+            border-radius: 16px 16px 0 0;
+            display: block; position: relative; z-index: 1;
+            box-shadow: 0 0 80px rgba(201,165,90,0.08), 0 20px 60px rgba(0,0,0,0.4);
+        }
+        /* Bottom fade overlay */
+        .hero-image-wrap::after {
+            content: ''; position: absolute;
+            bottom: 0; left: 0; right: 0; height: 55%;
+            background: linear-gradient(to top, var(--bg) 0%, rgba(7,7,10,0.85) 30%, rgba(7,7,10,0.4) 60%, transparent 100%);
+            z-index: 2; pointer-events: none;
+        }
+        .hero-text {
+            position: relative; z-index: 3;
+            text-align: center;
+            margin-top: -6rem;
+            padding: 0 1.5rem 4rem;
+            max-width: 750px;
+        }
+        .hero h1 {
+            font-size: clamp(2.2rem, 5vw, 3.6rem);
+            font-weight: 300; letter-spacing: 0.1em;
+            text-transform: uppercase; color: #fff;
+            margin-bottom: 0.5rem;
+        }
+        .hero .tagline {
+            font-size: clamp(0.85rem, 1.8vw, 1.05rem);
+            color: var(--text-dim); letter-spacing: 0.08em;
+            font-weight: 300; margin-bottom: 1.8rem;
+        }
+        .hero .divider {
+            width: 50px; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            margin: 0 auto 1.8rem;
+        }
+        .hero .intro {
+            font-size: 0.92rem; color: var(--text-dim);
+            max-width: 580px; margin: 0 auto 1.5rem;
+            line-height: 1.85;
+        }
+        .scroll-hint {
+            position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+            color: var(--text-dim); font-size: 0.7rem; letter-spacing: 0.1em;
+            text-transform: uppercase; opacity: 0.4; z-index: 3;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%,100% { opacity: 0.3; } 50% { opacity: 0.7; } }
+
+        /* SECTION */
+        section { padding: 5rem 1.5rem; max-width: 1100px; margin: 0 auto; }
+        .section-label {
+            font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--gold); margin-bottom: 0.8rem; font-weight: 500;
+        }
+        .section-title {
+            font-size: clamp(1.5rem, 3vw, 2.2rem);
+            font-weight: 300; letter-spacing: 0.05em;
+            color: #fff; margin-bottom: 1rem;
+        }
+        .section-desc {
+            color: var(--text-dim); font-size: 0.88rem;
+            max-width: 600px; margin-bottom: 3rem; line-height: 1.8;
+        }
+
+        /* CÉGCSOPORT LOGO */
+        .csoport-logo {
+            height: 80px; margin-bottom: 2.5rem; margin-top: -1rem;
+            max-width: 90%; width: auto;
+            filter: brightness(0) invert(1);
+            opacity: 0.85;
+        }
+        .biz-card .card-logo-area {
+            height: 180px; display: flex; align-items: center; justify-content: center;
+            border-bottom: 1px solid var(--border); padding: 1.5rem;
+        }
+        .biz-card .card-logo-area img { max-height: 100%; max-width: 100%; object-fit: contain; }
+
+        /* BIZ CARDS */
+        .biz-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1rem;
+        }
+        .biz-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            text-decoration: none; color: var(--text);
+            transition: all 0.35s ease;
+            display: flex; flex-direction: column;
+            position: relative; overflow: hidden;
+        }
+        .biz-card:hover { border-color: #2a2a35; transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+        .biz-card .card-img {
+            width: 100%; height: 180px; object-fit: cover;
+            border-bottom: 1px solid var(--border);
+        }
+        .biz-card .card-body { padding: 1.4rem; display: flex; flex-direction: column; gap: 0.5rem; flex-grow: 1; }
+        .biz-card h3 { font-size: 1rem; font-weight: 500; color: #fff; letter-spacing: 0.02em; }
+        .biz-card p { font-size: 0.78rem; color: var(--text-dim); line-height: 1.7; flex-grow: 1; }
+        .biz-card .card-link {
+            font-size: 0.7rem; color: var(--gold); letter-spacing: 0.06em;
+            margin-top: 0.5rem; padding-top: 0.8rem;
+            border-top: 1px solid var(--border);
+        }
+        .biz-card.btc-accent:hover { border-color: rgba(247,147,26,0.3); box-shadow: 0 12px 40px rgba(247,147,26,0.05); }
+        .biz-card.btc-accent .card-link { color: var(--btc); }
+
+        /* KV HOMES */
+        .kvhomes-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 3rem 2rem;
+            margin-top: 3rem;
+            position: relative;
+        }
+        .kvhomes-box::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0;
+            height: 2px; background: linear-gradient(90deg, var(--gold), transparent);
+        }
+        .kvhomes-renders {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem; margin-bottom: 2rem;
+        }
+        .kvhomes-renders img {
+            width: 100%; height: 220px; object-fit: cover;
+            border-radius: var(--radius); border: 1px solid var(--border);
+            transition: transform 0.35s ease;
+        }
+        .kvhomes-renders img:hover { transform: scale(1.02); }
+        .kvhomes-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 2rem; margin-top: 2rem;
+        }
+        .kv-stat { text-align: center; }
+        .kv-stat .num { font-size: 2rem; font-weight: 200; color: var(--gold); }
+        .kv-stat .label { font-size: 0.7rem; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 0.3rem; }
+
+        /* TIMELINE */
+        .timeline-split { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 2.5rem; }
+        .timeline-col h3 {
+            font-size: 0.85rem; font-weight: 500; color: #fff;
+            letter-spacing: 0.06em; margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem; border-bottom: 1px solid var(--border);
+        }
+        .timeline-col h3 span { font-size: 0.65rem; color: var(--text-dim); font-weight: 400; text-transform: uppercase; letter-spacing: 0.12em; }
+        .timeline { position: relative; padding-left: 2rem; }
+        .timeline::before {
+            content: ''; position: absolute; left: 5px; top: 0; bottom: 0;
+            width: 1px; background: linear-gradient(180deg, var(--gold), var(--border));
+        }
+        .timeline.company::before { background: linear-gradient(180deg, var(--blue), var(--border)); }
+        .tl-item { position: relative; margin-bottom: 2rem; padding-left: 1.5rem; }
+        .tl-item::before {
+            content: ''; position: absolute; left: -2rem; top: 0.5rem;
+            width: 9px; height: 9px; border-radius: 50%;
+            background: var(--gold); border: 2px solid var(--bg);
+        }
+        .company .tl-item::before { background: var(--blue); }
+        .tl-year { font-size: 0.72rem; color: var(--gold); letter-spacing: 0.1em; font-weight: 600; margin-bottom: 0.2rem; }
+        .company .tl-year { color: var(--blue); }
+        .tl-text { font-size: 0.85rem; color: var(--text-dim); line-height: 1.7; }
+        .tl-text strong { color: #fff; font-weight: 500; }
+
+        /* BITCOIN */
+        .btc-section { border-top: 1px solid var(--border); }
+        .btc-highlight {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 2rem;
+            margin-bottom: 2rem;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;
+        }
+        .btc-fact { text-align: center; }
+        .btc-fact .val { font-size: 1.5rem; font-weight: 200; color: var(--btc); }
+        .btc-fact .desc { font-size: 0.7rem; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 0.2rem; }
+        .btc-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+        .btc-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 1.6rem;
+            text-decoration: none; color: var(--text); transition: all 0.35s ease;
+        }
+        .btc-card:hover { border-color: rgba(247,147,26,0.3); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(247,147,26,0.05); }
+        .btc-card h3 { font-size: 1rem; font-weight: 500; color: #fff; margin-bottom: 0.5rem; }
+        .btc-card p { font-size: 0.78rem; color: var(--text-dim); line-height: 1.7; }
+        .btc-card .btc-link { font-size: 0.7rem; color: var(--btc); margin-top: 1rem; display: block; letter-spacing: 0.04em; }
+        .btc-badge {
+            display: inline-block; background: var(--btc-soft);
+            color: var(--btc); font-size: 0.65rem; font-weight: 600;
+            padding: 0.25rem 0.8rem; border-radius: 20px;
+            letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 1rem;
+        }
+
+        /* CONTACT */
+        .contact-section { border-top: 1px solid var(--border); }
+        .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+        .social-links { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.2rem; }
+        .social-links a {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.55rem 1rem; border: 1px solid var(--border);
+            border-radius: 8px; text-decoration: none;
+            color: var(--text-dim); font-size: 0.75rem;
+            letter-spacing: 0.03em; transition: all 0.25s;
+        }
+        .social-links a:hover { border-color: #444; color: #fff; background: rgba(255,255,255,0.03); }
+        .social-links a svg { width: 16px; height: 16px; fill: currentColor; flex-shrink: 0; }
+        .nostr-qr {
+            text-align: center; padding: 1.5rem;
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius);
+        }
+        .nostr-qr img { max-width: 200px; border-radius: 8px; margin-bottom: 0.8rem; }
+        .nostr-qr .nostr-label {
+            font-size: 0.7rem; color: var(--text-dim);
+            letter-spacing: 0.08em; text-transform: uppercase;
+        }
+        .email-line { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+        .email-line a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; transition: color 0.25s; letter-spacing: 0.03em; }
+        .email-line a:hover { color: #fff; }
+        .biz-card-link {
+            display: inline-block; margin-top: 1.2rem;
+            padding: 0.55rem 1.2rem; border: 1px solid var(--gold);
+            border-radius: 8px; text-decoration: none;
+            color: var(--gold); font-size: 0.75rem;
+            letter-spacing: 0.06em; transition: all 0.25s;
+        }
+        .biz-card-link:hover { background: var(--gold-soft); }
+
+        /* FOOTER */
+        footer {
+            text-align: center; padding: 3rem 1.5rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-dim); font-size: 0.7rem; letter-spacing: 0.04em;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            nav .links { display: none; }
+            .hamburger { display: block; }
+            nav.open .links {
+                display: flex; flex-direction: column;
+                position: absolute; top: 100%; left: 0; right: 0;
+                background: rgba(7,7,10,0.95); padding: 1rem 1.5rem;
+                border-bottom: 1px solid var(--border);
+            }
+            .hero-photo { width: 280px; height: 400px; }
+            .hero-text { margin-top: -5rem; }
+            .hero-image-wrap { padding-top: 4rem; }
+            .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .timeline-split { grid-template-columns: 1fr; gap: 2rem; }
+            section { padding: 3.5rem 1.2rem; }
+            .kvhomes-box { padding: 2rem 1.2rem; }
+            .biz-grid { grid-template-columns: 1fr; }
+            .csoport-logo { height: 55px; }
+            .sub-grid { grid-template-columns: 1fr !important; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+    <div class="inner">
+        <a href="#" class="brand">Ferenc Kovács</a>
+        <button class="hamburger" onclick="document.getElementById('nav').classList.toggle('open')" aria-label="Menu">☰</button>
+        <div class="links">
+            <a href="#group">Group</a>
+            <a href="#kvhomes">KV Homes</a>
+            <a href="#story">Story</a>
+            <a href="#bitcoin">Bitcoin</a>
+            <a href="napkin-math.html">Calculators</a>
+            <a href="curiosities.html">Curiosities</a>
+            <a href="#contact">Contact</a>
+            <a href="/hu/" style="border:1px solid var(--border);padding:0.2rem 0.6rem;border-radius:4px;font-size:0.7rem;">HU</a>
+        </div>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+    <div class="hero-image-wrap">
+        <img src="../profile-new.jpg" alt="Ferenc Kovács" class="hero-photo">
+    </div>
+    <div class="hero-text">
+        <h1>Ferenc Kovács</h1>
+        <div class="tagline">Entrepreneur · Civil Engineer · Bitcoin Maximalist</div>
+        <div class="divider"></div>
+        <p class="intro">
+            17 years ago I returned to our family business, which I've since taken over and
+            grown into a nationwide corporate group. We operate hotels, develop revolutionary
+            construction technology, and through Bitcoin education I help people
+            on the path to financial sovereignty.
+        </p>
+    </div>
+    <span class="scroll-hint">↓ Scroll</span>
+</section>
+
+<!-- KV GROUP -->
+<section id="group">
+    <img src="../kv_cegcsoport_logo.png" alt="KV Group" class="csoport-logo">
+    <div class="section-label">Innovation toward a healthier society</div>
+    <p class="section-desc">
+        Across every venture in our group, I strive to deliver real value —
+        whether it's rest & relaxation, home building, or financial awareness.
+        Building on three decades of construction industry experience, we continuously
+        develop our services so people can live better, healthier lives
+        and think more freely about money.
+    </p>
+    <div class="biz-grid">
+        <a href="https://kvkft.hu" target="_blank" rel="noopener" class="biz-card">
+            <img src="../kvkft_vbelement.jpeg" alt="KV Ltd. precast concrete element" class="card-img">
+            <div class="card-body">
+                <h3>KV Construction Ltd.</h3>
+                <p>Parent company — design and production of precast concrete elements since 2010. Over the past 20 years we've built more than 600 residential apartments. Now preparing for nationwide real estate development.</p>
+                <span class="card-link">kvkft.hu →</span>
+            </div>
+        </a>
+        <a href="https://hotelaurora.hu" target="_blank" rel="noopener" class="biz-card">
+            <img src="../hotel_aurora.jpeg" alt="Hotel Aurora Miskolctapolca" class="card-img">
+            <div class="card-body">
+                <h3>Hotel Aurora ★★★★</h3>
+                <p>Miskolctapolca's four-star business wellness hotel at the foot of the Bükk Mountains. 78 rooms, 400 m² wellness area, 230 m² conference hall — since 2013.</p>
+                <span class="card-link">hotelaurora.hu →</span>
+            </div>
+        </a>
+        <a href="https://hotelatlantis.hu" target="_blank" rel="noopener" class="biz-card">
+            <img src="../hotel_atlantis.jpeg" alt="Hotel Atlantis Hajdúszoboszló" class="card-img">
+            <div class="card-body">
+                <h3>Hotel Atlantis ★★★★</h3>
+                <p>Hajdúszoboszló's four-star family wellness hotel. 96 rooms, 1,600 m² wellness area — where every family member finds relaxation.</p>
+                <span class="card-link">hotelatlantis.hu →</span>
+            </div>
+        </a>
+        <a href="#" class="biz-card">
+            <img src="../tarsashaz.jpeg" alt="Real Estate Development" class="card-img">
+            <div class="card-body">
+                <h3>Real Estate Development</h3>
+                <p>Property development and investment. Self-funded real estate projects in Borsod county and nationwide.</p>
+                <span class="card-link">investment →</span>
+            </div>
+        </a>
+        <a href="https://bitcoinmiskolc.hu" target="_blank" rel="noopener" class="biz-card btc-accent">
+            <div class="card-logo-area">
+                <img src="https://bitcoinmiskolc.hu/wp-content/uploads/2025/01/bitcoinmiskolc-logo.svg" alt="Bitcoin Miskolc" style="height:140px; width:90%; max-height:100%;">
+            </div>
+            <div class="card-body">
+                <h3>Bitcoin Miskolc</h3>
+                <p>Educational brand — meetups, talks, and community building for understanding Bitcoin. Practical knowledge, not hype.</p>
+                <span class="card-link" style="color: var(--btc);">bitcoinmiskolc.hu →</span>
+            </div>
+        </a>
+        <a href="https://www.bitcoinvision21.hu" target="_blank" rel="noopener" class="biz-card btc-accent">
+            <div class="card-logo-area">
+                <img src="https://www.bitcoinvision21.hu/logok/bitcoin-vision-21-logo-WHITE.png" alt="Bitcoin Vision 21">
+            </div>
+            <div class="card-body">
+                <h3>Bitcoin Vision 21 Ltd.</h3>
+                <p>Bitcoin adoption and education. Our webshop offers Bitcoin tools — from hardware wallets to educational materials. We help businesses start accepting Bitcoin.</p>
+                <span class="card-link" style="color: var(--btc);">bitcoinvision21.hu →</span>
+            </div>
+        </a>
+    </div>
+</section>
+
+<!-- KV HOMES -->
+<section id="kvhomes">
+    <img src="../kv_homes_logo.png" alt="KV Homes" style="height:70px; margin-bottom:1.5rem; filter: brightness(0) invert(1); opacity:0.85;">
+    <div class="section-label">The homes of the future</div>
+    <p class="section-desc">
+        With engineering creativity and industrial standardization, we build homes that give back
+        time, quality, and energy. In-house design from the foundation up, through architecture
+        to full construction plans, prefabrication, and execution.
+    </p>
+
+    <div class="kvhomes-renders">
+        <img src="../kvhomes_render1.jpeg" alt="KV Homes render — modern family house">
+        <img src="../kvhomes_render2.jpeg" alt="KV Homes render — two-story house with pergola">
+        <img src="../kvhomes_render3.jpeg" alt="KV Homes render — traditional-style modern house">
+    </div>
+
+    <div class="kvhomes-box">
+        <div class="kvhomes-grid">
+            <div class="kv-stat">
+                <div class="num">2–3 weeks</div>
+                <div class="label">Structural build</div>
+            </div>
+            <div class="kv-stat">
+                <div class="num">A+++</div>
+                <div class="label">Energy rating</div>
+            </div>
+            <div class="kv-stat">
+                <div class="num">12.2</div>
+                <div class="label">kWh/m²/year consumption</div>
+            </div>
+            <div class="kv-stat">
+                <div class="num">100+ years</div>
+                <div class="label">Lifespan</div>
+            </div>
+        </div>
+        <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+            <p style="font-size: 0.82rem; color: var(--text-dim); line-height: 1.8; max-width: 700px;">
+                Against the Hungarian average of <strong style="color:#fff;">174 kWh/m²/year</strong> energy consumption,
+                KV Homes buildings use just <strong style="color:var(--gold);">12.2 kWh/m²/year</strong>.
+                Combined with solar panels, monthly utility costs can be as low as <strong style="color:var(--gold);">€0</strong>.
+                Carbon-negative construction, industrial-grade manufacturing, custom design.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- STORY -->
+<section id="story">
+    <div class="section-label">Our story</div>
+    <h2 class="section-title">Where we started</h2>
+    <p class="section-desc">
+        Two threads, one goal — the family business and the personal journey that led us here.
+    </p>
+
+    <div class="timeline-split">
+        <!-- PERSONAL -->
+        <div class="timeline-col">
+            <h3>Ferenc Kovács <span>— personal journey</span></h3>
+            <div class="timeline">
+                <div class="tl-item">
+                    <div class="tl-year">1999</div>
+                    <div class="tl-text"><strong>Koós Károly Construction Technical School</strong> — the construction mindset begins in Miskolc.</div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-year">2003 – 2009</div>
+                    <div class="tl-text"><strong>BME Faculty of Civil Engineering</strong> — structural engineering and construction management, Budapest.</div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-year">2009</div>
+                    <div class="tl-text"><strong>Return to the family business</strong> — took over management 15 years ago and have been building KV Group ever since.</div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-year">2025 →</div>
+                    <div class="tl-text"><strong>KV Homes — a new chapter.</strong> Prefab room technology, A+++ energy efficiency, carbon-negative construction, nationwide development.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COMPANY -->
+        <div class="timeline-col">
+            <h3>KV Group <span>— company history</span></h3>
+            <div class="timeline company">
+                <div class="tl-item">
+                    <div class="tl-year">1992</div>
+                    <div class="tl-text"><strong>Founded</strong> — my father started the family business.</div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-year">1992 – 2000</div>
+                    <div class="tl-text"><strong>General contracting</strong> — in Hungary and Germany, with a 250-person workforce.</div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-year">2000 – 2009</div>
+                    <div class="tl-text"><strong>Real estate development</strong> — residential construction using shell panel technology.</div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-year">2010</div>
+                    <div class="tl-text"><strong>Precast concrete production launches</strong> — industrial-grade design and manufacturing at KV Ltd.</div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-year">2011</div>
+                    <div class="tl-text"><strong>Hotel Atlantis ★★★★</strong> — Hajdúszoboszló's four-star family wellness hotel opens.</div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-year">2013</div>
+                    <div class="tl-text"><strong>Hotel Aurora ★★★★</strong> — Miskolctapolca's new four-star business wellness hotel.</div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-year">2010 – 2024</div>
+                    <div class="tl-text"><strong>600+ residential apartments</strong> — over a decade of residential development and construction.</div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-year">2026 →</div>
+                    <div class="tl-text"><strong>KV Homes — nationwide expansion.</strong> Prefab technology, faster and more sustainable construction.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- BITCOIN -->
+<section id="bitcoin" class="btc-section">
+    <div class="section-label" style="color: var(--btc);">₿ Bitcoin</div>
+    <h2 class="section-title">Bitcoin Philosophy</h2>
+    <p class="section-desc">
+        I believe that if we don't fix the monetary system, we can't fix the world.
+        The only viable technology for this: Bitcoin.
+    </p>
+    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.8rem; margin-bottom: 2rem; border-left: 3px solid var(--btc);">
+        <p style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.85;">
+            <strong style="color: var(--btc);">What is Bitcoin?</strong> A global, lightning-fast digital monetary system
+            that operates without states, corporations, or employees. Freely accessible to anyone,
+            100% protected by mathematics. It has a finite supply, cannot be inflated,
+            no one can prevent you from using it, and it's secured by the world's most powerful computer network.
+        </p>
+        <p style="font-size: 0.78rem; color: var(--text-dim); margin-top: 0.8rem; font-style: italic;">
+            "The only thing that won't increase in supply when its price goes up is Bitcoin." — ∞/21M
+        </p>
+    </div>
+
+    <div class="btc-highlight">
+        <div class="btc-fact">
+            <div class="val">₿ Bitcoin</div>
+            <div class="desc">accepted at our hotels</div>
+        </div>
+        <div class="btc-fact">
+            <div class="val">1%</div>
+            <div class="desc">of revenue into BTC</div>
+        </div>
+        <div class="btc-fact">
+            <div class="val">186.5M sat</div>
+            <div class="desc">corporate bitcoin treasury</div>
+        </div>
+        <div class="btc-fact">
+            <div class="val" id="btc-pl">-19%</div>
+            <div class="desc">unrealized P/L</div>
+        </div>
+    </div>
+
+    <div class="btc-cards">
+        <a href="https://www.bitcoinvision21.hu" target="_blank" rel="noopener" class="btc-card">
+            <span class="btc-badge">₿ Vision</span>
+            <h3>Bitcoin Vision 21</h3>
+            <p>Bitcoin adoption and education for businesses. Our webshop sells Bitcoin tools — hardware wallets, books, educational materials. We help you start accepting Bitcoin as early as tomorrow.</p>
+            <span class="btc-link">bitcoinvision21.hu →</span>
+        </a>
+        <a href="https://bitcoinmiskolc.hu" target="_blank" rel="noopener" class="btc-card">
+            <span class="btc-badge">₿ Education</span>
+            <h3>Bitcoin Miskolc</h3>
+            <p>Local educational brand — meetups, talks, and community building for understanding Bitcoin. Practical knowledge, not hype.</p>
+            <span class="btc-link">bitcoinmiskolc.hu →</span>
+        </a>
+    </div>
+    <!-- Calculators section -->
+    <div style="margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+            <span style="font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim);">🧮 Napkin Math</span>
+            <a href="napkin-math.html" style="color: var(--text-dim); font-size: 0.72rem; text-decoration: none; transition: color 0.25s;" onmouseover="this.style.color='#f7931a'" onmouseout="this.style.color='#7a7a88'">All →</a>
+        </div>
+        <div class="sub-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem;">
+            <a href="bitcoin_calculator.html" class="card-anim" style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; text-decoration: none; color: var(--text); transition: border-color 0.3s, transform 0.2s; position:relative; overflow:hidden;" onmouseover="this.style.borderColor='#f7931a';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='none'">
+                <canvas class="card-canvas" id="canvasDCA" style="position:absolute;inset:0;width:100%;height:100%;opacity:0.18;pointer-events:none;"></canvas>
+                <div style="position:relative;z-index:1;">
+                    <div style="font-size: 0.65rem; font-weight: 600; color: var(--btc); margin-bottom: 0.4rem;">₿ Bitcoin</div>
+                    <div style="font-size: 0.88rem; font-weight: 500;">DCA Calculator</div>
+                    <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.3rem;">Dollar-cost averaging simulator</div>
+                </div>
+            </a>
+            <div style="background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius); padding: 1rem; opacity: 0.4;">
+                <div style="font-size: 0.65rem; font-weight: 600; color: var(--text-dim); margin-bottom: 0.4rem;">Coming soon</div>
+                <div style="font-size: 0.88rem; font-weight: 500; color: var(--text-dim);">Next calculator</div>
+            </div>
+            <div style="background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius); padding: 1rem; opacity: 0.4;">
+                <div style="font-size: 0.65rem; font-weight: 600; color: var(--text-dim); margin-bottom: 0.4rem;">Coming soon</div>
+                <div style="font-size: 0.88rem; font-weight: 500; color: var(--text-dim);">Next calculator</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Curiosities section -->
+    <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+            <span style="font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim);">🔭 What interests me</span>
+            <a href="curiosities.html" style="color: var(--text-dim); font-size: 0.72rem; text-decoration: none; transition: color 0.25s;" onmouseover="this.style.color='#7c6cf0'" onmouseout="this.style.color='#7a7a88'">All →</a>
+        </div>
+        <div class="sub-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem;">
+            <a href="curiosities/antimatter.html" class="card-anim" style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; text-decoration: none; color: var(--text); transition: border-color 0.3s, transform 0.2s; position:relative; overflow:hidden;" onmouseover="this.style.borderColor='#7c6cf0';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='none'">
+                <canvas class="card-canvas" id="canvasAntianyag" style="position:absolute;inset:0;width:100%;height:100%;opacity:0.2;pointer-events:none;"></canvas>
+                <div style="position:relative;z-index:1;">
+                    <div style="font-size: 0.65rem; font-weight: 600; color: #7c6cf0; margin-bottom: 0.4rem;">Cosmology</div>
+                    <div style="font-size: 0.88rem; font-weight: 500;">One in a billion</div>
+                    <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.3rem;">Why does anything exist?</div>
+                </div>
+            </a>
+            <a href="/fizika/" class="card-anim" style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; text-decoration: none; color: var(--text); transition: border-color 0.3s, transform 0.2s; position:relative; overflow:hidden;" onmouseover="this.style.borderColor='#4ade80';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='none'">
+                <canvas class="card-canvas" id="canvasKormozgas" style="position:absolute;inset:0;width:100%;height:100%;opacity:0.2;pointer-events:none;"></canvas>
+                <div style="position:relative;z-index:1;">
+                    <div style="font-size: 0.65rem; font-weight: 600; color: #4ade80; margin-bottom: 0.4rem;">Physics</div>
+                    <div style="font-size: 0.88rem; font-weight: 500;">Circular motion</div>
+                    <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.3rem;">Interactive learning tool</div>
+                </div>
+            </a>
+            <a href="curiosities/transformer.html" class="card-anim" style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; text-decoration: none; color: var(--text); transition: border-color 0.3s, transform 0.2s; position:relative; overflow:hidden;" onmouseover="this.style.borderColor='#4aa3df';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='none'">
+                <canvas class="card-canvas" id="canvasTransformer" style="position:absolute;inset:0;width:100%;height:100%;opacity:0.2;pointer-events:none;"></canvas>
+                <div style="position:relative;z-index:1;">
+                    <div style="font-size: 0.65rem; font-weight: 600; color: #4aa3df; margin-bottom: 0.4rem;">Technology</div>
+                    <div style="font-size: 0.88rem; font-weight: 500;">Transformer</div>
+                    <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.3rem;">The engine behind artificial intelligence</div>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="contact-section">
+    <div class="section-label">Contact</div>
+    <h2 class="section-title">Get in touch</h2>
+    <div class="contact-grid">
+        <div>
+            <p style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 1.2rem; line-height: 1.8;">
+                Feel free to reach out on any platform — for a personal meeting, business discussion,
+                or even a conversation about Bitcoin.
+            </p>
+            <div class="social-links">
+                <a href="https://twitter.com/ferenckovacs" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    X / Twitter
+                </a>
+                <a href="https://www.facebook.com/ferenc.kovacs" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    Facebook
+                </a>
+                <a href="https://www.linkedin.com/in/ferenc-kov%C3%A1cs-9a789162" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                    LinkedIn
+                </a>
+                <a href="https://njump.me/npub1gxuur77dw4p49ngsn24kwyppw7t3xt4h5e48tj22x4qzmuver40qlylpxk" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4-1.8 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+                    Nostr
+                </a>
+            </div>
+            <div class="email-line" id="contact-email"></div>
+            <a href="https://nevjegy.kvkft.hu/hu/kovacs-ferenc" target="_blank" rel="noopener" class="biz-card-link">
+                Digital business card →
+            </a>
+        </div>
+        <div class="nostr-qr">
+            <img src="../nostr-qr.png" alt="Nostr QR Code">
+            <div class="nostr-label">Nostr — Decentralized social network</div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <p>© 2026 Ferenc Kovács — KV Group — All rights reserved.</p>
+</footer>
+
+<!-- JS -->
+<script>
+    // Email obfuscation
+    var u = 'ferenc.kovacs', d = 'gmail.com';
+    var el = document.getElementById('contact-email');
+    if (el) {
+        var a = document.createElement('a');
+        a.href = 'mailto:' + u + '@' + d;
+        a.textContent = u + '@' + d;
+        el.appendChild(a);
+    }
+    // Close mobile nav on click
+    document.querySelectorAll('nav .links a').forEach(function(link) {
+        link.addEventListener('click', function() {
+            document.getElementById('nav').classList.remove('open');
+        });
+    });
+
+    // ============================================================
+    // CARD CANVAS ANIMATIONS
+    // ============================================================
+    (function() {
+        var dpr = window.devicePixelRatio || 1;
+        function setupCanvas(id) {
+            var c = document.getElementById(id);
+            if (!c) return null;
+            var r = c.parentElement.getBoundingClientRect();
+            c.width = r.width * dpr;
+            c.height = r.height * dpr;
+            var ctx = c.getContext('2d');
+            ctx.scale(dpr, dpr);
+            return { c: c, ctx: ctx, w: r.width, h: r.height };
+        }
+
+        // --- DCA: Rising chart line ---
+        (function() {
+            var s = setupCanvas('canvasDCA');
+            if (!s) return;
+            var points = [];
+            var N = 24;
+            for (var i = 0; i < N; i++) {
+                var progress = i / (N - 1);
+                var base = s.h * 0.85 - progress * s.h * 0.55;
+                points.push({ x: (i / (N - 1)) * s.w, y: base + (Math.random() - 0.3) * s.h * 0.12 });
+            }
+            var offset = 0;
+            function draw() {
+                offset += 0.005;
+                s.ctx.clearRect(0, 0, s.w, s.h);
+                s.ctx.beginPath();
+                s.ctx.moveTo(points[0].x, points[0].y + Math.sin(offset) * 3);
+                for (var i = 1; i < N; i++) {
+                    var dy = Math.sin(offset + i * 0.3) * 2.5;
+                    s.ctx.lineTo(points[i].x, points[i].y + dy);
+                }
+                s.ctx.strokeStyle = '#f7931a';
+                s.ctx.lineWidth = 1.5;
+                s.ctx.stroke();
+                s.ctx.lineTo(s.w, s.h);
+                s.ctx.lineTo(0, s.h);
+                s.ctx.closePath();
+                s.ctx.fillStyle = 'rgba(247,147,26,0.08)';
+                s.ctx.fill();
+                requestAnimationFrame(draw);
+            }
+            draw();
+        })();
+
+        // --- Antianyag: Particle pairs ---
+        (function() {
+            var s = setupCanvas('canvasAntianyag');
+            if (!s) return;
+            var particles = [];
+            for (var i = 0; i < 16; i++) {
+                particles.push({
+                    x: Math.random() * s.w, y: Math.random() * s.h,
+                    vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
+                    r: 2 + Math.random() * 2,
+                    type: i % 2 === 0 ? 1 : -1
+                });
+            }
+            function draw() {
+                s.ctx.clearRect(0, 0, s.w, s.h);
+                for (var i = 0; i < particles.length; i++) {
+                    var p = particles[i];
+                    p.x += p.vx; p.y += p.vy;
+                    if (p.x < 0 || p.x > s.w) p.vx *= -1;
+                    if (p.y < 0 || p.y > s.h) p.vy *= -1;
+                    s.ctx.beginPath();
+                    s.ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    s.ctx.fillStyle = p.type > 0 ? '#4ade80' : '#f472b6';
+                    s.ctx.fill();
+                    s.ctx.beginPath();
+                    s.ctx.arc(p.x, p.y, p.r + 3, 0, Math.PI * 2);
+                    s.ctx.fillStyle = p.type > 0 ? 'rgba(74,222,128,0.15)' : 'rgba(244,114,182,0.15)';
+                    s.ctx.fill();
+                }
+                requestAnimationFrame(draw);
+            }
+            draw();
+        })();
+
+        // --- Circular motion: Orbiting dot ---
+        (function() {
+            var s = setupCanvas('canvasKormozgas');
+            if (!s) return;
+            var angle = 0;
+            var cx = s.w / 2;
+            var cy = s.h / 2;
+            var radius = Math.min(s.w, s.h) * 0.3;
+            function draw() {
+                angle += 0.02;
+                s.ctx.clearRect(0, 0, s.w, s.h);
+                s.ctx.beginPath();
+                s.ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+                s.ctx.strokeStyle = 'rgba(74,222,128,0.15)';
+                s.ctx.lineWidth = 1;
+                s.ctx.stroke();
+                s.ctx.beginPath();
+                s.ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+                s.ctx.fillStyle = 'rgba(74,222,128,0.3)';
+                s.ctx.fill();
+                var dx = cx + Math.cos(angle) * radius;
+                var dy = cy + Math.sin(angle) * radius;
+                s.ctx.beginPath();
+                s.ctx.arc(dx, dy, 4, 0, Math.PI * 2);
+                s.ctx.fillStyle = '#4ade80';
+                s.ctx.fill();
+                for (var i = 1; i <= 8; i++) {
+                    var ta = angle - i * 0.08;
+                    var tx = cx + Math.cos(ta) * radius;
+                    var ty = cy + Math.sin(ta) * radius;
+                    s.ctx.beginPath();
+                    s.ctx.arc(tx, ty, 4 - i * 0.4, 0, Math.PI * 2);
+                    s.ctx.fillStyle = 'rgba(74,222,128,' + (0.3 - i * 0.035) + ')';
+                    s.ctx.fill();
+                }
+                requestAnimationFrame(draw);
+            }
+            draw();
+        })();
+
+        // --- Transformer: Neural network nodes ---
+        (function() {
+            var s = setupCanvas('canvasTransformer');
+            if (!s) return;
+            var nodes = [];
+            var layers = [3, 4, 4, 3];
+            var layerSpacing = s.w / (layers.length + 1);
+            for (var l = 0; l < layers.length; l++) {
+                var n = layers[l];
+                var ySpacing = s.h / (n + 1);
+                for (var i = 0; i < n; i++) {
+                    nodes.push({ x: (l + 1) * layerSpacing, y: (i + 1) * ySpacing, layer: l });
+                }
+            }
+            var pulseOffset = 0;
+            function draw() {
+                pulseOffset += 0.02;
+                s.ctx.clearRect(0, 0, s.w, s.h);
+                var idx = 0;
+                for (var l = 0; l < layers.length - 1; l++) {
+                    var startIdx = 0;
+                    for (var ll = 0; ll < l; ll++) startIdx += layers[ll];
+                    var endIdx = startIdx + layers[l];
+                    var nextStart = endIdx;
+                    var nextEnd = nextStart + layers[l + 1];
+                    for (var i = startIdx; i < endIdx; i++) {
+                        for (var j = nextStart; j < nextEnd; j++) {
+                            var pulse = Math.sin(pulseOffset + i * 0.5 + j * 0.3) * 0.5 + 0.5;
+                            s.ctx.beginPath();
+                            s.ctx.moveTo(nodes[i].x, nodes[i].y);
+                            s.ctx.lineTo(nodes[j].x, nodes[j].y);
+                            s.ctx.strokeStyle = 'rgba(74,163,223,' + (0.06 + pulse * 0.12) + ')';
+                            s.ctx.lineWidth = 0.5 + pulse * 0.5;
+                            s.ctx.stroke();
+                        }
+                    }
+                }
+                for (var i = 0; i < nodes.length; i++) {
+                    var pulse = Math.sin(pulseOffset + i * 0.7) * 0.5 + 0.5;
+                    s.ctx.beginPath();
+                    s.ctx.arc(nodes[i].x, nodes[i].y, 3 + pulse * 1.5, 0, Math.PI * 2);
+                    s.ctx.fillStyle = 'rgba(74,163,223,' + (0.4 + pulse * 0.4) + ')';
+                    s.ctx.fill();
+                }
+                requestAnimationFrame(draw);
+            }
+            draw();
+        })();
+
+        var resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                ['canvasDCA','canvasAntianyag','canvasKormozgas','canvasTransformer'].forEach(function(id) {
+                    var c = document.getElementById(id);
+                    if (!c) return;
+                    var r = c.parentElement.getBoundingClientRect();
+                    c.width = r.width * dpr;
+                    c.height = r.height * dpr;
+                });
+            }, 200);
+        });
+    })();
+</script>
+
+</body>
+</html>
