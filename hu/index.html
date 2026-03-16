@@ -329,6 +329,20 @@
             .csoport-logo { height: 55px; }
             .sub-grid { grid-template-columns: 1fr !important; }
         }
+
+        /* Card hover effects */
+        .card-anim {
+            transition: border-color 0.3s, transform 0.2s;
+        }
+        .card-anim:hover {
+            transform: translateY(-2px);
+        }
+        .card-anim[data-hover-color="btc"]:hover { border-color: #f7931a !important; }
+        .card-anim[data-hover-color="purple"]:hover { border-color: #7c6cf0 !important; }
+        .card-anim[data-hover-color="green"]:hover { border-color: #4ade80 !important; }
+        .card-anim[data-hover-color="blue"]:hover { border-color: #4aa3df !important; }
+        .section-link-btc:hover { color: #f7931a !important; }
+        .section-link-purple:hover { color: #7c6cf0 !important; }
     </style>
 </head>
 <body>
@@ -594,7 +608,7 @@
             <div class="desc">vállalati bitcoin készlet</div>
         </div>
         <div class="btc-fact">
-            <div class="val" id="btc-pl">-17%</div>
+            <div class="val" id="btc-pl">-18%</div>
             <div class="desc">unrealized P/L</div>
         </div>
     </div>
@@ -617,10 +631,10 @@
     <div style="margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
             <span style="font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim);">🧮 Zsebkendő Matek</span>
-            <a href="../kalkulatorok.html" style="color: var(--text-dim); font-size: 0.72rem; text-decoration: none; transition: color 0.25s;" onmouseover="this.style.color='#f7931a'" onmouseout="this.style.color='#7a7a88'">Összes →</a>
+            <a href="../kalkulatorok.html" class="section-link section-link-btc" style="color: var(--text-dim); font-size: 0.72rem; text-decoration: none; transition: color 0.25s;">Összes →</a>
         </div>
         <div class="sub-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem;">
-            <a href="../bitcoin_calculator.html" class="card-anim" style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; text-decoration: none; color: var(--text); transition: border-color 0.3s, transform 0.2s; position:relative; overflow:hidden;" onmouseover="this.style.borderColor='#f7931a';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='none'">
+            <a href="../bitcoin_calculator.html" class="card-anim" data-hover-color="btc" style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; text-decoration: none; color: var(--text); position:relative; overflow:hidden;">
                 <canvas class="card-canvas" id="canvasDCA" style="position:absolute;inset:0;width:100%;height:100%;opacity:0.18;pointer-events:none;"></canvas>
                 <div style="position:relative;z-index:1;">
                     <div style="font-size: 0.65rem; font-weight: 600; color: var(--btc); margin-bottom: 0.4rem;">₿ Bitcoin</div>
@@ -643,10 +657,10 @@
     <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
             <span style="font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim);">🔭 Ami engem érdekel</span>
-            <a href="../erdekessegek.html" style="color: var(--text-dim); font-size: 0.72rem; text-decoration: none; transition: color 0.25s;" onmouseover="this.style.color='#7c6cf0'" onmouseout="this.style.color='#7a7a88'">Összes →</a>
+            <a href="../erdekessegek.html" class="section-link section-link-purple" style="color: var(--text-dim); font-size: 0.72rem; text-decoration: none; transition: color 0.25s;">Összes →</a>
         </div>
         <div class="sub-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem;">
-            <a href="../erdekessegek/antianyag.html" class="card-anim" style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; text-decoration: none; color: var(--text); transition: border-color 0.3s, transform 0.2s; position:relative; overflow:hidden;" onmouseover="this.style.borderColor='#7c6cf0';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='none'">
+            <a href="../erdekessegek/antianyag.html" class="card-anim" data-hover-color="purple" style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; text-decoration: none; color: var(--text); position:relative; overflow:hidden;">
                 <canvas class="card-canvas" id="canvasAntianyag" style="position:absolute;inset:0;width:100%;height:100%;opacity:0.2;pointer-events:none;"></canvas>
                 <div style="position:relative;z-index:1;">
                     <div style="font-size: 0.65rem; font-weight: 600; color: #7c6cf0; margin-bottom: 0.4rem;">Kozmológia</div>
@@ -654,7 +668,7 @@
                     <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.3rem;">Miért létezik bármi?</div>
                 </div>
             </a>
-            <a href="../fizika/" class="card-anim" style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; text-decoration: none; color: var(--text); transition: border-color 0.3s, transform 0.2s; position:relative; overflow:hidden;" onmouseover="this.style.borderColor='#4ade80';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='none'">
+            <a href="../fizika/" class="card-anim" data-hover-color="green" style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; text-decoration: none; color: var(--text); position:relative; overflow:hidden;">
                 <canvas class="card-canvas" id="canvasKormozgas" style="position:absolute;inset:0;width:100%;height:100%;opacity:0.2;pointer-events:none;"></canvas>
                 <div style="position:relative;z-index:1;">
                     <div style="font-size: 0.65rem; font-weight: 600; color: #4ade80; margin-bottom: 0.4rem;">Fizika</div>
@@ -662,7 +676,7 @@
                     <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.3rem;">Interaktív oktatóanyag</div>
                 </div>
             </a>
-            <a href="../erdekessegek/transformer.html" class="card-anim" style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; text-decoration: none; color: var(--text); transition: border-color 0.3s, transform 0.2s; position:relative; overflow:hidden;" onmouseover="this.style.borderColor='#4aa3df';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='none'">
+            <a href="../erdekessegek/transformer.html" class="card-anim" data-hover-color="blue" style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; text-decoration: none; color: var(--text); position:relative; overflow:hidden;">
                 <canvas class="card-canvas" id="canvasTransformer" style="position:absolute;inset:0;width:100%;height:100%;opacity:0.2;pointer-events:none;"></canvas>
                 <div style="position:relative;z-index:1;">
                     <div style="font-size: 0.65rem; font-weight: 600; color: #4aa3df; margin-bottom: 0.4rem;">Technológia</div>
