@@ -2128,6 +2128,14 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     }
   });
 });
+
+document.addEventListener('visibilitychange', function() {
+  if (document.hidden) {
+    document.querySelectorAll('canvas').forEach(function(c) {
+      if (c._animId) { cancelAnimationFrame(c._animId); c._animId = null; }
+    });
+  }
+});
 </script>
 </body>
 </html>

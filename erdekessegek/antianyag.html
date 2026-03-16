@@ -2257,6 +2257,14 @@ const deepDiveAnimations = {};
 // ============================================================
 setupScrollObserver();
 updateProgress();
+
+// Cleanup animations on page hide
+document.addEventListener('visibilitychange', function() {
+  if (document.hidden) {
+    if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
+    if (annAnimFrame) { cancelAnimationFrame(annAnimFrame); annAnimFrame = null; }
+  }
+});
 </script>
 </body>
 </html>

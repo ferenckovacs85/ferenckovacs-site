@@ -934,13 +934,19 @@ function applyCachedPrices(cached) {
 }
 
 async function fetchLivePrices(force = false) {
+  // Guard: check UI elements exist
+  const btn = document.getElementById('fetchPricesBtn');
+  const icon = document.getElementById('fetchIcon');
+  if (!btn || !icon) {
+    console.error('Missing fetchPricesBtn or fetchIcon element');
+    return;
+  }
+
   // Use cache if available and not forced
   if (!force) {
     const cached = getCachedPrices();
     if (cached) { applyCachedPrices(cached); return; }
   }
-  const btn = document.getElementById('fetchPricesBtn');
-  const icon = document.getElementById('fetchIcon');
   btn.style.opacity = '0.5';
   btn.style.pointerEvents = 'none';
   icon.style.display = 'inline-block';
@@ -951,7 +957,8 @@ async function fetchLivePrices(force = false) {
     if (data.bitcoin) {
       const btcUsd = Math.round(data.bitcoin.usd);
       const btcHuf = Math.round(data.bitcoin.huf);
-      const usdHuf = Math.round(btcHuf / btcUsd);
+      // Guard: prevent division by zero
+      const usdHuf = btcUsd > 0 ? Math.round(btcHuf / btcUsd) : 0;
       // Save to cache
       localStorage.setItem(PRICE_CACHE_KEY, JSON.stringify({ btcUsd, usdHuf, ts: Date.now() }));
       setFmtValue('btcUsd', btcUsd);
@@ -1021,6 +1028,15 @@ function pvDeflator(monthIndex) {
 }
 
 function getParams() {
+  // Guard: check critical elements exist
+  const criticalIds = ['initSat', 'lumpSum', 'totalInvest', 'months', 'monthlySavings', 'btcUsd', 'usdHuf', 'monetaryInflation', 'startYear', 'startMonth', 'birthYear', 'hufCagr'];
+  for (const id of criticalIds) {
+    if (!document.getElementById(id)) {
+      console.error('Missing critical element: ' + id);
+      return null;
+    }
+  }
+
   const fire = fireMode;
   return {
     initBTC: (parseNumVal(document.getElementById('initSat')) || 0) / 1e8,
@@ -1081,9 +1097,18 @@ function generateCustomPrices() {
 function runSimulation() {
   updateMacroBtcHuf();
   const p = getParams();
+  if (!p) {
+    console.error('getParams returned null - critical elements missing');
+    return;
+  }
+  const priceMultElem = document.getElementById('priceMultiplier');
+  if (!priceMultElem) {
+    console.error('Missing priceMultiplier element');
+    return;
+  }
   const C8 = Math.min(p.months, 120);
   const maxM = 120; // Always run to 2036
-  const priceMult = parseInt(document.getElementById('priceMultiplier').value) / 100;
+  const priceMult = parseInt(priceMultElem.value) / 100;
 
   // DCA amount per month (from totalInvest pool — all goes to BTC)
   const dcaPerMonth = p.totalInvest / C8;
@@ -1110,9 +1135,12 @@ function runSimulation() {
   const totalInvestedAll = p.totalInvest + p.lumpSum + p.monthlySavings * savingsMonths;
 
   // Update hints
-  document.getElementById('initSatHint').textContent = '= ' + fmtBtc(p.initBTC) + ' BTC'
-    + (lumpSumSat > 0 ? ' + ' + fmtSat(lumpSumSat) + ' sat (vétel) = ' + fmtSat(totalInitSat) + ' sat' : '')
-    + ' · ' + fmtFt(portfolioFt0);
+  const initSatHintEl = document.getElementById('initSatHint');
+  if (initSatHintEl) {
+    initSatHintEl.textContent = '= ' + fmtBtc(p.initBTC) + ' BTC'
+      + (lumpSumSat > 0 ? ' + ' + fmtSat(lumpSumSat) + ' sat (vétel) = ' + fmtSat(totalInitSat) + ' sat' : '')
+      + ' · ' + fmtFt(portfolioFt0);
+  }
 
   simData = [];
   let satBalance = totalInitSat;
@@ -1435,6 +1463,7 @@ function toggleDetails() {
 // ============================================================
 function renderSummary() {
   const p = getParams();
+  if (!p) return;
   const last = simData[simData.length - 1];
   if (!last) return;
 
@@ -1541,8 +1570,10 @@ function renderSummary() {
       <div class="value">${c.value}</div>
       ${c.sub ? `<div class="sub">${c.sub}</div>` : ''}
     </div>`;
-  document.getElementById('summaryCards').innerHTML = primaryCards.map(cardHtml).join('');
-  document.getElementById('summaryDetailsCards').innerHTML = detailCards.map(cardHtml).join('');
+  const summaryCardsEl = document.getElementById('summaryCards');
+  const summaryDetailsCardsEl = document.getElementById('summaryDetailsCards');
+  if (summaryCardsEl) summaryCardsEl.innerHTML = primaryCards.map(cardHtml).join('');
+  if (summaryDetailsCardsEl) summaryDetailsCardsEl.innerHTML = detailCards.map(cardHtml).join('');
 
 }
 
@@ -1551,6 +1582,7 @@ function renderSummary() {
 // ============================================================
 function renderTable() {
   const p = getParams();
+  if (!p) return;
   const totalInvestedAll = p.totalInvest + p.lumpSum + p.monthlySavings * 120;
   const html = simData.map(d => {
     const pvD = pvDeflator(d.m);
@@ -1577,7 +1609,8 @@ function renderTable() {
       <td class="${retCls}" style="font-weight:600">${fmtPct(pvRet)}</td>
     </tr>`;
   }).join('');
-  document.getElementById('simBody').innerHTML = html;
+  const simBodyEl = document.getElementById('simBody');
+  if (simBodyEl) simBodyEl.innerHTML = html;
 }
 
 // ============================================================
@@ -1597,6 +1630,7 @@ function renderYearly() {
   });
 
   const p = getParams();
+  if (!p) return;
   const totalInvestedAll = p.totalInvest + p.lumpSum + p.monthlySavings * 120;
   const html = Object.entries(years).map(([yr, yd]) => {
     const d = yd.last;
@@ -1623,7 +1657,8 @@ function renderYearly() {
       <td>${fmtUsd(portUsd)}</td>
     </tr>`;
   }).join('');
-  document.getElementById('yearBody').innerHTML = html;
+  const yearBodyEl = document.getElementById('yearBody');
+  if (yearBodyEl) yearBodyEl.innerHTML = html;
 }
 
 // ============================================================
@@ -1677,7 +1712,12 @@ function runMonteCarlo() {
 }
 
 function renderChart() {
-  const ctx = document.getElementById('mainChart').getContext('2d');
+  const chartElem = document.getElementById('mainChart');
+  if (!chartElem) {
+    console.error('Missing mainChart element');
+    return;
+  }
+  const ctx = chartElem.getContext('2d');
   if (chart) chart.destroy();
 
   const labels = simData.map(d => `${d.calYear}/${String(d.calMonth).padStart(2,'0')}`);
@@ -2030,6 +2070,10 @@ const WEIGHT_DEFAULTS = [40, 15, 15, 15, 15];
 
 function buildWeights() {
   const container = document.getElementById('weightsContainer');
+  if (!container) {
+    console.error('Missing weightsContainer element');
+    return;
+  }
   container.innerHTML = MODEL_NAMES.map((name, i) =>
     `<div class="macro-item" style="gap:3px">
       <span style="font-size:10px;font-weight:600;color:${MODEL_COLORS[i]};cursor:pointer;min-width:28px" onclick="soloWeight(${i})" title="Kattints: 100% csak ${name}">${name.replace(' Invest','').replace(' Chartered','')}</span>
@@ -2043,12 +2087,15 @@ function updateWeights() {
   let total = 0;
   document.querySelectorAll('.weight-slider').forEach((s, i) => {
     const v = parseInt(s.value);
-    document.getElementById('w' + i).textContent = v + '%';
+    const wEl = document.getElementById('w' + i);
+    if (wEl) wEl.textContent = v + '%';
     total += v;
   });
   const el = document.getElementById('totalWeight');
-  el.textContent = total + '%';
-  el.style.color = total === 100 ? 'var(--green)' : 'var(--red)';
+  if (el) {
+    el.textContent = total + '%';
+    el.style.color = total === 100 ? 'var(--green)' : 'var(--red)';
+  }
   runSimulation();
 }
 
@@ -2063,14 +2110,19 @@ function resetWeights() {
   document.querySelectorAll('.weight-slider').forEach((s, i) => {
     s.value = WEIGHT_DEFAULTS[i];
   });
-  document.getElementById('priceMultiplier').value = 100;
-  document.getElementById('multiplierVal').textContent = '100%';
+  const priceMultEl = document.getElementById('priceMultiplier');
+  const multiplierValEl = document.getElementById('multiplierVal');
+  if (priceMultEl) priceMultEl.value = 100;
+  if (multiplierValEl) multiplierValEl.textContent = '100%';
   updateWeights();
 }
 
 function updateMultiplier() {
-  const v = parseInt(document.getElementById('priceMultiplier').value);
-  document.getElementById('multiplierVal').textContent = v + '%';
+  const priceMultEl = document.getElementById('priceMultiplier');
+  const multiplierValEl = document.getElementById('multiplierVal');
+  if (!priceMultEl || !multiplierValEl) return;
+  const v = parseInt(priceMultEl.value);
+  multiplierValEl.textContent = v + '%';
   runSimulation();
 }
 
@@ -2175,17 +2227,34 @@ function decodeParams(hash) {
     if (p.s !== undefined) setFmtValue('initSat', p.s);
     if (p.l !== undefined) setFmtValue('lumpSum', p.l);
     if (p.t !== undefined) setFmtValue('totalInvest', p.t);
-    if (p.m !== undefined) document.getElementById('months').value = p.m;
+    if (p.m !== undefined) {
+      const monthsEl = document.getElementById('months');
+      if (monthsEl) monthsEl.value = p.m;
+    }
     if (p.ms !== undefined) setFmtValue('monthlySavings', p.ms);
-    if (p.sy !== undefined) document.getElementById('startYear').value = p.sy;
-    if (p.sm !== undefined) document.getElementById('startMonth').value = p.sm;
+    if (p.sy !== undefined) {
+      const startYearEl = document.getElementById('startYear');
+      if (startYearEl) startYearEl.value = p.sy;
+    }
+    if (p.sm !== undefined) {
+      const startMonthEl = document.getElementById('startMonth');
+      if (startMonthEl) startMonthEl.value = p.sm;
+    }
     if (p.bu !== undefined) setFmtValue('btcUsd', p.bu);
     if (p.uh !== undefined) setFmtValue('usdHuf', p.uh);
-    if (p.mi !== undefined) document.getElementById('monetaryInflation').value = p.mi;
-    if (p.hc !== undefined) document.getElementById('hufCagr').value = p.hc;
+    if (p.mi !== undefined) {
+      const monetaryInflationEl = document.getElementById('monetaryInflation');
+      if (monetaryInflationEl) monetaryInflationEl.value = p.mi;
+    }
+    if (p.hc !== undefined) {
+      const hufCagrEl = document.getElementById('hufCagr');
+      if (hufCagrEl) hufCagrEl.value = p.hc;
+    }
     if (p.pm !== undefined) {
-      document.getElementById('priceMultiplier').value = p.pm;
-      document.getElementById('multiplierVal').textContent = p.pm + '%';
+      const priceMultEl = document.getElementById('priceMultiplier');
+      const multiplierValEl = document.getElementById('multiplierVal');
+      if (priceMultEl) priceMultEl.value = p.pm;
+      if (multiplierValEl) multiplierValEl.textContent = p.pm + '%';
     }
     if (p.pv) setPvMode(true);
     if (p.f) {
@@ -2201,8 +2270,14 @@ function decodeParams(hash) {
     }
     if (p.me !== undefined) setFmtValue('monthlyExpense', p.me);
     if (p.wa !== undefined) setFmtValue('withdrawalAmount', p.wa);
-    if (p.wf !== undefined) document.getElementById('withdrawalFreq').value = p.wf;
-    if (p.ct !== undefined) document.getElementById('cryptoTax').value = p.ct;
+    if (p.wf !== undefined) {
+      const withdrawalFreqEl = document.getElementById('withdrawalFreq');
+      if (withdrawalFreqEl) withdrawalFreqEl.value = p.wf;
+    }
+    if (p.ct !== undefined) {
+      const cryptoTaxEl = document.getElementById('cryptoTax');
+      if (cryptoTaxEl) cryptoTaxEl.value = p.ct;
+    }
     if (p.er) setExpenseStart(true);
     updateMacroBtcHuf();
   } catch (e) {
@@ -2214,8 +2289,10 @@ function copyShareLink() {
   const url = location.origin + location.pathname + '#' + hash;
   navigator.clipboard.writeText(url).then(() => {
     const btn = document.getElementById('shareLinkBtn');
-    btn.textContent = '✅ Másolva!';
-    setTimeout(() => { btn.textContent = '🔗 Link'; }, 2000);
+    if (btn) {
+      btn.textContent = '✅ Másolva!';
+      setTimeout(() => { btn.textContent = '🔗 Link'; }, 2000);
+    }
   }).catch(() => {
     prompt('Másold ki a linket:', url);
   });
@@ -2232,12 +2309,18 @@ function getSavedScenarios() {
 }
 
 function saveScenario() {
-  const name = document.getElementById('scenarioName').value.trim() || ('Szcenárió ' + (getSavedScenarios().length + 1));
+  const scenarioNameEl = document.getElementById('scenarioName');
+  if (!scenarioNameEl) {
+    console.error('Missing scenarioName element');
+    return;
+  }
+  const name = scenarioNameEl.value.trim() || ('Szcenárió ' + (getSavedScenarios().length + 1));
   const scenarios = getSavedScenarios();
   if (scenarios.length >= 3) {
     scenarios.shift(); // Remove oldest
   }
   const p = getParams();
+  if (!p) return;
   const last = simData[simData.length - 1];
   const totalInvestedAll = p.totalInvest + p.lumpSum + p.monthlySavings * 120;
   const pvD = pvDeflator(last.m);
@@ -2257,7 +2340,8 @@ function saveScenario() {
     }
   });
   localStorage.setItem(SCENARIO_KEY, JSON.stringify(scenarios));
-  document.getElementById('scenarioName').value = '';
+  const scenarioNameEl = document.getElementById('scenarioName');
+  if (scenarioNameEl) scenarioNameEl.value = '';
   renderScenarios();
 }
 
@@ -2279,6 +2363,10 @@ function deleteScenario(idx) {
 function renderScenarios() {
   const scenarios = getSavedScenarios();
   const slots = document.getElementById('scenarioSlots');
+  if (!slots) {
+    console.error('Missing scenarioSlots element');
+    return;
+  }
   slots.innerHTML = scenarios.map((s, i) =>
     `<div style="display:flex;align-items:center;gap:4px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:4px 10px">
       <span style="font-size:12px;color:var(--text);cursor:pointer;font-weight:500" onclick="loadScenario(${i})" title="Kattints a betöltéshez">${escHtml(s.name)}</span>
@@ -2289,9 +2377,18 @@ function renderScenarios() {
 
   // Comparison table
   const compare = document.getElementById('scenarioCompare');
+  if (!compare) {
+    console.error('Missing scenarioCompare element');
+    return;
+  }
   if (scenarios.length >= 2) {
     compare.style.display = 'block';
     const header = document.getElementById('scenarioHeader');
+    const body = document.getElementById('scenarioBody');
+    if (!header || !body) {
+      console.error('Missing scenarioHeader or scenarioBody element');
+      return;
+    }
     header.innerHTML = '<th>Mutató</th>' + scenarios.map(s => `<th style="color:var(--btc)">${escHtml(s.name)}</th>`).join('');
     const metrics = [
       { label: 'Befektetés', key: 'invested', fmt: fmtFtShort },
@@ -2301,7 +2398,6 @@ function renderScenarios() {
       { label: 'BTC egyenleg', key: 'btcBalance', fmt: v => fmtSat(v) + ' sat' },
       { label: 'BTC ár (Ft)', key: 'btcPrice', fmt: v => fmtFtShort(v) },
     ];
-    const body = document.getElementById('scenarioBody');
     body.innerHTML = metrics.map(m =>
       `<tr><td style="font-weight:600;color:var(--text)">${m.label}</td>` +
       scenarios.map(s => {
@@ -2322,7 +2418,8 @@ function init() {
   buildWeights();
 
   // Set initial FIRE state (off)
-  const fireSection = document.getElementById('fireBody').closest('.section');
+  const fireBodyEl = document.getElementById('fireBody');
+  const fireSection = fireBodyEl ? fireBodyEl.closest('.section') : null;
   if (fireSection) fireSection.classList.add('fire-off');
 
   // Add event listeners to number inputs

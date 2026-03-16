@@ -571,17 +571,27 @@ function setupFmtInput(el) {
 }
 
 function getParams() {
+  const el1 = document.getElementById('initBTC'); if (!el1) return {};
+  const el2 = document.getElementById('totalInvest'); if (!el2) return {};
+  const el3 = document.getElementById('months'); if (!el3) return {};
+  const el4 = document.getElementById('livingExp'); if (!el4) return {};
+  const el5 = document.getElementById('rentHuf'); if (!el5) return {};
+  const el6 = document.getElementById('startYear'); if (!el6) return {};
+  const el7 = document.getElementById('startMonth'); if (!el7) return {};
+  const el8 = document.getElementById('btcUsd'); if (!el8) return {};
+  const el9 = document.getElementById('usdHuf'); if (!el9) return {};
+  const el10 = document.getElementById('hufCagr'); if (!el10) return {};
   return {
-    initBTC: parseFloat(document.getElementById('initBTC').value) || 0,
-    totalInvest: parseNumVal(document.getElementById('totalInvest')),
-    months: parseInt(document.getElementById('months').value) || 1,
-    livingExp: parseNumVal(document.getElementById('livingExp')),
-    rentHuf: parseNumVal(document.getElementById('rentHuf')),
-    startYear: parseInt(document.getElementById('startYear').value) || 2026,
-    startMonth: parseInt(document.getElementById('startMonth').value) || 4,
-    btcUsd: parseNumVal(document.getElementById('btcUsd')),
-    usdHuf: parseNumVal(document.getElementById('usdHuf')),
-    hufCagr: parseFloat(document.getElementById('hufCagr').value) / 100 || 0.024,
+    initBTC: parseFloat(el1.value) || 0,
+    totalInvest: parseNumVal(el2),
+    months: parseInt(el3.value) || 1,
+    livingExp: parseNumVal(el4),
+    rentHuf: parseNumVal(el5),
+    startYear: parseInt(el6.value) || 2026,
+    startMonth: parseInt(el7.value) || 4,
+    btcUsd: parseNumVal(el8),
+    usdHuf: parseNumVal(el9),
+    hufCagr: parseFloat(el10.value) / 100 || 0.024,
     weights: getWeights()
   };
 }
@@ -599,7 +609,8 @@ function runSimulation() {
   const p = getParams();
   const C8 = Math.min(p.months, 120);
   const maxM = 120; // Always run to 2036
-  const priceMult = parseInt(document.getElementById('priceMultiplier').value) / 100;
+  const priceMultEl = document.getElementById('priceMultiplier');
+  const priceMult = (priceMultEl ? parseInt(priceMultEl.value) : 100) / 100;
 
   // DCA amount per month
   const dcaPerMonth = p.totalInvest / C8 - p.livingExp - p.rentHuf;
@@ -611,7 +622,8 @@ function runSimulation() {
   const rentSat0 = Math.round(p.rentHuf / btcHuf0 * 1e8);
 
   // Update hints
-  document.getElementById('initSat').textContent = fmtSat(initSatoshi) + ' satoshi · ' + fmtFt(portfolioFt0);
+  const initSatEl = document.getElementById('initSat');
+  if (initSatEl) initSatEl.textContent = fmtSat(initSatoshi) + ' satoshi · ' + fmtFt(portfolioFt0);
 
   simData = [];
   let satBalance = initSatoshi;
@@ -862,13 +874,16 @@ function renderSummary() {
     }
   }
 
-  document.getElementById('summaryCards').innerHTML = cards.map(c =>
-    `<div class="summary-card ${c.cls}">
-      <div class="label">${c.label}</div>
-      <div class="value">${c.value}</div>
-      ${c.sub ? `<div class="sub">${c.sub}</div>` : ''}
-    </div>`
-  ).join('');
+  const summaryEl = document.getElementById('summaryCards');
+  if (summaryEl) {
+    summaryEl.innerHTML = cards.map(c =>
+      `<div class="summary-card ${c.cls}">
+        <div class="label">${c.label}</div>
+        <div class="value">${c.value}</div>
+        ${c.sub ? `<div class="sub">${c.sub}</div>` : ''}
+      </div>`
+    ).join('');
+  }
 }
 
 // ============================================================
@@ -896,7 +911,8 @@ function renderTable() {
       <td class="${retCls}" style="font-weight:600">${fmtPct(d.returnPct)}</td>
     </tr>`;
   }).join('');
-  document.getElementById('simBody').innerHTML = html;
+  const simBodyEl = document.getElementById('simBody');
+  if (simBodyEl) simBodyEl.innerHTML = html;
 }
 
 // ============================================================
@@ -934,7 +950,8 @@ function renderYearly() {
       <td>${fmtUsd(portUsd)}</td>
     </tr>`;
   }).join('');
-  document.getElementById('yearBody').innerHTML = html;
+  const yearBodyEl = document.getElementById('yearBody');
+  if (yearBodyEl) yearBodyEl.innerHTML = html;
 }
 
 // ============================================================
@@ -948,7 +965,9 @@ function showChart(type) {
 }
 
 function renderChart() {
-  const ctx = document.getElementById('mainChart').getContext('2d');
+  const mainChartEl = document.getElementById('mainChart');
+  if (!mainChartEl) return;
+  const ctx = mainChartEl.getContext('2d');
   if (chart) chart.destroy();
 
   const labels = simData.map(d => `${d.calYear}/${String(d.calMonth).padStart(2,'0')}`);
@@ -1216,6 +1235,7 @@ const WEIGHT_DEFAULTS = [50, 20, 15, 15];
 
 function buildWeights() {
   const container = document.getElementById('weightsContainer');
+  if (!container) return;
   container.innerHTML = MODEL_NAMES.map((name, i) =>
     `<div class="weight-row">
       <span class="wlabel" style="color:${MODEL_COLORS[i]}" onclick="soloWeight(${i})" title="Kattints: 100% csak ${name}">${name}</span>
@@ -1229,12 +1249,15 @@ function updateWeights() {
   let total = 0;
   document.querySelectorAll('.weight-slider').forEach((s, i) => {
     const v = parseInt(s.value);
-    document.getElementById('w' + i).textContent = v + '%';
+    const wEl = document.getElementById('w' + i);
+    if (wEl) wEl.textContent = v + '%';
     total += v;
   });
-  const el = document.getElementById('totalWeight');
-  el.textContent = total + '%';
-  el.style.color = total === 100 ? 'var(--green)' : 'var(--red)';
+  const totalWeightEl = document.getElementById('totalWeight');
+  if (totalWeightEl) {
+    totalWeightEl.textContent = total + '%';
+    totalWeightEl.style.color = total === 100 ? 'var(--green)' : 'var(--red)';
+  }
   runSimulation();
 }
 
@@ -1249,14 +1272,19 @@ function resetWeights() {
   document.querySelectorAll('.weight-slider').forEach((s, i) => {
     s.value = WEIGHT_DEFAULTS[i];
   });
-  document.getElementById('priceMultiplier').value = 100;
-  document.getElementById('multiplierVal').textContent = '100%';
+  const priceMultEl = document.getElementById('priceMultiplier');
+  if (priceMultEl) priceMultEl.value = 100;
+  const multValEl = document.getElementById('multiplierVal');
+  if (multValEl) multValEl.textContent = '100%';
   updateWeights();
 }
 
 function updateMultiplier() {
-  const v = parseInt(document.getElementById('priceMultiplier').value);
-  document.getElementById('multiplierVal').textContent = v + '%';
+  const priceMultEl = document.getElementById('priceMultiplier');
+  if (!priceMultEl) return;
+  const v = parseInt(priceMultEl.value);
+  const multValEl = document.getElementById('multiplierVal');
+  if (multValEl) multValEl.textContent = v + '%';
   runSimulation();
 }
 

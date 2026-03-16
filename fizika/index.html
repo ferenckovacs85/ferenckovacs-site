@@ -118,6 +118,13 @@
 </head>
 <body>
 
+<nav style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,14,26,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(99,102,241,0.15);padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-between;">
+    <a href="/hu/" style="color:var(--text-bright);text-decoration:none;font-weight:600;font-size:0.9rem;letter-spacing:0.03em;">← Kovács Ferenc</a>
+    <div style="display:flex;align-items:center;gap:1rem;">
+        <a href="/en/napkin-math.html" style="border:1px solid rgba(99,102,241,0.3);padding:0.2rem 0.6rem;border-radius:4px;font-size:0.7rem;color:var(--text-dim);text-decoration:none;transition:all 0.25s;">EN</a>
+    </div>
+</nav>
+
 <div class="hero">
   <div class="hero-orbit"><div class="ring"></div><div class="cdot"></div><div class="planet"></div></div>
   <h1>Körmozgás</h1>
@@ -427,6 +434,7 @@ function makeCard(id,q,unit,answer){
 }
 function checkAnswer(card,inp,fb){
   var ans=parseFloat(card.dataset.answer),val=parseFloat(inp.value);
+  if(isNaN(ans)){fb.textContent='Hiba: érvénytelen feladat!';fb.className='pfeedback no';return}
   if(isNaN(val)){fb.textContent='Írj be egy számot!';fb.className='pfeedback no';return}
   var tol=Math.max(Math.abs(ans)*0.05,0.05);
   if(Math.abs(val-ans)<=tol){
