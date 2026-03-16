@@ -172,11 +172,14 @@ footer{text-align:center;padding:3rem 2rem;border-top:1px solid var(--border);co
 
 /* RESPONSIVE */
 @media(max-width:900px){
+  .hero-badge{font-size:.65rem;padding:.4rem .8rem;letter-spacing:.08em}
   .hero-pills{flex-direction:column;align-items:stretch}.hero-content{padding:0 2rem 3rem}
   .stats-grid,.inno-grid,.aud-grid,.twin-grid,.fp-steps{grid-template-columns:1fr}
   .phil-grid,.vl,.team-grid{grid-template-columns:1fr}
   .house-grid{grid-template-columns:1fr}
   .process-row{grid-template-columns:1fr 1fr;gap:.8rem}.proc-card .parr{display:none}
+  .proc-duration{flex-direction:column;gap:1rem}.proc-duration .pd-sep{display:none}.proc-duration .pd-item{display:flex;align-items:center;gap:.8rem}.proc-duration .pd-val{font-size:1.4rem}.proc-duration .pd-lbl{margin-top:0}
+  .ctable{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}.ctable th,.ctable td{white-space:nowrap;min-width:120px;font-size:.85rem;padding:1rem}
   .nav-links{display:none}.cta2{margin-left:0;margin-top:1rem}
   .visual-break .vb-text{left:2rem;bottom:2rem}
 }
@@ -604,11 +607,12 @@ footer{text-align:center;padding:3rem 2rem;border-top:1px solid var(--border);co
 <section class="contact" id="contact">
   <div class="reveal"><div class="slbl">Kapcsolat</div><h2 class="sttl">Beszéljünk.</h2></div>
   <div class="contact-card reveal">
-    <div class="cn">Kovács Ferenc</div><div class="cr">Ügyvezető · CEO</div>
+    <div class="cn">Kovács Ferenc</div><div class="cr">Ügyvezető · CEO · Építőmérnök</div>
     <div class="ci-list">
       <div class="ci"><span>&#x1F4DE;</span><a href="tel:+36305254475">+36 30 525 4475</a></div>
-      <div class="ci"><span>&#x2709;&#xFE0F;</span><a href="mailto:kvkft@kvkft.hu">kvkft@kvkft.hu</a></div>
-      <div class="ci"><span>&#x1F4CD;</span><span>3704 Berente, Ipari út 2.</span></div>
+      <div class="ci"><span>&#x2709;&#xFE0F;</span><a href="mailto:kvkft@kvkft.hu">kvkft@kvkft.hu</a> <span style="color:var(--dim);font-size:.8rem">(vállalati)</span></div>
+      <div class="ci"><span>&#x2709;&#xFE0F;</span><a href="mailto:ifjkovacsferenc@kvkft.hu">ifjkovacsferenc@kvkft.hu</a> <span style="color:var(--dim);font-size:.8rem">(személyes)</span></div>
+      <div class="ci"><span>&#x1F4CD;</span><a href="https://maps.google.com/?q=3704+Berente,+Ipari+%C3%BAt+2." target="_blank" style="color:var(--text);text-decoration:none">3704 Berente, Ipari út 2.</a></div>
       <div class="ci"><span>&#x1F310;</span><a href="https://www.kvhomes.hu" target="_blank">www.kvhomes.hu</a></div>
     </div>
   </div>
