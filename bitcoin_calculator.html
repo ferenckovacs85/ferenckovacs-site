@@ -985,10 +985,11 @@ function toggleFire() {
   fireMode = !fireMode;
   const sw = document.getElementById('fireSwitch');
   const body = document.getElementById('fireBody');
+  if (!sw || !body) return;
   const section = body.closest('.section');
   sw.classList.toggle('active', fireMode);
   body.classList.toggle('open', fireMode);
-  section.classList.toggle('fire-off', !fireMode);
+  if (section) section.classList.toggle('fire-off', !fireMode);
   document.getElementById('totalInvestHint').textContent = fireMode
     ? 'DCA-ra fordított összeg (kivétel BTC-ből)'
     : 'DCA-ra fordított összeg';
@@ -997,22 +998,28 @@ function toggleFire() {
 
 function toggleYieldOnly() {
   yieldOnlyMode = !yieldOnlyMode;
-  document.getElementById('yieldOnlySwitch').classList.toggle('active', yieldOnlyMode);
-  document.getElementById('yieldOnlyLabel').textContent = yieldOnlyMode ? 'Be' : 'Ki';
+  const sw = document.getElementById('yieldOnlySwitch');
+  const lbl = document.getElementById('yieldOnlyLabel');
+  if (sw) sw.classList.toggle('active', yieldOnlyMode);
+  if (lbl) lbl.textContent = yieldOnlyMode ? 'Be' : 'Ki';
   runSimulation();
 }
 
 function setExpenseStart(fromRetirement) {
   expenseFromRetirement = fromRetirement;
-  document.getElementById('expBtnImmediate').classList.toggle('active', !fromRetirement);
-  document.getElementById('expBtnRetire').classList.toggle('active', fromRetirement);
+  const btnImm = document.getElementById('expBtnImmediate');
+  const btnRet = document.getElementById('expBtnRetire');
+  if (btnImm) btnImm.classList.toggle('active', !fromRetirement);
+  if (btnRet) btnRet.classList.toggle('active', fromRetirement);
   runSimulation();
 }
 
 function setPvMode(on) {
   pvMode = on;
-  document.getElementById('pvBtnNominal').classList.toggle('active', !on);
-  document.getElementById('pvBtnReal').classList.toggle('active', on);
+  const btnNom = document.getElementById('pvBtnNominal');
+  const btnReal = document.getElementById('pvBtnReal');
+  if (btnNom) btnNom.classList.toggle('active', !on);
+  if (btnReal) btnReal.classList.toggle('active', on);
   updateMacroBtcHuf();
   renderSummary();
   renderTable();
@@ -2340,7 +2347,6 @@ function saveScenario() {
     }
   });
   localStorage.setItem(SCENARIO_KEY, JSON.stringify(scenarios));
-  const scenarioNameEl = document.getElementById('scenarioName');
   if (scenarioNameEl) scenarioNameEl.value = '';
   renderScenarios();
 }
