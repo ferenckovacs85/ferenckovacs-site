@@ -171,15 +171,27 @@ footer{text-align:center;padding:3rem 2rem;border-top:1px solid var(--border);co
 .badge{background:var(--card);border:1px solid var(--border);padding:.4rem 1rem;border-radius:8px;font-size:.8rem;color:var(--dim)}
 
 /* RESPONSIVE */
+/* Mobile comparison cards - hidden on desktop, shown on mobile */
+.compare-cards{display:none}
+.cc-item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem 1.5rem;margin-bottom:.8rem}
+.cc-item .cc-label{font-size:.85rem;font-weight:700;color:var(--text);margin-bottom:.6rem}
+.cc-item .cc-row{display:flex;justify-content:space-between;align-items:center;padding:.3rem 0}
+.cc-item .cc-row .cc-side{font-size:.82rem;color:var(--muted)}.cc-item .cc-row .cc-side.kv{color:var(--accent);font-weight:600}
+.cc-item .cc-row .cc-tag{font-size:.7rem}
+
 @media(max-width:900px){
+  .hero{align-items:center}.hero-content{padding:6rem 2rem 3rem}
   .hero-badge{font-size:.65rem;padding:.4rem .8rem;letter-spacing:.08em}
-  .hero-pills{flex-direction:column;align-items:stretch}.hero-content{padding:0 2rem 3rem}
+  .hero h1{font-size:2.2rem}
+  .hero-pills{flex-direction:column;align-items:stretch}
+  .hero-pill{padding:.8rem 1rem;min-width:unset}.hero-pill .v{font-size:1.3rem}
   .stats-grid,.inno-grid,.aud-grid,.twin-grid,.fp-steps{grid-template-columns:1fr}
   .phil-grid,.vl,.team-grid{grid-template-columns:1fr}
   .house-grid{grid-template-columns:1fr}
   .process-row{grid-template-columns:1fr 1fr;gap:.8rem}.proc-card .parr{display:none}
   .proc-duration{flex-direction:column;gap:1rem}.proc-duration .pd-sep{display:none}.proc-duration .pd-item{display:flex;align-items:center;gap:.8rem}.proc-duration .pd-val{font-size:1.4rem}.proc-duration .pd-lbl{margin-top:0}
-  .ctable{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}.ctable th,.ctable td{white-space:nowrap;min-width:120px;font-size:.85rem;padding:1rem}
+  .ctable{display:none}
+  .compare-cards{display:block}
   .nav-links{display:none}.cta2{margin-left:0;margin-top:1rem}
   .visual-break .vb-text{left:2rem;bottom:2rem}
 }
@@ -412,6 +424,16 @@ footer{text-align:center;padding:3rem 2rem;border-top:1px solid var(--border);co
       <tr><td>Karbantartás</td><td>Rendszeres, költséges</td><td>Minimális</td></tr>
       <tr><td>Tervezhetőség</td><td>Kiszámíthatatlan</td><td>Fix ütemterv -> pénzügyi termék</td></tr>
     </tbody></table>
+    <div class="compare-cards">
+      <div class="cc-item"><div class="cc-label">Szerkezetépítés</div><div class="cc-row"><span class="cc-side">Hagyományos: 3–6 hónap</span></div><div class="cc-row"><span class="cc-side kv">KV Homes: 1 hét</span><span class="bg cc-tag">60x</span></div></div>
+      <div class="cc-item"><div class="cc-label">Kulcsrakész</div><div class="cc-row"><span class="cc-side">Hagyományos: 12–18 hónap</span></div><div class="cc-row"><span class="cc-side kv">KV Homes: ~3 hónap</span><span class="bg cc-tag">4–6x</span></div></div>
+      <div class="cc-item"><div class="cc-label">Tervdokumentáció</div><div class="cc-row"><span class="cc-side">Hagyományos: Engedélyezési terv</span></div><div class="cc-row"><span class="cc-side kv">KV Homes: Kiviteli + megvalósulási + digitális iker</span></div></div>
+      <div class="cc-item"><div class="cc-label">Minőségbiztosítás</div><div class="cc-row"><span class="cc-side">Hagyományos: Szubjektív, helyszíni</span></div><div class="cc-row"><span class="cc-side kv">KV Homes: Lézerszkenner + algoritmus (40 mikron)</span></div></div>
+      <div class="cc-item"><div class="cc-label">Élettartam</div><div class="cc-row"><span class="cc-side">Hagyományos: 50–80 év</span></div><div class="cc-row"><span class="cc-side kv">KV Homes: 100+ év</span></div></div>
+      <div class="cc-item"><div class="cc-label">Energia</div><div class="cc-row"><span class="cc-side">Hagyományos: B–D</span></div><div class="cc-row"><span class="cc-side kv">KV Homes: A+++</span><span class="bg cc-tag">14x</span></div></div>
+      <div class="cc-item"><div class="cc-label">Karbantartás</div><div class="cc-row"><span class="cc-side">Hagyományos: Rendszeres, költséges</span></div><div class="cc-row"><span class="cc-side kv">KV Homes: Minimális</span></div></div>
+      <div class="cc-item"><div class="cc-label">Tervezhetőség</div><div class="cc-row"><span class="cc-side">Hagyományos: Kiszámíthatatlan</span></div><div class="cc-row"><span class="cc-side kv">KV Homes: Fix ütemterv → pénzügyi termék</span></div></div>
+    </div>
   </div>
 </section>
 
