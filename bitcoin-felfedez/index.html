@@ -359,7 +359,7 @@ const SLIDES = [
 
 const container = document.getElementById('slides-container');
 const TOTAL = SLIDES.length;
-let current = 0;
+let current = -1;
 let autoPlay = false;
 let autoTimer = null;
 
@@ -371,78 +371,78 @@ function buildSlide(s, idx) {
   if (s.t === 'hero') {
     el.classList.add('hero-slide');
     el.innerHTML = `
-      <div class="hero-tag">Prezentáció &middot; 2026</div>
-      <h1>A Bitcoin nem feltalálmány&thinsp;&mdash;&thinsp;hanem felfedezés</h1>
-      <p class="hero-sub">Tizenegy látnok, kriptográfus és közgazdász, akik évtizedekkel megelőzték a Bitcoint — és akik nélkül Satoshi sohasem írhatta volna meg a white paperjét.</p>
-      <div class="hero-quote">"Ha láttam messzebbre, az azért van, mert óriások vállain álltam." &mdash; Isaac Newton</div>
-      <div class="hero-badge"><span>38 dia</span> &middot; Nyomj &rarr; vagy kattints a folytatáshoz</div>`;
+      <div class="hero-tag">Prezentáció &middot; 2026<\/div>
+      <h1>A Bitcoin nem feltalálmány&thinsp;&mdash;&thinsp;hanem felfedezés<\/h1>
+      <p class="hero-sub">Tizenegy látnok, kriptográfus és közgazdász, akik évtizedekkel megelőzték a Bitcoint — és akik nélkül Satoshi sohasem írhatta volna meg a white paperjét.<\/p>
+      <div class="hero-quote">"Ha láttam messzebbre, az azért van, mert óriások vállain álltam." &mdash; Isaac Newton<\/div>
+      <div class="hero-badge"><span>38 dia<\/span> &middot; Nyomj &rarr; vagy kattints a folytatáshoz<\/div>`;
 
   } else if (s.t === 'div') {
     el.classList.add('divider-slide');
     el.innerHTML = `<div class="divider-inner">
-      <div class="divider-num">${s.num}</div>
-      <h2>${s.title}</h2>
-      <div class="divider-line"></div>
-      <p>${s.sub}</p>
-    </div>`;
+      <div class="divider-num">${s.num}<\/div>
+      <h2>${s.title}<\/h2>
+      <div class="divider-line"><\/div>
+      <p>${s.sub}<\/p>
+    <\/div>`;
 
   } else if (s.t === 'intro') {
     el.classList.add('person-intro');
     const imgContent = s.img
-      ? `<img src="${s.img}" alt="${s.name}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=&quot;font-size:56px&quot;>${s.emoji}</span>'">`
-      : `<span style="font-size:56px">${s.emoji}</span>`;
+      ? `<img src="${s.img}" alt="${s.name}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=&quot;font-size:56px&quot;>${s.emoji}<\/span>'">`
+      : `<span style="font-size:56px">${s.emoji}<\/span>`;
     el.innerHTML = `
-      <div class="portrait-ring">${imgContent}</div>
+      <div class="portrait-ring">${imgContent}<\/div>
       <div class="intro-content">
-        <div class="person-years">${s.years}</div>
-        <h2>${s.name}</h2>
-        <div class="person-role">${s.role}</div>
-        <p class="intro-text">${s.text}</p>
-      </div>`;
+        <div class="person-years">${s.years}<\/div>
+        <h2>${s.name}<\/h2>
+        <div class="person-role">${s.role}<\/div>
+        <p class="intro-text">${s.text}<\/p>
+      <\/div>`;
 
   } else if (s.t === 'bio') {
     el.classList.add('person-bio');
     el.innerHTML = `<div class="bio-inner">
       <div class="bio-header">
-        <div class="bio-icon">${s.emoji}</div>
-        <div><h3>${s.name}</h3><div class="bio-sub-label">${s.sub}</div></div>
-      </div>
-      <div class="bio-body">${s.paras.map(p=>`<p>${p}</p>`).join('')}</div>
-    </div>`;
+        <div class="bio-icon">${s.emoji}<\/div>
+        <div><h3>${s.name}<\/h3><div class="bio-sub-label">${s.sub}<\/div><\/div>
+      <\/div>
+      <div class="bio-body">${s.paras.map(p=>`<p>${p}<\/p>`).join('')}<\/div>
+    <\/div>`;
 
   } else if (s.t === 'btc') {
     el.classList.add('btc-slide');
     const tlHtml = s.tl.map((item, i, arr) => `
       <div class="tl-item">
-        <div class="tl-year">${item.y}</div>
-        <div class="tl-dot"></div>
-        <div class="tl-label">${item.l}</div>
-      </div>${i < arr.length-1 ? '<div class="tl-line"></div>' : ''}`).join('');
+        <div class="tl-year">${item.y}<\/div>
+        <div class="tl-dot"><\/div>
+        <div class="tl-label">${item.l}<\/div>
+      <\/div>${i < arr.length-1 ? '<div class="tl-line"><\/div>' : ''}`).join('');
     el.innerHTML = `<div class="btc-inner">
-      <span class="btc-symbol">&#8383;</span>
-      <div class="btc-slide-title">Kapcsolódás a Bitcoinhoz &middot; ${s.name}</div>
+      <span class="btc-symbol">&#8383;<\/span>
+      <div class="btc-slide-title">Kapcsolódás a Bitcoinhoz &middot; ${s.name}<\/div>
       <div class="btc-quote">
-        <div class="quote-text">${s.quote}</div>
-        <div class="quote-attr">${s.qa}</div>
-      </div>
-      <div class="btc-timeline">${tlHtml}</div>
+        <div class="quote-text">${s.quote}<\/div>
+        <div class="quote-attr">${s.qa}<\/div>
+      <\/div>
+      <div class="btc-timeline">${tlHtml}<\/div>
       <div class="btc-box">
-        <div class="btc-box-title">Miért számít?</div>
-        <p>${s.box}</p>
-      </div>
-      <div class="btc-tags">${s.tags.map(t=>`<span class="btc-tag">${t}</span>`).join('')}</div>
-    </div>`;
+        <div class="btc-box-title">Miért számít?<\/div>
+        <p>${s.box}<\/p>
+      <\/div>
+      <div class="btc-tags">${s.tags.map(t=>`<span class="btc-tag">${t}<\/span>`).join('')}<\/div>
+    <\/div>`;
 
   } else if (s.t === 'closing') {
     el.classList.add('closing-slide');
     el.innerHTML = `
-      <div class="closing-quote">"Az igazságot nem feltalálják.<br>Az igazságot felfedezik."</div>
+      <div class="closing-quote">"Az igazságot nem feltalálják.<br>Az igazságot felfedezik."<\/div>
       <div class="grid-boxes">
-        <div class="grid-box"><div class="gb-icon">&#129504;</div><div class="gb-title">Az ötletek örökké élnek</div><div class="gb-text">Tesla, Ford, Hayek, Mises és Friedman gondolatai nem haltak meg velük — a Bitcoinban élnek tovább.</div></div>
-        <div class="grid-box"><div class="gb-icon">&#128272;</div><div class="gb-title">A kód a katalizátor</div><div class="gb-text">Chaum, Wei Dai, Szabo, Back és Finney a kriptográfia eszközeit kovácsolta meg — Satoshi összerakta őket.</div></div>
-        <div class="grid-box"><div class="gb-icon">&#8383;</div><div class="gb-title">A hiányzó láncszem</div><div class="gb-text">A blokklánc nem ötlet volt, hanem felfedezés — annak rájövése, hogy a darabok összerakhatók.</div></div>
-        <div class="grid-box"><div class="gb-icon">&#8734;</div><div class="gb-title">21 millió határ</div><div class="gb-text">A véges kínálat nem önkényes döntés — az emberi civilizáció monetáris tanulságainak szintézise.</div></div>
-      </div>`;
+        <div class="grid-box"><div class="gb-icon">&#129504;<\/div><div class="gb-title">Az ötletek örökké élnek<\/div><div class="gb-text">Tesla, Ford, Hayek, Mises és Friedman gondolatai nem haltak meg velük — a Bitcoinban élnek tovább.<\/div><\/div>
+        <div class="grid-box"><div class="gb-icon">&#128272;<\/div><div class="gb-title">A kód a katalizátor<\/div><div class="gb-text">Chaum, Wei Dai, Szabo, Back és Finney a kriptográfia eszközeit kovácsolta meg — Satoshi összerakta őket.<\/div><\/div>
+        <div class="grid-box"><div class="gb-icon">&#8383;<\/div><div class="gb-title">A hiányzó láncszem<\/div><div class="gb-text">A blokklánc nem ötlet volt, hanem felfedezés — annak rájövése, hogy a darabok összerakhatók.<\/div><\/div>
+        <div class="grid-box"><div class="gb-icon">&#8734;<\/div><div class="gb-title">21 millió határ<\/div><div class="gb-text">A véges kínálat nem önkényes döntés — az emberi civilizáció monetáris tanulságainak szintézise.<\/div><\/div>
+      <\/div>`;
   }
 
   container.appendChild(el);
@@ -453,10 +453,12 @@ const slideEls = SLIDES.map(buildSlide);
 
 function goTo(n) {
   if (n < 0 || n >= TOTAL || n === current) return;
-  slideEls[current].classList.remove('active');
-  slideEls[current].classList.add('exit-left');
-  const prev = current;
-  setTimeout(() => slideEls[prev].classList.remove('exit-left'), 800);
+  if (current >= 0) {
+    slideEls[current].classList.remove('active');
+    slideEls[current].classList.add('exit-left');
+    const prev = current;
+    setTimeout(() => slideEls[prev].classList.remove('exit-left'), 800);
+  }
   current = n;
   slideEls[current].classList.add('active');
   const bio = slideEls[current].querySelector('.bio-body');
