@@ -1,526 +1,646 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A Bitcoin nem feltalálmány — hanem felfedezés</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Bitcoin nem találmány — hanem felfedezés</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  :root {
-    --orange: #F7931A;
-    --orange-dim: rgba(247,147,26,0.15);
-    --orange-glow: rgba(247,147,26,0.3);
-    --bg: #0D1117;
-    --bg2: #161B22;
-    --bg3: #21262D;
-    --text: #E6EDF3;
-    --muted: #8B949E;
-    --border: rgba(247,147,26,0.25);
-  }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0D1117;
+            color: #E6EDF3;
+            overflow: hidden;
+            height: 100vh;
+        }
 
-  html, body {
-    height: 100%;
-    overflow: hidden;
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-  }
+        .presentation {
+            width: 100%;
+            height: 100vh;            height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
 
-  #progress-bar {
-    position: fixed;
-    top: 0; left: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #F7931A, #FFB347, #F7931A);
-    background-size: 200% 100%;
-    animation: progress-shine 2s linear infinite;
-    transition: width 0.5s ease;
-    z-index: 100;
-  }
-  @keyframes progress-shine {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-  }
+        .progress-bar {
+            height: 4px;
+            background: #30363D;
+            position: relative;
+            overflow: hidden;
+        }
 
-  #slides-container { position: fixed; inset: 0; }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #F7931A 0%, #FF6B35 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
 
-  .slide {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-    pointer-events: none;
-    padding: 60px 24px 100px;
-    overflow: hidden;
-  }
-  .slide.active { opacity: 1; transform: translateY(0); pointer-events: all; }
-  .slide.exit-left { opacity: 0; transform: translateY(-40px); }
+        .slide-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            display: flex;            align-items: center;
+            justify-content: center;
+        }
 
-  /* HERO */
-  .hero-slide {
-    background: radial-gradient(ellipse at 50% 30%, rgba(247,147,26,0.12) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 80%, rgba(247,147,26,0.06) 0%, transparent 50%),
-                var(--bg);
-  }
-  .hero-tag { font-size: 11px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--orange); margin-bottom: 24px; opacity: 0.8; }
-  .hero-slide h1 {
-    font-size: clamp(28px, 5vw, 52px); font-weight: 900; text-align: center; line-height: 1.15; max-width: 800px;
-    background: linear-gradient(135deg, #fff 40%, var(--orange) 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 20px;
-  }
-  .hero-sub { font-size: clamp(14px, 2vw, 18px); color: var(--muted); text-align: center; max-width: 600px; line-height: 1.6; margin-bottom: 36px; }
-  .hero-quote { border-left: 3px solid var(--orange); padding: 16px 24px; max-width: 560px; color: var(--muted); font-style: italic; font-size: 15px; line-height: 1.7; background: var(--orange-dim); border-radius: 0 12px 12px 0; }
-  .hero-badge { margin-top: 36px; display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
-  .hero-badge span { background: var(--orange-dim); border: 1px solid var(--border); padding: 4px 12px; border-radius: 20px; color: var(--orange); font-weight: 600; }
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+            text-align: center;
+        }
 
-  /* DIVIDER */
-  .divider-slide { background: var(--bg); }
-  .divider-inner { text-align: center; }
-  .divider-num { font-size: 80px; font-weight: 900; line-height: 1; background: linear-gradient(135deg, var(--orange) 0%, rgba(247,147,26,0.3) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 16px; }
-  .divider-slide h2 { font-size: clamp(22px, 4vw, 40px); font-weight: 800; margin-bottom: 12px; }
-  .divider-slide p { color: var(--muted); font-size: 16px; max-width: 500px; }
-  .divider-line { width: 80px; height: 3px; background: var(--orange); margin: 20px auto; border-radius: 2px; }
+        .slide.active {
+            opacity: 1;
+            z-index: 10;
+        }
 
-  /* PERSON INTRO */
-  .person-intro { gap: 32px; }
-  .portrait-ring { width: 140px; height: 140px; border-radius: 50%; border: 3px solid var(--orange); box-shadow: 0 0 30px var(--orange-glow); overflow: hidden; flex-shrink: 0; background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: 56px; }
-  .portrait-ring img { width: 100%; height: 100%; object-fit: cover; object-position: top center; filter: grayscale(15%); }
-  .intro-content { text-align: center; max-width: 580px; }
-  .person-years { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin-bottom: 8px; }
-  .intro-content h2 { font-size: clamp(28px, 5vw, 48px); font-weight: 900; margin-bottom: 8px; }
-  .person-role { font-size: 14px; color: var(--muted); font-weight: 500; margin-bottom: 20px; }
-  .intro-text { font-size: 15px; line-height: 1.75; color: #C9D1D9; max-width: 540px; }
+        .slide.prev {
+            opacity: 0;            z-index: 5;
+        }
 
-  /* BIO */
-  .person-bio { align-items: flex-start; justify-content: flex-start; padding-top: 80px; overflow: hidden; }
-  .bio-inner { width: 100%; max-width: 740px; margin: 0 auto; display: flex; flex-direction: column; height: calc(100vh - 180px); }
-  .bio-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; flex-shrink: 0; }
-  .bio-icon { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--orange), #FF6B35); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
-  .bio-header h3 { font-size: 20px; font-weight: 700; }
-  .bio-sub-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
-  .bio-body { flex: 1; overflow-y: auto; padding-right: 8px; scrollbar-width: thin; scrollbar-color: var(--orange) transparent; }
-  .bio-body::-webkit-scrollbar { width: 4px; }
-  .bio-body::-webkit-scrollbar-thumb { background: var(--orange); border-radius: 2px; }
-  .bio-body p { font-size: 15px; line-height: 1.8; color: #C9D1D9; margin-bottom: 16px; }
+        /* Hero Slide */
+        .slide.hero {
+            background: linear-gradient(135deg, #0D1117 0%, #161B22 50%, #0D1117 100%);
+            justify-content: space-around;
+        }
 
-  /* BTC CONNECTION */
-  .btc-slide {
-    background: linear-gradient(135deg, #0D1117 0%, #1a1000 25%, #0D1117 50%, #110800 75%, #0D1117 100%);
-    background-size: 400% 400%;
-    animation: gradient-shift 8s ease infinite;
-    overflow-y: auto;
-  }
-  @keyframes gradient-shift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
-  .btc-slide::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 50% 50%, rgba(247,147,26,0.08) 0%, transparent 70%); pointer-events:none; }
-  .btc-inner { position:relative; z-index:1; width:100%; max-width:700px; display:flex; flex-direction:column; align-items:center; gap:22px; padding: 10px 0; }
-  .btc-symbol { font-size:60px; line-height:1; color:var(--orange); animation:pulse-btc 2.5s ease-in-out infinite; display:block; filter:drop-shadow(0 0 20px var(--orange-glow)); }
-  @keyframes pulse-btc {
-    0%,100%{transform:scale(1);opacity:.85;filter:drop-shadow(0 0 12px rgba(247,147,26,.4))}
-    50%{transform:scale(1.12);opacity:1;filter:drop-shadow(0 0 28px rgba(247,147,26,.7))}
-  }
-  .btc-slide-title { font-size:12px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--orange); text-align:center; }
-  .btc-quote { background:rgba(247,147,26,0.08); border:1px solid rgba(247,147,26,0.3); border-radius:16px; padding:20px 28px; text-align:center; max-width:620px; width:100%; }
-  .quote-text { font-size:clamp(15px,2.2vw,21px); font-weight:700; color:var(--text); line-height:1.5; margin-bottom:8px; font-style:italic; }
-  .quote-attr { font-size:12px; color:var(--orange); font-weight:600; }
-  .btc-timeline { display:flex; align-items:center; flex-wrap:wrap; justify-content:center; }
-  .tl-item { display:flex; flex-direction:column; align-items:center; text-align:center; }
-  .tl-year { font-size:10px; font-weight:700; color:var(--orange); letter-spacing:1px; margin-bottom:4px; }
-  .tl-dot { width:11px; height:11px; border-radius:50%; background:var(--orange); box-shadow:0 0 8px var(--orange-glow); }
-  .tl-label { font-size:11px; color:var(--muted); margin-top:4px; max-width:80px; }
-  .tl-line { width:36px; height:2px; background:linear-gradient(90deg,var(--orange),rgba(247,147,26,.3)); margin-bottom:16px; }
-  .btc-box { background:rgba(247,147,26,0.06); border:1px solid rgba(247,147,26,0.25); border-radius:12px; padding:18px 24px; max-width:620px; width:100%; }
-  .btc-box-title { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--orange); margin-bottom:8px; }
-  .btc-box p { font-size:13.5px; line-height:1.7; color:#C9D1D9; }
-  .btc-tags { display:flex; flex-wrap:wrap; gap:7px; justify-content:center; }
-  .btc-tag { background:var(--orange-dim); border:1px solid var(--border); color:var(--orange); font-size:11px; font-weight:600; padding:4px 12px; border-radius:20px; }
+        .hero-badge {
+            font-size: 14px;
+            font-weight: 600;
+            color: #F7931A;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
 
-  /* CLOSING */
-  .closing-slide { background:radial-gradient(ellipse at center,rgba(247,147,26,.1) 0%,transparent 65%),var(--bg); }
-  .closing-quote { font-size:clamp(20px,3.5vw,36px); font-weight:800; text-align:center; max-width:680px; line-height:1.4; margin-bottom:40px; background:linear-gradient(135deg,#fff 60%,var(--orange) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-  .grid-boxes { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; max-width:620px; width:100%; }
-  .grid-box { background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:20px; text-align:center; }
-  .gb-icon { font-size:28px; margin-bottom:8px; }
-  .gb-title { font-size:13px; font-weight:700; color:var(--orange); margin-bottom:6px; }
-  .gb-text { font-size:13px; color:var(--muted); line-height:1.6; }
+        .hero-title {
+            font-size: 72px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #F7931A 0%, #FF6B35 50%, #F7931A 100%);
+            -webkit-background-clip: text;            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+        }
 
-  /* CONTROLS */
-  #controls { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:8px; background:rgba(22,27,34,.85); backdrop-filter:blur(20px); border:1px solid rgba(247,147,26,.2); border-radius:40px; padding:10px 20px; z-index:50; }
-  .ctrl-btn { background:none; border:none; color:var(--text); font-size:20px; cursor:pointer; padding:4px 10px; border-radius:20px; transition:background .2s,color .2s; line-height:1; }
-  .ctrl-btn:hover { background:var(--orange-dim); color:var(--orange); }
-  .ctrl-btn.active-play { color:var(--orange); }
-  #counter { font-size:13px; font-weight:600; color:var(--muted); min-width:52px; text-align:center; }
+        @keyframes gradientShift {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.1); }
+        }
 
-  @media(max-width:640px){
-    .slide{padding:56px 16px 90px}
-    .portrait-ring{width:100px;height:100px}
-    .btc-quote{padding:14px 16px}
-    .grid-boxes{grid-template-columns:1fr}
-    .tl-line{width:22px}
-    .bio-inner{max-width:100%}
-    #controls{padding:8px 12px;gap:4px}
-  }
-</style>
+        .hero-subtitle {
+            font-size: 24px;
+            font-weight: 300;
+            line-height: 1.6;
+            color: #C9D1D9;
+            margin-bottom: 40px;
+            max-width: 900px;
+        }
+
+        .hero-quote {
+            font-size: 16px;
+            font-weight: 400;
+            color: #8B949E;
+            font-style: italic;
+            border-left: 3px solid #F7931A;            padding-left: 20px;
+            max-width: 700px;
+        }
+
+        /* Divider Slide */
+        .slide.divider {
+            background: linear-gradient(135deg, #161B22 0%, #0D1117 100%);
+            justify-content: center;
+        }
+
+        .divider-number {
+            font-size: 120px;
+            font-weight: 800;
+            color: #F7931A;
+            line-height: 1;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .divider-title {
+            font-size: 56px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #E6EDF3;
+        }
+        .divider-subtitle {
+            font-size: 20px;
+            font-weight: 300;
+            color: #8B949E;
+            max-width: 800px;
+            line-height: 1.6;
+        }
+
+        /* Person Intro Slide */
+        .slide.person-intro {
+            background: linear-gradient(135deg, #0D1117 0%, #161B22 50%, #0D1117 100%);
+            justify-content: center;
+        }
+
+        .person-portrait {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            margin-bottom: 30px;
+            border: 4px solid #F7931A;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;            font-weight: 700;
+            color: white;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            box-shadow: 0 0 30px rgba(247, 147, 26, 0.3);
+        }
+
+        .person-name {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #E6EDF3;
+        }
+
+        .person-years {
+            font-size: 18px;
+            color: #8B949E;
+            margin-bottom: 5px;
+        }
+
+        .person-role {
+            font-size: 14px;
+            color: #F7931A;
+            font-weight: 600;            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+        }
+
+        .person-icon {
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+
+        .btc-connection-box {
+            border: 2px solid #F7931A;
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 600px;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #C9D1D9;
+            background: rgba(247, 147, 26, 0.05);
+        }
+
+        /* Bio Slide */
+        .slide.bio {
+            background: #0D1117;
+            justify-content: flex-start;            overflow-y: auto;
+            padding-top: 40px;
+        }
+
+        .bio-header {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            margin-bottom: 50px;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .bio-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;            background: linear-gradient(180deg, transparent 0%, rgba(13, 17, 23, 0.7) 70%, #0D1117 100%);
+            z-index: 1;
+        }
+
+        .bio-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 2;
+            color: #E6EDF3;
+        }
+
+        .bio-content {
+            max-width: 900px;
+            padding: 0 40px 40px 40px;
+        }
+
+        .bio-text {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #C9D1D9;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        /* BTC Connection Slide */
+        .slide.btc-connection {
+            background: linear-gradient(135deg, #0D1117 0%, #1A1F26 100%);
+            justify-content: center;
+        }
+
+        .btc-connection-content {
+            max-width: 800px;
+            border: 3px solid #F7931A;
+            border-radius: 12px;
+            padding: 60px;
+            background: rgba(247, 147, 26, 0.05);
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(247, 147, 26, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(247, 147, 26, 0.4);
+            }
+        }
+        .btc-icon-large {
+            font-size: 80px;
+            margin-bottom: 30px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .btc-connection-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #F7931A;
+        }
+
+        .btc-connection-text {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #C9D1D9;
+        }
+        /* Closing Slide */
+        .slide.closing {
+            background: linear-gradient(135deg, #0D1117 0%, #161B22 50%, #0D1117 100%);
+            justify-content: center;
+        }
+
+        .closing-quote {
+            font-size: 42px;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 80px;
+            color: #E6EDF3;
+            max-width: 900px;
+        }
+
+        .closing-boxes {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            max-width: 1000px;
+        }
+
+        .closing-box {
+            border: 2px solid #F7931A;            border-radius: 8px;
+            padding: 40px;
+            background: rgba(247, 147, 26, 0.05);
+            text-align: center;
+        }
+
+        .closing-box-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .closing-box-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #C9D1D9;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 60px;
+            background: rgba(13, 17, 23, 0.95);
+            border-top: 1px solid #30363D;        }
+
+        .control-btn {
+            background: none;
+            border: 2px solid #F7931A;
+            color: #F7931A;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .control-btn:hover {
+            background: #F7931A;
+            color: #0D1117;
+        }
+
+        .control-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        .slide-counter {
+            font-size: 16px;
+            font-weight: 600;
+            color: #8B949E;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .slide {
+                padding: 40px;
+            }
+
+            .hero-title {
+                font-size: 48px;
+            }
+
+            .hero-subtitle {
+                font-size: 18px;
+            }
+
+            .divider-number {
+                font-size: 80px;
+            }
+            .divider-title {
+                font-size: 40px;
+            }
+
+            .person-name {
+                font-size: 36px;
+            }
+
+            .bio-header {
+                height: 200px;
+            }
+
+            .bio-title {
+                font-size: 24px;
+            }
+
+            .bio-text {
+                font-size: 14px;
+            }
+
+            .closing-boxes {
+                grid-template-columns: 1fr;
+            }
+            .controls {
+                padding: 15px 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 20px;
+            }
+
+            .hero-title {
+                font-size: 36px;
+            }
+
+            .hero-subtitle {
+                font-size: 16px;
+            }
+
+            .divider-title {
+                font-size: 32px;
+            }
+
+            .person-name {
+                font-size: 28px;            }
+
+            .bio-title {
+                font-size: 20px;
+            }
+
+            .controls {
+                padding: 10px 20px;
+                font-size: 12px;
+            }
+
+            .control-btn {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+        }
+    </style>
 </head>
 <body>
-<div id="progress-bar" style="width:0%"></div>
-<div id="slides-container"></div>
-<div id="controls">
-  <button class="ctrl-btn" id="btn-prev">&#8249;</button>
-  <span id="counter">1 / 38</span>
-  <button class="ctrl-btn" id="btn-next">&#8250;</button>
-  <button class="ctrl-btn" id="btn-play">&#9654;</button>
-</div>
+    <div class="presentation">
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
 
-<script>
-const SLIDES = [
-  // 0 HERO
-  {t:'hero'},
-  // 1 DIVIDER I
-  {t:'div', num:'I.', title:'A látnokok', sub:'Gondolkodók, feltalálók és közgazdászok, akik a decentralizált pénz gondolatát megelőlegezték — évtizedekkel a Bitcoin előtt.'},
-  // 2-4 TESLA
-  {t:'intro', emoji:'⚡', name:'Nikola Tesla', years:'1856 — 1943', role:'Szerb–amerikai feltaláló, mérnök, fizikus',
-    img:'https://upload.wikimedia.org/wikipedia/commons/7/79/Tesla_circa_1890.jpeg',
-    text:'Nikola Tesla az emberiség egyik legnagyobb zseniája volt — 300-nál több szabadalmat jegyeztek nevén, és ő fektette le a modern váltóáramú villamosenergia-rendszer alapjait. Álma egy szabad, ingyenesen hozzáférhető energia-infrastruktúra volt, amely nem ismer határokat — és amely végül a Bitcoin hálózatának metaforájaként él tovább az energetika-pénz gondolkodásban.'},
-  {t:'bio', emoji:'⚡', name:'Nikola Tesla', sub:'Az energia vizionáriusa', paras:[
-    'Nikola Tesla 1856-ban született a szerbiai Smiljanban, és fiatalon Európában szerzett mérnöki képesítést, mielőtt 1884-ben az Egyesült Államokba emigrált. Thomas Edison laborjában kezdett dolgozni, de rövidesen összevesztek az egyenáram és a váltóáram felhasználásáról folytatott vitában — az ún. "áramháborúban".',
-    'Tesla a váltóáramú (AC) rendszer kidolgozásával megnyerte ezt a háborút. George Westinghouse-zal szövetkezve ő valósította meg az 1893-as chicagói világkiállítás áramellátását, majd a Niagara Falls-i vízierőmű rendszerét. Az AC technológia ma is az egész világ energiainfrastruktúrájának alapja.',
-    'Élete alkonyán a Wardenclyffe-torony projekt keretében az egész földgolyón egyidejűleg és ingyenesen hozzáférhető villamos energiát kívánt sugározni — egy szabad, decentralizált energiahálózatot álmodott meg. Finanszírozója, J.P. Morgan visszavonta a támogatást, miután megértette, hogy nem lehet mérőórát helyezni a levegőbe.',
-    'Tesla elképzeléseit kinevették, a tornyot lerombolták. Élete végét szegénységben töltötte egy New York-i szálloda szobájában, szabadalmait részben elveszítette. 1943. január 7-én hunyt el — befejezetlen álmokkal, de megvalósult öröksége, az AC rendszer révén mégis ő hajtja a világ gépeit.']},
-  {t:'btc', emoji:'⚡', name:'Tesla és a Bitcoin',
-    quote:'"Az energia az élet valutája — ezért kell szabadon áramolnia, határok és kapuőrök nélkül."',
-    qa:'Tesla gondolatmenetének esszenciája',
-    tl:[{y:'1891',l:'AC szabadalom'},{y:'1901',l:'Wardenclyffe'},{y:'2009',l:'Bitcoin PoW'},{y:'2024',l:'Energia→Pénz'}],
-    box:'A Bitcoin proof-of-work mechanizmusa Tesla energiaálmának digitális megvalósítása: villamos energiát alakít át ellenőrizhető, nem hamisítható digitális értékké. Ahogy Tesla a Wardenclyffe-toronnyal az energia szabad globális áramlását akarta megvalósítani, a Bitcoin a pénz szabad globális áramlását teszi lehetővé — kapuőrök és J.P. Morganok nélkül.',
-    tags:['Proof-of-Work','Energia → Érték','Szabad hálózat','Decentralizáció']},
-  // 5-7 FORD
-  {t:'intro', emoji:'🚗', name:'Henry Ford', years:'1863 — 1947', role:'Amerikai iparos, a Ford Motor Company alapítója',
-    img:'https://upload.wikimedia.org/wikipedia/commons/1/18/Henry_ford_1919.jpg',
-    text:'Henry Ford nem csupán az autóipart forradalmasította a tömegtermeléssel — ő volt az első iparos, aki nyíltan bírálta a magánbankok pénzteremtési monopóliumát, és konkrét alternatívát javasolt: az energiaalapú valutát, amelynek értékét fizikai munkavégzés határozza meg.'},
-  {t:'bio', emoji:'🚗', name:'Henry Ford', sub:'A futószalag és az energiavaluta', paras:[
-    'Henry Ford 1863-ban született Michigan állambeli farmján. 1903-ban alapította a Ford Motor Companyt, majd 1908-ban bemutatta a Model T-t — az első tömeggyártott autót. A futószalag bevezetésével (1913) megteremtette a modern gyártási civilizáció alapjait.',
-    '1914-ben Ford bejelentette a napi 5 dolláros minimálbért — ez duplája volt az akkori piaci bérnek. Rájött, hogy a dolgozóinak is meg kell tudniuk venni az általuk gyártott autókat. Ez a felismerés a fogyasztói kapitalizmus alapköve lett.',
-    'Ford mélyen szkeptikus volt a bankrendszerrel szemben. Nyíltan kritizálta a Federal Reserve-t és a magánbankok kamatszedési monopóliumát. Antiszemitizmussal is megvádolták nézetei miatt, ami súlyos erkölcsi árnyékot vet életművére.',
-    '1921-ben a Tennessee-i Muscle Shoals gát kapcsán javaslatot tett az energiaalapú valutára: az érték ne aranyban, hanem villamos energiában méressék. Javaslata a Szenátusban nem kapott támogatást, de gondolata — hogy a fizikai munka és energia legyen a pénz mögött — ma is eleven.']},
-  {t:'btc', emoji:'🚗', name:'Ford és a Bitcoin',
-    quote:'"Az energiára alapozott valuta legyőzné az aranyat, mert mögötte tényleges, mérhető, ellenőrizhető teljesítmény áll — nem bankárok ígérete."',
-    qa:'Henry Ford, 1921 — Muscle Shoals energia-valuta javaslat',
-    tl:[{y:'1921',l:'Energia-valuta'},{y:'1997',l:'Hashcash'},{y:'2009',l:'Bitcoin mining'},{y:'2024',l:'Ford álma él'}],
-    box:'A Bitcoin proof-of-work mechanizmusa pontosan Ford 1921-es elképzelését valósítja meg: a pénz mögött mérhető, elvégzett fizikai munka áll. A bányász energiát konvertál digitális értékké, ahogy Ford a Muscle Shoals gátból akart pénzt csinálni — a különbség: Ford javaslata centralizált lett volna, a Bitcoin decentralizáltan oldja meg ugyanezt.',
-    tags:['Energia-valuta 1921','Proof-of-Work','Bankrendszer-kritika','Fizikai munka = pénz']},
-  // 8-10 HAYEK
-  {t:'intro', emoji:'📜', name:'Friedrich Hayek', years:'1899 — 1992', role:'Osztrák-brit közgazdász, Nobel-díjas 1974',
-    img:'https://upload.wikimedia.org/wikipedia/commons/7/7f/Friedrich_Hayek_portrait.jpg',
-    text:'Friedrich Hayek a 20. század egyik legbefolyásosabb szabadpiaci gondolkodója volt. Az "Út a szolgasághoz" szerzője egész életén át az állam gazdasági beavatkozása ellen harcolt — és 1976-ban A pénz denacionalizálása c. könyvében megfogalmazta azt a gondolatot, amelyet 2009-ben Satoshi kóddá alakított.'},
-  {t:'bio', emoji:'📜', name:'Friedrich Hayek', sub:'A pénz denacionalizálása', paras:[
-    'Friedrich Hayek 1899-ben született Bécsben, és a Ludwig von Mises által alapított bécsi közgazdasági iskola meghatározó alakja lett. Leghíresebb korai műve, a Prices and Production (1931) a konjunktúra-elmélet máig megkerülhetetlen alapszövege. John Maynard Keynessel folytatott intellektuális vitája a 20. század legjelentősebb közgazdasági párviadala volt.',
-    'Az Út a szolgasághoz (1944) figyelmeztetés volt a szocialista tervgazdaság és a totális állam veszélyeire. Hayek tudáselmélete (1945) szerint az árrendszer páratlan információ-aggregátor: az egyének szétszórt tudását egyetlen jelzálban sűríti össze. 1974-ben Nobel-díjat kapott.',
-    'A pénz denacionalizálása (1976) c. könyvében Hayek azt javasolta, hogy az állam veszítse el a pénzkibocsátás monopóliumát, és versenyző magánpénzek keletkezzenek. Aki jobb pénzt bocsát ki, az nyeri a piaci versenyt.',
-    '1984-ben, 85 évesen mondta: "Nem hiszem, hogy valaha is jó pénzünk lesz, amíg az állam kezében van — hacsak valami ravasz kerülő úton nem csempésszük ki a hatásköréből." Ez a mondat a Bitcoin legtöbbször idézett előrejelzése.']},
-  {t:'btc', emoji:'📜', name:'Hayek és a Bitcoin',
-    quote:'"Nem hiszem, hogy valaha is jó pénzünk lesz, amíg az állam kezében van — hacsak valami ravasz kerülő úton nem csempésszük ki a hatásköréből."',
-    qa:'Friedrich Hayek, 1984',
-    tl:[{y:'1976',l:'Pénz denacionalizálása'},{y:'1984',l:'"Ravasz kerülő"'},{y:'2009',l:'Bitcoin: az a kerülő'},{y:'∞',l:'Versenyző pénzek'}],
-    box:'A Bitcoin Hayek 1984-es próféciájának szó szerinti beteljesítése. "A ravasz kerülő út" a titkosítás, a peer-to-peer hálózat és a proof-of-work kombinációja — amelyek az állami kontroll megkerülésével teremtenek versenyző magánpénzt. Hayek elmélete szerint a piac maga választja ki a legjobb pénzt: a Bitcoin erre játszik.',
-    tags:['Denacionalizáció 1976','Versenyző pénzek','Hayek-prófécia 1984','Tudáselmélet']},
-  // 11-13 MISES
-  {t:'intro', emoji:'📚', name:'Ludwig von Mises', years:'1881 — 1973', role:'Osztrák közgazdász, a praxeológia megteremtője',
-    img:'https://upload.wikimedia.org/wikipedia/commons/1/1d/Ludwig_von_Mises.jpg',
-    text:'Ludwig von Mises az "osztrák iskola" szellemi atyja. Fő műve, az Emberi cselekvés (1949) a közgazdaságtan legteljesebb szisztematikus kifejtése. Pénzelmélete — különösen a regressziós tétel és a sound money gondolata — közvetlen intellektuális alapja a Bitcoin fix kínálatú monetáris politikájának.'},
-  {t:'bio', emoji:'📚', name:'Ludwig von Mises', sub:'Praxeológia és sound money', paras:[
-    'Ludwig von Mises 1881-ben született az Osztrák–Magyar Monarchiában. Bécsben szerzett jogi és közgazdasági doktorátust, és magánszemináriumain az osztrák közgazdasági iskola meghatározó gondolkodóit nevelte — köztük Friedrich Hayeket.',
-    'A szocializmus (1922) c. könyvében elsőként bizonyította be a szocialista gazdasági kalkuláció lehetetlenségét: ha nincs magántulajdon a termelési javak felett, nem keletkeznek valódi árak, és a gazdasági döntéshozatal elveszíti tájékozódási pontjait.',
-    'Pénz regressziós tétele szerint (Theory of Money and Credit, 1912) a pénznek az alapján van értéke, hogy tegnap is volt értéke — ha visszafelé követjük ezt a regressziót, eljutunk egy olyan pillanathoz, amikor az adott dolog csereáruként piacra lépett. Ez látszólag kizárja a Bitcoin létezésének lehetőségét — de az első satoshi tranzakcióval a Bitcoin is belépett ebbe a láncolatba.',
-    'Az Emberi cselekvés (1949) a praxeológia monumentuma — 900 oldalon. Mises szerint a sound money, az állam által nem manipulálható, rögzített kínálatú pénz, az egyéni szabadság egyik alapfeltétele: "meg kell akadályozni a kormányzatot a pénz rontásában."']},
-  {t:'btc', emoji:'📚', name:'Mises és a Bitcoin',
-    quote:'"A sound money elve az emberi szabadság nagy vívmánya — és ugyanolyan fontos a piacgazdaság számára, mint a politikai alkotmány."',
-    qa:'Ludwig von Mises, Emberi cselekvés',
-    tl:[{y:'1912',l:'Regressziós tétel'},{y:'1949',l:'Emberi cselekvés'},{y:'2009',l:'Bitcoin: 21M limit'},{y:'∞',l:'Sound money'}],
-    box:'A Bitcoin a misesi sound money gondolat digitális megvalósítása. Az algoritmikusan rögzített 21 millió érmés kínálat pontosan az, amit Mises követelt: olyan pénz, amelyet a kormányzat nem tud inflálni, hígítani vagy kisajátítani. A regressziós tétel? A Bitcoin első tranzakciójával belépett a láncolatba.',
-    tags:['Sound money','21M rögzített kínálat','Regressziós tétel','Kalkulációs probléma']},
-  // 14-16 FRIEDMAN
-  {t:'intro', emoji:'💵', name:'Milton Friedman', years:'1912 — 2006', role:'Amerikai közgazdász, Nobel-díjas 1976',
-    img:'https://upload.wikimedia.org/wikipedia/commons/2/20/Portrait_of_Milton_Friedman.jpg',
-    text:'Milton Friedman a 20. század legbefolyásosabb közgazdásza volt, a monetarizmus atyja és a szabad piacok leghatékonyabb szószólója. 1999-ben — pontosan tíz évvel a Bitcoin születése előtt — megjósolta az internet digitális készpénzének szükségességét, amelyet megbízható harmadik fél nélkül lehet tranzakcióhoz használni.'},
-  {t:'bio', emoji:'💵', name:'Milton Friedman', sub:'Monetarizmus és a digitális készpénz próféciája', paras:[
-    'Milton Friedman 1912-ben született New Yorkban, és a Chicagói Egyetemen töltötte fényes akadémiai karrierjét. A Monetáris Történet az Egyesült Államokban (1963) megmutatta, hogy a Nagy Gazdasági Válságot a Federal Reserve helytelen politikája mélyítette el — ez az érv alapjaiban írta át a makroökonómiát.',
-    'A Kapitalizmus és szabadság (1962) az egyéni szabadság gazdasági alapjait fejtette ki: a szabad piac az egyedüli rendszer, amely képes az egyéni szabadságot és a gazdasági jólétet egyszerre maximalizálni. Friedman a negatív jövedelemadót, az utalványrendszert az oktatásban és a lebegő árfolyamot propagálta.',
-    'A k-százalék szabály Friedman monetáris programjának sarkköve volt: az állam rögzítse a pénzkínálat növekedési ütemét egy állandó százalékban, és semmi mást ne csináljon. A Fed diszkrecionális politikáját alapvetően károsnak tartotta — a Bitcoin protokollja pontosan ezt a gondolatot rögzíti kódban.',
-    '1999-ben az NTU Foundation interjújában Friedman azt mondta: "Az internet hiányzó pillére az e-cash — egy módszer, amellyel az interneten A-tól B-nek pénzt lehet átutalni anélkül, hogy A tudná, ki B." Tíz évvel később Satoshi kóddá formálta ezt.']},
-  {t:'btc', emoji:'💵', name:'Friedman és a Bitcoin',
-    quote:'"Az internet egyetlen hiányzó pillére egy megbízható e-cash — mód, amely lehetővé teszi, hogy az interneten pénzt utalj át anélkül, hogy bárki tudná, ki fizet kinek."',
-    qa:'Milton Friedman, 1999',
-    tl:[{y:'1999',l:'Friedman jóslata'},{y:'2008',l:'Bitcoin white paper'},{y:'2009',l:'Genesis block'},{y:'∞',l:'Digitális készpénz'}],
-    box:'Friedman 1999-es interjúja a Bitcoin legpontosabb előrejelzése. A "megbízható harmadik fél nélküli" értéktranszfer pontosan az, amit Satoshi tíz évvel később megoldott. A k-százalék szabály digitális megtestesítése a Bitcoin halvening ciklusa: algoritmikus, előre látható, senki által meg nem változtatható monetáris politika.',
-    tags:['1999 prófécia','E-cash','K-százalék → halvening','Digitális készpénz']},
-  // 17 DIVIDER II
-  {t:'div', num:'II.', title:'A cypherpunkok', sub:'Programozók, kriptográfusok és aktivistái, akik a 80-90-es években megépítették azokat az eszközöket, amelyek nélkül a Bitcoin soha nem születhetett volna meg.'},
-  // 18-20 CHAUM
-  {t:'intro', emoji:'🔐', name:'David Chaum', years:'1955 —', role:'Amerikai kriptográfus, a digitális adatvédelem atyja',
-    img:null,
-    text:'David Chaum a digitális személyes adatvédelem mozgalmának megalapítója és az első funkcionáló digitális pénz, a DigiCash megalkotója. A vak aláírás protokollja és a mix hálózatok koncepciója azok az alapkövek, amelyekre minden későbbi kriptopénz-kísérlet épül.'},
-  {t:'bio', emoji:'🔐', name:'David Chaum', sub:'Vak aláírás és DigiCash', paras:[
-    'David Chaum a Berkeleyi Egyetemen doktorált informatikából, és már 1981-ben forradalmi cikket publikált "Untraceable Electronic Mail" címmel. Ebben megalkotta a mix network koncepcióját: az üzenetek egy láncon keresztül ugrálnak, és minden csomópont csak az előző és a következő ugrást ismeri. Ez ma a Tor hálózat alapelve.',
-    'A vak aláírás (blind signature, 1983) Chaum legfontosabb kriptográfiai találmánya: a bank hitelesíti az érme értékét anélkül, hogy tudná, ki a tulajdonos. Ez az adatvédelmi alapelv teszi lehetővé az anonim digitális fizetést — és a Bitcoin-tranzakciók privátságának egyik inspirációja.',
-    'A DigiCash (1990) az első ténylegesen működő digitális pénzrendszer volt. Chaum Hollandiában alapított céget, és sikerült több bankot is partnersége megnyerni, köztük a Mark Twain Bankot az USA-ban. Az internetes fizetés 1994-ben még teljesen ismeretlen fogalom volt — Chaum évekkel megelőzte korát.',
-    'A DigiCash 1998-ban csődbe ment. Chaum ragaszkodott a centralizált kibocsátói modellhez: a DigiCash cég volt a pénz kibocsátója, és ha a cég megbukik, a pénz elhal. Ez a tanulság — hogy a digitális pénznek nem lehet egyetlen felelős kibocsátója — a Bitcoin legfontosabb tervezési döntésének alapja.']},
-  {t:'btc', emoji:'🔐', name:'Chaum és a Bitcoin',
-    quote:'"Ha a rendszernek egyetlen megbízható pontja van, az a rendszer Achilles-sarka. A bizalom decentralizálása nem opció — szükségszerűség."',
-    qa:'David Chaum gondolati öröksége a DigiCash bukása után',
-    tl:[{y:'1983',l:'Vak aláírás'},{y:'1990',l:'DigiCash'},{y:'1998',l:'Csőd → tanulság'},{y:'2009',l:'Bitcoin: nincs center'}],
-    box:'A Bitcoin Chaum két felfedezésén épül: a vak aláíráson és a DigiCash bukásának tanulságán. Satoshi kódjában a DigiCash centralizmusa ellen lép: nincs DigiCash Inc., nincs kibocsátó, amely csődbe mehet — csak matematika és a hálózat.',
-    tags:['Vak aláírás 1983','DigiCash 1990','Centralizáció = halál','Adatvédelem by design']},
-  // 21-23 WEI DAI
-  {t:'intro', emoji:'🌐', name:'Wei Dai', years:'1970-es évek —', role:'Kínai-amerikai kriptográfus, a b-money megalkotója',
-    img:null,
-    text:'Wei Dai a Washingtoni Egyetemen szerzett végzettséget, majd a Microsoftnál dolgozott kriptográfusként. 1998-ban publikált b-money protokollja az első olyan rendszer volt, amely a számítási munka alapú pénzteremtést kombinálta a decentralizált nyilvántartással — Satoshi a Bitcoin white paper-ben hivatkozott rá.'},
-  {t:'bio', emoji:'🌐', name:'Wei Dai', sub:'b-money és a számítási munka alapú pénz', paras:[
-    'Wei Dai a Cypherpunk levelezőlista egyik legaktívabb tagja volt a 90-es évek második felében. A lista 1992-ben indult Timothy May "A kriptoanarchisták kiáltványa" hatására, és a digitális adatvédelem, az anonim kommunikáció és a digitális pénz mozgalmának szellemi inkubátora volt.',
-    'A b-money (1998) Wei Dai rövid, de monumentális írása. Az alapötlet: a pénz akkor jön létre, amikor valaki elvégez egy "nehéz számítási munkát" — mai szóval: proof-of-work bányászatot. A létrehozott pénzt az egész hálózat nyilvántartja, és a tranzakciókat digitális aláírásokkal hitelesítik.',
-    'Két kritikus ponton hagyta megoldatlan a b-money-t: hogyan jutnak konszenzusra az elosztott nyilvántartók, és hogyan akadályozható meg a double-spend centralizált entitás nélkül. Pontosan ezeket oldotta meg Satoshi a Nakamoto-konszenzussal és a blokkláncstruktúrával.',
-    'A Crypto++ könyvtár az egyik legszélesebb körben használt nyílt forráskódú kriptográfiai könyvtár — Wei Dai ennek alapszerzője. Satoshi a white paper írása előtt közvetlenül e-mailt váltott Wei Daivel, és a white paper első bekezdésében hivatkozik rá.']},
-  {t:'btc', emoji:'🌐', name:'Wei Dai és a Bitcoin',
-    quote:'"A b-money ötlete: hozd létre a pénzt számítási munkával — és ne legyen senki, akit ki lehet kapcsolni."',
-    qa:'Wei Dai b-money (1998) — összefoglalt alapelv',
-    tl:[{y:'1998',l:'b-money'},{y:'2008',l:'Satoshi e-mail'},{y:'2009',l:'Bitcoin = b-money++'},{y:'∞',l:'Számítás → Pénz'}],
-    box:'A Bitcoin a b-money közvetlen leszármazottja. Satoshi a white paper-ben két referenciát közöl: Wei Dai b-money-ja és Adam Back Hashcash-e. A proof-of-work mint pénzteremtési mechanizmus Wei Dai találmánya — Satoshi a Nakamoto-konszenzussal egészítette ki, megoldva a nyitott kérdéseket.',
-    tags:['b-money 1998','PoW mint pénzteremtés','Első Satoshi hivatkozás','Crypto++ könyvtár']},
-  // 24-26 SZABO
-  {t:'intro', emoji:'🪙', name:'Nick Szabo', years:'1964 —', role:'Magyar–amerikai informatikus, jogász, kriptográfus',
-    img:null,
-    text:'Nick Szabo magyar származású, az okosszerződések (smart contracts) fogalmának megalkotója és a Bit Gold protokoll tervezője — amelyet számos elemző a Bitcoin közvetlen elődjének tart. A "Shelling Out: az előpénz eredete" esszéje a pénz evolúciójának egyik legmélyebb elemzése.'},
-  {t:'bio', emoji:'🪙', name:'Nick Szabo', sub:'Okosszerződések, Bit Gold és digitális szűkösség', paras:[
-    'Nick Szabo a Washingtoni Egyetemen szerzett informatikai végzettséget, majd jogász-diplomát is szerzett — ez az egyedülálló kombináció tette képessé arra, hogy a jogi szerződések logikáját számítógépes kódban formalizálja. Az okosszerződések (smart contracts) gondolata 1994-ből származik.',
-    'A Bit Gold (1998, formálisan 2005-ben publikálva) a Bitcoin legszorosabb elődje. Az elv: a proof-of-work által megoldott kriptográfiai puzzle-okból keletkező digitális "munka" örökre rögzítve marad a blokkláncban, és értékes, mert szűkös és nehéz előállítani. A "digitális szűkösség" koncepciója Szabotól ered.',
-    'A "Shelling Out: az előpénz eredete" (2002) esszé megmutatja, hogy a gyűjtött, hordozható, nehezen hamisítható és szűkös tárgyak az emberi csere alapját képezték az egész történelem során — és hogy a Bitcoin ugyanezt az ős-monetáris logikát viszi tovább digitális formában.',
-    'Szabo soha nem erősítette meg, hogy ő lenne Satoshi Nakamoto — bár stíluselemzések és időbeli egybeesések sokakat meggyőztek erről. Tény, hogy a Bitcoin-protokoll számos elemet átvett a Bit Gold tervéből.']},
-  {t:'btc', emoji:'🪙', name:'Szabo és a Bitcoin',
-    quote:'"A digitális szűkösség lehetséges — és ha lehetséges, akkor pénz is lehet belőle."',
-    qa:'Nick Szabo, Bit Gold (1998/2005)',
-    tl:[{y:'1994',l:'Okosszerződés'},{y:'1998',l:'Bit Gold ötlet'},{y:'2005',l:'Bit Gold publikus'},{y:'2009',l:'Bitcoin = Bit Gold++'}],
-    box:'A Bitcoin szinte teljes egészében a Bit Gold tervéből nőtt ki. Az okosszerződések ma az Ethereum alapja. A digitális szűkösség gondolata — hogy szoftver alapú objektumnak is lehet valódi értéke, ha nehéz előállítani — Szabotól ered, és ez a Bitcoin legfontosabb metafizikai újítása.',
-    tags:['Bit Gold 1998','Okosszerződések 1994','Digitális szűkösség','Magyar kapcsolat']},
-  // 27-29 BACK
-  {t:'intro', emoji:'⛏️', name:'Adam Back', years:'1970 —', role:'Brit kriptográfus, a Blockstream vezérigazgatója',
-    img:null,
-    text:'Adam Back brit kriptográfus és a Hashcash proof-of-work rendszer megalkotója. Az 1997-es Hashcash algoritmus — amelyet eredetileg spam szűrésére tervezett — adja a Bitcoin bányászatának kriptográfiai alapját. Back ma a Blockstream vezérigazgatója.'},
-  {t:'bio', emoji:'⛏️', name:'Adam Back', sub:'Hashcash és a proof-of-work', paras:[
-    'Adam Back az Exeter Egyetemen szerzett informatikai doktorátust. A 90-es évek elején a Cypherpunk mozgalom aktív tagja volt. Back az exportellenőrzési szabályok megkerülésének egyik legismertebb aktivistája volt — a PGP kódját szó szerint pólóra nyomtatva terjesztette.',
-    'A Hashcash (1997) elvét egy mondatban lehet összefoglalni: "Legyen nehéz egy e-mailt küldeni — de csak annyira, amennyire egy spammelőnek gondot okoz tömegesen." A protokoll egy kriptográfiai puzzle megoldását kéri el az e-mail fejlécben.',
-    'A Hashcash elve: "nehéz előállítani, könnyű ellenőrizni." Ez pontosan a Bitcoin bányászatának logikája: egy hash kiszámítása milliárd próbálkozást igényel, de az eredmény ellenőrzése egyetlen számítással elvégezhető. Satoshi a white paper-ben közvetlenül hivatkozott a Hashcash-re.',
-    'Back ma a Blockstream vezérigazgatója, amely a Bitcoin fejlesztői infrastruktúrájának és az oldallánc-technológiák egyik meghatározó szereplője. Back az egyik legismertebb Bitcoin maximalist — aki szerint a Bitcoin az egyedüli lehetséges végállapot a digitális pénz evolúciójában.']},
-  {t:'btc', emoji:'⛏️', name:'Back és a Bitcoin',
-    quote:'"Légy kénytelen dolgozni azért, amit igényelsz. Ez nem büntetés — ez a becsületes rendszer alapelve."',
-    qa:'Adam Back, Hashcash (1997)',
-    tl:[{y:'1997',l:'Hashcash'},{y:'2008',l:'Satoshi hivatkozás'},{y:'2009',l:'Bitcoin mining'},{y:'2014',l:'Blockstream CEO'}],
-    box:'A Bitcoin bányászati algoritmus közvetlen forráskódját Adam Back Hashcash protokolljára vezeti vissza Satoshi maga. A SHA-256 alapú proof-of-work, a nonce keresése, a target nehézségi beállítás — ezek mind a Hashcash elvén alapulnak. Back az első ember, akinek Satoshi elküldte a Bitcoin white paper pre-print verzióját — 2008. október 31-én.',
-    tags:['Hashcash 1997','Nehéz előállítani','Könnyű ellenőrizni','Első white paper olvasó']},
-  // 30-32 FINNEY
-  {t:'intro', emoji:'🏃', name:'Hal Finney', years:'1956 — 2014', role:'Amerikai kriptográfus, PGP fejlesztő, Bitcoin úttörő',
-    img:'https://upload.wikimedia.org/wikipedia/commons/9/96/Hal_Finney_%28computer_scientist%29.jpg',
-    text:'Hal Finney a Bitcoin-történelem legfontosabb szereplője Satoshi mellett. Ő a PGP 2.0 kód egyik fejlesztője, az RPOW rendszer megalkotója, az első Bitcoin-tranzakció fogadója, és az egész cypherpunk mozgalom egyik legoptimistább gondolkodója. 2014-ben ALS-ben hunyt el.'},
-  {t:'bio', emoji:'🏃', name:'Hal Finney', sub:'PGP, RPOW és az első Bitcoin tranzakció', paras:[
-    'Hal Finney a Caltech-en szerzett mérnöki végzettséget, és a PGP Corporation programozójaként részt vett a PGP 2.0 kódbázis fejlesztésében — a Pretty Good Privacy az első széleskörűen használt erős titkosítási szoftver volt, amelyet Phil Zimmermann publikált 1991-ben.',
-    'Az RPOW (Reusable Proof of Work, 2004) Finney Hashcash-re épülő kísérlete: egy olyan rendszer, amelyben a proof-of-work tokenek továbbadhatok és újra felhasználhatók, mint egy digitális pénz. Ez volt az utolsó kísérlet a Bitcoin előtt, amely valóban hasznosítható digitális készpénzt próbált implementálni.',
-    'Finney 2009 januárjában azonnal telepítette a Bitcoin-kliensét. 2009. január 12-én Satoshi 10 bitcoint küldött Finney-nek — ez volt az első ember-ember közötti Bitcoin-tranzakció a történelemben. Finney ezen a napon azt tweetelte: "Running bitcoin."',
-    'Finneynak 2009-ben ALS-t diagnosztizáltak. Fokozatosan elvesztette mozgásképességét, de elméje és humora mindvégig megmaradt — az utolsó éveit is programozással töltötte. 2014 augusztusában hunyt el. Végrendelete szerint testét krionikusan tartósítják az Alcor Life Extension Foundation gondozásában.']},
-  {t:'btc', emoji:'🏃', name:'Finney és a Bitcoin',
-    quote:'"Running bitcoin."',
-    qa:'Hal Finney, 2009. január 11. — a kriptotörténelem legismertebb tweetje',
-    tl:[{y:'2004',l:'RPOW'},{y:'2009.01.03',l:'Genesis block'},{y:'2009.01.12',l:'Első tranzakció'},{y:'2014',l:'Krionikus tartósítás'}],
-    box:'Hal Finney nem csupán az első Bitcoin-felhasználó volt — ő volt Satoshi legfontosabb korai kollaborátora. Az RPOW közvetlen inspirációt adott a Bitcoin tranzakciós modelljéhez. Finney az első hibákat is ő jelezte Satoshinak, és a nyílt levelezésük a Bitcoin fejlesztéstörténetének legfontosabb forrása.',
-    tags:['Első tranzakció 2009.01.12','"Running bitcoin"','RPOW 2004','Örök optimista']},
-  // 33 DIVIDER III
-  {t:'div', num:'III.', title:'Az összekötő', sub:'Egy ismeretlen személy vagy csoport, aki az összes előfutár munkáját egyetlen zseniális protokollban szintetizálta — majd eltűnt.'},
-  // 34-36 SATOSHI
-  {t:'intro', emoji:'₿', name:'Satoshi Nakamoto', years:'2008 — 2011 (aktív)', role:'A Bitcoin ismeretlen feltalálója/felfedezője',
-    img:null,
-    text:'Satoshi Nakamoto 2008. október 31-én publikálta a Bitcoin white paperjét. 2009. január 3-án lefuttatta a Genesis blokkot — amelybe a Times aznapi főcímét kódolta. 2011-ben eltűnt. Kb. 1 millió bitcoinja soha nem mozdult.'},
-  {t:'bio', emoji:'₿', name:'Satoshi Nakamoto', sub:'A white paper, a Genesis blokk és az eltűnés', paras:[
-    'A Bitcoin: Peer-to-Peer Electronic Cash System c. white paper 2008. október 31-én jelent meg — Halloween napján, a 2008-as pénzügyi összeomlás csúcsán. A 9 oldalas dokumentum megoldotta a digitális pénz két legsúlyosabb problémáját: a double-spend problémát és a bizalomkérdést — megbízható harmadik fél nélkül.',
-    'A Genesis blokk 2009. január 3-án készült el. A blokkba kódolt szöveg: "The Times 03/Jan/2009 Chancellor on brink of second bailout for banks" — a brit pénzügyminiszter bankmentő csomagjáról szóló Times-cikk főcíme. Satoshi üzenetet küldött a Bitcoinba a banki válság és az állami beavatkozás ellen.',
-    'Satoshi 2009 és 2011 között aktívan részt vett a Bitcoin fejlesztésében. A kommunikációja mindig óvatos volt a kilétét illetően — semmilyen személyes adatot nem osztott meg soha. 2011 áprilisában egy utolsó e-mailt küldött Gavin Andresennek ("átadva a terepet"), majd eltűnt.',
-    'Kb. 1,1 millió bitcoin van azokon a korai tárcákon, amelyek Satoshinak tulajdoníthatók. Ezek soha nem mozdultak — sem 2013-ban, sem 2017-ben, sem a 100.000 dolláros ár körül. Ez a passzivitás az egyik legerősebb érv amellett, hogy Satoshi vagy halott, vagy tudatosan hallgat.']},
-  {t:'btc', emoji:'₿', name:'Satoshi szintézise',
-    quote:'"The Times 03/Jan/2009 Chancellor on brink of second bailout for banks."',
-    qa:'Satoshi Nakamoto, a Genesis blokk üzenete — 2009. január 3.',
-    tl:[{y:'2008.10.31',l:'White paper'},{y:'2009.01.03',l:'Genesis blokk'},{y:'2011.04',l:'Eltűnés'},{y:'∞',l:'~1M BTC érintetlen'}],
-    box:'A Bitcoin nem Satoshi "találmánya" — hanem a felfedezése annak, hogy az összes előző darab összerakható. Hayek pénzelmélete, Mises sound money-ja, Chaum vak aláírása, Back Hashcash-e, Dai b-money-ja, Szabo Bit Gold-ja, Finney RPOW-ja — mind ott volt. A blokklánc az a hiányzó láncszem volt, amelyet Satoshi rakott össze. Aztán kiengedte a kezéből.',
-    tags:['White paper 2008','Genesis blokk','Blokklánc mint szintézis','Anonim felfedező']},
-  // 37 CLOSING
-  {t:'closing'}
-];
+        <div class="slide-container" id="slideContainer"></div>
+        <div class="controls">
+            <button class="control-btn" id="prevBtn" onclick="previousSlide()">← Előző</button>
+            <span class="slide-counter"><span id="currentSlide">1</span> / <span id="totalSlides">71</span></span>
+            <button class="control-btn" id="nextBtn" onclick="nextSlide()">Következő →</button>
+        </div>
+    </div>
 
-const container = document.getElementById('slides-container');
-const TOTAL = SLIDES.length;
-let current = -1;
-let autoPlay = false;
-let autoTimer = null;
+    <script>
+        const slides = [
+            {type:'hero',badge:'₿ PREZENTÁCIÓ · 2024',title:'A Bitcoin nem találmány — hanem felfedezés',subtitle:'Egy gondolat, amely évtizedeken keresztül várt arra, hogy valaki megtalálja. Az út Teslától Satoshiig.',quote:'"Minden nagy igazságot először blaszfémiának tartottak." — George Bernard Shaw'},
+            {type:'divider',number:'I',title:'A látnokok',subtitle:'Azok, akik először látták: a pénz jelenlegi formája törékenyen emberi — és hogy lehetne másként is.'},
+            {type:'person-intro',name:'Nikola Tesla',years:'1856–1943',role:'Feltaláló · Villamosmérnök · Jövőlátó',icon:'⚡',initials:'NT',color:'linear-gradient(135deg, #FF6B35 0%, #F7931A 100%)',photoUrl:'https://upload.wikimedia.org/wikipedia/commons/7/79/Tesla_circa_1890.jpeg',btcConnection:'A proof-of-work az energiafelhasználást teszi a pénzteremtés alapjává — Tesla energia-víziója.'},
+            {type:'bio',bgImage:'images/tesla_1.png',title:'A váltóáram forradalma',content:['Tesla az ipari civilizáció legfontosabb energetikai forradalmaként hagyta ránk a váltóáramú elektromos rendszert. Az 1890-es évekre Westinghouse-zal együttműködve bebizonyította, hogy az energia hatékonyan szállítható nagy távolságokon — valami, amit Edison egyenáramú rendszere soha nem tudott volna megvalósítani.','A váltóáram elve maga is egy gondolat a decentralizáció felé: az energia küldőként több pontról terjeszthető, nem szükséges egyetlen központi erőmű az egész civilizációt ellátni.']},
+            {type:'bio',bgImage:'images/tesla_2.png',title:'300+ szabadalom',content:['Élete során több mint 300 szabadalmat jegyeztek be a nevére különböző országokban, beleértve a rádióátvitel, az induktív motor, a transzformátor és a nagyfeszültségű rendszerek alapvető szabadalmait. A találmányok mögött mindig ugyanaz az elvont gondolkodásmód állt: a világ energiában és frekvenciában írható le.','Tesla soha nem volt üzletember. Az ő világa tiszta fizika és matematika volt — és ebből következően mindig szegényen halt meg.']},
+            {type:'bio',bgImage:'images/tesla_3.png',title:'Wardenclyffe: a szabad energia álma',content:['Tesla legambiciózusabb álma a Wardenclyffe-torony volt (1901–1917): egy globális, vezeték nélküli energiaátviteli hálózat, amely ingyenesen vagy szinte ingyenesen juttatott volna elektromos energiát a Föld bármely pontjára. Szabadalmazott a technológiát, sőt — kísérleteket végzett.','J.P. Morgan visszavonta a finanszírozást, mert egy ingyenes hálózaton nem lehet díjat szedni. A centralizált pénzügyi rendszer szempontjából Tesla vízióját meg kellett akadályozni. Ezért maradt fragmentáris — és ezért halott szegényen.']},
+            {type:'bio',bgImage:'images/tesla_4.png',title:'Energia mint értékmérő',content:['Ami kevéssé ismert: Tesla töredékesen, de következetesen foglalkozott az energia mint értékmérő gondolatával. Úgy vélte, hogy az aranyalapú pénzrendszer elavult, és hogy az emberiség energiafelhasználása sokkal igazabb alapja lehetne egy értékrendszernek.','Tesla tragikusan szegényen halt meg New Yorkban, miközben szabadalmainak árnyéka megvilágítja a 21. századi technológia nagy részét. De az ő energia-víziója valahogy továbbélő — a Bitcoin-bányászat éppen ezt teszi: az energiafelhasználást teszi a pénzteremtés alapjává.']},
+            {type:'btc-connection',title:'Tesla és a Bitcoin',text:'Tesla globális, nyílt energiahálózat-víziója és az energia mint értékmérő gondolata közvetlenül előrevetíti a Bitcoin alaplogikáját: a proof-of-work éppen az energiafelhasználást — a valódi fizikai munkát — teszi a pénzteremtés alapjává. A Wardenclyffe-torony és a blokklánc ugyanazt a kérdést teszi fel: ki kontrollálhatja a hálózatot? Válasz: senki. Az összes csomópont együtt.'},
+            {type:'person-intro',name:'Henry Ford',years:'1863–1947',role:'Iparos · Autógyáros · Pénzkritikus',icon:'🚗',initials:'HF',color:'linear-gradient(135deg, #4A90E2 0%, #357ABD 100%)',photoUrl:'https://upload.wikimedia.org/wikipedia/commons/2/27/Henry_Ford_portrait_1915_original_%283x4_cropped%29.png',btcConnection:'Ford 1921-ben azt kérte, amit Satoshi 2008-ban megépített: munkaalapú pénzt.'},
+            {type:'bio',bgImage:'images/ford_1.png',title:'A futószalag forradalma',content:['Henry Ford neve a tömegtermelés szinonimájává vált — de a Model T és a futószalag csak a felszín. Ford a 20. század elejének legfontosabb ipari forradalmát hajtotta végre: bebizonyította, hogy a hatékonyság és a munkásjólét nem zárják ki egymást, sőt egymást feltételezik.','A futószalag nem csupán egy termelési módszer volt — ez egy filozófia: az egész komplex rendszer apró, ismétlődő lépésekre lebontva, amely már-majd alkalmas volt gépi végrehajtásra. De Ford tudta: a végén emberi kézekre lesz szükség.']},
+            {type:'bio',bgImage:'images/ford_2.png',title:'Napi 5 dollár',content:['1914-ben Ford bevezette a napi 5 dolláros minimálbért — kétszeresét az akkori piaci átlagnak — és a napi 8 órás munkanapot. Az indok részben üzleti volt: csökkenteni a fluktuációt, magasabb termelékenységet elérni. De ez egyszersmind politikai állásfoglalás is volt: a tőke és a munka érdeke nem szükségszerűen ellentétes.','A munkások, akik Model T-ket gyártottak, most meg is tudták maguknak vásárolni azokat. Ford úgy gondolt rá: ha a munkások szegények, kik vásárolják meg az autókat?']},
+            {type:'bio',bgImage:'images/ford_3.png',title:'A bankrendszer kritikája',content:['Ford bankrendszer-kritikája erős és következetes volt egész életén át. Nyilvánosan kijelentette, hogy „ha az emberek megértenék, hogyan működik a bankrendszer, forradalomra kerülne sor holnap reggel." A kamatos kamatot és a hitelpénz-teremtést az igazságtalan gazdagodás eszközének tartotta.','„Az egyetlen dolog, amit a bankokról tudni kell: hogy egyértelműen rossz az egész rendszer," — így szólt egyszer Ford. A bankok, a monopol pénzteremtés, a mesterséges szűkösség — mindez összeesküvésnek tűnt számára a munkások ellen.']},
+            {type:'bio',bgImage:'images/ford_4.png',title:'Energia-valuta javaslat',content:['1921-ben Ford konkrét javaslatot tett az Egyesült Államok Kongresszusának: az állam bocsásson ki energia-alapú pénzt. Ford „Energia-valuta" elmélete szerint minden pénzegységnek mögötte kell állnia egy mérhető munkának — és így számszerűsítve lett volna az érték.','A javaslatot elutasították. Az 1920-as évek végén a klasszikus aranystandardban még mindig hittek. De az elv forradalmi maradt: egy pénz, amely mögött valódi munka áll, valódi energia, valódi érték.']},
+            {type:'btc-connection',title:'Ford és a Bitcoin',text:'Ford energia-valuta javaslata és a Bitcoin proof-of-work mechanizmusa szinte azonos logikán nyugszik: csak az a pénz lehet hiteles, amely mögött valódi, mérhető munkát — energiafelhasználást — lehet igazolni. Ford 1921-ben azt kérte, amit Satoshi 2008-ban megépített: egy munkaalapú, nem politikai, nem manipulálható pénzt. Ford halála után 61 évvel lett ennek az álomnak az implementációja.'},
+            {type:'person-intro',name:'Friedrich Hayek',years:'1899–1992',role:'Közgazdász · Nobel-díjas · A pénz denacionalizálója',icon:'📜',initials:'FH',color:'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)',photoUrl:'https://upload.wikimedia.org/wikipedia/commons/7/7f/Friedrich_Hayek_portrait.jpg',btcConnection:'A Bitcoin az a „ravasz kerülő út", amelyről Hayek 1984-ben álmodott.'},            {type:'bio',bgImage:'images/hayek_1.png',title:'Az osztrák iskola vezéralakja',content:['Friedrich Hayek az osztrák közgazdasági iskola második nagy generációjának vezéralakja, és kétségtelenül a 20. század legbefolyásosabb libertárius gondolkodója. 1974-ben Nobel-díjat kapott gazdaságtudományban — megosztva egy marxista közgazdásszal, ami jellemző volt az ő humorára.','Hayeknek sosem volt végleges otthona. Londontól Chicágóig, majd Salzburgon keresztül végül Freiburgban halt meg. Mint az idékhez való ragaszkodása: sosem marad senkitől függően egy helyen.']},
+            {type:'bio',bgImage:'images/hayek_2.png',title:'Az út a szolgasághoz',content:['„Az út a szolgasághoz" (1944) — Hayek élete mestermunkája. Meggyőző érvelés amellett, hogy a gazdasági tervezés szükségszerűen politikai szabadság elvesztéséhez vezet. Ha az állam kontrollálja a gazdaságot, akkor kontrollálja az életedet.','Az könyv közvetlenül az 1944-es világnézet-katastropha után íródott, amikor a szocializmus és a fasizmus között kevés látnivaló volt. Hayek azt mutatta meg: ugyanaz a logika.']},
+            {type:'bio',bgImage:'images/hayek_3.png',title:'A pénz denacionalizálása',content:['1976-ban kiadta forradalmi könyvét: „A pénz denacionalizálása". Azt javasolta, hogy az állam monopóliumát a pénzkibocsátásra meg kell szüntetni. Versenyben lévő magánvalutáknak kellene a piacon eldönteniük, melyik a legjobb pénz.','Ez volt az első szisztematikus gondolkodás az alternativás pénzrendszerekről egy Nobel-díjas közgazdássztól. Az akadémiai közösség sokszor ideaként kezelte, nem komolyan. De Hayek nagyon komolyan gondolta.']},
+            {type:'bio',bgImage:'images/hayek_4.png',title:'A prófécia',content:['1984-ben — 50 évvel a Bitcoin előtt — Hayek egy BBC interjúban kimondta: „Nem várom, hogy a jó pénz visszatér mindaddig, amíg valamilyen ravasz kerülő úton becsempésszük azt, amit az állam nem tud megakadályozni."','Hayek tudta, hogy a politikai ellenállás leküzdhetetlenül nagy lenne. A pénzrendszer kontrollálása a modern államhatalom quintesszenciája. Nem nyíltan lehet rajta változtatni. Csak „ravasz kerülő úton". Például: kóddal.']},
+            {type:'btc-connection',title:'Hayek és a Bitcoin',text:'A Bitcoin pontosan az a „ravasz kerülő út", amelyről Hayek 1984-ben álmodott. Decentralizált, versenyen alapuló, senki által nem kontrollálható — mindaz, amit a „Pénz denacionalizálása" elméletben felvázolt, a Bitcoin kóddá formálta. Hayek nem érhette meg 1992-ben — nyolc évvel a Bitcoin fehér könyv előtt halt meg. De a logika neki lett volna igaza.'},
+            {type:'person-intro',name:'Ludwig von Mises',years:'1881–1973',role:'Közgazdász · Praxeológus · Sound Money-apostol',icon:'📚',initials:'LM',color:'linear-gradient(135deg, #EC4899 0%, #DB2777 100%)',photoUrl:'https://upload.wikimedia.org/wikipedia/commons/4/4d/Ludwig_von_Mises_%283x4_cropped%29.jpg',btcConnection:'A 21 milliós fix kínálat Mises sound money-elvének tökéletes megvalósítása.'},
+            {type:'bio',bgImage:'images/mises_1.png',title:'Az emberi cselekvés',content:['Ludwig von Mises 20. századi közgazdaságtan egyik legkoherensebb rendszerét alkotta meg. „Az emberi cselekvés" (Human Action, 1949) monumentális főműve több mint 900 oldalon fejti ki a praxeológia alapjait — az emberi cselekvésekből levezetett közgazdaságtan.','Mises azt tanította: az egyéni cselekvésekből (praxis) származik az összes gazdaságtani törvény. Nincsenek „gazdasági törvények" az emberek felül — csak az emberekből.']},
+            {type:'bio',bgImage:'images/mises_2.png',title:'A pénz regressziós elmélete',content:['A pénz regressziós elmélete megmagyarázza, hogy a pénznek miért volt szüksége valamilyen eredeti árucikk-értékre. A pénz nem önkényes konvenció — van előélete. Az arany pénz lett, mert aranynak mint nyersanyagnak volt használati értéke.','Ez megkülönbözteti a jó pénzt a politikailag manipulált valutától. Egy fiat-valuta bármelyik pillanatban értelmetlenné válhat — de az aranyat, vagy ma már az energiát, senki nem tud devalválni.']},
+            {type:'bio',bgImage:'images/mises_3.png',title:'Sound money',content:['Sound money — a „szilárd pénz" — Mises politikai ökonómiájának alapköve. Olyan pénz, amelynek kínálatát nem lehet önkényesen növelni, amelynek értékét nem lehet politikai döntéssel csökkenteni.','Az infláció — az árszínvonal emelkedése — nem törvény. Ez politikai választás. A jegybankok és a kormányok választanak arra, hogy több pénz nyomtassanak ki. Sound money ezt lehetetlenné tenné.']},
+            {type:'bio',bgImage:'images/mises_4.png',title:'A kalkulációs probléma',content:['A gazdasági kalkulációs probléma (1920): szocializmusban — ahol nincsenek valódi piaci árak — lehetetlen ésszerű gazdasági kalkulációt végezni. A szovjet tervgazdaság kudarca nem véletlen, hanem szükségszerű — matematikailag lehetetlenség.','Mises meggyőződése volt, hogy az infláció (a pénz nyomtatása) szintén egy kalkulációs probléma. A hamis árak (az állam által támogatott árak) hamis gazdasági döntésekhez vezetnek. Sound money helyreállítaná az igazságot.']},
+            {type:'btc-connection',title:'Mises és a Bitcoin',text:'A Bitcoin 21 millió érmés rögzített kínálata Mises sound money-elvének tökéletes megvalósítása. A Bitcoin az energiába ágyazott proof-of-work révén nem konvenció, hanem valódi alapon nyugvó érték — pontosan ahogyan Mises megkövetelte. Senki sem képes több bitcoint nyomtatni, így senki sem tudja meginflálni.'},
+            {type:'person-intro',name:'Milton Friedman',years:'1912–2006',role:'Közgazdász · Nobel-díjas · Digitális készpénz-prófétája',icon:'💵',initials:'MF',color:'linear-gradient(135deg, #10B981 0%, #059669 100%)',photoUrl:'https://upload.wikimedia.org/wikipedia/commons/8/82/Portrait_of_Milton_Friedman_%284x5_cropped%29.jpg',btcConnection:'Friedman 1999-es próféciája szinte szó szerint leírja a Bitcoin funkcióját.'},
+            {type:'bio',bgImage:'images/friedman_1.png',title:'A monetarizmus',content:['Milton Friedman a chicagói közgazdasági iskola vezéralakja. 1976-ban Nobel-díjat kapott. A Nagy Gazdasági Válság okát a Fed katasztrofális pénzszűkítő politikájában látta — nem a szabad piacot kell okozni, hanem a központi bank felelőtlenségét.','Ez kiváló megállapítás volt — és teljesen el lett hallgatva az akadémiai közösségben. Keynes népszerűbb volt. De Friedman volt az, aki helyesen értékelte.']},
+            {type:'bio',bgImage:'images/friedman_2.png',title:'A k-percent szabály',content:['Friedman javasolta, hogy a jegybank automatikusan, évente azonos százalékkal növelje a pénzkínálatot — semmi diszkrécionalitás, semmi politikai befolyás. Ha a Fed-et nem lehet eltörölni, legalább gépiesítsük.','Ez a gondolat megelőzi a kódot, mint irányítási mechanizmust. A Bitcoin gyakorlatilag a k-percent szabályt implementálja: pontosan 6,25 blokk per óra jöhet létre, ami percre pontosan az előre meghatározott deflációs ütemvonalat követi.']},
+            {type:'bio',bgImage:'images/friedman_3.png',title:'Kapitalizmus és szabadság',content:['„Kapitalizmus és szabadság" (1962) — Friedman élete mestermunkája. A gazdasági és a politikai szabadság elválaszthatatlanok. A könyv egy generáció gondolkodóját formálta meg, és azt mutatta meg: a szabad piacok jobb eredményeket hoznak, mint a tervgazdaság.','Friedman sokáig magányos volt ebben a meggyőződésben. De a logika idővel rá volt igaza. A szabad piacok jobb eredményeket hoznak, mint a tervgazdaság.']},
+            {type:'bio',bgImage:'images/friedman_4.png',title:'1999: A prófécia',content:['1999-ben — már az internet kellős közepén — Friedman próféciát mondott: „Az internet egyik hiányzó darabja egy megbízható e-cash — olyan módszer, amellyel az interneten keresztül átvihetünk pénzt egyik személytől a másikhoz anélkül, hogy ők egymást ismernék vagy egy harmadik félben meg kellene bíznunk."','Friedman 2006-ban halt meg. Pontosan kilenc évvel a Bitcoin fehér könyv előtt. De a víziót tisztán látta.']},
+            {type:'btc-connection',title:'Friedman és a Bitcoin',text:'Friedman 1999-es próféciája szinte szó szerint leírja a Bitcoin funkcióját — és a Bitcoin blokklánc technológiája gyakorlatilag azt implementálja, amit Friedman elképzelt. A k-percent szabály, az automatikus dezentralizált kontroll, az internet feletti peer-to-peer értékátvitel — mindez Friedman gondolataiból származik.'},
+            {type:'divider',number:'II',title:'A cypherpunkok',subtitle:'Azok, akik nem csupán elmélkedtek, hanem kódot írtak — és darabjait rakták le annak, ami majd Bitcoin lesz.'},
+            {type:'person-intro',name:'David Chaum',years:'1955–',role:'Kriptográfus · A digitális készpénz atyja',icon:'🔐',initials:'DC',color:'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',photoUrl:'https://upload.wikimedia.org/wikipedia/commons/1/1f/Web_Summit_2018_-_MoneyConf_-_Day_2%2C_November_7_HM1_6995_%2830826444907%29_%28cropped%29.jpg',btcConnection:'Satoshi a DigiCash centralizált modelljét jelölte meg a megoldandó problémaként.'},
+            {type:'bio',bgImage:'images/chaum_1.png',title:'A kriptográfia úttörője',content:['David Chaum a Berkeley-n szerezte PhD-jét 1982-ben, és az 1980-as évek elejétől az egyik legkiemelkedőbb kriptográfiai kutatóvá vált. 1981-ben már megalkotta az anonimizált hálózati kommunikáció alapjait (mix network) — olyan eszköz, amely lehetővé teszi az adatok átvitelét anélkül, hogy az érkezési helyét be lehetne azonosítani.','Chaum egy matematikai genie volt — és annak az ideális alapból jött, ahol az ilyen zsenik szabad mozgást kaptak.']},
+            {type:'bio',bgImage:'images/chaum_2.png',title:'A vak aláírás',content:['1983-ban publikálta a vak aláírás protokollját — a kriptográfia egyik legelegánsabb konstrukcióját. Lehetővé teszi, hogy egy dokumentumot úgy írjon alá valaki, hogy ne tudja, mit ír alá, miközben az aláírás érvényes marad. Ez elvont hangzik, de gyakorlatilag azt jelenti: egy bank aláírhatja az e-cash tokent anélkül, hogy tudná, mekkora az érték.','Az anonimgénú szervezetektől való digitális megkülönböztetés — ez volt a Chaum-féle elmélet alapja.']},
+            {type:'bio',bgImage:'images/chaum_3.png',title:'DigiCash és az e-Cash',content:['1990-ben megalapította a DigiCash céget és elindította az e-Cash rendszert — az első valódi kísérletet kriptográfiailag biztonságos, anonim digitális valutára. A Deutsche Bank és a Citibank is tárgyalt vele. Az ígéret nagy volt.','De az e-Cash centralizált volt. Egy szerver döntötte el, hogy mi az igazi pénz. Ez volt az alapvető hiba: a rendszer továbbra is egy központi hatóságtól függött. Ha a szerver lesöprik, az egész elfelejt.']},
+            {type:'bio',bgImage:'images/chaum_4.png',title:'A centralizáció buktatója',content:['Az e-Cash a centralizált modellje miatt bukott el. 1998-ban csődöt jelentett. De legalább tanulság maradt: az anonimitás és megbízhatóság együtt csak akkor tartható fenn, ha senki sem kontrollálhatja a rendszert.','Ez a lecke direkten beépült a cypherpunk mozgalomba. Hauk Finney, Wei Dai, Nick Szabo — mindegyikük azt gondolta: ha Chaum e-Cash-je centralizált maradt, akkor radikálisabban kell gondolkodnia. Decentralizáltan. Konszenzussal. Proof-of-work-kel.']},
+            {type:'btc-connection',title:'Chaum és a Bitcoin',text:'Satoshi Nakamoto a Bitcoin white paperben közvetlenül hivatkozott Chaum munkájára, és explicieten azonosította a DigiCash centralizált modelljét mint a megoldandó problémát. A Bitcoin a Chaum által felvetett eszközöket — a kriptográfiát, az anonimitást, a digitális aláírást — decentralizált hálózatba helyezte el.'},
+            {type:'person-intro',name:'Wei Dai',years:'1976–',role:'Kriptográfus · A b-money alkotója',icon:'🌐',initials:'WD',color:'linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)',btcConnection:'Satoshi fehér könyve első hivatkozásként a b-money esszét idézi.'},            {type:'bio',bgImage:'images/dai_1.png',title:'Visszahúzódó zseni',content:['Wei Dai a Washingtoni Egyetemen szerezte diplomáját számítástechnikában, majd a Microsoft Research-nél dolgozott. Csendes, szerény ember — a cypherpunk közösség kevésbé ismert, de annál fontosabb tagja.','A Crypto++ könyvtár alkotója — az egyik legjelentősebb nyílt forráskódú kriptográfiai könyvtár C++ nyelven. Rengeteg mai kriptográfiai rendszer épül erre a könyvtárra, de Wei Dai neve ismeretlenül marad.']},
+            {type:'bio',bgImage:'images/dai_2.png',title:'A b-money javaslat',content:['1998-ban közzétette a b-money javaslatát — az első működőképesnek szánt decentralizált digitális pénzrendszert. A kulcsgondolat: a pénzteremtés alapja a számítási munka legyen (proof-of-work), és ezt követni kell egy decentralizált nyilvántartásban, amelyet az összes csomópont egyszerre vezet.','A b-money gyakorlatilag a Bitcoin egyenes elődje volt — csak kódban nem valósult meg a kicsit bonyolultabb distributed consensus-megoldások miatt.']},
+            {type:'bio',bgImage:'images/dai_3.png',title:'Decentralizált könyvelés',content:['A b-money fundamentális eleme a decentralizált könyvelés: egyetlen hatóság sem vezeti a nyilvántartást, helyette az összes résztvevő egyszerre tárolja és ellenőrzi a tranzakciókat. Ez volt az igazi újítás.','Wei Dai azt javasolta: ha egy csomópont azt állítja, hogy 100 egységet költött el, de a ledger szerint csak 50 van, akkor a többség szavazata dönti el. Konszenzus helyett proof-of-work.']},
+            {type:'bio',bgImage:'images/dai_4.png',title:'Satoshi levele',content:['Satoshi 2008 novemberében emailben kereste meg Wei Dait és azt írta: „Érdekes, hogy az e-cash és a b-money gondolatai közvetlenül elő vannak jelzezve a Bitcoin-ban."','A fehér könyv első lábjegyzetében: „Wei Dai, b-money" — ez az első és legexplicitebb szellemi köszönetnyilvánítás a Bitcoin történetében. Satoshi tudta, hogy kire építkezik.']},
+            {type:'btc-connection',title:'Wei Dai és a Bitcoin',text:'A Bitcoin neve is a b-money szellemi örökségét hordozza. A proof-of-work pénzteremtés és a decentralizált könyvelés gondolata egyenesen Daitól ered — Satoshi fehér könyve első hivatkozásként idézi a b-money esszét. Wei Dai a szellemi atyja, Satoshi az implementátor.'},
+            {type:'person-intro',name:'Nick Szabo',years:'1964–',role:'Informatikus · Jogász · Okosszerződés-úttörő · Bit Gold alkotója',icon:'🪙',initials:'NS',color:'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)',btcConnection:'A Bit Gold a Bitcoin közvetlen prototípusa. Szabo és Satoshi ugyanaz?'},
+            {type:'bio',bgImage:'images/szabo_1.png',title:'Magyar származás, kettős tudás',content:['Nick Szabo magyar születésű, aki egyszerre rendelkezik mélységes informatikai és jogi tudással. Ez a kombinált tudás lehetővé tette számára, hogy olyan perspektívából lásson a problémákra, ahonnen mások nem.','A kriptográfiai protokollokban nem csupán technikai mechanizmusokat, hanem jogi strukturákat is látott. A Bitcoin, az okosszerződések — mindez technikai kód, ami azonban jogi következményei vannak.']},
+            {type:'bio',bgImage:'images/szabo_2.png',title:'Az okosszerződés',content:['1994-ben Szabo megalkotta az okosszerződés fogalmát — egy már akkor radikális gondolatot: olyan programkód, amely automatikusan végrehajtja a szerződéses feltételeket, ha azok teljesülnek, harmadik fél nélkül.','Ez felrobbantotta volna a jogi gondolkodást — ha valakik közvetlenül kódban írnak szerződéseket, akkor nincs szükség ügyvédekre? Szabo azt javasolta: lehet. Huszonöt évvel később az Ethereum ezt teljesen megvalósította.']},
+            {type:'bio',bgImage:'images/szabo_3.png',title:'Bit Gold',content:['1998-ban (a b-money mellett) Szabo kidolgozta a Bit Gold rendszert — a Bitcoin közvetlen elődjét. A szerkezet: kriptográfiai puzzle (proof-of-work), időbélyeg, decentralizált könyvelés. Szinte szó szerint azonos a Bitcoinnal, de hiányzott belőle az a rész, amit Satoshi később megoldott.','Szabo tudta, hogy nehéz lesz technikai szempontból — de nem tudta, hogy hogyan kellene a blokkokat összekapcsolni (a blokklánc technológia).']},
+            {type:'bio',bgImage:'images/szabo_4.png',title:'Digitális szűkösség',content:['A digitális szűkösség megteremtése Szabo legfontosabb gondolata — és „Shelling Out" esszéjében (2002) részletesen kifejti. A pénz evolúciós eredete: a szűkösen — csak korlátozott mennyiségben — elérhető tárgyakra lett kereslet.','Szabo látta, hogy kriptográfiával leküzdhető a digitális másolhatóság akadálya. Az hash-függvények ezt tudják: egy szám másolása könnyű, de egy adott hash-t előállítani csak munkával lehetséges.']},
+            {type:'btc-connection',title:'Szabo és a Bitcoin',text:'A Bit Gold a Bitcoin közvetlen prototípusa: proof-of-work, decentralizált könyvelés, digitális szűkösség — minden elem megvan. A bitcoinos közösség máig vitatja: Szabo és Satoshi ugyanaz a személy? A stílusról, a logikáról, az alapgondolatokról ítélve lehetséges — de Szabo ezt sosem erősítette meg.'},
+            {type:'person-intro',name:'Adam Back',years:'1970–',role:'Brit kriptográfus · Hashcash alkotója · Blockstream CEO',icon:'⛏️',initials:'AB',color:'linear-gradient(135deg, #A78BFA 0%, #9333EA 100%)',photoUrl:'https://upload.wikimedia.org/wikipedia/commons/f/f3/Adam_Back_2014.jpg',btcConnection:'A Hashcash nélkül nincs proof-of-work, nincs Bitcoin.'},
+            {type:'bio',bgImage:'images/back_1.png',title:'Cypherpunk levelezőlista',content:['Adam Back brit kriptográfus, aki a 1990-es évek cypherpunk levelezőlistáinak aktív résztvevőjeként fejlesztette ki azt az algoritmust, amely a Bitcoin bányászatának szívévé vált — a Hashcash-t.','A cypherpunk mozgalom a levéllistán közös: David Chaum, Hal Finney, Wei Dai, Nick Szabo, Adam Back — gyakorlatilag mindegyikük ott volt, ahol az ötletek megosztódtak és fejlődtek.']},
+            {type:'bio',bgImage:'images/back_2.png',title:'Hashcash: nehéz előállítani',content:['1997-ben publikálta a Hashcash rendszert. Az ötlet egyszerű: egy email küldéséhez kriptográfiai feladatot kell megoldani. Az alapelv: „nehéz előállítani, könnyű ellenőrizni." Ez volt az első proof-of-work implementáció.','A Hashcash célja: az email spam ellen. Ha spammeléshez számítási teljesítményt kell felhasználni, akkor a spammelek elveszítik az ösztönzésüket. De az algoritmus valami sokkal fontosabb volt.']},
+            {type:'bio',bgImage:'images/back_3.png',title:'SHA-1 és a proof-of-work',content:['A Hashcash SHA-1 hash-alapú proof-of-work rendszere közvetlenül beépült a Bitcoinba. Satoshi a white paperben explicit hivatkozással említi Back munkáját. A Bitcoin bányászata technikailag a Hashcash algoritmusa.','A cryptográfiai puzzle sokszor kitalálódik: találd meg azt az értéket, amely hash-ként egy bizonyos számú nullával kezdődik. Ez a Hashcash-ből származik.']},
+            {type:'bio',bgImage:'images/back_4.png',title:'Blockstream és ma',content:['Ma Adam Back a Blockstream CEO-ja — egy olyan vállalat, amely a Bitcoin infrastruktúrán dolgozik. A cypherpunk mozgalom talán egyetlen tagja, aki a korai gondolataitól a mai intézményesített infrastruktúráig ívelő pályán maradt.','Az első cypherpunkok közül sokan eltűntek, visszavonultak, vagy más területekre mentek. Back, kivételesen, megmaradt — és továbbra is a Bitcoin fejlesztésén dolgozik.']},
+            {type:'btc-connection',title:'Adam Back és a Bitcoin',text:'A Bitcoin bányászata technikailag a Hashcash proof-of-work algoritmusa. Back az egyetlen személy a white paper referenciái közül, akit Satoshi személyesen megkeresett a publikálás előtt. A Hashcash nélkül nincs proof-of-work, nincs Bitcoin — nincs semmi.'},
+            {type:'person-intro',name:'Hal Finney',years:'1956–2014',role:'Kriptográfus · PGP fejlesztő · Az első Bitcoin-tranzakció fogadója',icon:'🏃',initials:'HF',color:'linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)',photoUrl:'https://upload.wikimedia.org/wikipedia/en/5/52/Hal_Finney_%28computer_scientist%29.jpg',btcConnection:'„Running bitcoin" — az első nyilvános mondat a Bitcoinról.'},
+            {type:'bio',bgImage:'images/finney_1.png',title:'PGP és a cypherpunkok',content:['Hal Finney a Caltech-en szerezte diplomáját, majd a PGP fejlesztőcsapatában dolgozott Phil Zimmermann alatt. A cypherpunk mozgalom egyik legaktívabb tagja volt — folyamatosan kódolt, tesztelt és hozzájárult. A PGP (Pretty Good Privacy) az első kommerciális kriptográfiai szoftver volt, amely az átlagemberek számára is elérhetővé tette az end-to-end titkosítást.']},
+            {type:'bio',bgImage:'images/finney_2.png',title:'RPOW',content:['2004-ben kifejlesztette az RPOW-t (Reusable Proofs of Work) — egy olyan rendszert, amely a Hashcash alapján épített, de megpróbálta a proof-of-work eredményét átruházható értékegységgé tenni.','Az RPOW szinte a Bit Gold és a Bitcoin közötti közvetítő volt — Finney felismerte, hogy ha a proof-of-work átruházható, akkor már szinte pénz. De továbbra is centralizált szerver kellett.']},
+            {type:'bio',bgImage:'images/finney_3.png',title:'Running bitcoin',content:['2009. január 12-én fogadta az első Bitcoin-tranzakciót — Satoshi küldte neki 10 BTC. Ez a tranzakció például olyan jelentős, mint az első email vagy az első weblap. Hal Finney az első valódi Bitcoin-felhasználó.','Finney január 11-én tweetelte: „Running bitcoin" — az első publikus bejelentés arról, hogy valaki futtatja a Bitcoin szoftvert. Ez volt az első nyilvános mondat, amely elárulta: valami létezik.']},
+            {type:'bio',bgImage:'images/finney_4.png',title:'Örökség',content:['2009-ben diagnosztizálták az ALS-t (a Lou Gehrig-féle betegség). Az egyre súlyosabb neurológiai betegség ellenére folytatta a Bitcoin-fejlesztést és az email-levelezésben való részvételt.','2014-ben hunyt el — testét krionikus tartósítással hűtötték le. Hal Finney az első igazi Bitcoin-hitvalló volt. Még halála után is a Bitcoin-közösség őt tisztelgeti — az UTXO-k egy részét „Finney coins"-nek nevezik.']},
+            {type:'btc-connection',title:'Hal Finney és a Bitcoin',text:'Finney az első valódi Bitcoin-felhasználó, az első tranzakció fogadója és az egyik első fejlesztő. Az RPOW közvetlen technológiai előzménye a Bitcoin proof-of-work rendszerének. „Running bitcoin" — az első nyilvános mondat, amely bejelentette: a Bitcoin létezik.'},
+            {type:'divider',number:'III',title:'Az összekötő',subtitle:'Aki megtalálta a hiányzó darabot, összerakta a kirakóst — majd eltűnt.'},
+            {type:'person-intro',name:'Satoshi Nakamoto',years:'??? – ???',role:'Ismeretlen · A Bitcoin alkotója · Az összekötő',icon:'₿',initials:'SN',color:'linear-gradient(135deg, #F7931A 0%, #FF6B35 100%)',btcConnection:'Összegyűjtötte és összerakta a darabokat. A Bitcoin senkié — azaz mindenkié.'},            {type:'bio',bgImage:'images/satoshi_1.png',title:'2008. október 31.',content:['Egy ismeretlen személy „Satoshi Nakamoto" álnéven publikálta a Bitcoin white papert: „Bitcoin: A Peer-to-Peer Electronic Cash System." Kilenc oldalon leírta azt, amin mások évtizedekig dolgoztak — és amely több mint 10 milliárd dollárt ér ma.','Az email, amely bejelentette a white papért, a cypherpunk levelezőlistára küldték. Az volt az első és szinte az egyetlen kapcsolódási pont: akik az önálló pénzről gondolkodtak, azok most tudják, hogy ez lehetséges.']},
+            {type:'bio',bgImage:'images/satoshi_2.png',title:'A genesis block',content:['2009. január 3-án bányászta ki a genesis blockot — az első Bitcoin blokk, amely nem mutat vissza egy előző blokkra (mivel nem volt). Belekódolta a The Times főcímét: „Chancellor on brink of second bailout for banks".','Ez egyszerre üzenet és dátumbélyeg: a Bitcoin születésének pillanata pontosan 2009. január 3., amikor a világ gazdasági válságban összeomlásával küzdött. Ez nem volt véletlen.']},
+            {type:'bio',bgImage:'images/satoshi_3.png',title:'A blokklánc megoldás',content:['A blokklánc Satoshi valódi hozzájárulása: nem az egyes komponensek (proof-of-work, digitális aláírás, decentralizált könyvelés) voltak újak, hanem ezek egyedi kombinációja — és a nehézségi igazítás, valamint a leghosszabb lánc szabálya.','A blokkláncban a blokkok időrendileg láncolódnak össze: ha valaki egy régi tranzakciót próbálna módosítani, akkor az összes később létrejött blokk hibás lenne. Ez a megoldás Satoshi lángészének a váza — a hiányzó láncszem.']},
+            {type:'bio',bgImage:'images/satoshi_4.png',title:'Az eltűnés',content:['Satoshi körülbelül 1 millió bitcoint bányászott az első éveiben — ebből az értékből ma csaknem 50 milliárd dollár van. Ez az érték szinte sosem mozdult egy blokkból. 2011-ben Satoshi véglegesen visszavonult.','Az eltűnés maga is zsenialitás: a Bitcoin valóban senkié lett — azaz mindenkié. Nem volt egy karizmatikus vezető, aki körül csoportosulnak az emberek. A rendszer tisztán algoritmikus maradt.']},
+            {type:'btc-connection',title:'Satoshi Nakamoto',text:'Satoshi nem talált fel semmit új: összegyűjtötte és összerakta a darabokat. Tesla energia-víziója, Ford munkaalapú értéke, Hayek pénzversenye, Mises sound money-ja, Friedman digitális készpénze, Chaum kriptográfiája, Dai b-money-ja, Szabo Bit Goldje, Back Hashcash-e, Finney RPOW-ja — mindez benne van a Bitcoin white paperben. De a szintézis? Az a Satoshié.'},
+            {type:'closing',quote:'Az igazságot nem feltalálják. Az igazságot felfedezik.',boxes:[{icon:'⚡',title:'Energia = Érték',text:'Tesla és Ford intuíciója: a munka és az energia adják az érték alapját.'},{icon:'📜',title:'Szabad pénz',text:'Hayek és Mises látomása: a pénz nem lehet a státus monopoliuma.'},{icon:'🔐',title:'Decentralizáció',text:'Chaum és a cypherpunkok tanulsága: senkire nem szabad bízni.'},{icon:'₿',title:'Az összekötő',text:'Satoshi megtalálta: a keresett szintézis a blokklánc.'}]}
+        ];
 
-function buildSlide(s, idx) {
-  const el = document.createElement('div');
-  el.className = 'slide';
-  el.dataset.idx = idx;
+        let currentSlide = 0;
 
-  if (s.t === 'hero') {
-    el.classList.add('hero-slide');
-    el.innerHTML = `
-      <div class="hero-tag">Prezentáció &middot; 2026<\/div>
-      <h1>A Bitcoin nem feltalálmány&thinsp;&mdash;&thinsp;hanem felfedezés<\/h1>
-      <p class="hero-sub">Tizenegy látnok, kriptográfus és közgazdász, akik évtizedekkel megelőzték a Bitcoint — és akik nélkül Satoshi sohasem írhatta volna meg a white paperjét.<\/p>
-      <div class="hero-quote">"Ha láttam messzebbre, az azért van, mert óriások vállain álltam." &mdash; Isaac Newton<\/div>
-      <div class="hero-badge"><span>38 dia<\/span> &middot; Nyomj &rarr; vagy kattints a folytatáshoz<\/div>`;
+        function initializePresentation() {
+            renderSlide(0);
+            updateControls();
+        }
 
-  } else if (s.t === 'div') {
-    el.classList.add('divider-slide');
-    el.innerHTML = `<div class="divider-inner">
-      <div class="divider-num">${s.num}<\/div>
-      <h2>${s.title}<\/h2>
-      <div class="divider-line"><\/div>
-      <p>${s.sub}<\/p>
-    <\/div>`;
+        function renderSlide(index) {
+            const container = document.getElementById('slideContainer');
+            container.innerHTML = '';
 
-  } else if (s.t === 'intro') {
-    el.classList.add('person-intro');
-    const ring = document.createElement('div');
-    ring.className = 'portrait-ring';
-    if (s.img) {
-      const img = document.createElement('img');
-      img.src = s.img;
-      img.alt = s.name;
-      img.loading = 'lazy';
-      img.onerror = function() {
-        this.style.display = 'none';
-        const fb = document.createElement('span');
-        fb.style.fontSize = '56px';
-        fb.textContent = s.emoji;
-        this.parentElement.appendChild(fb);
-      };
-      ring.appendChild(img);
-    } else {
-      const fb = document.createElement('span');
-      fb.style.fontSize = '56px';
-      fb.textContent = s.emoji;
-      ring.appendChild(fb);
-    }
-    const introContent = document.createElement('div');
-    introContent.className = 'intro-content';
-    introContent.innerHTML = `
-      <div class="person-years">${s.years}<\/div>
-      <h2>${s.name}<\/h2>
-      <div class="person-role">${s.role}<\/div>
-      <p class="intro-text">${s.text}<\/p>`;
-    el.appendChild(ring);
-    el.appendChild(introContent);
+            const slide = slides[index];
+            const slideElement = document.createElement('div');
+            slideElement.className = `slide ${slide.type} active`;
 
-  } else if (s.t === 'bio') {
-    el.classList.add('person-bio');
-    el.innerHTML = `<div class="bio-inner">
-      <div class="bio-header">
-        <div class="bio-icon">${s.emoji}<\/div>
-        <div><h3>${s.name}<\/h3><div class="bio-sub-label">${s.sub}<\/div><\/div>
-      <\/div>
-      <div class="bio-body">${s.paras.map(p=>`<p>${p}<\/p>`).join('')}<\/div>
-    <\/div>`;
+            switch(slide.type) {
+                case 'hero':                    slideElement.innerHTML = `<div class="hero-badge">${slide.badge}</div><h1 class="hero-title">${slide.title}</h1><p class="hero-subtitle">${slide.subtitle}</p><p class="hero-quote">${slide.quote}</p>`;
+                    break;
+                case 'divider':
+                    slideElement.innerHTML = `<div class="divider-number">${slide.number}</div><h2 class="divider-title">${slide.title}</h2><p class="divider-subtitle">${slide.subtitle}</p>`;
+                    break;
+                case 'person-intro':
+                    const portraitStyle = slide.photoUrl
+                        ? `background-image: url('${slide.photoUrl}'); background-size: cover; background-position: center top;`
+                        : `background: ${slide.color};`;
+                    const portraitContent = slide.photoUrl ? '' : slide.initials;
+                    slideElement.innerHTML = `<div class="person-portrait" style="${portraitStyle}">${portraitContent}</div><div class="person-icon">${slide.icon}</div><h2 class="person-name">${slide.name}</h2><p class="person-years">${slide.years}</p><p class="person-role">${slide.role}</p><div class="btc-connection-box">${slide.btcConnection}</div>`;
+                    break;
+                case 'bio':
+                    slideElement.innerHTML = `<div class="bio-header" style="background-image: url('${slide.bgImage}');"><h3 class="bio-title">${slide.title}</h3></div><div class="bio-content">${slide.content.map(para => `<p class="bio-text">${para}</p>`).join('')}</div>`;
+                    break;
+                case 'btc-connection':
+                    slideElement.innerHTML = `<div class="btc-connection-content"><div class="btc-icon-large">₿</div><h2 class="btc-connection-title">${slide.title}</h2><p class="btc-connection-text">${slide.text}</p></div>`;
+                    break;
+                case 'closing':
+                    slideElement.innerHTML = `<h2 class="closing-quote">${slide.quote}</h2><div class="closing-boxes">${slide.boxes.map(box => `<div class="closing-box"><div class="closing-box-icon">${box.icon}</div><h3 style="color: #F7931A; margin-bottom: 10px;">${box.title}</h3><p class="closing-box-text">${box.text}</p></div>`).join('')}</div>`;
+                    break;
+            }
 
-  } else if (s.t === 'btc') {
-    el.classList.add('btc-slide');
-    const tlHtml = s.tl.map((item, i, arr) => `
-      <div class="tl-item">
-        <div class="tl-year">${item.y}<\/div>
-        <div class="tl-dot"><\/div>
-        <div class="tl-label">${item.l}<\/div>
-      <\/div>${i < arr.length-1 ? '<div class="tl-line"><\/div>' : ''}`).join('');
-    el.innerHTML = `<div class="btc-inner">
-      <span class="btc-symbol">&#8383;<\/span>
-      <div class="btc-slide-title">Kapcsolódás a Bitcoinhoz &middot; ${s.name}<\/div>
-      <div class="btc-quote">
-        <div class="quote-text">${s.quote}<\/div>
-        <div class="quote-attr">${s.qa}<\/div>
-      <\/div>
-      <div class="btc-timeline">${tlHtml}<\/div>
-      <div class="btc-box">
-        <div class="btc-box-title">Miért számít?<\/div>
-        <p>${s.box}<\/p>
-      <\/div>
-      <div class="btc-tags">${s.tags.map(t=>`<span class="btc-tag">${t}<\/span>`).join('')}<\/div>
-    <\/div>`;
+            container.appendChild(slideElement);
+            const progress = ((index + 1) / slides.length) * 100;            document.querySelector('.progress-fill').style.width = progress + '%';
+            document.getElementById('currentSlide').textContent = index + 1;
+        }
 
-  } else if (s.t === 'closing') {
-    el.classList.add('closing-slide');
-    el.innerHTML = `
-      <div class="closing-quote">"Az igazságot nem feltalálják.<br>Az igazságot felfedezik."<\/div>
-      <div class="grid-boxes">
-        <div class="grid-box"><div class="gb-icon">&#129504;<\/div><div class="gb-title">Az ötletek örökké élnek<\/div><div class="gb-text">Tesla, Ford, Hayek, Mises és Friedman gondolatai nem haltak meg velük — a Bitcoinban élnek tovább.<\/div><\/div>
-        <div class="grid-box"><div class="gb-icon">&#128272;<\/div><div class="gb-title">A kód a katalizátor<\/div><div class="gb-text">Chaum, Wei Dai, Szabo, Back és Finney a kriptográfia eszközeit kovácsolta meg — Satoshi összerakta őket.<\/div><\/div>
-        <div class="grid-box"><div class="gb-icon">&#8383;<\/div><div class="gb-title">A hiányzó láncszem<\/div><div class="gb-text">A blokklánc nem ötlet volt, hanem felfedezés — annak rájövése, hogy a darabok összerakhatók.<\/div><\/div>
-        <div class="grid-box"><div class="gb-icon">&#8734;<\/div><div class="gb-title">21 millió határ<\/div><div class="gb-text">A véges kínálat nem önkényes döntés — az emberi civilizáció monetáris tanulságainak szintézise.<\/div><\/div>
-      <\/div>`;
-  }
+        function updateControls() {
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === slides.length - 1;
+        }
 
-  container.appendChild(el);
-  return el;
-}
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                renderSlide(currentSlide);
+                updateControls();
+            }
+        }
 
-const slideEls = SLIDES.map(buildSlide);
+        function previousSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                renderSlide(currentSlide);
+                updateControls();
+            }
+        }
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            }
+        });
 
-function goTo(n) {
-  if (n < 0 || n >= TOTAL || n === current) return;
-  if (current >= 0) {
-    slideEls[current].classList.remove('active');
-    slideEls[current].classList.add('exit-left');
-    const prev = current;
-    setTimeout(() => slideEls[prev].classList.remove('exit-left'), 800);
-  }
-  current = n;
-  slideEls[current].classList.add('active');
-  const bio = slideEls[current].querySelector('.bio-body');
-  if (bio) bio.scrollTop = 0;
-  updateUI();
-}
+        let touchStartX = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+        });
 
-function updateUI() {
-  document.getElementById('counter').textContent = `${current + 1} / ${TOTAL}`;
-  document.getElementById('progress-bar').style.width = (TOTAL > 1 ? current / (TOTAL-1) * 100 : 100) + '%';
-}
-
-function startAuto() {
-  autoPlay = true;
-  document.getElementById('btn-play').classList.add('active-play');
-  document.getElementById('btn-play').innerHTML = '&#9646;&#9646;';
-  autoTimer = setInterval(() => { current < TOTAL-1 ? goTo(current+1) : stopAuto(); }, 6000);
-}
-function stopAuto() {
-  autoPlay = false;
-  clearInterval(autoTimer);
-  document.getElementById('btn-play').classList.remove('active-play');
-  document.getElementById('btn-play').innerHTML = '&#9654;';
-}
-
-document.getElementById('btn-prev').onclick = () => { stopAuto(); goTo(current-1); };
-document.getElementById('btn-next').onclick = () => { stopAuto(); goTo(current+1); };
-document.getElementById('btn-play').onclick = () => autoPlay ? stopAuto() : startAuto();
-
-document.addEventListener('keydown', e => {
-  if (['ArrowRight','ArrowDown'].includes(e.key)) { stopAuto(); goTo(current+1); }
-  if (['ArrowLeft','ArrowUp'].includes(e.key)) { stopAuto(); goTo(current-1); }
-  if (e.key === ' ') { e.preventDefault(); autoPlay ? stopAuto() : startAuto(); }
-});
-
-let tx = 0;
-document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive:true});
-document.addEventListener('touchend', e => {
-  const dx = e.changedTouches[0].clientX - tx;
-  if (Math.abs(dx) > 50) { stopAuto(); goTo(current + (dx < 0 ? 1 : -1)); }
-}, {passive:true});
-
-goTo(0);
-</script>
+        document.addEventListener('touchend', (e) => {
+            const touchEndX = e.changedTouches[0].clientX;
+            if (touchStartX - touchEndX > 50) {
+                nextSlide();
+            } else if (touchEndX - touchStartX > 50) {
+                previousSlide();
+            }
+        });
+        initializePresentation();
+    </script>
 </body>
 </html>
