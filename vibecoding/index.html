@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<title>AI Vibecoding — Feri setup</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--btc:#F7931A;--dark:#1A1A1A;--muted:#6B6B6B;--warm:#FAF8F3;--accent-bg:#FEF3E2;--border:#E8E4DC;}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--warm);color:var(--dark);font-family:'Inter',-apple-system,sans-serif;line-height:1.65;font-weight:400;-webkit-font-smoothing:antialiased}
+.wrap{max-width:780px;margin:0 auto;padding:64px 32px 96px}
+.hero{border-bottom:1px solid var(--border);padding-bottom:32px;margin-bottom:48px}
+.eyebrow{font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:var(--btc);font-weight:600;margin-bottom:12px}
+h1{font-family:'Playfair Display',serif;font-size:clamp(36px,5vw,52px);font-weight:700;letter-spacing:-0.02em;line-height:1.1;color:var(--dark);margin-bottom:16px}
+.meta{font-size:14px;color:var(--muted);display:flex;gap:16px;flex-wrap:wrap}
+.meta b{color:var(--dark);font-weight:600}
+.dl{display:inline-flex;align-items:center;gap:8px;background:var(--btc);color:#fff;padding:10px 18px;border-radius:8px;font-size:14px;font-weight:600;text-decoration:none;margin-top:24px;transition:transform .15s}
+.dl:hover{transform:translateY(-1px)}
+h2{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;letter-spacing:-0.01em;color:var(--dark);margin-top:48px;margin-bottom:16px;padding-top:8px}
+h2:first-of-type{margin-top:32px}
+h3{font-size:18px;font-weight:600;margin-top:28px;margin-bottom:10px;color:var(--dark)}
+p{margin-bottom:16px;color:#2A2A2A}
+blockquote{border-left:3px solid var(--btc);background:var(--accent-bg);padding:16px 20px;margin:24px 0;border-radius:0 8px 8px 0;font-style:italic;color:#3A3A3A}
+ul,ol{margin:0 0 20px 24px;color:#2A2A2A}
+ul li,ol li{margin-bottom:6px}
+strong{font-weight:600;color:var(--dark)}
+code{font-family:'SF Mono',Menlo,monospace;font-size:0.88em;background:#F0EBE0;padding:2px 6px;border-radius:4px;color:#5A4A1A}
+pre{background:#1A1A1A;color:#E8E4DC;padding:18px 20px;border-radius:8px;overflow-x:auto;margin:20px 0;font-size:13px;line-height:1.6}
+pre code{background:none;padding:0;color:inherit}
+table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px}
+th{text-align:left;background:var(--accent-bg);padding:10px 14px;font-weight:600;border-bottom:2px solid var(--btc);color:var(--dark)}
+td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:hover td{background:#FBF7EE}
+hr{border:none;border-top:1px solid var(--border);margin:48px 0}
+.footer{margin-top:64px;padding-top:24px;border-top:1px solid var(--border);font-size:13px;color:var(--muted);text-align:center}
+.footer a{color:var(--btc);text-decoration:none}
+@media (max-width:600px){.wrap{padding:40px 20px 64px}h1{font-size:32px}h2{font-size:24px}table{font-size:13px}th,td{padding:8px 10px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero">
+<div class="eyebrow">Privát megosztás · Léránt Gergőnek</div>
+<h1>AI Vibecoding — hogy használom Claude-ot</h1>
+<div class="meta">
+<span><b>Szerző:</b> Kovács Ferenc</span>
+<span><b>Frissítve:</b> 2026-04-07</span>
+</div>
+<a class="dl" href="ai-vibecoding-feri.md" download>↓ Letöltés .md formátumban</a>
+</div>
+
+<blockquote>Egy gyors, őszinte snapshot Gergőnek arról, <b>mi a setupom, mit csinálok vele, és hol van benne fehér folt</b>, hátha látsz benne továbbfejlesztési lehetőséget.</blockquote>
+
+<h2>Egy mondatban</h2>
+<p>Két Mac-en (MacMini stúdió + MacBook Pro útközben) <strong>Claude Cowork</strong> + <strong>Claude Code</strong> + egy vastag MCP-, skill- és scheduled-task-réteg fut, OneDrive-on és egy privát GitHub repón keresztül szinkronban — innen építem a Bitcoin Miskolc 2026 előadásokat, írok blog/SoMe tartalmat, készítek dokumentumokat, és vezetek üzleti döntéseket "tanácsadó testülettel".</p>
+
+<h2>Hardware / OS / kliens</h2>
+<ul>
+<li><strong>MacMini</strong> (otthoni stúdió, fő gép) — Brave + Google Chrome, OneDrive sync</li>
+<li><strong>MacBook Pro</strong> (mobil) — ugyanaz a setup, ugyanaz a OneDrive-mappa</li>
+<li><strong>iPhone</strong> — Claude mobilapp, Dispatch tab → távolról is tudok feladatokat indítani a gépen</li>
+<li><strong>Claude Cowork</strong> desktop appban (Sonnet 4.5/4.6 + Opus 4.6 1M kontextus) — ez a fő interfész</li>
+<li><strong>Claude Code</strong> CLI — kódszerkesztésre, repo-műveletekre</li>
+</ul>
+
+<h2>Skill réteg</h2>
+<p>Self-hosted skill-mappám van egy <strong>privát GitHub repóban</strong> (<code>ferenckovacs85/claude-config</code>), és symlinkkel kötöttem a <code>~/.claude/skills/</code>-be. Egy óránként futó scheduled task <code>git pull</code>-ozza, így ha bármelyik gépről változtatok, a másik 1 órán belül látja.</p>
+<p>A repóban most ezek élnek (rajtuk kívül a beépített xlsx/pptx/docx/pdf/yt-transcript/skill-creator/schedule):</p>
+<ul>
+<li><strong>mentor</strong> — személyes tanácsadó testület (Tony Robbins, Simon Sinek, James Clear, Ray Dalio, GaryVee). Üzleti dilemma → 5 nézőpont, prioritás, akció.</li>
+<li><strong>health-board</strong> — egészségügyi/táplálkozási board (Peter Attia, Huberman, Gabrielle Lyon, Mark Hyman, Layne Norton).</li>
+<li><strong>fat-loss-planner</strong> — szakértői táplálkozási tervező, makrók + heti menü.</li>
+<li><strong>design-system</strong> — Coinbase + Stripe + 5 másik referencia design system, prezentáció/HTML építéshez.</li>
+<li><strong>vlog-kit</strong> — videó-átiratból blog/social posztok generálása (work in progress).</li>
+<li><strong>(referenciák)</strong> thinkers/, NVK kvantum-elemzés stb.</li>
+</ul>
+
+<h2>MCP integrációk (élő, csatlakoztatva)</h2>
+<table>
+<thead><tr><th>Rendszer</th><th>Mire használom</th></tr></thead>
+<tbody>
+<tr><td><b>Notion</b></td><td>Bitcoin Vision 21 dokumentációk, jogi meeting jegyzetek, projekt-hubok, adatbázisok</td></tr>
+<tr><td><b>Gmail / Outlook</b></td><td>Email keresés, tervezet írás, soha nem küld magától</td></tr>
+<tr><td><b>Google / Outlook Calendar</b></td><td>Esemény keresés, létrehozás, szabad idő keresés</td></tr>
+<tr><td><b>SharePoint / OneDrive (Graph)</b></td><td>Dokumentum keresés/olvasás céges drive-ban</td></tr>
+<tr><td><b>Google Drive</b></td><td>Doc keresés/olvasás privát Drive-ban</td></tr>
+<tr><td><b>Netlify</b></td><td>Saját ferenckovacs.com deploy-ok, env változók</td></tr>
+<tr><td><b>Desktop Commander</b></td><td>Lokális Mac fájlrendszer, shell, build scriptek, surgical edits</td></tr>
+<tr><td><b>PowerPoint</b></td><td>.pptx létrehozás, szerkesztés, PDF export</td></tr>
+<tr><td><b>PDF tools</b></td><td>PDF olvasás, űrlap kitöltés, csv extract</td></tr>
+<tr><td><b>Claude in Chrome</b></td><td>Brave/Chrome böngésző távirányítása, screenshotok, JS exec</td></tr>
+<tr><td><b>Computer Use</b></td><td>Mac asztal vezérlése, native appok (Mail, Notes, Finder, System Settings)</td></tr>
+<tr><td><b>iMessage</b></td><td>Olvasás, küldés (családi koordinációhoz)</td></tr>
+<tr><td><b>Circleback</b></td><td>Meeting transcript+notes integráció</td></tr>
+<tr><td><b>Trivago, Kiwi flights</b></td><td>Utazás kereséshez</td></tr>
+<tr><td><b>Plugins / MCP registry</b></td><td>Új MCP-k felfedezése</td></tr>
+<tr><td><b>Scheduled tasks</b></td><td>Cron-szerű feladatok</td></tr>
+<tr><td><b>Dispatch</b></td><td>Mobilról távoli session indítás a gépen</td></tr>
+</tbody>
+</table>
+
+<h2>Scheduled tasks (cron-szerű)</h2>
+<p>A Claude saját scheduled-task rendszerét használom, ezek futnak most:</p>
+<ul>
+<li><strong><code>skills-sync</code></strong> — óránként <code>git pull</code> a <code>claude-config</code> repóra (multi-gép sync)</li>
+<li><strong><code>cb-transcript-processor</code></strong> — Circleback meeting transcriptek napi feldolgozása</li>
+<li><strong><code>outlook-contact-sync</code></strong> — Outlook kontaktok napi rendezése</li>
+<li><strong><code>x-bookmarks-sync</code></strong> — X bookmarks lokális mentése (fieldtheory CLI-vel)</li>
+</ul>
+<p>Az infrastruktúra teszi lehetővé, hogy reggel ne kelljen kézzel triggerelni semmit — a friss dolgok már a Notion-ban, MD-kben, OneDrive-ban várnak.</p>
+
+<h2>Productivity CLI tools</h2>
+<ul>
+<li><strong>fieldtheory</strong> — X bookmarks → lokális JSON</li>
+<li><strong>Feynman</strong> — research agent, mély témakutatás</li>
+<li><strong>llm-wiki</strong> — saját tudásbázis-szerkesztő</li>
+<li><strong>Graphify</strong> — graph-alapú jegyzetkezelés</li>
+<li><strong>yt-dlp</strong> — YouTube transcript letöltő (a yt-transcript skill ezt használja)</li>
+</ul>
+
+<h2>Multi-gép / multi-felhő szinkron pattern</h2>
+<p>A <strong>OneDrive</strong> a központi lemez, ezen keresztül látja a két Mac ugyanazt:</p>
+<pre><code>~/Library/CloudStorage/OneDrive-K.VÉpítőipariKft/
+└── Bitcoin/Előadások/2026/
+    ├── 01-megnyito/
+    ├── 02-mi-a-bitcoin/
+    ├── 03-szamok-analogiak/
+    └── ELOADASOK_STATUS.md   ← a két Cowork session ezen keresztül "beszélget"</code></pre>
+<p>A <code>STATUS.md</code> egy megosztott "munkafüzet" — amelyik gépen dolgozom, annak Claude session-je olvassa-frissíti, így a másik napra már látja, hol állok. Ezzel megoldottam azt, hogy a két Cowork session amúgy nem ismeri egymást.</p>
+<p>A kritikus fájlok három helyen vannak (mind byte-azonos): working master a <code>0X-*/</code> mappában → <code>vegleges/...FINAL.html</code> → <code>~/ferenckovacs-site/bitcoin-2026-Q2/[név].html</code> (deployolva).</p>
+
+<h2>Konkrét use case-ek</h2>
+
+<h3>1. Bitcoin Miskolc 2026 előadások építése</h3>
+<ul>
+<li>3 előadás kész (Megnyitó, Mi a Bitcoin?, Számok és analógiák) — egyenként ~10–15 dia, önálló offline HTML, base64 képek, 16:9 fix arány, billentyűzet/swipe nav</li>
+<li>Branded QR kódok lokálisan generálva (Python <code>qrcode[pil]</code> + StyledPilImage + Telegram airplane overlay)</li>
+<li>Hetente több iteráció: tartalmi átfogalmazás, design polish, projektor-szabályok (felső 2/3, alsó nem látszik), Full HD átnézés a deployolt verzión</li>
+<li>Hidden Q2 hub: <code>ferenckovacs.com/bitcoin-2026-Q2/</code> (noindex/nofollow, robots.txt blokkolva, csak az URL ismerője éri el)</li>
+</ul>
+
+<h3>2. Bitcoin Vision 21 dokumentációk (Notion)</h3>
+<ul>
+<li>One-pager, koordinációs doc, meeting prep oldalak Hagya Szabolcs ügyvédnek</li>
+<li>Email-integráció: érintett levelekből származó info beépítése (BTCPay setup stb.)</li>
+<li>MiCA / 2024. évi VII tv. / Btk. 408/A jogi referenciák ellenőrzése — itt többször ki kellett szólni, hogy a források ütköznek és emberi verifikáció kell</li>
+</ul>
+
+<h3>3. Mentor board konzultációk</h3>
+<p>Üzleti dilemma → mentor skill → 5 mentor (Robbins/Sinek/Clear/Dalio/GaryVee) szempontjából elemzés → összegzés + akciópontok. Ugyanígy health-board étkezés/edzés döntésekhez.</p>
+
+<h3>4. Tartalomkészítés</h3>
+<p>YouTube vlog átirat → vlog-kit skill → magyar nyelvű blog/SoMe poszt. Egy konkrét példa: precast betonelem-gyártásról szóló vlog → magyar LinkedIn poszt.</p>
+
+<h3>5. Mobil távirányítás</h3>
+<p>iPhone-ról Dispatch tab-on át üzenek a Cowork-nek, az meg a MacMini-n elindít egy code task-ot vagy átnézi a OneDrive-ot → mire haza érek, kész.</p>
+
+<h2>Mi működik nagyon jól</h2>
+<ul>
+<li><strong>Skill + scheduled task + multi-gép sync</strong> kombináció: nincs napi triggerelés, minden a háttérben fut</li>
+<li><strong>Edit_block (Desktop Commander)</strong> sebészi precizitású szövegcserékhez — nagy HTML/MD fájlokat tudok regex nélkül módosítani</li>
+<li><strong>Computer Use + Claude in Chrome kombináció</strong> — natív app + böngésző + lokális build script egy folyamatban</li>
+<li><strong>Mentor / health-board "personae" skillek</strong> — különböző nézőpontokat kapok azonnal, nem kell ChatGPT/Claude/Perplexity-t külön nyitogatni</li>
+<li><strong>Notion MCP</strong> — strukturált jogi/üzleti dokumentációhoz nagyon jó</li>
+<li><strong>OneDrive STATUS.md mintázat</strong> — a két Cowork session "üzenőfala"</li>
+</ul>
+
+<h2>Hol van fehér folt / hol kérnék segítséget</h2>
+<ul>
+<li><strong>Több párhuzamos kontextus kezelése</strong> — most a STATUS.md a köztes nyelv két Mac között, de skálázódik-e? Van-e jobb minta?</li>
+<li><strong>Voice / dictate workflow</strong> — főleg autóban szeretnék hangból feladatot indítani; jelenleg Wispr Flow + Dispatch, de nem zökkenőmentes</li>
+<li><strong>Költségkontroll</strong> — Opus 4.6 1M kontextussal komoly tokenforgalom van, nincs jó dashboard arra, hogy lássam, melyik task mennyibe került</li>
+<li><strong>Verifikáció / tesztek hosszú HTML build-eken</strong> — minden iteráció után kézzel screenshot-olok Brave-ben Full HD-ban; kéne erre egy jobb visual regression mintázat</li>
+<li><strong>Plugin / marketplace stratégia</strong> — most ad-hoc telepítgetek; van-e tapasztalatod arról, mi éri meg "fizetős MCP" szintre menni?</li>
+<li><strong>Több ügyfélnek vagy nézőnek a megosztás</strong> — most a Q2 hub a megoldás. Skálázhatóbb minta?</li>
+<li><strong>Code session vs. task session határa</strong> — mikor érdemes Claude Code-ot külön spawn-olni, és mikor maradni a Cowork-ön belül?</li>
+</ul>
+
+<h2>Mit várnék tőled</h2>
+<p>Ha bármi ebből megpattant a fejedben — akár egy MCP-t ismersz, amit nem használok, akár egy skill mintát, akár egy egész workflow-t —, <strong>érdekel</strong>. Nem kell formálisan, egy hangüzenet vagy egy bekezdés is teljesen jó.</p>
+<p>Külön érdekel:</p>
+<ol>
+<li>Hogy szervezed a saját AI-stacked, ha párhuzamosan sok kliens-projekted van</li>
+<li>Költségkontroll / observability tippek</li>
+<li>Milyen MCP-ket / pluginekat látsz "must have"-nek 2026 Q2-ben, amikre én nem gondoltam</li>
+</ol>
+
+<p style="margin-top:32px">Köszi, hogy ránézel.</p>
+<p style="font-family:'Playfair Display',serif;font-style:italic;font-size:20px;color:var(--btc)">— Feri</p>
+
+<div class="footer">Privát oldal · noindex · nincs link sehonnan · csak az URL ismerője éri el<br>
+<a href="ai-vibecoding-feri.md" download>↓ MD letöltése</a> &nbsp;·&nbsp; <a href="https://ferenckovacs.com">ferenckovacs.com</a></div>
+</div>
+</body>
+</html>

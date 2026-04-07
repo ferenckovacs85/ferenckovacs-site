@@ -12,3 +12,8 @@
   Cache-Control: private, no-cache, no-store, must-revalidate
   Referrer-Policy: no-referrer
   Content-Security-Policy: default-src 'self' 'unsafe-inline' data:; img-src 'self' data:; frame-ancestors 'none'
+
+/vibecoding/*
+  X-Robots-Tag: noindex, nofollow, noarchive, nosnippet
+  Cache-Control: private, no-cache, no-store, must-revalidate
+  Referrer-Policy: no-referrer
