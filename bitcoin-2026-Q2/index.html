@@ -12,11 +12,17 @@
     :root {
       --bg: #0a0b0d;
       --bg-elevated: #141619;
+      --bg-elevated-2: #1a1d21;
       --orange: #F7931A;
       --orange-hover: #FFB347;
+      --green: #22c55e;
+      --yellow: #f5b431;
+      --gray: #4a4f57;
       --text: #ffffff;
       --text-muted: #8a919e;
+      --text-dim: #5a606a;
       --border: rgba(247, 147, 26, 0.15);
+      --border-muted: rgba(138, 145, 158, 0.12);
     }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -77,6 +83,21 @@
       color: var(--text);
       font-weight: 500;
     }
+    .summary-bar {
+      display: flex;
+      gap: 24px;
+      padding: 20px 0 0;
+      flex-wrap: wrap;
+    }
+    .summary-stat {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .summary-stat strong {
+      color: var(--text);
+      font-weight: 500;
+      font-size: 15px;
+    }
     .section-title {
       font-size: 13px;
       font-weight: 600;
@@ -97,9 +118,29 @@
       padding: 28px;
       transition: all 0.2s ease;
     }
+    .card.in-progress {
+      border-color: rgba(245, 180, 49, 0.25);
+    }
+    .card.planned {
+      border-color: var(--border-muted);
+      background: rgba(20, 22, 25, 0.5);
+    }
     .card:hover {
       border-color: var(--orange);
       box-shadow: 0 12px 32px rgba(247, 147, 26, 0.08);
+    }
+    .card.planned:hover {
+      border-color: var(--border-muted);
+      box-shadow: none;
+    }
+    .card-num {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-dim);
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+      text-transform: uppercase;
     }
     .card-header {
       display: flex;
@@ -114,21 +155,42 @@
       letter-spacing: -0.4px;
       line-height: 1.2;
     }
+    .card.planned .card-title {
+      color: var(--text-muted);
+    }
     .card-status {
       flex-shrink: 0;
       padding: 4px 12px;
-      background: rgba(247, 147, 26, 0.1);
-      color: var(--orange);
       font-size: 11px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.04em;
       border-radius: 56px;
       white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
-    .card-status.draft {
-      background: rgba(138, 145, 158, 0.1);
+    .card-status.done {
+      background: rgba(34, 197, 94, 0.12);
+      color: var(--green);
+    }
+    .card-status.progress {
+      background: rgba(245, 180, 49, 0.12);
+      color: var(--yellow);
+    }
+    .card-status.planned {
+      background: rgba(138, 145, 158, 0.08);
       color: var(--text-muted);
+    }
+    .card-time {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-bottom: 12px;
+    }
+    .card-time strong {
+      color: var(--text-muted);
+      font-weight: 500;
     }
     .card-desc {
       font-size: 15px;
@@ -136,10 +198,71 @@
       line-height: 1.5;
       margin-bottom: 16px;
     }
+    .progress-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .progress-bar {
+      flex: 1;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.4s ease;
+    }
+    .progress-fill.done { background: var(--green); }
+    .progress-fill.progress { background: var(--yellow); }
+    .progress-fill.planned { background: var(--gray); }
+    .progress-pct {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      min-width: 38px;
+      text-align: right;
+    }
+    .todo-list {
+      background: rgba(245, 180, 49, 0.04);
+      border: 1px solid rgba(245, 180, 49, 0.15);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 16px;
+    }
+    .todo-list-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--yellow);
+      margin-bottom: 8px;
+    }
+    .todo-list ul {
+      list-style: none;
+      padding: 0;
+    }
+    .todo-list li {
+      font-size: 13px;
+      color: var(--text-muted);
+      padding: 3px 0 3px 16px;
+      position: relative;
+      line-height: 1.45;
+    }
+    .todo-list li::before {
+      content: "○";
+      position: absolute;
+      left: 0;
+      color: var(--yellow);
+      font-size: 14px;
+    }
     .card-actions {
       display: flex;
       gap: 12px;
-      margin-top: 20px;
+      margin-top: 4px;
       flex-wrap: wrap;
     }
     .btn {
@@ -171,18 +294,20 @@
       background: rgba(247, 147, 26, 0.15);
       border-color: var(--orange);
     }
+    .btn-disabled {
+      background: rgba(138, 145, 158, 0.06);
+      color: var(--text-dim);
+      border-color: var(--border-muted);
+      cursor: not-allowed;
+      pointer-events: none;
+    }
     .btn svg {
       width: 16px;
       height: 16px;
     }
-    .empty {
-      text-align: center;
-      padding: 48px 24px;
-      background: var(--bg-elevated);
-      border: 1px dashed var(--border);
-      border-radius: 16px;
-      color: var(--text-muted);
-      font-size: 15px;
+    .check-icon {
+      width: 14px;
+      height: 14px;
     }
     footer {
       padding-top: 32px;
@@ -204,6 +329,25 @@
       text-transform: uppercase;
       letter-spacing: 0.06em;
     }
+    .day-divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 32px 0 16px;
+    }
+    .day-divider .label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .day-divider .line {
+      flex: 1;
+      height: 1px;
+      background: var(--border-muted);
+    }
+    .day-divider:first-child { margin-top: 0; }
     @media (max-width: 600px) {
       .container { padding: 32px 20px 64px; }
       h1 { font-size: 36px; letter-spacing: -0.8px; }
@@ -225,17 +369,35 @@
         <div class="meta-item">Hajdúszoboszló</div>
         <div class="meta-item">Negyedik konferencia</div>
       </div>
+      <div class="summary-bar">
+        <div class="summary-stat"><strong>2 / 7</strong> előadás kész</div>
+        <div class="summary-stat"><strong>1</strong> folyamatban</div>
+        <div class="summary-stat"><strong>4</strong> tervezett</div>
+      </div>
     </header>
 
     <section>
-      <h2 class="section-title">Előadások</h2>
+      <div class="day-divider">
+        <span class="label">Péntek · 04.17</span>
+        <span class="line"></span>
+      </div>
       <div class="cards">
+
         <div class="card">
+          <div class="card-num">01 · Megnyitó</div>
           <div class="card-header">
             <h3 class="card-title">Bitcoin Miskolc 2026 — Megnyitó</h3>
-            <span class="card-status">Aktuális</span>
+            <span class="card-status done">
+              <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Kész · 100%
+            </span>
           </div>
-          <p class="card-desc">Péntek 15:00 (15 perc). Kovács Ferenc megnyitó beszéde — a Bitcoin Atlantis inspirációtól a magyar Bitcoin közösségig.</p>
+          <div class="card-time"><strong>Péntek 15:00</strong> · 15 perc · 9 slide</div>
+          <p class="card-desc">Kovács Ferenc megnyitó beszéde — a Bitcoin Atlantis inspirációtól a magyar Bitcoin közösségig. Az út, a számok, a 3 nap programja.</p>
+          <div class="progress-row">
+            <div class="progress-bar"><div class="progress-fill done" style="width:100%"></div></div>
+            <span class="progress-pct">100%</span>
+          </div>
           <div class="card-actions">
             <a class="btn btn-primary" href="megnyito.html" target="_blank" rel="noopener">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -247,16 +409,33 @@
             </a>
           </div>
         </div>
-        <div class="card">
+
+        <div class="card in-progress">
+          <div class="card-num">02 · Mi a Bitcoin?</div>
           <div class="card-header">
             <h3 class="card-title">Mi a Bitcoin?</h3>
-            <span class="card-status">HTML kész</span>
+            <span class="card-status progress">⚙ Folyamatban · 65%</span>
           </div>
-          <p class="card-desc">Péntek 16:15 (30 perc). 13 slide a pénz történetétől a White Paperig: definíció, evolúció, Genesis Block, könyvelés, 3 pillér, miért értékes.</p>
+          <div class="card-time"><strong>Péntek 16:15</strong> · 30 perc · 13 slide</div>
+          <p class="card-desc">A pénz történetétől a White Paperig: definíció, evolúció vs revolúció, Genesis Block, könyvelés evolúciója, 3 pillér, miért értékes. A 9. slide-tól tartalmi mélyítés következik.</p>
+          <div class="progress-row">
+            <div class="progress-bar"><div class="progress-fill progress" style="width:65%"></div></div>
+            <span class="progress-pct">65%</span>
+          </div>
+          <div class="todo-list">
+            <div class="todo-list-title">Hátralévő feladatok</div>
+            <ul>
+              <li>Slide 9 (Digitális tulajdon) — tartalmi és vizuális mélyítés</li>
+              <li>Slide 10–13 átfutása és finomhangolás</li>
+              <li>4 db Grok-generált kép cseréje az S4 lépésekben (open / supply / audit / network)</li>
+              <li>Teljes átfutás projektoron (vizuális ellenőrzés)</li>
+              <li>S9 SVG ikonok képekre cseréje (opcionális)</li>
+            </ul>
+          </div>
           <div class="card-actions">
             <a class="btn btn-primary" href="mi-a-bitcoin.html" target="_blank" rel="noopener">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              Megnyitás
+              Megnyitás (élő draft)
             </a>
             <a class="btn btn-secondary" href="mi-a-bitcoin.html" download="Bitcoin_Miskolc_2026_Mi_a_Bitcoin.html">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -264,12 +443,22 @@
             </a>
           </div>
         </div>
+
         <div class="card">
+          <div class="card-num">03 · Számok és analógiák</div>
           <div class="card-header">
             <h3 class="card-title">Bitcoin — Számok és analógiák</h3>
-            <span class="card-status">Véglegesítve</span>
+            <span class="card-status done">
+              <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Kész · 100%
+            </span>
           </div>
-          <p class="card-desc">Péntek 17:00 (30 perc). A Bitcoin a számokon és analógiákon keresztül — érthető a kívülállóknak is.</p>
+          <div class="card-time"><strong>Péntek 17:00</strong> · 30 perc · 11 slide</div>
+          <p class="card-desc">Matematika, Bitcoin és a nagy számok. SHA-256, mining farm, hálózat ereje (~17 Paks II), settlement parity (Visa+MC), Lightning sebesség, szűkösség matematikája.</p>
+          <div class="progress-row">
+            <div class="progress-bar"><div class="progress-fill done" style="width:100%"></div></div>
+            <span class="progress-pct">100%</span>
+          </div>
           <div class="card-actions">
             <a class="btn btn-primary" href="szamok-analogiak.html" target="_blank" rel="noopener">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -281,13 +470,91 @@
             </a>
           </div>
         </div>
-      </div>
-    </section>
 
-    <section>
-      <h2 class="section-title">Hamarosan</h2>
-      <div class="empty">
-        Kritikák panel · Elfogadás workshop · Árfolyam · Magyar Bitcoin Bárka
+        <div class="card planned">
+          <div class="card-num">04 · Kritikák panel</div>
+          <div class="card-header">
+            <h3 class="card-title">Kritikák a Bitcoinnal szemben</h3>
+            <span class="card-status planned">○ Tervezett · 0%</span>
+          </div>
+          <div class="card-time"><strong>Péntek 17:45</strong> · 30 perc · panel beszélgetés</div>
+          <p class="card-desc">Energiafogyasztás, volatilitás, szabályozás, „semmire sem jó" érvek — őszinte panelvita.</p>
+          <div class="progress-row">
+            <div class="progress-bar"><div class="progress-fill planned" style="width:0%"></div></div>
+            <span class="progress-pct">0%</span>
+          </div>
+          <div class="card-actions">
+            <span class="btn btn-disabled">Hamarosan</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="day-divider">
+        <span class="label">Szombat · 04.18</span>
+        <span class="line"></span>
+      </div>
+      <div class="cards">
+
+        <div class="card planned">
+          <div class="card-num">05 · Elfogadás workshop</div>
+          <div class="card-header">
+            <h3 class="card-title">Hogyan költsük és fogadjuk el cégként</h3>
+            <span class="card-status planned">○ Tervezett · 0%</span>
+          </div>
+          <div class="card-time"><strong>Szombat 10:45</strong> · 60 perc · workshop</div>
+          <p class="card-desc">Gyakorlati workshop a Bitcoin Vision 21 one-pager alapján — jog, könyvelés, technikai beállítás (Blink / BTCPay).</p>
+          <div class="progress-row">
+            <div class="progress-bar"><div class="progress-fill planned" style="width:0%"></div></div>
+            <span class="progress-pct">0%</span>
+          </div>
+          <div class="card-actions">
+            <span class="btn btn-disabled">Hamarosan</span>
+          </div>
+        </div>
+
+        <div class="card planned">
+          <div class="card-num">06 · Árfolyam</div>
+          <div class="card-header">
+            <h3 class="card-title">Merre megy az árfolyam?</h3>
+            <span class="card-status planned">○ Tervezett · 0%</span>
+          </div>
+          <div class="card-time"><strong>Szombat 12:30</strong> · 30 perc</div>
+          <p class="card-desc">Hosszú távú perspektíva — ciklusok, halving, intézményi adopció, scarcity modellek.</p>
+          <div class="progress-row">
+            <div class="progress-bar"><div class="progress-fill planned" style="width:0%"></div></div>
+            <span class="progress-pct">0%</span>
+          </div>
+          <div class="card-actions">
+            <span class="btn btn-disabled">Hamarosan</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="day-divider">
+        <span class="label">Vasárnap · 04.19</span>
+        <span class="line"></span>
+      </div>
+      <div class="cards">
+
+        <div class="card planned">
+          <div class="card-num">07 · Magyar Bitcoin Bárka</div>
+          <div class="card-header">
+            <h3 class="card-title">A magyar Bitcoin Bárka</h3>
+            <span class="card-status planned">○ Tervezett · 0%</span>
+          </div>
+          <div class="card-time"><strong>Vasárnap 12:00</strong> · 30 perc</div>
+          <p class="card-desc">A magyar Bitcoin közösség és a hosszú távú vízió — kik vagyunk, hova tartunk, mit építünk együtt.</p>
+          <div class="progress-row">
+            <div class="progress-bar"><div class="progress-fill planned" style="width:0%"></div></div>
+            <span class="progress-pct">0%</span>
+          </div>
+          <div class="card-actions">
+            <span class="btn btn-disabled">Hamarosan</span>
+          </div>
+        </div>
+
       </div>
     </section>
 
