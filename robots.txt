@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
 
+Disallow: /bitcoin-2026-Q2/
+Disallow: /bitcoin-2026-Q1/
+Disallow: /bitcoin-2026-Q3/
+Disallow: /bitcoin-2026-Q4/
+
 Sitemap: https://ferenckovacs.com/sitemap.xml
