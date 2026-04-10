@@ -50,31 +50,115 @@ strong{color:var(--text)}
 <li>Illeszd be az alábbi promptot, és utána add hozzá a saját tartalmadat</li>
 </ol>
 
-<h2>3. A prompt ami működik</h2>
-<p>Másold be ezt a szöveget a Claude-ba, és cseréld ki a <code>[TARTALOM]</code> részt a saját slide-jaid szövegére:</p>
+<h2>3. A prompt ami működik — TELJES, KIMÁSOLHATÓ</h2>
+<p>Másold be az alábbi teljes promptot a Claude-ba. Ez tartalmazza az összes technikai szabályt, a design rendszert, és a navigációt. Utána csak a <code>[TARTALOM]</code> részt cseréld ki a saját slide-jaid szövegére.</p>
+<p><strong>Fontos:</strong> az egész szöveget egyben másold — a Claude ebből egy kész, működő HTML fájlt generál amit megnyithatsz a böngészőben.</p>
 
-<pre><code>Készíts egy offline futó HTML prezentációt az alábbi tartalomból.
+<div style="position:relative">
+<button onclick="navigator.clipboard.writeText(document.getElementById('fullprompt').innerText).then(()=>{this.innerText='✅ Kimásolva!';setTimeout(()=>this.innerText='📋 Másolás',2000)})" style="position:absolute;top:8px;right:8px;background:var(--accent);color:#000;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;z-index:1">📋 Másolás</button>
+<pre><code id="fullprompt">Készíts egy komplett, offline futó, önálló HTML prezentációt az alábbi tartalomból.
+Ez a KV Homes Workshop (2026. április 16., Hotel Atlantis, Hajdúszoboszló) egyik előadása.
 
-Szabályok:
-- 16:9 arány (width:min(100vw,177.78vh); height:min(100vh,56.25vw))
-- Billentyűzet (nyilak) + touch swipe navigáció
-- Slide counter jobb alul
-- Design: világos háttér, KV Homes kék (#003366) header sáv,
-  narancs (#F7931A) accent kiemelésekhez,
-  -apple-system sans-serif font
-- Képeket base64-be kódold bele hogy offline is működjön
-- Projektor szabály: tartalom a felső 2/3-ban
-  (az alsó 1/3 nem látszik projektoron, a vászon 70cm-re van a földtől)
-- Magyar nyelv
-- Minden slide-nak legyen egyedi CSS osztálya (.s1, .s2, stb.)
+═══════════════════════════════════════
+TECHNIKAI KÖVETELMÉNYEK
+═══════════════════════════════════════
 
-Tartalom:
-[IDE ILLESZD BE A SLIDE-OK SZÖVEGÉT]
+1. MÉRET ÉS ARÁNY
+   - 16:9 fix arány: width:min(100vw,177.78vh); height:min(100vh,56.25vw)
+   - Középre igazítva a viewport-ban (margin: auto)
+   - Overflow: hidden — semmi nem lóghat ki a slide-ból
 
-Minden slide-hoz írd le:
-- Cím
-- Tartalom (szöveg, számok, felsorolás)
-- Ha van kép: a kép leírása (Grok-kal generáljuk majd)</code></pre>
+2. NAVIGÁCIÓ
+   - Billentyűzet: → (következő), ← (előző)
+   - Touch: swipe balra/jobbra (mobil támogatás)
+   - Kattintás: jobb fél = következő, bal fél = előző
+   - Slide counter jobb alul: "3 / 12" formátumban
+   - goTo(n) JavaScript függvény slide-ugráshoz (0-indexed)
+
+3. PROJEKTOR SZABÁLY (KRITIKUS!)
+   - Minden tartalom a slide FELSŐ 2/3-ában legyen
+   - Az alsó 1/3 NEM LÁTSZIK projektoron (a vászon ~70cm-re van a földtől)
+   - padding-bottom: legalább 15% a slide-inner-en
+   - Szöveg, számok, képek, gombok — mind a felső 2/3-ban
+
+4. DESIGN RENDSZER
+   - Szín paletta:
+     • Elsődleges kék: #003366 (KV Homes brand)
+     • Accent narancs: #F7931A (kiemelések, számok, CTA)
+     • Háttér: #FAF8F3 (warm white) VAGY sötét slide-oknál #0a0e14
+     • Szöveg: #1A1A1A (dark) vagy #FFFFFF (light háttéren)
+     • Muted: #6B6B6B (másodlagos szöveg)
+   - Fontok: 
+     • Címek: 'Playfair Display', Georgia, serif (Google Fonts)
+     • Body: 'Inter', -apple-system, sans-serif (Google Fonts)
+   - Google Fonts link a &lt;head&gt;-be:
+     &lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Playfair+Display:wght@500;700&amp;display=swap" rel="stylesheet"&gt;
+
+5. SLIDE STRUKTÚRA
+   - Minden slide egy &lt;div class="slide sN"&gt; (ahol N = slide szám)
+   - Benne: &lt;div class="slide-inner"&gt; a tartalomnak
+   - Csak az aktív slide látszik (display:flex), a többi display:none
+   - CSS animáció slide váltásnál (fadeIn, 0.3s)
+
+6. KÉPEK
+   - Ha képfájlt kapsz/generálsz: base64-be kódolva beágyazva (offline működés)
+   - Ha nincs kép: placeholder div háttérszínnel és [KÉP: leírás] jelöléssel
+   - Képek max-height: 60vh (ne lógjanak ki a felső 2/3-ból)
+
+7. TIPOGRÁFIA MÉRETEZÉS (projektoron olvasható!)
+   - Slide cím: clamp(32px, 4vw, 56px)
+   - Body szöveg: clamp(18px, 2vw, 24px)
+   - Számok/statisztikák: clamp(48px, 6vw, 80px) — ezek a "wow" elemek
+   - Pill badge-ek: clamp(14px, 1.5vw, 18px)
+   - Slide counter: 14px
+
+8. RESPONSIVE
+   - Mobilon (max-width: 768px) is nézhető legyen (kisebb fontok, egymás alá kerülő elemek)
+   - Touch swipe támogatás (touchstart/touchend event)
+
+═══════════════════════════════════════
+TARTALOM — SLIDE-OK
+═══════════════════════════════════════
+
+[IDE ILLESZD BE A SLIDE-JAID TARTALMÁT]
+
+Minden slide-hoz add meg:
+- Slide szám és cím
+- Tartalom (szöveg, felsorolás, számok)
+- Ha van kép: a kép leírása vagy a fájl neve
+- Megjegyzés az elrendezéshez (pl. "bal kép, jobb szöveg" vagy "teljes szélesség")
+
+═══════════════════════════════════════
+PÉLDA EGY SLIDE LEÍRÁSÁRA:
+═══════════════════════════════════════
+
+Slide 1 — Címlap
+- Cím: "Betekintés a NORDii System technológiába"
+- Alcím: "Előregyártott vasbeton térelemek · hőhídmentes burokszigetelés · gyári precizitás"
+- Alul: "Karancsi Sándor — kivitelezési üzletág igazgató, KV Homes"
+- Háttér: sötét, KV Homes kék gradiens
+- KV Homes logó jobb felső sarokban (ha van kép, beágyazva)
+
+Slide 2 — Mi az a NORDii System?
+- 4 kártya 2x2 grid-ben:
+  1. Tér-elem: "Előregyártott, moduláris, sarok-merev vasbeton elem — gyárban öntve, helyszínen összeszerelve. C40/50 betonszilárdság."
+  2. Design Platform: "3D BIM tervezési keretrendszer ArchiCAD szoftver segítségével."
+  3. Védett szellemi tulajdon: "Használati mintaoltalom Magyarországon és Németországban. EU-s védjegyoltalom."
+  4. Modern aktív-ház: "A+++ energetikai besorolás. Carbon negatív működés."
+
+[... és így tovább minden slide-ra ...]
+
+═══════════════════════════════════════
+FONTOS SZABÁLYOK
+═══════════════════════════════════════
+
+- Az EGÉSZ prezentáció EGYETLEN .html fájl legyen — nem kell külön CSS vagy JS fájl
+- Magyar nyelv mindenhol
+- NE használj külső képeket (URL-ről) — minden base64 vagy placeholder
+- A slide counter FRISSÜLJÖN navigáláskor (ne maradjon "1/N")
+- Teszteld hogy a goTo() függvény működik a console-ból
+- Ha a tartalom nem fér el a felső 2/3-ban, CSÖKKENTSD a font méretet vagy OSZD KÉT SLIDE-RA — soha ne lógjon le az alsó harmadba</code></pre>
+</div>
 
 <h2>4. Iterálj, ne egyben csináld</h2>
 <div class="card">
