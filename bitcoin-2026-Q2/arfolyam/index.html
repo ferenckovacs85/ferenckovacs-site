@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bitcoin Miskolc 2026 — Merre megy az árfolyam?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --btc:#F7931A; --btc-glow:rgba(247,147,26,0.25); --btc-dark:#D97B0E;
+  --kv:#1E6FBA; --kv-glow:rgba(30,111,186,0.3); --kv-light:#4A9DE8;
+  --dark:#1A1A1A; --gray:#4A4A4A; --muted:#555555; --light:#F5F5F5;
+  --warm:#FFF8F0; --accent-bg:#FEF3E2;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+
+/* === ENGINE === */
+.deck{width:100vw;height:100vh;position:relative}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none}
+.slide.active{opacity:1;pointer-events:auto}
+.slide.exiting{opacity:1;pointer-events:none;animation:slideExit .66s ease-in forwards}
+@keyframes slideExit{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.01);filter:blur(4px)}}
+.slide-inner{width:100vw;height:100vh;position:relative;overflow:hidden}
+.progress-wrap{position:fixed;bottom:0;left:0;right:0;height:4px;background:rgba(0,0,0,0.05);z-index:100}
+.progress-fill{height:100%;background:var(--btc);transition:width .6s cubic-bezier(.22,1,.36,1);box-shadow:0 0 12px var(--btc-glow)}
+.slide-counter{position:fixed;bottom:12px;right:20px;font:500 15px 'Inter',sans-serif;color:rgba(0,0,0,0.22);z-index:100}
+
+/* === ANIM === */
+.anim{opacity:0}.slide.active .anim{animation-fill-mode:both}
+@keyframes cFadeUp{from{opacity:0;transform:translateY(50px);filter:blur(4px)}to{opacity:1;transform:translateY(0);filter:blur(0)}}
+@keyframes cFadeScale{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+@keyframes cSlideRight{from{opacity:0;transform:translateX(-80px);filter:blur(3px)}to{opacity:1;transform:translateX(0);filter:blur(0)}}
+@keyframes clipReveal{from{opacity:0;clip-path:inset(0 100% 0 0)}to{opacity:1;clip-path:inset(0 0 0 0)}}
+@keyframes kenBurns{from{transform:scale(1)}to{transform:scale(1.08)}}
+@keyframes glowPulse{0%,100%{text-shadow:0 0 20px var(--btc-glow)}50%{text-shadow:0 0 40px var(--btc-glow),0 0 80px rgba(247,147,26,.1)}}
+@keyframes drawLine{from{width:0}to{width:80px}}
+@keyframes cardRise{from{opacity:0;transform:translateY(40px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes numPop{0%{opacity:0;transform:scale(.5)}60%{opacity:1;transform:scale(1.08)}100%{opacity:1;transform:scale(1)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+
+.slide.active .fu{animation:cFadeUp 1.08s cubic-bezier(.22,1,.36,1) both}
+.slide.active .fs{animation:cFadeScale .96s ease both}
+.slide.active .sr{animation:cSlideRight 1.08s cubic-bezier(.22,1,.36,1) both}
+.slide.active .cr{animation:clipReveal 1.2s cubic-bezier(.22,1,.36,1) both}
+.slide.active .kb{animation:kenBurns 14.4s ease both}
+.slide.active .gp{animation:glowPulse 3.6s ease-in-out infinite}
+.slide.active .dl{animation:drawLine .96s cubic-bezier(.22,1,.36,1) both}
+.slide.active .crd{animation:cardRise .96s cubic-bezier(.22,1,.36,1) both}
+.slide.active .np{animation:numPop .84s cubic-bezier(.22,1,.36,1) both}
+
+.del1{animation-delay:.12s!important}.del2{animation-delay:.3s!important}
+.del3{animation-delay:.54s!important}.del4{animation-delay:.78s!important}
+.del5{animation-delay:1.02s!important}.del6{animation-delay:1.26s!important}
+.del7{animation-delay:1.5s!important}.del8{animation-delay:1.8s!important}
+.del9{animation-delay:2.04s!important}.del10{animation-delay:2.28s!important}
+
+h1,h2,h3.serif,.serif{font-family:'Playfair Display',Georgia,serif}
+
+/* === PLACEHOLDER: visible marker until real image is dropped in === */
+.ph{background:repeating-linear-gradient(45deg,#FFF8F0,#FFF8F0 10px,#FEF3E2 10px,#FEF3E2 20px);border:2px dashed var(--btc);display:flex;align-items:center;justify-content:center;color:var(--btc-dark);font-family:'Inter',sans-serif;font-weight:600;font-size:clamp(12px,1.1vw,15px);text-align:center;padding:2vh 2vw;line-height:1.4}
+.ph::before{content:none}
+.ph.dark{background:repeating-linear-gradient(45deg,#222,#222 10px,#2A2A2A 10px,#2A2A2A 20px);color:var(--btc);border-color:var(--btc)}
+.ph.ghost{background:transparent;border:1px dashed rgba(247,147,26,.4);color:rgba(217,123,14,.5)}
+
+/* === HAND-DRAWN BG: Grok bg images at low opacity === */
+.bg-drawn{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.08;pointer-events:none;mix-blend-mode:multiply}
+.bg-drawn.dark{opacity:.18;mix-blend-mode:screen}
+
+/* === COMMON === */
+.orange-bar{position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--btc)}
+.divider-line-80{height:3px;width:80px;background:var(--btc);border-radius:2px;margin:2vh 0}
+.tag{font-size:clamp(14px,1.3vw,18px);color:var(--btc);letter-spacing:5px;font-weight:700;text-transform:uppercase}
+.h-title{font-family:'Playfair Display',Georgia,serif;font-size:clamp(32px,4vw,58px);color:var(--dark);font-weight:500;letter-spacing:-0.02em;line-height:1.15}
+.h-title strong{color:var(--btc)}
+.h-sub{font-size:clamp(16px,1.7vw,22px);color:var(--muted);margin-top:1.5vh;line-height:1.6;font-weight:300}
+.body-text{font-size:clamp(15px,1.5vw,20px);color:var(--gray);line-height:1.7}
+.body-text strong{color:var(--btc);font-weight:700}
+.italic-quiet{font-family:'Playfair Display',Georgia,serif;font-style:italic;color:var(--muted);font-size:clamp(15px,1.5vw,20px)}
+
+/* ============================================================ */
+/* S1 — FULL-BLEED TITLE with Grok background                   */
+/* ============================================================ */
+.s1 .slide-inner{background:#1A1A1A;position:relative;overflow:hidden}
+.s1 .full-bg{position:absolute;inset:0;background:#1A1A1A;background-size:cover;background-position:center}
+.s1 .full-bg .ph{position:absolute;inset:0;color:#F7931A;background:radial-gradient(ellipse at 70% 40%,#3a2410 0%,#1A1A1A 70%);border:none}
+.s1 .full-bg .ph::before{opacity:.4}
+.s1 .vignette{position:absolute;inset:0;background:linear-gradient(105deg,rgba(0,0,0,.85) 0%,rgba(0,0,0,.65) 40%,rgba(0,0,0,.15) 70%,rgba(0,0,0,0) 100%);pointer-events:none}
+.s1 .title-block{position:absolute;top:18%;left:7%;width:56%;z-index:2}
+.s1 .s1-orange{width:6px;height:60%;background:var(--btc);position:absolute;left:-24px;top:10%}
+.s1 .tag{color:var(--btc);margin-bottom:3vh;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+.s1 h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(44px,6vw,96px);color:#fff;font-weight:700;letter-spacing:-0.03em;line-height:1.02;text-shadow:0 4px 40px rgba(0,0,0,.6)}
+.s1 h1 .acc{color:var(--btc);text-shadow:0 0 40px var(--btc-glow)}
+.s1 .sub{font-family:'Playfair Display',Georgia,serif;font-size:clamp(22px,2.6vw,38px);color:rgba(255,255,255,.8);font-weight:400;margin-top:2.5vh;font-style:italic}
+.s1 .who{font-size:clamp(14px,1.3vw,18px);color:rgba(255,255,255,.7);letter-spacing:4px;margin-top:6vh;text-transform:uppercase;font-weight:500}
+.s1 .slot{font-size:clamp(13px,1.2vw,16px);color:var(--btc);margin-top:1vh;font-style:italic;letter-spacing:1px}
+
+/* ============================================================ */
+/* S2 — WRONG QUESTION with hand-drawn BTC chart bg              */
+/* ============================================================ */
+.s2 .slide-inner{background:var(--warm);display:flex;align-items:center;justify-content:center;padding:0 8%;position:relative}
+.s2 .bg-drawn{opacity:.75;mix-blend-mode:multiply}
+.s2 .wrap{width:100%;max-width:1500px;position:relative;z-index:2}
+.s2 .q-line{font-family:'Playfair Display',Georgia,serif;font-size:clamp(32px,4vw,60px);color:var(--dark);line-height:1.35;margin-bottom:2.5vh;text-shadow:0 0 8px #F5EFE4,0 0 8px #F5EFE4,0 0 14px #F5EFE4,0 0 20px #F5EFE4}
+.s2 .q-line.bad{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--btc);text-decoration-thickness:3px}
+.s2 .q-line strong{color:var(--btc);font-weight:700}
+.s2-item{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.s2-item.s2-revealed{opacity:1;transform:translateY(0)}
+
+/* ============================================================ */
+/* S3 — FORECAST CHAOS with mashup image                          */
+/* ============================================================ */
+.s3 .slide-inner{background:#000;display:flex;flex-direction:column;align-items:center;padding:4% 5% 12% 5%;position:relative;overflow:hidden}
+.s3 .mashup{position:absolute;inset:0;background-size:cover;background-position:center;z-index:0}
+.s3 .slide-inner::before{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.15) 25%,rgba(0,0,0,0.15) 60%,rgba(0,0,0,0.85) 100%);z-index:1;pointer-events:none}
+.s3 .text-overlay{position:relative;z-index:2;text-align:center}
+.s3 h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,3.4vw,48px);color:#fff;font-weight:500;letter-spacing:-0.02em;text-align:center;text-shadow:0 2px 16px rgba(0,0,0,0.9),0 0 30px rgba(0,0,0,0.7)}
+.s3 .h-sub{color:rgba(255,255,255,0.85);text-shadow:0 2px 10px rgba(0,0,0,0.9)}
+.s3 .stats{display:flex;justify-content:center;align-items:center;gap:4vw;padding:2vh 4vw;width:auto;position:relative;z-index:2;background:rgba(0,0,0,0.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:18px;border:1px solid rgba(255,255,255,0.08)}
+.s3 .stat{text-align:center}
+.s3 .stat .num{font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,3.2vw,48px);color:var(--btc);font-weight:700;text-shadow:0 2px 12px rgba(0,0,0,0.8)}
+.s3 .stat .lbl{font-size:clamp(13px,1.2vw,16px);color:rgba(255,255,255,0.7);letter-spacing:2px;text-transform:uppercase;margin-top:.5vh}
+.s3 .stat-divider{width:1px;height:6vh;background:rgba(255,255,255,0.15)}
+.s3 .insight{position:relative;z-index:2;margin-top:2.5vh;padding:2vh 4vw;background:rgba(0,0,0,0.65);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:18px;border:1px solid rgba(247,147,26,0.3);opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.s3 .insight.s3-shown{opacity:1;transform:translateY(0)}
+.s3 .insight p{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:clamp(22px,2.4vw,36px);color:rgba(255,255,255,0.95);text-shadow:0 2px 12px rgba(0,0,0,0.8);line-height:1.4}
+.s3 .insight strong{color:var(--btc);font-weight:700}
+
+/* ============================================================ */
+/* S4 — FOUR MODELS with per-card images                          */
+/* ============================================================ */
+.s4 .slide-inner{background:var(--warm);display:flex;flex-direction:column;align-items:center;padding:3% 5% 12% 5%;position:relative}
+.s4 .slide-inner::before{content:"";position:absolute;inset:0;background:url('img/s4_bg.jpg') center/cover no-repeat;opacity:.12;pointer-events:none}
+.s4 h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,3.4vw,48px);color:var(--dark);font-weight:500;letter-spacing:-0.02em;text-align:center}
+.s4 .h-sub{text-align:center}
+.s4 .grid{display:flex;flex-direction:column;gap:1.2vh;margin-top:2.5vh;width:82%;max-width:1300px;flex:1;justify-content:center}
+
+/* --- card base (hidden) --- */
+.s4 .card{background:#fff;border-radius:12px;border:1px solid rgba(0,0,0,0.06);border-left:4px solid var(--btc);display:flex;align-items:stretch;overflow:hidden;position:relative;opacity:0;transform:translateY(20px);transition:all .5s cubic-bezier(.22,1,.36,1)}
+
+/* --- collapsed state (one-liner) --- */
+.s4 .card.s4-revealed{opacity:1;transform:translateY(0);height:11vh;min-height:64px}
+.s4 .card.s4-revealed .icon{width:14vh;flex-shrink:0;position:relative}
+.s4 .card.s4-revealed .icon .ph{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat;border:none;font-size:0;padding:0}
+.s4 .card.s4-revealed .icon::after{content:"";position:absolute;top:0;right:0;width:40%;height:100%;background:linear-gradient(to right,transparent,#fff);z-index:1}
+.s4 .card.s4-revealed .txt{padding:1vh 2vw;display:flex;align-items:center;gap:1.5vw;position:relative;z-index:2}
+.s4 .card.s4-revealed .txt h3{font-family:'Playfair Display',Georgia,serif;font-size:clamp(20px,2.2vw,32px);color:var(--dark);font-weight:700;white-space:nowrap}
+.s4 .card.s4-revealed .txt h3 .ppl{display:none}
+.s4 .card.s4-revealed .txt .summary{font-size:clamp(15px,1.5vw,22px);color:var(--muted);white-space:nowrap}
+.s4 .card.s4-revealed .txt .detail{display:none}
+
+/* --- expanded state (hero card) --- */
+.s4 .card.s4-expanded{opacity:1;transform:translateY(0);flex:1;max-height:52vh}
+.s4 .card.s4-expanded .icon{width:35%;flex-shrink:0;position:relative}
+.s4 .card.s4-expanded .icon .ph{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat;border:none;font-size:0;padding:0}
+.s4 .card.s4-expanded .icon::after{content:"";position:absolute;top:0;right:0;width:50%;height:100%;background:linear-gradient(to right,transparent,#fff);z-index:1}
+.s4 .card.s4-expanded .txt{padding:3vh 3vw 3vh 0;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:2}
+.s4 .card.s4-expanded .txt h3{font-family:'Playfair Display',Georgia,serif;font-size:clamp(26px,3vw,44px);color:var(--dark);font-weight:700;margin-bottom:.3vh}
+.s4 .card.s4-expanded .txt h3 .ppl{display:block;font-size:.5em;color:var(--btc);font-weight:500;font-style:italic;margin-top:.3vh}
+.s4 .card.s4-expanded .txt .summary{display:none}
+.s4 .card.s4-expanded .txt .detail{display:block;font-size:clamp(14px,1.4vw,19px);color:var(--gray);line-height:1.55;margin-top:1.5vh}
+.s4 .card.s4-expanded .txt .detail strong{color:var(--dark)}
+.s4 .card.s4-expanded .txt .detail .takeaway{display:inline-block;margin-top:1.5vh;padding:.6vh 1.5vw;background:var(--accent-bg);border-radius:50px;font-family:'Playfair Display',Georgia,serif;font-style:italic;color:var(--btc-dark);font-size:clamp(13px,1.3vw,18px)}
+
+/* ============================================================ */
+/* S5/S6 — MODEL SLIDES with hand-drawn background               */
+/* ============================================================ */
+.s5 .slide-inner,.s6 .slide-inner{display:flex;position:relative}
+.s5 .slide-inner{background:#fff}
+.s5 .slide-inner::before{content:"";position:absolute;inset:0;background:url('img/s5_bg.jpg') center/cover no-repeat;opacity:.1;pointer-events:none;z-index:0}
+.s6 .slide-inner{background:var(--warm)}
+.s5 .text-half{width:35%;height:100%;display:flex;flex-direction:column;justify-content:center;padding:4% 3% 15% 5%;position:relative;z-index:2}
+.s6 .text-half{width:35%;height:100%;display:flex;flex-direction:column;justify-content:center;padding:4% 3% 15% 5%;position:relative;z-index:2}
+.s5 .img-half{width:65%;height:100%;position:relative;padding:2vh;z-index:2}
+.s5 .img-half::after{display:none}
+.s6 .img-half{width:65%;height:100%;position:relative;padding:2vh;z-index:2}
+.s6 .img-half::after{display:none}
+.s5 .img-half .ph{position:absolute;inset:2vh;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,0.12)}
+.s6 .img-half .ph{position:absolute;inset:2vh;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,0.12)}
+.s5 .verdict{display:inline-block;background:rgba(0,0,0,.05);padding:1vh 2vw;border-radius:56px;font-family:'Playfair Display',Georgia,serif;font-style:italic;color:var(--btc-dark);font-size:clamp(15px,1.6vw,22px);margin-top:2vh}
+.s6 .key-phrase{font-family:'Playfair Display',Georgia,serif;color:var(--btc);font-size:clamp(20px,2.4vw,32px);font-weight:700;font-style:italic;margin-top:2.5vh;line-height:1.3}
+.s6 .video-overlay{position:absolute;inset:0;z-index:10;background:#000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .5s ease}
+.s6 .video-overlay.s6-show{opacity:1;pointer-events:auto}
+.s6 .video-overlay video{width:100%;height:100%;object-fit:contain;background:#000}
+
+/* ============================================================ */
+/* S7 — TECHDEV BUSINESS CYCLE                                   */
+/* ============================================================ */
+.s7 .slide-inner{background:#fff;display:flex;flex-direction:column;padding:2% 3% 12% 3%}
+.s7 h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(26px,3vw,42px);color:var(--dark);font-weight:500;letter-spacing:-0.02em;text-align:center}
+.s7 .attr{text-align:center;font-size:clamp(13px,1.2vw,17px);color:var(--btc);letter-spacing:3px;text-transform:uppercase;margin-top:1vh;font-weight:600}
+.s7 .chart-box{width:98%;margin:1.5vh auto 0;flex:1;min-height:50vh;border-radius:12px;position:relative;overflow:hidden}
+.s7 .chart-box .ph{position:absolute;inset:0;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,0.1)}
+.s7 .chart-box::after{display:none}
+.s7 .chart-box::before{display:none}
+.s7 .floor{text-align:center;font-family:'Playfair Display',Georgia,serif;font-size:clamp(18px,2vw,28px);color:var(--btc);font-weight:700;margin-top:1vh}
+.s7 .floor .amt{background:rgba(247,147,26,.1);padding:.3vh 1vw;border-radius:56px;border:1px solid rgba(247,147,26,.3)}
+.s7 .quote{text-align:center;font-family:'Playfair Display',Georgia,serif;font-style:italic;color:var(--muted);font-size:clamp(14px,1.4vw,20px);margin-top:1vh}
+
+/* ============================================================ */
+/* S8 — SAYLOR 21/21 (full-bleed photo)                          */
+/* ============================================================ */
+.s8 .slide-inner{background:#1A1A1A;display:flex;position:relative;overflow:hidden}
+.s8 .full-bg{position:absolute;inset:0;background:url('img/s8_saylor.jpg') center/cover no-repeat;z-index:0}
+.s8 .slide-inner::before{content:"";position:absolute;inset:0;background:linear-gradient(to right,rgba(0,0,0,0.82) 0%,rgba(0,0,0,0.55) 45%,rgba(0,0,0,0.15) 100%);z-index:1;pointer-events:none}
+.s8 .text-half{width:55%;height:100%;display:flex;flex-direction:column;justify-content:center;padding:4% 3% 15% 6%;position:relative;z-index:2}
+.s8 .tag{color:var(--btc)}
+.s8 .h-title{font-family:'Playfair Display',Georgia,serif;font-size:clamp(30px,3.6vw,52px);color:#fff;font-weight:500}
+.s8 .h-title strong{color:var(--btc);font-weight:700}
+.s8 .body-text{color:rgba(255,255,255,0.85);text-shadow:0 2px 8px rgba(0,0,0,0.6)}
+.s8 .divider-line-80{background:var(--btc)}
+.s8 .big-num{font-family:'Playfair Display',Georgia,serif;font-size:clamp(52px,7vw,100px);color:var(--btc);font-weight:900;line-height:1;margin:2vh 0;text-shadow:0 4px 24px rgba(247,147,26,0.3)}
+.s8 .big-num .unit{font-size:.35em;color:rgba(255,255,255,0.6);font-weight:500;font-style:italic;margin-left:.5vw}
+.s8 .pv-row{display:flex;gap:1.5vw;margin-top:2vh;flex-wrap:wrap}
+.s8 .pv-chip{background:rgba(255,255,255,0.08);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:1vh 1.5vw;border-radius:12px;border:1px solid rgba(247,147,26,.25);border-left:4px solid var(--btc)}
+.s8 .pv-chip .infl{font-size:clamp(11px,1vw,14px);color:rgba(255,255,255,0.6);letter-spacing:2px;text-transform:uppercase}
+.s8 .pv-chip .val{font-family:'Playfair Display',Georgia,serif;font-size:clamp(20px,2.2vw,32px);color:#fff;font-weight:700;margin-top:.2vh}
+.s8 .pv-chip.hl{background:rgba(247,147,26,0.15);border-color:var(--btc)}
+.s8 .pv-chip.hl .val{color:var(--btc)}
+.s8 .cagr{font-family:'Playfair Display',Georgia,serif;font-style:italic;color:rgba(255,255,255,0.7);font-size:clamp(14px,1.4vw,19px);margin-top:2vh}
+.s8 .chart-overlay{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:65%;max-height:80vh;z-index:4;border-radius:14px;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,0.5);border:1px solid rgba(247,147,26,0.2);opacity:0;pointer-events:none;transition:opacity .5s ease}
+.s8 .chart-overlay.s8-show{opacity:1;pointer-events:auto}
+.s8 .chart-overlay img{width:100%;height:auto;display:block}
+.s8 .s8-text{transition:opacity .4s ease}
+.s8 .s8-text.s8-hidden{opacity:0;pointer-events:none}
+
+/* ============================================================ */
+/* S9 — IRAN HORMUZ                                              */
+/* ============================================================ */
+.s12 .slide-inner{background:#fff;display:flex;flex-direction:column;padding:3% 5% 15% 5%;position:relative;overflow:hidden}
+.s12 .bg-drawn{opacity:.15}
+.s12 .top-row{position:relative;z-index:2}
+.s12 .tag{color:var(--btc);font-size:clamp(16px,1.5vw,22px)}
+.s12 .body-text{font-size:clamp(18px,1.9vw,26px)}
+.s12 h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(30px,3.8vw,56px);color:var(--dark);font-weight:500;letter-spacing:-0.02em;margin-top:1vh;line-height:1.15}
+.s12 h2 em{color:var(--btc);font-style:italic}
+.s12 .body-row{display:flex;flex-direction:row-reverse;gap:3vw;margin-top:2.5vh;flex:1;position:relative;z-index:2}
+.s12 .left{flex:1.3;display:flex;flex-direction:column}
+.s12 .right{flex:1;position:relative}
+.s12 .right .ph{position:absolute;inset:0;border-radius:12px}
+.s12 .calc-row{display:flex;gap:1vw;margin-top:1.5vh;flex-wrap:wrap}
+.s12 .calc-chip{background:var(--accent-bg);padding:.8vh 1.3vw;border-radius:12px;border:1px solid rgba(247,147,26,.3)}
+.s12 .calc-chip .n{font-family:'Playfair Display',Georgia,serif;font-size:clamp(24px,2.8vw,38px);color:var(--btc);font-weight:700;display:block}
+.s12 .calc-chip .l{font-size:clamp(13px,1.2vw,17px);color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}
+.s12 .multiplier{font-family:'Playfair Display',Georgia,serif;font-size:clamp(36px,4.5vw,68px);color:var(--btc);font-weight:900;margin-top:1.5vh;line-height:1.05}
+.s12 .multiplier span{font-size:.38em;color:var(--dark);font-weight:500;font-style:italic;display:block;margin-top:.3vh}
+.s12 .saylor-quote{background:var(--dark);color:#fff;padding:1.8vh 2.2vw;border-radius:12px;margin-top:1.8vh;font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:clamp(18px,2vw,28px);line-height:1.35;border-left:5px solid var(--btc)}
+.s12 .saylor-quote .who{display:block;font-size:.6em;color:var(--btc);font-style:normal;letter-spacing:2px;margin-top:.8vh;text-transform:uppercase}
+
+/* ============================================================ */
+/* S10 — WHY MODELS BREAK (sequential reveal + per-item images) */
+/* ============================================================ */
+.s13 .slide-inner{background:var(--warm);display:flex;flex-direction:column;align-items:center;padding:3% 5% 15% 5%;position:relative;overflow:hidden}
+.s13 .bg-drawn{opacity:.06}
+.s13 h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(22px,2.8vw,40px);color:var(--dark);font-weight:500;letter-spacing:-0.02em;text-align:center;max-width:1400px;line-height:1.3;position:relative;z-index:2}
+.s13 h2 strong{color:var(--btc)}
+.s13 .stage{position:relative;flex:1;width:100%;margin-top:2.5vh;display:flex;align-items:center;justify-content:center;z-index:2}
+.s13 .s13-slot{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transform:scale(.95);transition:opacity .7s ease,transform .7s ease}
+.s13 .s13-slot.s13-show{opacity:1;transform:scale(1)}
+.s13 .s13-slot .img-wrap{width:51vh;height:51vh;max-width:55%;border-radius:16px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.12)}
+.s13 .s13-slot .img-wrap .ph{width:100%;height:100%;font-size:12px}
+.s13 .s13-slot .label{font-family:'Playfair Display',Georgia,serif;font-size:clamp(32px,4.2vw,66px);color:var(--dark);font-weight:700;margin-top:2vh;letter-spacing:-.01em}
+.s13 .s13-slot .tiny{font-size:clamp(13px,1.3vw,18px);color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:.5vh}
+.s13 .s13-slot.bitcoin .label{color:var(--btc);text-shadow:0 2px 24px var(--btc-glow);font-size:clamp(38px,5vw,82px)}
+.s13 .s13-slot.bitcoin .img-wrap{width:42vh;height:42vh}
+.s13 .s13-slot.bitcoin .punchline{font-family:'Playfair Display',Georgia,serif;font-style:italic;color:var(--muted);font-size:clamp(14px,1.5vw,22px);margin-top:1.5vh;text-align:center;max-width:800px;line-height:1.5}
+
+/* ============================================================ */
+/* S11 — COPPER/GOLD DIVERGENCE                                  */
+/* ============================================================ */
+.s9 .slide-inner{background:var(--warm);display:flex;flex-direction:column;padding:3% 4% 14% 4%;position:relative}
+.s9 .tag-c{text-align:center}
+.s9 h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(26px,3vw,42px);color:var(--dark);font-weight:500;letter-spacing:-0.02em;text-align:center;margin-top:.5vh;line-height:1.2}
+.s9 h2 strong{color:var(--btc)}
+.s9 .chart-full{flex:1;position:relative;margin-top:2vh;border-radius:12px;overflow:hidden}
+.s9 .chart-full .ph{position:absolute;inset:0}
+.s9 .caption{text-align:center;font-family:'Playfair Display',Georgia,serif;font-style:italic;color:var(--muted);font-size:clamp(14px,1.5vw,20px);margin-top:1.5vh}
+
+/* ============================================================ */
+/* S12 — MY SCENARIO (full TechDev chart)                        */
+/* ============================================================ */
+.s10 .slide-inner{background:#fff;display:flex;flex-direction:column;padding:2vh 3% 14% 3%;position:relative}
+.s10 .hdr{display:flex;align-items:baseline;gap:2vw;padding:0 2vw 1.5vh}
+.s10 .my-take{font-family:'Playfair Display',Georgia,serif;font-size:clamp(22px,2.6vw,36px);color:var(--dark);font-weight:500;font-style:italic}
+.s10 .my-take strong{color:var(--btc);font-weight:900;font-style:normal}
+.s10 .chart-full{flex:1;position:relative;border-radius:12px;overflow:hidden}
+.s10 .chart-full .ph{position:absolute;inset:0}
+.s10 .s10-text{display:flex;gap:2vw;justify-content:center;padding:1vh 2vw;position:relative;z-index:2;transition:opacity .4s ease}
+.s10 .s10-text.s10-hidden{opacity:0;pointer-events:none}
+.s10 .lbl{background:rgba(26,26,26,.85);color:#fff;padding:.8vh 1.4vw;border-radius:8px;font-size:clamp(13px,1.3vw,18px);font-weight:600;backdrop-filter:blur(4px);border-left:3px solid var(--btc)}
+.s10 .chart-overlay{position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);width:80%;height:70%;z-index:3;border-radius:14px;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,0.15);border:1px solid rgba(247,147,26,0.15);opacity:0;transition:opacity .5s ease}
+.s10 .chart-overlay.s10-show{opacity:1}
+
+/* ============================================================ */
+/* S13 — BIG PRINT (dark) with portraits + liquidity reveal     */
+/* ============================================================ */
+.s11 .slide-inner{background:#0E0E0E;color:#fff;display:flex;flex-direction:column;padding:3% 5% 14% 5%;position:relative;overflow:hidden}
+.s11 .bg-drawn{opacity:.2;mix-blend-mode:screen}
+.s11 .hdr{position:relative;z-index:2;text-align:center}
+.s11 .tag{color:var(--btc)}
+.s11 h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(30px,4vw,64px);color:#fff;font-weight:700;letter-spacing:-0.02em;margin-top:.5vh}
+.s11 h2 strong{color:var(--btc)}
+.s11 .sub{font-size:clamp(14px,1.5vw,20px);color:rgba(255,255,255,.65);margin-top:1.5vh;max-width:1100px;margin-left:auto;margin-right:auto;line-height:1.55;font-weight:300}
+.s11 .voices{display:flex;gap:2vw;margin-top:2vh;flex:1;position:relative;z-index:2;transition:opacity .6s ease}
+.s11.s11-stage2 .voices{opacity:0;pointer-events:none}
+.s11 .voice{flex:1;display:flex;align-items:center;gap:2vw;background:rgba(255,255,255,.04);padding:1.5vh 2vw;border-radius:12px;border-left:4px solid var(--btc);position:relative;backdrop-filter:blur(2px)}
+.s11 .voice .face{flex-shrink:0;width:32vh;height:32vh;border-radius:50%;overflow:hidden;border:2px solid var(--btc);box-shadow:0 0 16px var(--btc-glow)}
+.s11 .voice .face .ph{width:100%;height:100%;font-size:9px;padding:.5vh;background:#1A1A1A;color:var(--btc);border:none}
+.s11 .voice .vtext{flex:1;min-width:0}
+.s11 .voice .name{font-family:'Playfair Display',Georgia,serif;color:var(--btc);font-size:clamp(20px,2.4vw,32px);font-weight:700}
+.s11 .voice .role{font-size:clamp(12px,1.1vw,15px);color:rgba(255,255,255,.5);letter-spacing:2px;text-transform:uppercase;margin-top:.5vh}
+.s11 .voice .msg{font-size:clamp(15px,1.6vw,22px);color:rgba(255,255,255,.9);margin-top:1.5vh;line-height:1.5;font-style:italic;font-family:'Playfair Display',Georgia,serif}
+.s11 .liquidity{position:absolute;left:50%;top:55%;transform:translate(-50%,-50%) scale(.95);width:70%;height:65%;opacity:0;transition:opacity .8s ease,transform .8s ease;pointer-events:none;z-index:3}
+.s11.s11-stage2 .liquidity{opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:auto}
+.s11 .liquidity .ph{width:100%;height:100%;border-radius:12px}
+
+/* ============================================================ */
+/* S14 — KV TREASURY (Saylor-style BTC chart w/ blue dots)      */
+/* ============================================================ */
+.s15 .slide-inner{background:#fff;display:flex;flex-direction:column;padding:2vh 3% 14% 3%;position:relative}
+.s15 .hdr{display:flex;align-items:baseline;justify-content:space-between;padding:0 1vw .5vh;gap:2vw;flex-wrap:wrap}
+.s15 .hdr h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(22px,2.6vw,36px);color:var(--dark);font-weight:500;letter-spacing:-.02em}
+.s15 .hdr h2 strong{color:var(--kv)}
+.s15 .hdr .period{font-size:clamp(12px,1.2vw,16px);color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+.s15 .stats-strip{display:flex;gap:1vw;padding:0 1vw 1vh;flex-wrap:wrap}
+.s15 .kpi{background:var(--light);padding:1vh 1.2vw;border-radius:10px;border-left:3px solid var(--kv);flex:1;min-width:14vw}
+.s15 .kpi .l{font-size:clamp(10px,.95vw,13px);color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}
+.s15 .kpi .v{font-family:'Playfair Display',Georgia,serif;font-size:clamp(18px,2vw,28px);color:var(--dark);font-weight:700;margin-top:.2vh;line-height:1}
+.s15 .kpi .v.pos{color:#1a8f3a}.s15 .kpi .v.neg{color:#c73030}
+.s15 .kpi.brand{border-left-color:var(--btc)}.s15 .kpi.brand .v{color:var(--btc)}
+.s15 .chart-wrap{flex:1;position:relative;padding:1vh 1vw 0}
+.s15 svg.treasury-chart{width:100%;height:100%;display:block}
+.s15 .chart-legend{display:flex;gap:1.5vw;justify-content:center;margin-top:.5vh;font-size:clamp(11px,1.1vw,14px);color:var(--muted);flex-wrap:wrap}
+.s15 .chart-legend .li{display:flex;align-items:center;gap:.4vw}
+.s15 .chart-legend .dot-kv{width:10px;height:10px;border-radius:50%;background:var(--kv);box-shadow:0 0 6px var(--kv-glow)}
+.s15 .chart-legend .line-btc{width:20px;height:2px;background:var(--btc)}
+.s15 .chart-legend .dot-accept{width:10px;height:10px;border-radius:50%;background:var(--btc);box-shadow:0 0 6px var(--btc-glow)}
+
+/* ============================================================ */
+/* S15 — DCA approaches (exchange UI background)                */
+/* ============================================================ */
+.s14 .slide-inner{background:var(--warm);display:flex;flex-direction:column;align-items:center;padding:3% 5% 14% 5%;position:relative;overflow:hidden}
+.s14 .bg-drawn{opacity:.08}
+.s14 .question{font-family:'Playfair Display',Georgia,serif;font-size:clamp(30px,3.8vw,56px);color:var(--muted);font-style:italic;text-align:center;position:relative;z-index:2}
+.s14 .arrow{font-family:'Playfair Display',Georgia,serif;font-size:clamp(32px,3.8vw,56px);color:var(--btc);margin:.5vh 0;font-weight:700;position:relative;z-index:2}
+.s14 .dca-word{font-family:'Playfair Display',Georgia,serif;font-size:clamp(44px,5.5vw,90px);color:var(--btc);font-weight:900;letter-spacing:-.02em;margin-bottom:.3vh;position:relative;z-index:2}
+.s14 .dca-expand{font-size:clamp(15px,1.6vw,22px);color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-bottom:2.5vh;position:relative;z-index:2}
+.s14 .approaches{display:flex;gap:2.5vw;max-width:1400px;width:92%;position:relative;z-index:2}
+.s14 .approach{flex:1;background:#fff;padding:3vh 2.5vw;border-radius:12px;border:1px solid rgba(0,0,0,.06);border-top:4px solid var(--btc)}
+.s14 .approach .badge{font-size:clamp(13px,1.2vw,17px);color:var(--btc);letter-spacing:3px;text-transform:uppercase;font-weight:700;margin-bottom:.8vh}
+.s14 .approach h3{font-family:'Playfair Display',Georgia,serif;font-size:clamp(22px,2.5vw,36px);color:var(--dark);font-weight:700;margin-bottom:1vh;line-height:1.2}
+.s14 .approach p{font-size:clamp(15px,1.6vw,22px);color:var(--gray);line-height:1.55}
+.s14 .approach p em{color:var(--btc-dark);font-style:italic}
+.s14 .reserve{margin-top:2vh;font-family:'Playfair Display',Georgia,serif;font-style:italic;color:var(--muted);font-size:clamp(16px,1.8vw,24px);text-align:center;max-width:1100px;position:relative;z-index:2;line-height:1.5}
+.s14 .reserve strong{color:var(--btc);font-style:normal;font-weight:700}
+
+/* ============================================================ */
+/* S16 — CALCULATOR (blurred bg + sharp photo)                  */
+/* ============================================================ */
+.s16 .slide-inner{background:#1A1A1A;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.s16 .full-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:blur(3px) brightness(.4);transform:scale(1.03)}
+.s16 .content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;gap:2vh;padding:4% 8% 14%}
+.s16 .tag{color:var(--btc);margin-bottom:1vh}
+.s16 h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(34px,4vw,62px);color:#fff;font-weight:500;letter-spacing:-.02em;line-height:1.15}
+.s16 h2 strong{color:var(--btc)}
+.s16 .body-text{color:rgba(255,255,255,.85);font-size:clamp(16px,1.7vw,24px)}
+.s16 .body-text strong{color:var(--btc)}
+.s16 .qr-wrap{display:flex;align-items:center;gap:3vw;margin-top:2vh}
+.s16 .qr-box{width:18vh;height:18vh;background:#fff;border-radius:12px;padding:1vh;box-shadow:0 8px 40px rgba(247,147,26,.3)}
+.s16 .qr-box canvas,.s16 .qr-box img{width:100%;height:100%;border-radius:8px}
+.s16 .url{font-family:'Inter',sans-serif;font-size:clamp(18px,2vw,30px);color:#fff;background:var(--btc);font-weight:600;padding:1.5vh 2.5vw;border-radius:56px;display:inline-block;box-shadow:0 4px 24px var(--btc-glow)}
+
+/* ============================================================ */
+/* S17 — CLOSING (dawn background)                              */
+/* ============================================================ */
+.s17 .slide-inner{background:#1A1A1A;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:4% 5% 14% 8%;position:relative;overflow:hidden}
+.s17 .full-bg{position:absolute;inset:0;background-size:cover;background-position:center}
+.s17 .full-bg .ph{display:none}
+.s17 .vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 20%,rgba(0,0,0,.5) 80%);pointer-events:none}
+.s17 .accent-line{position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--btc),var(--btc-dark),var(--btc));background-size:200% 100%;animation:shimmer 3s ease infinite;z-index:3}
+.s17 .closing-quote{font-family:'Playfair Display',Georgia,serif;font-size:clamp(36px,5vw,88px);color:#fff;font-weight:900;font-style:italic;text-align:left;line-height:1.05;letter-spacing:-.02em;max-width:1500px;text-shadow:0 4px 40px rgba(0,0,0,.8),0 0 80px var(--btc-glow);position:relative;z-index:2}
+.s17 .closing-quote .acc{color:var(--btc)}
+.s17 .attribution{font-family:'Playfair Display',Georgia,serif;font-size:clamp(16px,1.6vw,22px);color:rgba(255,255,255,.7);letter-spacing:3px;text-transform:uppercase;margin-top:3vh;font-weight:500;position:relative;z-index:2}
+.s17 .contact{margin-top:4vh;text-align:left;position:relative;z-index:2}
+.s17 .contact .name{font-family:'Playfair Display',Georgia,serif;font-size:clamp(20px,2.2vw,30px);color:#fff;font-weight:700;text-shadow:0 2px 16px rgba(0,0,0,.6)}
+.s17 .contact .site{font-size:clamp(14px,1.4vw,18px);color:var(--btc);margin-top:.5vh}
+
+.key-hint{position:fixed;bottom:10px;left:20px;font-size:11px;color:rgba(0,0,0,.12);z-index:100;transition:opacity 3s ease}
+.s1 ~ .key-hint,.s11 ~ .key-hint,.s17 ~ .key-hint{color:rgba(255,255,255,.18)}
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <!-- ========== S1: TITLE — full-bleed Grok background ========== -->
+  <div class="slide s1 active">
+    <div class="slide-inner">
+      <div class="full-bg" style="background-image:url('img/s1-bg.png')"></div>
+      <div class="vignette"></div>
+      <div class="title-block">
+        <div class="s1-orange"></div>
+        <div class="tag anim fu del1">Bitcoin Miskolc 2026</div>
+        <h1 class="anim fu del2">Merre megy<br>az <span class="acc">árfolyam?</span></h1>
+        <div class="sub anim fu del3">Modellek, valóság és egy véges eszköz</div>
+        <div class="who anim fu del5">Kovács Ferenc</div>
+        <div class="slot anim fu del6">Szombat · 12:30 · 30 perc</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== S2: WRONG QUESTION with hand-drawn chart bg ========== -->
+  <div class="slide s2" data-clicks="2">
+    <div class="slide-inner">
+      <div class="bg-drawn" style="background-image:url('img/s2_bg.png')"></div>
+      <div class="wrap">
+        <div class="q-line bad s2-item anim fu del1">„Mikor lesz a csúcs?"</div>
+        <div class="q-line s2-item">„Meddig <strong>esik még</strong> az árfolyam?"</div>
+        <div class="q-line s2-item"><strong>A jó kérdés:</strong> mennyire <em>véges</em>?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== S3: FORECAST CHAOS ========== -->
+  <div class="slide s3" data-clicks="1">
+    <div class="slide-inner">
+      <div class="text-overlay">
+        <h2 class="anim fu del1">Mindenki másként látja — és mind komoly elemző</h2>
+        <div class="h-sub anim fu del2" style="text-align:center;max-width:900px;margin:1.5vh auto 0">2026-os BTC csúcs-célárak · X (Twitter) összesítés · @Giovann35084111</div>
+      </div>
+      <div class="stats anim fu del4">
+        <div class="stat"><div class="num">$374k</div><div class="lbl">Átlag</div></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><div class="num">$250k</div><div class="lbl">Medián</div></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><div class="num">±$274k</div><div class="lbl">Szórás</div></div>
+      </div>
+      <div class="insight s3-insight"><p>A szórás <strong>nagyobb</strong>, mint a medián — az „elemzők" lényegében nem tudják, mi fog történni</p></div>
+      <div class="mashup anim fs del3" style="background-image:url('img/s3_mashup.png')"></div>
+    </div>
+  </div>
+
+  <!-- ========== S4: FOUR MODELS — click-by-click ========== -->
+  <div class="slide s4" data-clicks="5">
+    <div class="slide-inner">
+      <h2 class="anim fu del1">Négy modell — négy gondolkodásmód</h2>
+      <div class="h-sub anim fu del2">Mindegyik más eszközökkel próbálja megfogni ugyanazt a görbét</div>
+      <div class="grid">
+        <div class="card s4-item">
+          <div class="icon"><div class="ph" style="background-image:url('img/s4_s2f.jpg')"></div></div>
+          <div class="txt">
+            <h3>Stock-to-Flow<span class="ppl">PlanB</span></h3>
+            <div class="summary">Szűkösség a készlet/kibocsátás arányból — 2024 után elszakadt</div>
+            <div class="detail">A modell egyetlen számba sűríti a szűkösséget: <strong>készlet / éves kibocsátás</strong>. Az arany S2F ~62, a Bitcoin a 2024-es halving után ~120. 2020 előtt szinte tökéletesen illeszkedett, de a kínálati oldal önmagában nem elég: a modell <strong>figyelmen kívül hagyja a keresletet</strong>. 2022-től az ár tartósan a görbe alá esett.<div class="takeaway">Történeti illesztés — nem prediktív modell</div></div>
+          </div>
+        </div>
+        <div class="card s4-item">
+          <div class="icon"><div class="ph" style="background-image:url('img/s4_powerlaw.jpg')"></div></div>
+          <div class="txt">
+            <h3>Power Law<span class="ppl">apsk32 · G. Santostasi</span></h3>
+            <div class="summary">Log-log folyosó — természeti sodródás, nem jóslat</div>
+            <div class="detail">A Bitcoin árfolyama log-log skálán egy <strong>egyenes folyosóban</strong> halad — mint egy város növekedése vagy a galaxisok eloszlása. Nem ciklikus, hanem <strong>természeti sodródás</strong>. Nem ad pontos árat, de megmutatja a „tehetetlenségi kút" alját és tetejét. 2026-ban a folyosó közepe <strong>~$120k</strong>, alja ~$50k, teteje ~$500k.<div class="takeaway">Nem jóslat, hanem gravitációs pálya</div></div>
+          </div>
+        </div>
+        <div class="card s4-item">
+          <div class="icon"><div class="ph" style="background-image:url('img/s4_cycle.jpg')"></div></div>
+          <div class="txt">
+            <h3>Business Cycle<span class="ppl">TechDev · Lyn Alden</span></h3>
+            <div class="summary">A makro üzleti ciklus a hajtóerő — nem a halving</div>
+            <div class="detail">Nem a halving hajtja a ciklust, hanem a <strong>globális üzleti ciklus</strong>. A Copper/Gold arány előrejelzi a BTC-t: ha a réz drágul az aranyhoz képest, a gazdaság bővül és a BTC emelkedik. A <strong>globális M2 likviditás</strong> ~3 hónapos késéssel korrelál a Bitcoin árral. 2026: a likviditási csap nyit.<div class="takeaway">A pénzcsap nyitása mozgatja az árat</div></div>
+          </div>
+        </div>
+        <div class="card s4-item">
+          <div class="icon"><div class="ph" style="background-image:url('img/s4_network.jpg')"></div></div>
+          <div class="txt">
+            <h3>Network · Adopció<span class="ppl">Willy Woo · Metcalfe</span></h3>
+            <div class="summary">A hálózat értéke a felhasználók számának négyzete</div>
+            <div class="detail"><strong>Metcalfe törvénye:</strong> a hálózat értéke a felhasználók számának négyzetével arányos. 2025: ~300M Bitcoin-tulajdonos, de az aktív on-chain címek csak ~1M/nap. A valós használat — Lightning, self-custody — a hosszú távú driver. A hálózati hatás <strong>visszafordíthatatlan</strong>: minden új felhasználó mindenki más számára értékesebbé teszi a rendszert.<div class="takeaway">Minden új felhasználó mindenkit gazdagabbá tesz</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== S5: S2F — dead king ========== -->
+  <div class="slide s5">
+    <div class="slide-inner">
+      <div class="text-half">
+        <div class="orange-bar"></div>
+        <div class="tag anim fu del1">1. Stock-to-Flow</div>
+        <h2 class="h-title anim fu del2" style="margin-top:2vh">A <strong>halott király</strong></h2>
+        <div class="divider-line-80 anim dl del3"></div>
+        <div class="body-text anim fu del4" style="margin-top:1vh">
+          <strong>PlanB</strong> modellje egyetlen számba sűrítette a szűkösséget: készlet / éves kibocsátás. 2020 előtt mintha működött volna.
+        </div>
+        <div class="body-text anim fu del5" style="margin-top:2vh">
+          2022-től az ár tartósan <strong>a modell alá</strong> esett. 2024 után a görbe teljesen elszakadt.
+        </div>
+        <div class="verdict anim fu del6">Történeti illesztés, nem prediktív modell</div>
+      </div>
+      <div class="img-half">
+        <div class="ph anim fs del4" style="background:url('img/s5-bg.png') center/contain no-repeat #fff;border:none"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== S6: POWER LAW — drift corridor ========== -->
+  <div class="slide s6" data-clicks="1">
+    <div class="slide-inner">
+      <div class="bg-drawn" style="background-image:url('img/s6_bg.jpg')"></div>
+      <div class="video-overlay"><video src="img/btcpowerlaw_apsk32.mp4" preload="none"></video></div>
+      <div class="text-half">
+        <div class="orange-bar"></div>
+        <div class="tag anim fu del1">2. Power Law</div>
+        <h2 class="h-title anim fu del2" style="margin-top:2vh">Sodrási <strong>folyosó</strong></h2>
+        <div class="divider-line-80 anim dl del3"></div>
+        <div class="body-text anim fu del4" style="margin-top:1vh">
+          <strong>apsk32</strong> és <strong>Giovanni Santostasi</strong> nem jóslatot készítettek — egy <em>természeti törvényt</em> ismertek fel log-log skálán.
+        </div>
+        <div class="body-text anim fu del5" style="margin-top:2vh">
+          A városok népessége, a földrengések, a nyelvek — mind power-law. A Bitcoin árfolyama ebbe a családba tartozik.
+        </div>
+        <div class="key-phrase anim fu del6">„Tehetetlenségi kút, ami felé sodródik."</div>
+      </div>
+      <div class="img-half">
+        <div class="ph anim fs del4" style="background:url('img/s6-bg.png') center/contain no-repeat var(--warm);border:none"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== S7: TECHDEV BUSINESS CYCLE ========== -->
+  <div class="slide s7">
+    <div class="slide-inner">
+      <div class="bg-drawn" style="background-image:url('img/s7_bg.jpg')"></div>
+      <div class="tag anim fu del1" style="text-align:center">3. Business Cycle</div>
+      <h2 class="anim fu del2">A halving már nem számít — az üzleti ciklus viszont igen</h2>
+      <div class="attr anim fu del3">@TechDev_52 · Newsletter #91, 2026-03-29</div>
+      <div class="chart-box">
+        <div class="ph anim fs del4" style="background:url('img/s7-techdev.png') center/contain no-repeat #fff;border:none"></div>
+      </div>
+      <div class="quote anim fu del5">„Never been a 4-year cycle. Never been the halving. <em>Always been the business cycle.</em>"</div>
+    </div>
+  </div>
+
+  <!-- ========== S8: SAYLOR 21/21 ========== -->
+  <div class="slide s8" data-clicks="2">
+    <div class="slide-inner">
+      <div class="full-bg"></div>
+      <div class="chart-overlay s8-chart" data-idx="0"><img src="img/s8_chart1.jpg" alt="BTC volatilitás trend"></div>
+      <div class="chart-overlay s8-chart" data-idx="1"><img src="img/s8_chart2.jpg" alt="Bitcoin path to $21M"></div>
+      <div class="text-half s8-text">
+        <div class="tag anim fu del1">Saylor 21/21 modell</div>
+        <div class="h-title anim fu del2" style="margin-top:1.5vh">És ha <strong>igaza van?</strong></div>
+        <div class="divider-line-80 anim dl del3"></div>
+        <div class="body-text anim fu del4" style="margin-top:1vh">
+          Saylor 2046-ra <strong>$21M / BTC</strong> célárral számol. Abszurdnak hangzik — nézzük meg, mit jelent <em>jelen értéken</em>.
+        </div>
+        <div class="big-num anim np del5">$21M<span class="unit">/ BTC · 2046</span></div>
+        <div class="pv-row">
+          <div class="pv-chip anim crd del6"><div class="infl">PV @ 5% infl.</div><div class="val">$7,91M</div></div>
+          <div class="pv-chip hl anim crd del7"><div class="infl">PV @ 7% infl.</div><div class="val">$5,43M</div></div>
+          <div class="pv-chip anim crd del8"><div class="infl">PV @ 10% infl.</div><div class="val">$3,12M</div></div>
+        </div>
+        <div class="cagr anim fu del9">Implikált CAGR $72k-ról: <strong style="color:var(--btc)">32,8% / év</strong> 20 éven át</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== S11: COPPER/GOLD DIVERGENCE (complement) ========== -->
+  <div class="slide s9">
+    <div class="slide-inner">
+      <div class="bg-drawn" style="background-image:url('img/s11_bg.jpg')"></div>
+      <div class="tag tag-c anim fu del1" style="text-align:center">Miért hiszem ezt?</div>
+      <h2 class="anim fu del2">Copper / Gold · 2W RSI · <strong>4 éves bullish divergencia</strong></h2>
+      <div class="chart-full">
+        <div class="ph anim fs del3" style="background:url('img/s11_coppergold.jpg') center/contain no-repeat var(--warm);border:none"></div>
+      </div>
+      <div class="caption anim fu del4">A leghosszabb divergencia <strong style="color:var(--btc)">2001–2003 óta</strong> — akkor Great Recession aljáról indultunk.</div>
+    </div>
+  </div>
+
+  <!-- ========== S12: MY SCENARIO — 3 charts click-through ========== -->
+  <div class="slide s10" data-clicks="4">
+    <div class="slide-inner">
+      <div class="bg-drawn" style="background-image:url('img/s12_bg.jpg')"></div>
+      <div class="hdr">
+        <div class="my-take anim fu del1">Én ezt tartom a <strong>legvalószínűbb</strong> szcenáriónak.</div>
+      </div>
+      <div class="s10-text anim fu del2">
+        <div class="lbl l1">Final leg down</div>
+        <div class="lbl l2">$51–57K floor</div>
+        <div class="lbl l3">Next macro leg up</div>
+      </div>
+      <div class="chart-overlay s10-chart" style="background:url('img/s12_chart1.jpg') center/contain no-repeat #fff"></div>
+      <div class="chart-overlay s10-chart" style="background:url('img/s12_chart2.jpg') center/contain no-repeat #fff"></div>
+      <div class="chart-overlay s10-chart" style="background:url('img/s12_techdev_full.jpg') center/contain no-repeat #fff"></div>
+      <div class="chart-overlay s10-chart" style="background:url('img/s12_chart3.jpg') center/contain no-repeat #fff"></div>
+    </div>
+  </div>
+
+  <!-- ========== S13: BIG PRINT (dark + liquidity reveal) ========== -->
+  <div class="slide s11" data-clicks="1">
+    <div class="slide-inner">
+      <div class="bg-drawn dark" style="background-image:url('img/s13_bg.jpg')"></div>
+      <div class="hdr">
+        <div class="tag anim fu del1">A makró háttér</div>
+        <h2 class="anim fu del2">The <strong>Big Print</strong> is coming</h2>
+        <div class="sub anim fu del3">A globális adósság-torony fenntarthatatlan. Kétféle kimenet: defláció + default, vagy <em>inflációs monetizálás</em>. A történelem mindig az utóbbit választotta.</div>
+      </div>
+      <div class="voices">
+        <div class="voice anim crd del4">
+          <div class="face"><div class="ph" style="background:url('img/s13_lyn.jpg') center center/185% no-repeat #1A1A1A;border:none"></div></div>
+          <div class="vtext">
+            <div class="name">Lyn Alden</div>
+            <div class="role">Makró stratéga · Lyn Alden Investment Strategy</div>
+            <div class="msg">„Semmi nem állíthatja meg ezt a vonatot. A fiskális dominancia korszakában a QE már nem eszköz — <em>kényszer</em>."</div>
+          </div>
+        </div>
+        <div class="voice anim crd del5">
+          <div class="face"><div class="ph" style="background:url('img/s13_lepard.jpg') center/cover no-repeat #1A1A1A;border:none"></div></div>
+          <div class="vtext">
+            <div class="name">Lawrence Lepard</div>
+            <div class="role">Equity Management Associates · „Big Print"</div>
+            <div class="msg">„Amikor a Big Print megérkezik, a szűkös monetáris eszközök átárazódnak. A Bitcoin az egyetlen, ami <em>nem higul fel</em>."</div>
+          </div>
+        </div>
+      </div>
+      <div class="liquidity">
+        <div class="ph dark" style="background:url('img/s13_liquidity.jpg') center/contain no-repeat #0E0E0E;border:none"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== S9: IRAN HORMUZ ========== -->
+  <div class="slide s12">
+    <div class="slide-inner">
+      <div class="bg-drawn" style="background-image:url('img/s9_bg.jpg')"></div>
+      <div class="top-row">
+        <div class="tag anim fu del1">2026. Április · Hormuzi-szoros</div>
+        <h2 class="anim fu del2">Irán hordónként <em>$1 vámot</em> szed — <em>Bitcoinban</em></h2>
+      </div>
+      <div class="body-row">
+        <div class="left">
+          <div class="body-text anim fu del3" style="margin-top:1vh">
+            A Hormuzi-szoroson <strong>napi ~20 millió hordó</strong> olaj halad át. Hordónként <strong>$1 vám Bitcoinban</strong> = <strong>$20M / nap</strong>.
+          </div>
+          <div class="calc-row">
+            <div class="calc-chip anim crd del4"><span class="n">278</span><span class="l">BTC / nap</span></div>
+            <div class="calc-chip anim crd del5"><span class="n">8 333</span><span class="l">BTC / hónap</span></div>
+            <div class="calc-chip anim crd del6"><span class="n">101 389</span><span class="l">BTC / év</span></div>
+          </div>
+          <div class="multiplier anim np del7">0,62 ×<span>az éves post-halving kibocsátásból (164 250 BTC) · 0,48% a teljes 21M-ből, <em>évente</em>, <em>egyetlen</em> ország <em>egyetlen</em> bevételi csatornájából</span></div>
+          <div class="saylor-quote anim fu del8">
+            „All your models will be destroyed."
+            <span class="who">— Michael Saylor</span>
+          </div>
+        </div>
+        <div class="right">
+          <div class="ph" style="background:url('img/s9_hormuz.jpg') center/cover no-repeat #fff;border:none"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== S10: SEQUENTIAL REVEAL — everything vs Bitcoin ========== -->
+  <div class="slide s13" data-clicks="7">
+    <div class="slide-inner">
+      <div class="bg-drawn" style="background-image:url('img/s10_bg.jpg')"></div>
+      <h2 class="anim fu del1">A világon <strong>mindenből</strong> pontosan annyit állítanak elő, amennyi kereslet van rá.</h2>
+      <div class="stage">
+        <div class="s13-slot" data-idx="0"><div class="img-wrap"><div class="ph" style="background:url('img/s10_ingatlan.jpg') center/cover no-repeat var(--warm);border:none"></div></div><div class="tiny">amennyire szükség van</div><div class="label">Ingatlan</div></div>
+        <div class="s13-slot" data-idx="1"><div class="img-wrap"><div class="ph" style="background:url('img/s10_szek.jpg') center/cover no-repeat var(--warm);border:none"></div></div><div class="tiny">amennyire szükség van</div><div class="label">Szék</div></div>
+        <div class="s13-slot" data-idx="2"><div class="img-wrap"><div class="ph" style="background:url('img/s10_viz.jpg') center/cover no-repeat var(--warm);border:none"></div></div><div class="tiny">amennyire szükség van</div><div class="label">Víz</div></div>
+        <div class="s13-slot" data-idx="3"><div class="img-wrap"><div class="ph" style="background:url('img/s10_aram.jpg') center/cover no-repeat var(--warm);border:none"></div></div><div class="tiny">amennyire szükség van</div><div class="label">Áram</div></div>
+        <div class="s13-slot" data-idx="4"><div class="img-wrap"><div class="ph" style="background:url('img/s10_olaj.jpg') center/cover no-repeat var(--warm);border:none"></div></div><div class="tiny">amennyire szükség van</div><div class="label">Olaj</div></div>
+        <div class="s13-slot" data-idx="5"><div class="img-wrap"><div class="ph" style="background:url('img/s10_arany.jpg') center/cover no-repeat var(--warm);border:none"></div></div><div class="tiny">amennyire szükség van</div><div class="label">Arany</div></div>
+        <div class="s13-slot bitcoin" data-idx="6">
+          <div class="img-wrap"><div class="ph" style="background:url('img/s10_bitcoin.jpg') center/cover no-repeat var(--warm);border:none"></div></div>
+          <div class="tiny" style="color:var(--btc-dark)">de ebből nem</div>
+          <div class="label">Bitcoin — fix 21 000 000</div>
+          <div class="punchline">Az emberiség most találkozott először egy olyan eszközzel, amelynek a készlete <strong style="color:var(--btc)">matematikailag zárt</strong>.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== S15: DCA — 2 approaches ========== -->
+  <div class="slide s14">
+    <div class="slide-inner">
+      <div class="bg-drawn" style="background-image:url('img/s15_bg.jpg')"></div>
+      <div class="question anim fu del1">„Mikor a legjobb venni?"</div>
+      <div class="arrow anim fu del2">↓</div>
+      <div class="dca-word anim fs del3">DCA</div>
+      <div class="dca-expand anim fu del4">Dollar-Cost Averaging · két megközelítés</div>
+      <div class="approaches">
+        <div class="approach anim crd del5">
+          <div class="badge">1 · Megvásároljuk</div>
+          <h3>Folyamatosan vesszük</h3>
+          <p>Tőzsdén automatikus, fix havi összegű vétel. Nincs döntés, nincs érzelem, nincs időzítés. <em>Elfelejtjük és dolgozik.</em></p>
+        </div>
+        <div class="approach anim crd del6">
+          <div class="badge">2 · Megdolgozunk érte</div>
+          <h3>Bitcoinban fogadjuk el</h3>
+          <p>Ha fodrász, étterem, hotel — bármilyen szolgáltató vagy — <em>pár ezer forintos tételekben</em> is elfogadhatod. Ez is DCA, csak a másik oldalról.</p>
+        </div>
+      </div>
+      <div class="reserve anim fu del7"><strong>Alapszabály mindkettőhöz:</strong> csak azt tedd BTC-be, amire nincs szükséged 1–2 évig. A cash reserve ne Bitcoin legyen — így nem kell aggódnod az árfolyam miatt.</div>
+    </div>
+  </div>
+
+  <!-- ========== S14: KV TREASURY CHART ========== -->
+  <div class="slide s15" data-clicks="1">
+    <div class="slide-inner">
+      <div class="hdr">
+        <div>
+          <div class="tag anim fu del1" style="color:var(--kv)">KV Cégcsoport · Treasury</div>
+          <h2 class="anim fu del2">Mi <strong>csináljuk</strong>, nem csak beszélünk róla</h2>
+        </div>
+        <div class="period anim fu del3">2024. szept. — 2026. ápr.</div>
+      </div>
+      <div class="stats-strip">
+        <div class="kpi anim crd del3"><div class="l">Vásárlások száma</div><div class="v">53</div></div>
+        <div class="kpi anim crd del4"><div class="l">Összesen befektetve</div><div class="v">75,05M Ft</div></div>
+        <div class="kpi brand anim crd del5"><div class="l">Felhalmozott BTC</div><div class="v">2,2148 ₿</div></div>
+        <div class="kpi anim crd del6"><div class="l">Átlag ár (HUF/BTC)</div><div class="v">33,89M Ft</div></div>
+        <div class="kpi anim crd del7"><div class="l">Mai ár (2026-04-09)</div><div class="v">23,26M Ft</div></div>
+        <div class="kpi anim crd del8"><div class="l">P&amp;L</div><div class="v neg">−31,4%</div></div>
+      </div>
+      <div class="chart-wrap">
+        <svg class="treasury-chart anim fs del4" viewBox="0 0 1600 520" preserveAspectRatio="none" id="treasuryChart"></svg>
+      </div>
+      <div class="chart-legend anim fu del9">
+        <div class="li"><span class="line-btc"></span> BTC árfolyam (HUF)</div>
+        <div class="li"><span class="dot-kv"></span> KV Kft DCA vásárlás</div>
+        <div class="li s15-accept-legend" style="opacity:0;transition:opacity .5s"><span class="dot-accept"></span> BTC elfogadás (Atlantis / Aurora / KK)</div>
+      </div>
+    </div>
+  </div>
+  <!-- ========== S16: CALCULATOR ========== -->
+  <div class="slide s16">
+    <div class="slide-inner">
+      <div class="full-bg" style="background-image:url('img/s16_calc_sharp.jpg')"></div>
+      <div class="content">
+        <div class="tag anim fu del1">Saját eszköz</div>
+        <h2 class="anim fu del2">DCA <strong>kalkulátor</strong></h2>
+        <div class="body-text anim fu del3">
+          Több modell (Power Law, S2F, Saylor 21/21) alapján számolhatod,<br>mit <em>hozhat</em> egy havi DCA. Nem jóslat. <strong>Gondolatkísérlet.</strong>
+        </div>
+        <div class="qr-wrap anim fs del4">
+          <div class="qr-box"><img id="s16qr" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAtAAAALQAQAAAACRLHoxAAAD6ElEQVR4nO3dy27jMAxAUWmQ//9lzsKR+ZLbRaGCbK6AtkljHwRaEAJNSlPGqfHvmAwNDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDf3n6dd6Md2/Zcz3b3GfyPtaue+Rzb3X6Dkh0NDQ0EXpl77UJ4/z/ivuZ/3PfvJ0b9cJgYaGhi5Kv+ybK9bK+/eKx1eEtu/HNo7rvce/NTQ0NPTn0a+nD1aknvc7uWPydCvwp9FzQqChoaGL0o/xeg1JK+eYC3kaPScEGhoauijt4vVuraw5D326qFnrea+w8709JwQaGhq6KG3idVwv+xW0zWb7n929Y3SdEGhoaOii9Py6H10z1tdfjdvf97H3nBBoaGjoonSI11qtl58l+py1z2vbuE79NTQ0NPSBkfIhthLExmFx+Q9fj6357V/61tDQ0NCfR7v+Rhm+G2YMv2YWE833zybt6Dkh0NDQ0EXp0C8T8yDaIXO90x8b1TWC24jdc0KgoaGhi9J3vF4x2nYw5lX0fvWt19kMd88JgYaGhi5Km+eNscp6v6eTuKuHuSZWjvScEGhoaOiidIjXNipr/PXPIDV6a3z3e4oc/9bQ0NDQn0eb541xn6f1ytbwrSttn6OEyP4L3xoaGhr68+i0f4jPX08TtSVc5TPeOWL3nBBoaGjoovTjfqq+Clv7zmXbRSMhno/RdUKgoaGhi9KpX8b3N64184rIEmK33pv36+s5IdDQ0NBFaXe+jMZhG5tls9K2mez1Pu6y2nNCoKGhoYvSpv56f25M3IFP47GN7te9PivSc0KgoaGhi9KhHz1X5T2fuJv71fX0sMPfGhoaGvrz6FAfYjPT8emj72zM9SJx9JwQaGho6KK065cZaWW9/m9H7GT0e7DS3wgNDQ19ZKT6a426uxMa455OucqP/DU0NDT0kTFzVmOX77BX2C50mzeJO4z0nBBoaGjoorTrR8+nMdqTdfV55KrJ1ivYnw8aGhr6MB3q+WyNiM9G785utD3o+YyZnhMCDQ0NXZRO9XzXaz2JIJ4QptXW9s6ZjK4TAg0NDV2Ufjwf3daJjDHSent3jiP1IdDQ0NDHhltf65DhnyTm6g97177yr+eEQENDQxel3f4ha8Snjv68dJu9jqeG2Xjec0KgoaGhi9Jf7Keqr+PJMv5cXrsXFP3o0NDQ0IdG6pdZw2c69Jz0uL/I0+kyXScEGhoauij9GK/X2nmm9bZWYecYTf01NDQ09KHh4nU8Ocb2xYjJd+x2GtF+mjV6Tgg0NDR0UTqdL6PDr6HjPlC+u9HmsslfQ0NDQx8Yj/XXPx89JwQaGhoaGhoaGhoaGhoaGhoaGhoaGroE/R8nKT3numfeQQAAAABJRU5ErkJggg==" alt="QR"></div>
+          <div class="url">ferenckovacs.com/bitcoin_calculator</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== S17: CLOSING (dawn background) ========== -->
+  <div class="slide s17">
+    <div class="slide-inner">
+      <div class="full-bg" style="background-image:url('img/s17_dawn.jpg')"><div class="ph"></div></div>
+      <div class="vignette"></div>
+      <div class="accent-line"></div>
+      <div class="closing-quote anim fu del1">„All your <span class="acc">models</span><br>will be <span class="acc">destroyed</span>."</div>
+      <div class="attribution anim fu del3">— Michael Saylor</div>
+      <div class="contact anim fu del5">
+        <div class="name">Kovács Ferenc</div>
+        <div class="site">ferenckovacs.com</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="progress-wrap"><div class="progress-fill" id="progress"></div></div>
+<div class="slide-counter" id="counter"></div>
+<div class="key-hint" id="hint">← → nyilakkal vagy kattintással &nbsp;|&nbsp; F = teljes képernyő</div>
+
+<script>
+// Treasury data embedded for S14 chart
+const TREASURY = {"txs":[{"date":"2024-09-28","btc":0.091747,"huf":2362250.0,"entity":"Atlantis","price_huf":25747436},{"date":"2024-09-28","btc":0.028572,"huf":735647.0,"entity":"Aurora","price_huf":25747130},{"date":"2024-10-01","btc":0.086879,"huf":2251632.0,"entity":"KV Kft","price_huf":25916873},{"date":"2024-10-11","btc":0.002139,"huf":51187.0,"entity":"Aurora","price_huf":23930341},{"date":"2024-10-31","btc":0.074506,"huf":2166398.0,"entity":"KV Kft","price_huf":29076826},{"date":"2024-11-27","btc":0.056321,"huf":2201865.0,"entity":"KV Kft","price_huf":39094920},{"date":"2024-12-18","btc":0.15324,"huf":6526892.0,"entity":"Aurora","price_huf":42592613},{"date":"2024-12-18","btc":0.048415,"huf":2062104.0,"entity":"KV Kft","price_huf":42592254},{"date":"2024-12-20","btc":0.035763,"huf":1504480.0,"entity":"Atlantis","price_huf":42068059},{"date":"2025-01-31","btc":0.049093,"huf":2032200.0,"entity":"KV Kft","price_huf":41394904},{"date":"2025-02-25","btc":0.054753,"huf":2090793.0,"entity":"KV Kft","price_huf":38185908},{"date":"2025-03-19","btc":0.000445,"huf":14893.0,"entity":"Atlantis","price_huf":33467416},{"date":"2025-03-27","btc":0.067996,"huf":2378975.0,"entity":"Atlantis","price_huf":34986985},{"date":"2025-03-28","btc":0.032194,"huf":1122858.0,"entity":"Aurora","price_huf":34877865},{"date":"2025-03-28","btc":0.061378,"huf":2140699.0,"entity":"KV Kft","price_huf":34877301},{"date":"2025-04-30","btc":0.059464,"huf":1980247.0,"entity":"KV Kft","price_huf":33301611},{"date":"2025-05-28","btc":0.050978,"huf":1440691.0,"entity":"KV Kft","price_huf":28261034},{"date":"2025-06-25","btc":0.036208,"huf":978669.0,"entity":"Atlantis","price_huf":27029082},{"date":"2025-06-25","btc":0.034879,"huf":942757.0,"entity":"Aurora","price_huf":27029359},{"date":"2025-06-28","btc":0.054013,"huf":1459938.0,"entity":"KV Kft","price_huf":27029382},{"date":"2025-07-29","btc":0.048449,"huf":1328442.0,"entity":"KV Kft","price_huf":27419389},{"date":"2025-08-26","btc":0.025569,"huf":622176.0,"entity":"Atlantis","price_huf":24333216},{"date":"2025-08-26","btc":0.015819,"huf":384931.0,"entity":"Aurora","price_huf":24333460},{"date":"2025-08-26","btc":0.052164,"huf":1269343.0,"entity":"KV Kft","price_huf":24333698},{"date":"2025-09-30","btc":0.050928,"huf":1333064.0,"entity":"KV Kft","price_huf":26175463},{"date":"2025-10-01","btc":0.02336,"huf":609764.0,"entity":"Aurora","price_huf":26102911},{"date":"2025-10-08","btc":0.001349,"huf":35206.0,"entity":"Aurora","price_huf":26097850},{"date":"2025-10-09","btc":0.001842,"huf":48071.0,"entity":"Aurora","price_huf":26097177},{"date":"2025-10-09","btc":0.000683,"huf":17821.0,"entity":"Aurora","price_huf":26092240},{"date":"2025-10-14","btc":0.001432,"huf":37386.0,"entity":"Aurora","price_huf":26107542},{"date":"2025-10-19","btc":0.001751,"huf":45708.0,"entity":"Aurora","price_huf":26103941},{"date":"2025-10-19","btc":0.000293,"huf":7651.0,"entity":"Aurora","price_huf":26112628},{"date":"2025-10-19","btc":0.002597,"huf":67793.0,"entity":"Aurora","price_huf":26104351},{"date":"2025-10-28","btc":0.050057,"huf":1306617.0,"entity":"KV Kft","price_huf":26102583},{"date":"2025-11-01","btc":0.027422,"huf":790124.0,"entity":"Aurora","price_huf":28813507},{"date":"2025-11-03","btc":0.022638,"huf":652284.0,"entity":"Atlantis","price_huf":28813676},{"date":"2025-11-27","btc":0.062623,"huf":2217446.0,"entity":"KV Kft","price_huf":35409450},{"date":"2025-12-11","btc":0.201568,"huf":8064656.0,"entity":"KK 2016","price_huf":40009605},{"date":"2025-12-16","btc":0.000108,"huf":4303.0,"entity":"Aurora","price_huf":39842593},{"date":"2025-12-23","btc":0.06467,"huf":2506751.0,"entity":"KV Kft","price_huf":38762193},{"date":"2025-12-31","btc":0.089484,"huf":3364106.0,"entity":"Atlantis","price_huf":37594497},{"date":"2025-12-31","btc":0.03432,"huf":1290225.0,"entity":"Aurora","price_huf":37593969},{"date":"2026-01-01","btc":0.006918,"huf":259370.0,"entity":"Aurora","price_huf":37492050},{"date":"2026-01-29","btc":0.068645,"huf":2799056.0,"entity":"KV Kft","price_huf":40775818},{"date":"2026-03-02","btc":0.0864,"huf":2904792.0,"entity":"KV Kft","price_huf":33620278},{"date":"2026-03-07","btc":0.002519,"huf":84705.0,"entity":"Atlantis","price_huf":33626439},{"date":"2026-03-12","btc":0.002433,"huf":81785.0,"entity":"Atlantis","price_huf":33614879},{"date":"2026-03-17","btc":0.003087,"huf":102797.0,"entity":"Atlantis","price_huf":33299968},{"date":"2026-03-18","btc":8e-06,"huf":275.0,"entity":"Atlantis","price_huf":34375000},{"date":"2026-03-18","btc":8e-06,"huf":275.0,"entity":"Aurora","price_huf":34375000},{"date":"2026-03-27","btc":0.083925,"huf":2936296.0,"entity":"KV Kft","price_huf":34987143},{"date":"2026-03-31","btc":0.064702,"huf":2161715.0,"entity":"Atlantis","price_huf":33410327},{"date":"2026-03-31","btc":0.038029,"huf":1270549.0,"entity":"Aurora","price_huf":33410003}],"series":[["2024-09-02", 21500000],["2024-09-09", 22643458],["2024-09-16", 23786916],["2024-09-23", 24930374],["2024-09-30", 25860292],["2024-10-07", 24724954],["2024-10-14", 24702314],["2024-10-21", 26503584],["2024-10-28", 28304853],["2024-11-04", 30560988],["2024-11-11", 33158272],["2024-11-18", 35755555],["2024-11-25", 38352839],["2024-12-02", 39927619],["2024-12-09", 41093397],["2024-12-16", 42259175],["2024-12-23", 42019976],["2024-12-30", 41907784],["2025-01-06", 41795592],["2025-01-13", 41683399],["2025-01-20", 41571206],["2025-01-27", 41459014],["2025-02-03", 41009824],["2025-02-10", 40111306],["2025-02-17", 39212787],["2025-02-24", 38314268],["2025-03-03", 36899047],["2025-03-10", 35397708],["2025-03-17", 33896370],["2025-03-24", 34417147],["2025-03-31", 34734056],["2025-04-07", 34399819],["2025-04-14", 34065582],["2025-04-21", 33731345],["2025-04-28", 33397107],["2025-05-05", 32401508],["2025-05-12", 31141364],["2025-05-19", 29881219],["2025-05-26", 28621075],["2025-06-02", 28041092],["2025-06-09", 27733173],["2025-06-16", 27425255],["2025-06-23", 27117336],["2025-06-30", 27054544],["2025-07-07", 27142610],["2025-07-14", 27230676],["2025-07-21", 27318742],["2025-07-28", 27406808],["2025-08-04", 26758170],["2025-08-11", 25986747],["2025-08-18", 25215324],["2025-08-25", 24443901],["2025-09-01", 24649429],["2025-09-08", 25017782],["2025-09-15", 25386135],["2025-09-22", 25754488],["2025-09-29", 26122841],["2025-10-06", 26099296],["2025-10-13", 26105469],["2025-10-20", 26103790],["2025-10-27", 26102734],["2025-11-03", 28813676],["2025-11-10", 30737443],["2025-11-17", 32661211],["2025-11-24", 34584978],["2025-12-01", 36723780],["2025-12-08", 39023858],["2025-12-15", 39875995],["2025-12-22", 38916536],["2025-12-29", 37886025],["2026-01-05", 37961160],["2026-01-12", 38782102],["2026-01-19", 39603044],["2026-01-26", 40423986],["2026-02-02", 39881376],["2026-02-09", 38316101],["2026-02-16", 36750827],["2026-02-23", 35185552],["2026-03-02", 33620278],["2026-03-09", 33621815],["2026-03-16", 33362950],["2026-03-23", 34715079],["2026-03-30", 33804288],["2026-04-03", 29000000],["2026-04-06", 25500000],["2026-04-09", 23256000]]};
+
+// ====== S14 Treasury Chart (SVG, Saylor-style with blue dots) ======
+function drawTreasuryChart(){
+  const svg = document.getElementById('treasuryChart');
+  if(!svg || svg.dataset.drawn) return;
+  svg.dataset.drawn = '1';
+  const W=1600, H=520, padL=90, padR=40, padT=30, padB=60;
+  const iw = W - padL - padR, ih = H - padT - padB;
+  const toDate = s => new Date(s).getTime();
+  const t0 = toDate('2024-09-01'), t1 = toDate('2026-04-20');
+  const series = TREASURY.series.map(p => ({t:toDate(p[0]), v:p[1]}));
+  const txs = TREASURY.txs.map(x => ({...x, t:toDate(x.date)}));
+  // HUF scale: 18M - 44M Ft
+  const yMin = 18000000, yMax = 44000000;
+  const x = t => padL + (t - t0)/(t1 - t0) * iw;
+  const y = v => padT + (1 - (v - yMin)/(yMax - yMin)) * ih;
+  const fmtM = v => (v/1e6).toFixed(0) + 'M';
+
+  let svgContent = '';
+  // Background
+  svgContent += `<rect x="0" y="0" width="${W}" height="${H}" fill="#FFFBF5"/>`;
+  // Grid lines (horizontal, every 4M Ft)
+  for(let v=20000000; v<=44000000; v+=4000000){
+    const yy = y(v);
+    svgContent += `<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="#E8E8E8" stroke-width="1"/>`;
+    svgContent += `<text x="${padL-10}" y="${yy+5}" text-anchor="end" font-family="Inter,sans-serif" font-size="13" fill="#888">${fmtM(v)} Ft</text>`;
+  }
+  // Avg cost line (33.89M Ft)
+  const avgCost = 33886235;
+  const yAvg = y(avgCost);
+  svgContent += `<line x1="${padL}" y1="${yAvg}" x2="${W-padR}" y2="${yAvg}" stroke="#1E6FBA" stroke-width="1.5" stroke-dasharray="6,4" opacity="0.6"/>`;
+  svgContent += `<text x="${W-padR-8}" y="${yAvg-6}" text-anchor="end" font-family="Inter,sans-serif" font-size="12" font-weight="600" fill="#1E6FBA">Átlagár 33,89M Ft</text>`;
+  // X axis labels (quarterly)
+  const qmarks = [['2024-10','2024 Q4'],['2025-01','2025 Q1'],['2025-04','Q2'],['2025-07','Q3'],['2025-10','Q4'],['2026-01','2026 Q1'],['2026-04','Q2']];
+  qmarks.forEach(([d,label])=>{
+    const xx = x(toDate(d+'-01'));
+    if(xx>=padL && xx<=W-padR){
+      svgContent += `<line x1="${xx}" y1="${padT}" x2="${xx}" y2="${H-padB}" stroke="#F0F0F0" stroke-width="1"/>`;
+      svgContent += `<text x="${xx}" y="${H-padB+22}" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" fill="#777">${label}</text>`;
+    }
+  });
+  // BTC price line (HUF)
+  let path = '';
+  series.forEach((p,i)=>{ path += (i===0?'M':'L') + x(p.t) + ',' + y(p.v); });
+  svgContent += `<path d="${path}" fill="none" stroke="#F7931A" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" opacity="0.95"/>`;
+  // Area under line (subtle)
+  svgContent += `<path d="${path} L${x(series[series.length-1].t)},${H-padB} L${x(series[0].t)},${H-padB} Z" fill="url(#btcGrad)" opacity="0.15"/>`;
+  svgContent += `<defs><linearGradient id="btcGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F7931A"/><stop offset="100%" stop-color="#F7931A" stop-opacity="0"/></linearGradient></defs>`;
+  // Today marker (last series point)
+  const last = series[series.length-1];
+  const lastX = x(last.t), lastY = y(last.v);
+  svgContent += `<circle cx="${lastX}" cy="${lastY}" r="6" fill="#F7931A" stroke="#fff" stroke-width="2"/>`;
+  svgContent += `<text x="${lastX-10}" y="${lastY-12}" text-anchor="end" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#F7931A">ma · 23,26M Ft</text>`;
+  // Split txs: purchases (KV/KK) vs acceptance (Atlantis/Aurora)
+  const purchases = txs.filter(t=>t.entity==='KV Kft');
+  const accepts = txs.filter(t=>t.entity==='Atlantis'||t.entity==='Aurora'||t.entity==='KK 2016');
+  const maxHuf = Math.max(...txs.map(t=>t.huf));
+  // Blue dots — KV/KK purchases (always visible)
+  purchases.forEach((tx,i)=>{
+    const cx = x(tx.t), cy = y(tx.price_huf);
+    const r = 4 + Math.sqrt(tx.huf/maxHuf) * 18;
+    svgContent += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#1E6FBA" fill-opacity="0.55" stroke="#1E6FBA" stroke-width="1.5" stroke-opacity="0.9" class="dot" style="animation-delay:${1.2 + i*0.025}s"/>`;
+  });
+  // Yellow/orange dots — BTC acceptance (hidden until click)
+  accepts.forEach((tx,i)=>{
+    const cx = x(tx.t), cy = y(tx.price_huf);
+    const r = 4 + Math.sqrt(tx.huf/maxHuf) * 18;
+    svgContent += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#F7931A" fill-opacity="0" stroke="#F7931A" stroke-width="1.5" stroke-opacity="0" class="dot-accept" style="transition:fill-opacity .5s,stroke-opacity .5s"/>`;
+  });
+  // Title inside chart
+  svgContent += `<text x="${padL+10}" y="${padT+22}" font-family="Playfair Display,serif" font-size="18" font-weight="700" fill="#1A1A1A" font-style="italic">BTC / HUF árfolyam + KV vásárlások</text>`;
+  svg.innerHTML = svgContent;
+  // Add animation for dots
+  const style = document.createElement('style');
+  style.textContent = '@keyframes dotPop{0%{r:0;opacity:0}100%{opacity:0.55}} .treasury-chart .dot{animation:dotPop .6s ease both}';
+  if(!document.querySelector('#dotAnimStyle')){ style.id='dotAnimStyle'; document.head.appendChild(style); }
+}
+
+// ====== Navigation engine ======
+const slides=document.querySelectorAll('.slide');
+const total=slides.length;
+let current=0,transitioning=false;
+
+const subSteps={};
+slides.forEach((s,i)=>{const c=parseInt(s.dataset.clicks||'0',10);if(c)subSteps[i]={step:0,max:c};});
+
+function revealStep(slideIdx){
+  const st=subSteps[slideIdx];if(!st)return false;
+  const slide=slides[slideIdx];
+  if(st.step>=st.max)return false;
+  st.step++;
+  if(slide.classList.contains('s6')){
+    const vo=slide.querySelector('.video-overlay');
+    const vid=slide.querySelector('.video-overlay video');
+    if(vo){vo.classList.add('s6-show');if(vid){vid.currentTime=0;vid.play()}}
+  }
+  if(slide.classList.contains('s2')){
+    const items=slide.querySelectorAll('.s2-item');
+    if(items[st.step])items[st.step].classList.add('s2-revealed');
+  }
+  if(slide.classList.contains('s3')){
+    const ins=slide.querySelector('.s3-insight');
+    if(ins)ins.classList.add('s3-shown');
+  }
+  if(slide.classList.contains('s8')){
+    const charts=slide.querySelectorAll('.s8-chart');
+    const txt=slide.querySelector('.s8-text');
+    charts.forEach(c=>c.classList.remove('s8-show'));
+    if(charts[st.step-1])charts[st.step-1].classList.add('s8-show');
+    if(txt)txt.classList.add('s8-hidden');
+  }
+  if(slide.classList.contains('s4')){
+    const items=slide.querySelectorAll('.s4-item');
+    if(st.step<=4){
+      // collapse previous expanded card
+      items.forEach(el=>{el.classList.remove('s4-expanded');if(el.classList.contains('s4-revealed')||el.dataset.wasExpanded)el.classList.add('s4-revealed')});
+      // expand current card
+      const cur=items[st.step-1];
+      if(cur){cur.classList.remove('s4-revealed');cur.classList.add('s4-expanded');cur.dataset.wasExpanded='1'}
+    } else {
+      // step 5: collapse all — overview state
+      items.forEach(el=>{el.classList.remove('s4-expanded');el.classList.add('s4-revealed')});
+    }
+  }
+  if(slide.classList.contains('s13')){
+    // Sequential: hide previous, show current
+    const slots=slide.querySelectorAll('.s13-slot');
+    slots.forEach(s=>s.classList.remove('s13-show'));
+    if(slots[st.step-1])slots[st.step-1].classList.add('s13-show');
+  }
+  if(slide.classList.contains('s10')){
+    const charts=slide.querySelectorAll('.s10-chart');
+    const txt=slide.querySelector('.s10-text');
+    charts.forEach(c=>c.classList.remove('s10-show'));
+    if(charts[st.step-1])charts[st.step-1].classList.add('s10-show');
+    if(txt)txt.classList.add('s10-hidden');
+  }
+  if(slide.classList.contains('s11')){
+    if(st.step===1)slide.classList.add('s11-stage2');
+  }
+  if(slide.classList.contains('s15')){
+    // Show yellow acceptance dots
+    slide.querySelectorAll('.dot-accept').forEach(d=>{d.setAttribute('fill-opacity','0.55');d.setAttribute('stroke-opacity','0.9')});
+    const leg=slide.querySelector('.s15-accept-legend');if(leg)leg.style.opacity='1';
+  }
+  return true;
+}
+function resetSubSteps(slideIdx){
+  const st=subSteps[slideIdx];if(!st)return;
+  st.step=0;
+  const slide=slides[slideIdx];
+  slide.querySelectorAll('.s2-revealed,.s3-shown,.s4-revealed,.s4-expanded,.s6-show,.s8-show,.s8-hidden,.s13-show,.s10-show,.s10-hidden').forEach(el=>{el.classList.remove('s2-revealed','s3-shown','s4-revealed','s4-expanded','s6-show','s8-show','s8-hidden','s13-show','s10-show','s10-hidden');delete el.dataset.wasExpanded});
+  slide.classList.remove('s11-stage2');
+  // S14: hide acceptance dots on reset
+  slide.querySelectorAll('.dot-accept').forEach(d=>{d.setAttribute('fill-opacity','0');d.setAttribute('stroke-opacity','0')});
+  const s14leg=slide.querySelector('.s15-accept-legend');if(s14leg)s14leg.style.opacity='0';
+  const s6vid=slide.querySelector('.video-overlay video');if(s6vid){s6vid.pause();s6vid.currentTime=0}
+}
+
+function goTo(n){
+  if(n<0||n>=total||n===current||transitioning)return;
+  transitioning=true;
+  const old=slides[current];
+  old.classList.remove('active');old.classList.add('exiting');
+  setTimeout(()=>{resetSubSteps(current);old.classList.remove('exiting');transitioning=false},660);
+  current=n;
+  setTimeout(()=>{
+    slides[current].classList.add('active');
+    if(slides[current].classList.contains('s15')) drawTreasuryChart();
+  },120);
+  document.getElementById('progress').style.width=((current+1)/total*100)+'%';
+  document.getElementById('counter').textContent=(current+1)+' / '+total;
+}
+
+function next(){ if(revealStep(current))return; goTo(current+1); }
+function prev(){
+  const st=subSteps[current];
+  if(st&&st.step>0){
+    st.step--;
+    const slide=slides[current];
+    if(slide.classList.contains('s6')){
+      const vo=slide.querySelector('.video-overlay');
+      const vid=slide.querySelector('.video-overlay video');
+      if(vo)vo.classList.remove('s6-show');
+      if(vid){vid.pause();vid.currentTime=0}
+    }
+    if(slide.classList.contains('s2')){
+      const items=slide.querySelectorAll('.s2-item');
+      if(items[st.step+1])items[st.step+1].classList.remove('s2-revealed');
+    }
+    if(slide.classList.contains('s3')){
+      const ins=slide.querySelector('.s3-insight');
+      if(ins)ins.classList.remove('s3-shown');
+    }
+    if(slide.classList.contains('s8')){
+      const charts=slide.querySelectorAll('.s8-chart');
+      const txt=slide.querySelector('.s8-text');
+      charts.forEach(c=>c.classList.remove('s8-show'));
+      if(st.step>0 && charts[st.step-1])charts[st.step-1].classList.add('s8-show');
+      if(st.step===0 && txt)txt.classList.remove('s8-hidden');
+    }
+    if(slide.classList.contains('s4')){
+      const items=slide.querySelectorAll('.s4-item');
+      if(st.step>=4){
+        // back from overview (step 4) or last card: re-expand last relevant card
+        items.forEach(el=>el.classList.remove('s4-expanded'));
+        items.forEach((el,i)=>{if(i<st.step)el.classList.add('s4-revealed')});
+        const cur=items[st.step-1];
+        if(cur){cur.classList.remove('s4-revealed');cur.classList.add('s4-expanded')}
+      } else {
+        // remove current card entirely
+        const removed=items[st.step];
+        if(removed){removed.classList.remove('s4-expanded','s4-revealed');delete removed.dataset.wasExpanded}
+        // re-expand previous card if exists
+        if(st.step>0){
+          const prevCard=items[st.step-1];
+          prevCard.classList.remove('s4-revealed');prevCard.classList.add('s4-expanded');
+        }
+      }
+    }
+    if(slide.classList.contains('s13')){
+      const slots=slide.querySelectorAll('.s13-slot');
+      slots.forEach(s=>s.classList.remove('s13-show'));
+      if(st.step>0 && slots[st.step-1])slots[st.step-1].classList.add('s13-show');
+    }
+    if(slide.classList.contains('s10')){
+      const charts=slide.querySelectorAll('.s10-chart');
+      const txt=slide.querySelector('.s10-text');
+      charts.forEach(c=>c.classList.remove('s10-show'));
+      if(st.step>0 && charts[st.step-1])charts[st.step-1].classList.add('s10-show');
+      if(st.step===0 && txt)txt.classList.remove('s10-hidden');
+    }
+    if(slide.classList.contains('s11')){
+      if(st.step===0)slide.classList.remove('s11-stage2');
+    }
+    if(slide.classList.contains('s15')){
+      slide.querySelectorAll('.dot-accept').forEach(d=>{d.setAttribute('fill-opacity','0');d.setAttribute('stroke-opacity','0')});
+      const leg=slide.querySelector('.s15-accept-legend');if(leg)leg.style.opacity='0';
+    }
+    return;
+  }
+  goTo(current-1);
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' '||e.key==='PageDown'){e.preventDefault();next()}
+  else if(e.key==='ArrowLeft'||e.key==='ArrowUp'||e.key==='PageUp'){e.preventDefault();prev()}
+  else if(e.key==='Home')goTo(0);
+  else if(e.key==='End')goTo(total-1);
+  else if(e.key==='f'||e.key==='F'){
+    if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();
+    else document.exitFullscreen?.();
+  }
+});
+document.addEventListener('click',e=>{if(e.clientX/window.innerWidth<.3)prev();else next()});
+let tx=0;
+document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX});
+document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50)dx<0?next():prev()});
+
+setTimeout(()=>{document.getElementById('hint').style.opacity='0'},6000);
+document.getElementById('progress').style.width=(1/total*100)+'%';
+document.getElementById('counter').textContent='1 / '+total;
+
+// S16 QR: inline base64 PNG in <img> tag, no JS needed
+</script>
+</body>
+</html>
