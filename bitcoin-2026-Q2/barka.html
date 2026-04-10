@@ -3,268 +3,588 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noindex, nofollow">
-<title>Bitcoin Miskolc 2026 — A Magyar Bitcoin Bárka</title>
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<title>A Magyar Bitcoin Bárka — Bitcoin Miskolc 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--btc:#F7931A;--btc-glow:rgba(247,147,26,0.25);--btc-dark:#D97B0E;--dark:#1A1A1A;--gray:#4A4A4A;--muted:#6B6B6B;--warm:#FAF8F3;--accent-bg:#FEF3E2}
+:root{
+  --btc:#F7931A; --btc-glow:rgba(247,147,26,0.25); --btc-dark:#D97B0E;
+  --dark:#1A1A1A; --gray:#4A4A4A; --muted:#555555; --light:#F5F5F5;
+  --warm:#FAF8F3; --accent-bg:#FEF3E2;
+}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
-.deck{width:100vw;height:100vh;position:relative}
-.slide{position:absolute;inset:0;display:none;align-items:center;justify-content:center}
-.slide.active{display:flex;animation:fadeIn .5s ease}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.slide-inner{width:min(100vw,177.78vh);height:min(100vh,56.25vw);position:relative;overflow:hidden;margin:auto;padding:5vh 6% 15vh}
-</style>
-<style>
-.progress-wrap{position:fixed;bottom:0;left:0;right:0;height:4px;background:rgba(0,0,0,.05);z-index:100}
-.progress-fill{height:100%;background:var(--btc);transition:width .5s ease}
-.counter{position:fixed;bottom:12px;right:20px;font:500 14px 'Inter',sans-serif;color:rgba(0,0,0,.2);z-index:100}
-/* Animations */
+html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;display:flex;align-items:center;justify-content:center}
+
+/* === 16:9 ENGINE === */
+.deck{width:min(100vw,177.78vh);height:min(100vh,56.25vw);position:relative;background:#000}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none}
+.slide.active{opacity:1;pointer-events:auto}
+.slide.exiting{opacity:1;pointer-events:none;animation:slideExit .66s ease-in forwards}
+@keyframes slideExit{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.01);filter:blur(4px)}}
+.slide-inner{position:absolute;inset:0;overflow:hidden}
+.progress-wrap{position:fixed;bottom:0;left:0;right:0;height:4px;background:rgba(0,0,0,0.05);z-index:100}
+.progress-fill{height:100%;background:var(--btc);transition:width .6s cubic-bezier(.22,1,.36,1);box-shadow:0 0 12px var(--btc-glow)}
+.slide-counter{position:fixed;bottom:12px;right:20px;font:500 15px 'Inter',sans-serif;color:rgba(255,255,255,0.22);z-index:100}
+
+/* === ANIM === */
 .anim{opacity:0}.slide.active .anim{animation-fill-mode:both}
-@keyframes cFadeUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+@keyframes cFadeUp{from{opacity:0;transform:translateY(50px);filter:blur(4px)}to{opacity:1;transform:translateY(0);filter:blur(0)}}
 @keyframes cFadeScale{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
-@keyframes cardRise{from{opacity:0;transform:translateY(30px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
-.slide.active .fu{animation:cFadeUp .9s cubic-bezier(.22,1,.36,1) both}
-.slide.active .fs{animation:cFadeScale .8s ease both}
-.slide.active .crd{animation:cardRise .8s cubic-bezier(.22,1,.36,1) both}
-.del1{animation-delay:.1s!important}.del2{animation-delay:.25s!important}
-.del3{animation-delay:.45s!important}.del4{animation-delay:.65s!important}
-.del5{animation-delay:.85s!important}.del6{animation-delay:1.05s!important}
-h1,h2,.serif{font-family:'Playfair Display',Georgia,serif}
-/* Placeholder */
-.ph{background:repeating-linear-gradient(45deg,#FFF8F0,#FFF8F0 10px,#FEF3E2 10px,#FEF3E2 20px);border:2px dashed var(--btc);display:flex;align-items:center;justify-content:center;color:var(--btc-dark);font:600 clamp(11px,1vw,14px)/1.4 'Inter',sans-serif;text-align:center;padding:2vh 2vw;border-radius:12px}
-.ph.dark{background:repeating-linear-gradient(45deg,#222,#222 10px,#2A2A2A 10px,#2A2A2A 20px);color:var(--btc);border-color:var(--btc)}
-.ph.circle{border-radius:50%}
-/* Common */
-.tag{font-size:clamp(12px,1.2vw,16px);color:var(--btc);letter-spacing:4px;font-weight:700;text-transform:uppercase}
-.title{font-family:'Playfair Display',serif;font-size:clamp(32px,4vw,58px);color:var(--dark);font-weight:500;letter-spacing:-.02em;line-height:1.1}
-.title strong,.title .o{color:var(--btc)}
-.sub{font-size:clamp(16px,1.6vw,22px);color:var(--muted);line-height:1.6;font-weight:300;margin-top:1.5vh}
-.body{font-size:clamp(15px,1.4vw,20px);color:var(--gray);line-height:1.7}
-.body strong{color:var(--btc);font-weight:700}
-.quiet{font-family:'Playfair Display',serif;font-style:italic;color:var(--muted);font-size:clamp(15px,1.4vw,20px)}
-.pill{display:inline-flex;align-items:center;justify-content:center;background:var(--accent-bg);border:1px solid rgba(247,147,26,.2);border-radius:56px;padding:8px 22px;font-size:clamp(14px,1.3vw,18px);font-weight:600;color:var(--dark);white-space:nowrap}
-.pill .num{font-family:'Playfair Display',serif;font-size:clamp(28px,3vw,48px);color:var(--btc);font-weight:700;margin-right:10px}
-/* Card */
-.card{background:#fff;border:1px solid rgba(0,0,0,.06);border-radius:16px;padding:clamp(16px,2.5vh,28px);box-shadow:0 2px 12px rgba(0,0,0,.04)}
-.card h3{font-size:clamp(16px,1.6vw,22px);font-weight:600;color:var(--dark);margin-bottom:6px}
-.card p{font-size:clamp(14px,1.2vw,17px);color:var(--muted);line-height:1.5}
-/* Dark slide */
-.dark-slide .slide-inner{background:#0a0b0d;color:#fff}
-.dark-slide .title{color:#fff}
-.dark-slide .sub{color:rgba(255,255,255,.6)}
-.dark-slide .body{color:rgba(255,255,255,.7)}
-.dark-slide .body strong{color:var(--btc)}
-.dark-slide .quiet{color:rgba(255,255,255,.5)}
-.dark-slide .counter{color:rgba(255,255,255,.15)}
-.dark-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:clamp(16px,2.5vh,28px)}
-.dark-card h3{color:#fff;font-size:clamp(16px,1.5vw,20px);font-weight:600;margin-bottom:6px}
-.dark-card p{color:rgba(255,255,255,.6);font-size:clamp(14px,1.2vw,17px);line-height:1.5}
-.dark-card .name{color:var(--btc);font-size:clamp(18px,2vw,26px);font-weight:700}
-.dark-card .role{font-size:clamp(11px,1vw,14px);color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:3px}
-/* Specific layouts */
-.split{display:grid;grid-template-columns:1fr 1fr;gap:4vw;align-items:center;height:100%}
-.center-col{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;height:100%}
-.left-col{display:flex;flex-direction:column;justify-content:center}
-.concentric{display:flex;flex-direction:column;align-items:center;gap:1.5vh}
-.concentric .ring{border:2px solid var(--btc);border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:600}
-.concentric .ring.r1{width:clamp(200px,22vw,320px);height:clamp(200px,22vw,320px);font-size:clamp(16px,1.6vw,22px);background:rgba(247,147,26,.08)}
-.concentric .ring.r2{width:clamp(280px,30vw,440px);height:clamp(280px,30vw,440px);font-size:clamp(14px,1.3vw,18px);background:rgba(247,147,26,.04)}
-.concentric .ring.r3{width:clamp(360px,38vw,560px);height:clamp(360px,38vw,560px);font-size:clamp(13px,1.2vw,16px);background:rgba(247,147,26,.02)}
-@media(max-width:768px){.split{grid-template-columns:1fr;gap:2vh}.slide-inner{padding:3vh 5% 12vh}}
+@keyframes cSlideRight{from{opacity:0;transform:translateX(-80px);filter:blur(3px)}to{opacity:1;transform:translateX(0);filter:blur(0)}}
+@keyframes cardRise{from{opacity:0;transform:translateY(40px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes numPop{0%{opacity:0;transform:scale(.5)}60%{opacity:1;transform:scale(1.08)}100%{opacity:1;transform:scale(1)}}
+@keyframes glowPulse{0%,100%{text-shadow:0 0 20px var(--btc-glow)}50%{text-shadow:0 0 60px var(--btc-glow),0 0 120px rgba(247,147,26,.15)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+
+.slide.active .fu{animation:cFadeUp 1.08s cubic-bezier(.22,1,.36,1) both}
+.slide.active .fs{animation:cFadeScale .96s ease both}
+.slide.active .sr{animation:cSlideRight 1.08s cubic-bezier(.22,1,.36,1) both}
+.slide.active .crd{animation:cardRise .96s cubic-bezier(.22,1,.36,1) both}
+.slide.active .np{animation:numPop .84s cubic-bezier(.22,1,.36,1) both}
+.slide.active .gp{animation:glowPulse 3.6s ease-in-out infinite}
+
+.del1{animation-delay:.12s!important}.del2{animation-delay:.3s!important}
+.del3{animation-delay:.54s!important}.del4{animation-delay:.78s!important}
+.del5{animation-delay:1.02s!important}.del6{animation-delay:1.26s!important}
+.del7{animation-delay:1.5s!important}.del8{animation-delay:1.8s!important}
+.del9{animation-delay:2.04s!important}.del10{animation-delay:2.28s!important}
+
+h1,h2,h3,.serif{font-family:'Playfair Display',Georgia,serif}
+
+/* === PLACEHOLDER === */
+.ph{background:repeating-linear-gradient(45deg,rgba(40,30,20,1),rgba(40,30,20,1) 10px,rgba(50,38,25,1) 10px,rgba(50,38,25,1) 20px);border:2px dashed var(--btc);display:flex;align-items:center;justify-content:center;color:var(--btc-dark);font-family:'Inter',sans-serif;font-weight:600;font-size:clamp(11px,1vw,14px);text-align:center;padding:2vh 2vw;line-height:1.5}
+.ph.light{background:repeating-linear-gradient(45deg,#FFF8F0,#FFF8F0 10px,#FEF3E2 10px,#FEF3E2 20px);color:var(--btc-dark)}
+
+/* === COMMON HELPERS === */
+.tag{font-size:clamp(13px,1.2vw,17px);color:var(--btc);letter-spacing:5px;font-weight:700;text-transform:uppercase}
+.vignette{position:absolute;inset:0;pointer-events:none;z-index:1}
+
+/* ============================================================ */
+/* S1 — TITLE (dark full-bleed)                                  */
+/* ============================================================ */
+.b1 .slide-inner{background:#1A1A1A;position:relative}
+.b1 .full-bg{position:absolute;inset:0;z-index:0}
+.b1 .full-bg .ph{position:absolute;inset:0;border:none;font-size:clamp(13px,1.2vw,16px);background:radial-gradient(ellipse at 65% 35%,#3D2008 0%,#1A1A1A 65%)}
+.b1 .vignette{background:linear-gradient(105deg,rgba(0,0,0,.88) 0%,rgba(0,0,0,.65) 42%,rgba(0,0,0,.15) 72%,rgba(0,0,0,0) 100%)}
+.b1 .accent-top{position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--btc),var(--btc-dark),var(--btc));background-size:200% 100%;animation:shimmer 3s ease infinite;z-index:3}
+.b1 .title-block{position:absolute;top:16%;left:7%;width:58%;z-index:2}
+.b1 .orange-bar{position:absolute;left:-28px;top:0;bottom:0;width:6px;background:var(--btc);border-radius:3px}
+.b1 .tag{color:var(--btc);letter-spacing:4px;margin-bottom:3vh;text-shadow:0 2px 8px rgba(0,0,0,.5);display:block}
+.b1 h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(44px,6.2vw,98px);color:#fff;font-weight:700;letter-spacing:-0.03em;line-height:1.02;text-shadow:0 4px 40px rgba(0,0,0,.6)}
+.b1 h1 .acc{color:var(--btc);text-shadow:0 0 40px var(--btc-glow)}
+.b1 .sub{font-family:'Playfair Display',Georgia,serif;font-size:clamp(20px,2.4vw,36px);color:rgba(255,255,255,.75);font-weight:400;margin-top:2.5vh;font-style:italic;display:block}
+.b1 .who{font-size:clamp(13px,1.2vw,17px);color:rgba(255,255,255,.65);letter-spacing:4px;margin-top:5vh;text-transform:uppercase;font-weight:500;display:block}
+
+/* ============================================================ */
+/* S2 — NOÉ DÖNTÉSE (warm bg + big quote)                        */
+/* ============================================================ */
+.b2 .slide-inner{background:var(--warm);display:flex;align-items:center;justify-content:center;padding:0 9%;position:relative}
+.b2 .full-bg{position:absolute;inset:0;z-index:0}
+.b2 .full-bg .ph{position:absolute;inset:0;border:none;font-size:0;background:linear-gradient(160deg,#d4e8f5 0%,#a8c8e0 50%,#7aabcc 100%)}
+.b2 .vignette{background:linear-gradient(to right,rgba(250,248,243,.97) 0%,rgba(250,248,243,.9) 38%,rgba(250,248,243,.55) 75%,rgba(250,248,243,.15) 100%)}
+.b2 .content{position:relative;z-index:2;max-width:1300px;width:100%;padding-bottom:15%}
+.b2 .quote-big{font-family:'Playfair Display',Georgia,serif;font-size:clamp(24px,3vw,48px);color:var(--dark);font-weight:500;line-height:1.35;letter-spacing:-0.01em}
+.b2 .quote-big .ql{color:var(--btc);font-size:1.2em}
+.b2 .divider{height:3px;width:80px;background:var(--btc);border-radius:2px;margin:3.5vh 0}
+.b2 .quote-sub{font-family:'Playfair Display',Georgia,serif;font-size:clamp(18px,2vw,30px);color:var(--muted);line-height:1.5;font-style:italic;font-weight:400}
+.b2 .quote-sub strong{color:var(--btc);font-style:normal;font-weight:700}
+
+/* ============================================================ */
+/* S3 — FIGYELEM = ENERGIA (dark, philosophical)                  */
+/* ============================================================ */
+.b3 .slide-inner{background:#111;display:flex;align-items:center;justify-content:center;padding:5% 8%;position:relative}
+.b3 .vignette{background:radial-gradient(ellipse at center,rgba(247,147,26,.05) 0%,rgba(0,0,0,.4) 100%)}
+.b3 .content{position:relative;z-index:2;text-align:center;max-width:1400px;padding-bottom:15%}
+.b3 .eyebrow{font-size:clamp(12px,1.1vw,16px);color:var(--btc);letter-spacing:6px;text-transform:uppercase;font-weight:600;margin-bottom:4vh;display:block}
+.b3 .quote-main{font-family:'Playfair Display',Georgia,serif;font-size:clamp(30px,4.2vw,70px);color:#fff;font-weight:700;line-height:1.15;letter-spacing:-0.02em}
+.b3 .quote-main .acc{color:var(--btc)}
+.b3 .quote-line{height:2px;width:60px;background:var(--btc);border-radius:2px;margin:4vh auto}
+.b3 .quote-sub{font-family:'Playfair Display',Georgia,serif;font-size:clamp(17px,1.9vw,28px);color:rgba(255,255,255,.6);font-style:italic;line-height:1.55;font-weight:400}
+
+/* ============================================================ */
+/* S4 — AMIRE NINCS HATÁSOD (warm, interactive pills)            */
+/* ============================================================ */
+.b4 .slide-inner{background:var(--warm);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4% 7%;position:relative}
+.b4 h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(30px,3.8vw,58px);color:var(--dark);font-weight:500;letter-spacing:-0.02em;text-align:center;margin-bottom:5vh;position:relative;z-index:2;padding-bottom:2%}
+.b4 .pills-row{display:flex;flex-wrap:wrap;gap:1.8vh 2.2vw;justify-content:center;max-width:1300px;position:relative;z-index:2;margin-bottom:4.5vh}
+.danger-pill{background:#fff;border:2px solid var(--btc);border-radius:100px;padding:1.3vh 3vw;font-family:'Playfair Display',Georgia,serif;font-size:clamp(18px,2.3vw,36px);color:var(--dark);font-weight:500;letter-spacing:-0.01em;opacity:0;transform:translateY(22px) scale(.93);transition:opacity .55s ease,transform .55s ease;box-shadow:0 4px 18px rgba(247,147,26,.1)}
+.danger-pill.pill-shown{opacity:1;transform:translateY(0) scale(1)}
+.b4 .footer-note{font-family:'Playfair Display',Georgia,serif;font-size:clamp(16px,1.8vw,26px);color:var(--muted);font-style:italic;text-align:center;position:relative;z-index:2;opacity:0;transition:opacity .6s ease .2s;padding-bottom:15%}
+.b4 .footer-note.shown{opacity:1}
+
+/* ============================================================ */
+/* S5 — A POLITIKA NEM VÁLTOZIK (split + pengő)                  */
+/* ============================================================ */
+.b5 .slide-inner{background:var(--warm);display:flex;align-items:stretch;position:relative}
+.b5 .left-half{width:54%;display:flex;flex-direction:column;justify-content:center;padding:4% 4% 18% 6%;position:relative;z-index:2}
+.b5 .right-half{width:46%;display:flex;align-items:center;justify-content:center;padding:4vh;padding-bottom:18%}
+.b5 .photo-circle{width:min(42vh,90%);height:min(42vh,90%);border-radius:50%;overflow:hidden;border:4px solid var(--btc);box-shadow:0 8px 40px rgba(247,147,26,.2);align-self:center}
+.b5 .photo-circle .ph{width:100%;height:100%;aspect-ratio:1;font-size:10px;padding:1.5vh}
+.b5 .tag{color:var(--btc);display:block;margin-bottom:1.5vh}
+.b5 h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(26px,3.2vw,52px);color:var(--dark);font-weight:500;letter-spacing:-0.02em;line-height:1.15;margin-bottom:2.5vh}
+.b5 .fact-list{list-style:none;padding:0}
+.b5 .fact-list li{font-size:clamp(14px,1.5vw,21px);color:var(--gray);line-height:1.65;padding:.5vh 0;padding-left:1.8vw;position:relative}
+.b5 .fact-list li::before{content:"—";position:absolute;left:0;color:var(--btc);font-weight:700}
+.b5 .fact-list li strong{color:var(--dark);font-weight:600}
+.b5 .bottom-line{margin-top:2.5vh;font-family:'Playfair Display',Georgia,serif;font-size:clamp(16px,1.8vw,26px);color:var(--btc);font-weight:700;font-style:italic;line-height:1.35}
+
+/* ============================================================ */
+/* S6 — THE BIG PRINT IS COMING (dark, two experts)              */
+/* ============================================================ */
+.b6 .slide-inner{background:#0E0E0E;display:flex;flex-direction:column;padding:3% 5% 15% 5%;position:relative;overflow:hidden}
+.b6 .vignette{background:radial-gradient(ellipse at 50% 0%,rgba(247,147,26,.07) 0%,transparent 60%)}
+.b6 .hdr{position:relative;z-index:2;text-align:center;margin-bottom:3vh}
+.b6 .tag{color:var(--btc);display:block;margin-bottom:.8vh}
+.b6 h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,3.8vw,62px);color:#fff;font-weight:700;letter-spacing:-0.02em}
+.b6 h2 strong{color:var(--btc)}
+.b6 .voices{display:flex;gap:2.5vw;flex:1;position:relative;z-index:2}
+.b6 .voice{flex:1;display:flex;gap:2.5vw;align-items:flex-start;background:rgba(255,255,255,.04);padding:2.5vh 2.5vw;border-radius:14px;border:1px solid rgba(247,147,26,.15);border-left:4px solid var(--btc);backdrop-filter:blur(4px)}
+.b6 .face{flex-shrink:0;width:min(11vh,80px);height:min(11vh,80px);border-radius:50%;overflow:hidden;border:2px solid var(--btc);box-shadow:0 0 16px var(--btc-glow)}
+.b6 .face .ph{width:100%;height:100%;font-size:8px;padding:.5vh;background:#1A1A1A;color:var(--btc);border:none}
+.b6 .vtext{flex:1;min-width:0}
+.b6 .voice .name{font-family:'Playfair Display',Georgia,serif;color:var(--btc);font-size:clamp(17px,2.1vw,30px);font-weight:700;line-height:1.2}
+.b6 .voice .role{font-size:clamp(11px,1vw,14px);color:rgba(255,255,255,.45);letter-spacing:2px;text-transform:uppercase;margin:.5vh 0 1.5vh}
+.b6 .voice .msg{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:clamp(13px,1.45vw,20px);color:rgba(255,255,255,.88);line-height:1.6}
+.b6 .bottom-bar{position:relative;z-index:2;margin-top:2.5vh;background:rgba(247,147,26,.07);border:1px solid rgba(247,147,26,.2);border-radius:10px;padding:1.8vh 2.5vw;font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:clamp(13px,1.4vw,19px);color:rgba(255,255,255,.72);line-height:1.55;text-align:center}
+.b6 .bottom-bar strong{color:var(--btc);font-style:normal}
+
+/* ============================================================ */
+/* S7 — AMIRE VAN HATÁSOD (dark, pivot, single big orange line)  */
+/* ============================================================ */
+.b7 .slide-inner{background:#111;display:flex;align-items:center;justify-content:center;padding:4% 8%;position:relative}
+.b7 .vignette{background:radial-gradient(ellipse at center,rgba(247,147,26,.06) 0%,transparent 70%)}
+.b7 .content{position:relative;z-index:2;text-align:center;padding-bottom:15%}
+.b7 .eyebrow{font-size:clamp(12px,1.1vw,16px);color:rgba(255,255,255,.3);letter-spacing:6px;text-transform:uppercase;font-weight:500;margin-bottom:3.5vh;display:block}
+.b7 .main-sentence{font-family:'Playfair Display',Georgia,serif;font-size:clamp(50px,7.5vw,130px);color:var(--btc);font-weight:900;letter-spacing:-0.03em;line-height:1.0}
+.b7 .sub-line{font-family:'Playfair Display',Georgia,serif;font-size:clamp(18px,2.1vw,32px);color:rgba(255,255,255,.45);font-style:italic;margin-top:3.5vh;font-weight:400}
+
+/* ============================================================ */
+/* S8 — AMIT 3 NAP ALATT MEGTANULTUNK (warm, 3 stat cards)       */
+/* ============================================================ */
+.b8 .slide-inner{background:var(--warm);display:flex;flex-direction:column;align-items:center;padding:3.5% 5% 15% 5%;position:relative}
+.b8 h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(24px,3.1vw,48px);color:var(--dark);font-weight:500;letter-spacing:-0.02em;text-align:center;margin-bottom:3.5vh;position:relative;z-index:2}
+.b8 .cards-row{display:flex;gap:2.5vw;max-width:1400px;width:94%;position:relative;z-index:2;flex:1;align-items:center}
+.b8 .num-card{flex:1;background:#fff;border-radius:16px;border:1px solid rgba(0,0,0,.06);border-top:4px solid var(--btc);padding:3.5vh 2.5vw;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.05)}
+.b8 .num-card .big-num{font-family:'Playfair Display',Georgia,serif;font-size:clamp(42px,5.8vw,90px);color:var(--btc);font-weight:900;line-height:1.05;letter-spacing:-0.02em}
+.b8 .num-card .label{font-size:clamp(12px,1.1vw,16px);color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-top:1.2vh;font-weight:600}
+.b8 .num-card .desc{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:clamp(14px,1.55vw,22px);color:var(--gray);margin-top:1.8vh;line-height:1.45}
+.b8 .cta{margin-top:3.5vh;font-family:'Playfair Display',Georgia,serif;font-size:clamp(17px,1.9vw,28px);color:var(--muted);font-style:italic;text-align:center;position:relative;z-index:2}
+.b8 .cta strong{color:var(--btc);font-style:normal;font-weight:700}
+
+/* ============================================================ */
+/* S9 — FEKTESS MAGADBA (warm, SVG circles + steps)             */
+/* ============================================================ */
+.b9 .slide-inner{background:var(--warm);display:flex;align-items:center;padding:3% 5% 15% 6%;position:relative;gap:4vw}
+.b9 .left-text{flex:1.1;display:flex;flex-direction:column;justify-content:center;z-index:2;min-width:0}
+.b9 .tag{color:var(--btc);display:block;margin-bottom:1.5vh}
+.b9 h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(24px,3vw,48px);color:var(--dark);font-weight:500;letter-spacing:-0.02em;margin-bottom:2.5vh;line-height:1.2}
+.b9 .step-list{list-style:none;padding:0}
+.b9 .step-list li{display:flex;align-items:flex-start;gap:1.4vw;padding:.9vh 0;font-size:clamp(14px,1.55vw,22px);color:var(--gray);line-height:1.55}
+.b9 .step-num{flex-shrink:0;width:clamp(26px,2.3vw,38px);height:clamp(26px,2.3vw,38px);background:var(--btc);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:clamp(12px,1.2vw,18px);margin-top:.15vh}
+.b9 .step-list li strong{color:var(--dark);font-weight:600}
+.b9 .bottom-quote{margin-top:2.5vh;font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:clamp(15px,1.6vw,24px);color:var(--btc-dark);line-height:1.5}
+.b9 .right-visual{flex:.95;display:flex;align-items:center;justify-content:center;z-index:2;min-width:0}
+.b9 svg.rings{width:100%;max-width:min(46vh,100%);aspect-ratio:1}
+
+/* ============================================================ */
+/* S10 — HA MAGÁNSZEMÉLY VAGY (warm, personal, centered)         */
+/* ============================================================ */
+.b10 .slide-inner{background:var(--warm);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4% 10%;position:relative;text-align:center}
+.b10 h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,3.5vw,54px);color:var(--dark);font-weight:500;letter-spacing:-0.02em;margin-bottom:4vh;position:relative;z-index:2;padding-bottom:1%}
+.b10 .line-block{max-width:1200px;position:relative;z-index:2;padding-bottom:15%}
+.b10 .line-item{font-family:'Playfair Display',Georgia,serif;font-size:clamp(19px,2.3vw,36px);color:var(--gray);line-height:1.5;margin-bottom:2.2vh;font-weight:400}
+.b10 .line-item strong{color:var(--btc);font-weight:700}
+.b10 .line-item em{color:var(--dark);font-style:normal;font-weight:600}
+.b10 .closing{margin-top:1.5vh;font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:clamp(15px,1.65vw,24px);color:var(--muted);position:relative;z-index:2}
+
+/* ============================================================ */
+/* S11 — HA VÁLLALKOZÓ VAGY (warm, 2x2 cards)                   */
+/* ============================================================ */
+.b11 .slide-inner{background:var(--warm);display:flex;flex-direction:column;align-items:center;padding:3% 5% 14% 5%;position:relative}
+.b11 h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(24px,3.1vw,48px);color:var(--dark);font-weight:500;letter-spacing:-0.02em;margin-bottom:.8vh;position:relative;z-index:2;text-align:center}
+.b11 .sub-prompt{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:clamp(15px,1.7vw,24px);color:var(--muted);margin-bottom:2.5vh;position:relative;z-index:2}
+.b11 .grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5vw 2vw;max-width:1350px;width:94%;position:relative;z-index:2}
+.b11 .v-card{background:#fff;border-radius:14px;border:1px solid rgba(0,0,0,.06);border-left:4px solid var(--btc);padding:2.2vh 2.2vw;display:flex;align-items:flex-start;gap:1.4vw;box-shadow:0 3px 14px rgba(0,0,0,.05)}
+.b11 .v-num{flex-shrink:0;width:clamp(30px,2.8vw,44px);height:clamp(30px,2.8vw,44px);background:rgba(247,147,26,.1);border:2px solid rgba(247,147,26,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',Georgia,serif;font-size:clamp(14px,1.5vw,22px);color:var(--btc);font-weight:700}
+.b11 .v-text p{font-size:clamp(14px,1.5vw,21px);color:var(--gray);line-height:1.55}
+.b11 .v-text p strong{color:var(--dark);font-weight:600}
+.b11 .bottom-note{margin-top:2.2vh;font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:clamp(15px,1.65vw,22px);color:var(--btc-dark);font-weight:700;text-align:center;position:relative;z-index:2}
+
+/* ============================================================ */
+/* S12 — ZÁRLAT (dark closing)                                   */
+/* ============================================================ */
+.b12 .slide-inner{background:#1A1A1A;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:4% 5% 17% 8%;position:relative;overflow:hidden}
+.b12 .accent-line{position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--btc),var(--btc-dark),var(--btc));background-size:200% 100%;animation:shimmer 3s ease infinite;z-index:3}
+.b12 .vignette{background:radial-gradient(ellipse at 50% 60%,rgba(247,147,26,.05) 0%,transparent 70%)}
+.b12 .content{position:relative;z-index:2;max-width:1350px}
+.b12 .quote-top{font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,3.8vw,68px);color:#fff;font-weight:700;font-style:italic;line-height:1.1;letter-spacing:-0.02em;text-shadow:0 4px 40px rgba(0,0,0,.8)}
+.b12 .quote-top .acc{color:var(--btc)}
+.b12 .quote-line{height:3px;width:80px;background:var(--btc);border-radius:2px;margin:3.5vh 0}
+.b12 .tagline{font-family:'Playfair Display',Georgia,serif;font-size:clamp(20px,2.4vw,38px);color:rgba(255,255,255,.78);font-style:italic;font-weight:400;line-height:1.4;margin-bottom:2vh}
+.b12 .cta-line{font-family:'Playfair Display',Georgia,serif;font-size:clamp(24px,3vw,52px);color:var(--btc);font-weight:700;letter-spacing:-0.01em}
+.b12 .attribution{margin-top:5vh}
+.b12 .attr-name{font-family:'Playfair Display',Georgia,serif;font-size:clamp(16px,1.9vw,28px);color:#fff;font-weight:700;text-shadow:0 2px 16px rgba(0,0,0,.5)}
+.b12 .attr-site{font-size:clamp(12px,1.2vw,18px);color:var(--btc);margin-top:.6vh}
+
+/* === KEY HINT === */
+.key-hint{position:fixed;bottom:10px;left:20px;font-size:11px;color:rgba(255,255,255,.15);z-index:100;transition:opacity 3s ease}
 </style>
 </head>
 <body>
 <div class="deck">
+
+  <!-- ========== S1: TITLE ========== -->
+  <div class="slide b1 active">
+    <div class="slide-inner">
+      <div class="full-bg">
+        <div class="ph">[KÉP: Bárka hullámok felett, narancs fény, viharos ég]</div>
+      </div>
+      <div class="vignette"></div>
+      <div class="accent-top"></div>
+      <div class="title-block">
+        <div class="orange-bar"></div>
+        <span class="tag anim fu del1">Bitcoin Miskolc 2026 · Vasárnap · 12:00</span>
+        <h1 class="anim fu del2">A Magyar<br><span class="acc">Bitcoin</span> Bárka</h1>
+        <span class="sub anim fu del3">Záró előadás · 30 perc</span>
+        <span class="who anim fu del5">Kovács Ferenc</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== S2: NOÉ DÖNTÉSE ========== -->
+  <div class="slide b2">
+    <div class="slide-inner">
+      <div class="full-bg">
+        <div class="ph" style="position:absolute;inset:0;border:none;font-size:clamp(10px,.9vw,13px)">[KÉP: Bárka építés alatt, kék ég, fenyegető felhők a horizonton]</div>
+      </div>
+      <div class="vignette"></div>
+      <div class="content">
+        <div class="quote-big anim fu del1">
+          <span class="ql">„</span>Noét kinevették, amiért hajót kezdett építeni, amikor még nem esett az eső.<span class="ql">„</span>
+        </div>
+        <div class="divider anim fs del3"></div>
+        <div class="quote-sub anim fu del4">Mi is ott tartunk. A bárka <strong>ma épül</strong> — és Te döntöd el, hogy <strong>felszállsz-e.</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== S3: FIGYELEM = ENERGIA ========== -->
+  <div class="slide b3">
+    <div class="slide-inner">
+      <div class="vignette"></div>
+      <div class="content">
+        <span class="eyebrow anim fu del1">Filozofikus nyitó</span>
+        <div class="quote-main anim fu del2">„Amerre a <span class="acc">figyelem</span> irányul,<br>arra megy az <span class="acc">energia</span>."</div>
+        <div class="quote-line anim fs del4"></div>
+        <div class="quote-sub anim fu del5">Ebben a változó világban a legfontosabb kérdés:<br>mire figyelsz?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== S4: AMIRE NINCS HATÁSOD (interactive, 5 clicks) ========== -->
+  <div class="slide b4" data-clicks="5">
+    <div class="slide-inner">
+      <h2 class="anim fu del1">Amire <span style="font-style:italic;color:var(--muted)">nincs</span> hatásod</h2>
+      <div class="pills-row">
+        <span class="danger-pill">Időjárás</span>
+        <span class="danger-pill">Politika</span>
+        <span class="danger-pill">Geopolitika</span>
+        <span class="danger-pill">Hormuzi-szoros</span>
+        <span class="danger-pill">Háború</span>
+      </div>
+      <div class="footer-note">Ezeket nem te döntöd el.</div>
+    </div>
+  </div>
+
+  <!-- ========== S5: A POLITIKA NEM VÁLTOZIK ========== -->
+  <div class="slide b5">
+    <div class="slide-inner">
+      <div class="left-half">
+        <span class="tag anim fu del1">1946 → Ma</span>
+        <h2 class="anim fu del2">A politika<br>nem változik</h2>
+        <ul class="fact-list">
+          <li class="anim fu del3"><strong>1946:</strong> a pengő hiperinfláció — a világ valaha volt legnagyobb inflációja.</li>
+          <li class="anim fu del4">A történelem rímel.</li>
+          <li class="anim fu del5">Évszázadokon keresztül ugyanazt csinálják — más köntösben, más díszletben, de mindig ugyanaz a vége.</li>
+          <li class="anim fu del6"><strong>Nincs más lehetőségük: nyomtatni.</strong></li>
+        </ul>
+        <div class="bottom-line anim fu del7">„Aki nem tanul a történelemből,<br>kénytelen megismételni."</div>
+      </div>
+      <div class="right-half">
+        <div class="photo-circle anim fs del3">
+          <div class="ph light" style="width:100%;height:100%">[KÉP: Pengő hiperinfláció 1946 — egymilliárd pengős bankjegy]</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== S6: THE BIG PRINT IS COMING (dark) ========== -->
+  <div class="slide b6">
+    <div class="slide-inner">
+      <div class="vignette"></div>
+      <div class="hdr">
+        <span class="tag anim fu del1">Globális makró</span>
+        <h2 class="anim fu del2">The <strong>Big Print</strong> is coming</h2>
+      </div>
+      <div class="voices">
+        <div class="voice anim fs del3">
+          <div class="face"><div class="ph">[Lyn Alden fotó]</div></div>
+          <div class="vtext">
+            <div class="name">Lyn Alden</div>
+            <div class="role">Makró stratéga</div>
+            <div class="msg">„Semmi nem állíthatja meg ezt a vonatot. A fiskális dominancia korszakában a QE már nem eszköz — <em>kényszer.</em>"</div>
+          </div>
+        </div>
+        <div class="voice anim fs del4">
+          <div class="face"><div class="ph">[Lawrence Lepard fotó]</div></div>
+          <div class="vtext">
+            <div class="name">Lawrence Lepard</div>
+            <div class="role">EMA Capital — „Big Print"</div>
+            <div class="msg">„Amikor a Big Print megérkezik, a szűkös monetáris eszközök átárazódnak. A Bitcoin az egyetlen, ami <em>nem hígul fel.</em>"</div>
+          </div>
+        </div>
+      </div>
+      <div class="bottom-bar anim fu del6">A globális adósság-torony fenntarthatatlan. Kétféle kimenet: defláció + default, vagy inflációs monetizálás. A történelem mindig <strong>az utóbbit választotta.</strong></div>
+    </div>
+  </div>
+
+  <!-- ========== S7: AMIRE VAN HATÁSOD (pivot, dark, single sentence) ========== -->
+  <div class="slide b7">
+    <div class="slide-inner">
+      <div class="vignette"></div>
+      <div class="content">
+        <span class="eyebrow anim fu del1">A fordulópont</span>
+        <div class="main-sentence anim gp del2">„A saját<br>tetteidre."</div>
+        <div class="sub-line anim fu del4">Erre van hatásod.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== S8: AMIT 3 NAP ALATT MEGTANULTUNK ========== -->
+  <div class="slide b8">
+    <div class="slide-inner">
+      <h2 class="anim fu del1">Amit 3 nap alatt megtanultunk</h2>
+      <div class="cards-row">
+        <div class="num-card anim np del2">
+          <div class="big-num">21M</div>
+          <div class="label">Soha több</div>
+          <div class="desc">Matematikailag garantált véges készlet — senki nem változtathatja meg</div>
+        </div>
+        <div class="num-card anim np del4">
+          <div class="big-num" style="font-size:clamp(38px,5vw,78px)">10<sup style="font-size:.48em;vertical-align:super">77</sup></div>
+          <div class="label">Kombináció</div>
+          <div class="desc">Ennyi lehetséges privát kulcs — a tárca feltörhetetlen</div>
+        </div>
+        <div class="num-card anim np del6">
+          <div class="big-num">1M+</div>
+          <div class="label">trx / sec Lightning</div>
+          <div class="desc">Villámgyors, olcsó, globális fizetés már ma</div>
+        </div>
+      </div>
+      <div class="cta anim fu del8">Ezt 3 nap alatt tanultátok meg. A kérdés: mit <strong>TESZEL</strong> vele?</div>
+    </div>
+  </div>
+
+  <!-- ========== S9: FEKTESS MAGADBA ========== -->
+  <div class="slide b9">
+    <div class="slide-inner">
+      <div class="left-text">
+        <span class="tag anim fu del1">Prioritások</span>
+        <h2 class="anim fu del2">Először: fektess<br>magadba</h2>
+        <ul class="step-list">
+          <li class="anim fu del3">
+            <span class="step-num">1</span>
+            <span><strong>Magad</strong> — egészség, tudás, energia. Ez a legjobb befektetés.</span>
+          </li>
+          <li class="anim fu del4">
+            <span class="step-num">2</span>
+            <span><strong>Akik melletted vannak</strong> — család, közösség. A kapcsolatok értéke felbecsülhetetlen.</span>
+          </li>
+          <li class="anim fu del5">
+            <span class="step-num">3</span>
+            <span><strong>Mindenki más</strong> — ha ezekből marad energia és erőforrás.</span>
+          </li>
+        </ul>
+        <div class="bottom-quote anim fu del6">„Amit ebből megtermelsz, azt tedd Bitcoinba — mert az a legbiztonságosabb hely."</div>
+      </div>
+      <div class="right-visual">
+        <!-- Inline SVG concentric circles -->
+        <svg class="rings anim fs del3" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" style="overflow:visible">
+          <circle cx="200" cy="200" r="188" fill="rgba(247,147,26,.05)" stroke="#F7931A" stroke-width="1.8" stroke-dasharray="8 6"/>
+          <circle cx="200" cy="200" r="130" fill="rgba(247,147,26,.09)" stroke="#F7931A" stroke-width="2.2" stroke-dasharray="6 4"/>
+          <circle cx="200" cy="200" r="74" fill="rgba(247,147,26,.18)" stroke="#F7931A" stroke-width="3"/>
+          <!-- Labels -->
+          <text x="200" y="207" text-anchor="middle" font-family="Playfair Display,Georgia,serif" font-size="22" fill="#F7931A" font-weight="700">Magad</text>
+          <text x="200" y="147" text-anchor="middle" font-family="Inter,sans-serif" font-size="15" fill="#D97B0E" font-weight="600">Akik melletted vannak</text>
+          <text x="200" y="83" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" fill="#555" font-weight="500">Mindenki más</text>
+          <!-- Arrow + BTC label -->
+          <text x="200" y="248" text-anchor="middle" font-family="Playfair Display,Georgia,serif" font-size="16" fill="rgba(247,147,26,.6)" font-style="italic">→ Bitcoin</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== S10: HA MAGÁNSZEMÉLY VAGY ========== -->
+  <div class="slide b10">
+    <div class="slide-inner">
+      <h2 class="anim fu del1">Ha magánszemély vagy</h2>
+      <div class="line-block">
+        <div class="line-item anim fu del2">Ülsz itt, ebben a teremben. Amit tehetsz: <em>elkezded.</em></div>
+        <div class="line-item anim fu del4">Heti <strong>3&thinsp;000 Ft</strong>, havi <strong>50&thinsp;000</strong> — mindegy.<br>A lényeg, hogy <strong>ELKEZDED.</strong></div>
+        <div class="line-item anim fu del6">A Bitcoin nem vár rád,<br>de nem is megy el nélküled.</div>
+      </div>
+      <div class="closing anim fu del8">Nincs tökéletes pillanat. Csak az első lépés.</div>
+    </div>
+  </div>
+
+  <!-- ========== S11: HA VÁLLALKOZÓ VAGY ========== -->
+  <div class="slide b11">
+    <div class="slide-inner">
+      <h2 class="anim fu del1">Ha vállalkozó vagy</h2>
+      <div class="sub-prompt anim fu del2">„Fogadd el a Bitcoint. Nincs hátránya."</div>
+      <div class="grid">
+        <div class="v-card anim crd del3">
+          <span class="v-num">1</span>
+          <div class="v-text"><p>Az elején <strong>úgysem fizetnek sokan</strong> — kockázat nélkül kipróbálhatod a rendszert</p></div>
+        </div>
+        <div class="v-card anim crd del4">
+          <span class="v-num">2</span>
+          <div class="v-text"><p>Ha mégis → a <strong>többi forgalmad is nő</strong> — a Bitcoin-ügyfelek lojálisak és vásárolnak</p></div>
+        </div>
+        <div class="v-card anim crd del5">
+          <span class="v-num">3</span>
+          <div class="v-text"><p><strong>Nagyon jó marketing</strong> — kiemelsz a tömegből, figyelmet keltesz, PR értéke felbecsülhetetlen</p></div>
+        </div>
+        <div class="v-card anim crd del6">
+          <span class="v-num">4</span>
+          <div class="v-text"><p><strong>Társadalmi felelősség</strong> — hozzájárulsz egy igazságosabb pénzrendszerhez. Jót teszel.</p></div>
+        </div>
+      </div>
+      <div class="bottom-note anim fu del7">Mi csináljuk, nem csak beszélünk róla.</div>
+    </div>
+  </div>
+
+  <!-- ========== S12: ZÁRLAT ========== -->
+  <div class="slide b12">
+    <div class="slide-inner">
+      <div class="accent-line"></div>
+      <div class="vignette"></div>
+      <div class="content">
+        <div class="quote-top anim fu del1">„Amerre a <span class="acc">figyelem</span> irányul,<br>arra megy az <span class="acc">energia</span>."</div>
+        <div class="quote-line anim fs del3"></div>
+        <div class="tagline anim fu del4">Irányítsd a figyelmedet arra,<br>amire hatásod van.</div>
+        <div class="cta-line anim fu del5">Köszönöm. Kezdd ma.</div>
+        <div class="attribution anim fu del7">
+          <div class="attr-name">Kovács Ferenc</div>
+          <div class="attr-site">ferenckovacs.com</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
 <div class="progress-wrap"><div class="progress-fill" id="progress"></div></div>
-<div class="counter" id="counter"></div>
-
-<!-- S1: CÍMLAP -->
-<div class="slide active dark-slide s1">
-<div class="slide-inner center-col" style="justify-content:center;padding-bottom:10vh">
-<div class="ph dark" style="position:absolute;inset:0;border:none;border-radius:0;opacity:.3;z-index:0">[KÉP: Bárka a viharos tengeren, narancs fény az égbolton, Bitcoin szimbólum]</div>
-<div style="position:relative;z-index:1;text-align:center">
-<div class="tag anim fu del1" style="color:var(--btc)">BITCOIN MISKOLC 2026</div>
-<h1 class="title anim fu del2" style="color:#fff;font-size:clamp(42px,5.5vw,80px);margin-top:2vh">A Magyar Bitcoin <span class="o">Bárka</span></h1>
-<p class="sub anim fu del3" style="color:rgba(255,255,255,.6);margin-top:2vh">Vasárnap · 12:00 · 30 perc</p>
-<p class="anim fu del4" style="color:rgba(255,255,255,.45);font-size:clamp(16px,1.5vw,20px);margin-top:3vh">Kovács Ferenc</p>
-</div></div></div>
-
-<!-- S2: NOÉ DÖNTÉSE -->
-<div class="slide s2">
-<div class="slide-inner split" style="background:var(--warm)">
-<div class="left-col">
-<div class="tag anim fu del1">A BÁRKA</div>
-<h2 class="title anim fu del2" style="margin-top:1vh">Noé <strong>döntése</strong></h2>
-<p class="quiet anim fu del3" style="margin-top:2.5vh;max-width:90%">"Noét kinevették, amiért hajót kezdett építeni, amikor még nem esett az eső."</p>
-<p class="body anim fu del4" style="margin-top:2vh;max-width:90%">Mi is ott tartunk.<br>A bárka <strong>ma épül</strong> — és Te döntöd el, hogy felszállsz-e.</p>
-</div>
-<div class="ph anim fs del3" style="height:55vh;border-radius:16px">[KÉP: Bárka építés alatt, kék ég, fenyegető felhők a horizonton, közösség dolgozik rajta]</div>
-</div></div>
-
-<!-- S3: FIGYELEM = ENERGIA -->
-<div class="slide dark-slide s3">
-<div class="slide-inner center-col">
-<h2 class="serif anim fu del1" style="color:#fff;font-size:clamp(28px,3.5vw,52px);font-style:italic;max-width:80%;text-align:center;line-height:1.3">„Amerre a figyelem irányul,<br>arra megy az <span style="color:var(--btc)">energia</span>."</h2>
-<p class="sub anim fu del2" style="color:rgba(255,255,255,.5);margin-top:4vh;font-size:clamp(16px,1.6vw,22px)">Ebben a változó világban a legfontosabb kérdés:<br><strong style="color:#fff">mire figyelsz?</strong></p>
-</div></div>
-
-<!-- S4: AMIRE NINCS HATÁSOD -->
-<div class="slide s4">
-<div class="slide-inner center-col" style="background:var(--warm)">
-<div class="ph ghost" style="position:absolute;inset:0;border:none;border-radius:0;opacity:.15;z-index:0">[KÉP: Viharos tenger vagy világtérkép, elhomályosítva]</div>
-<div style="position:relative;z-index:1;text-align:center">
-<div class="tag anim fu del1">REALITÁS</div>
-<h2 class="title anim fu del2" style="margin-top:1vh">Amire <strong>nincs</strong> hatásod</h2>
-<div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:4vh">
-<span class="pill anim crd del2">Időjárás</span>
-<span class="pill anim crd del3">Politika</span>
-<span class="pill anim crd del4">Geopolitika</span>
-<span class="pill anim crd del5">Hormuzi-szoros</span>
-<span class="pill anim crd del6">Háború</span>
-</div>
-<p class="quiet anim fu del6" style="margin-top:4vh">"Ezeket nem te döntöd el."</p>
-</div></div></div>
-
-<!-- S5: A POLITIKA NEM VÁLTOZIK (PENGŐ) -->
-<div class="slide s5">
-<div class="slide-inner split" style="background:var(--warm)">
-<div class="ph anim fs del2" style="height:50vh;border-radius:16px">[KÉP: 1946 pengő hiperinfláció — egymilliárd pengős bankjegy, hiteles történelmi fotó]</div>
-<div class="left-col">
-<div class="tag anim fu del1">TÖRTÉNELEM</div>
-<h2 class="title anim fu del2" style="margin-top:1vh">A politika <strong>nem változik</strong></h2>
-<p class="body anim fu del3" style="margin-top:2vh"><strong>1946:</strong> a pengő hiperinfláció — a világ valaha volt legnagyobb inflációja.</p>
-<p class="quiet anim fu del4" style="margin-top:2vh">"A történelem rímel."</p>
-<p class="body anim fu del5" style="margin-top:2vh">Évszázadokon keresztül ugyanazt csinálják — más köntösben, más díszletben, de mindig ugyanaz a vége.</p>
-<p class="body anim fu del6" style="margin-top:2vh"><strong>Nincs más lehetőségük: nyomtatni.</strong></p>
-</div>
-</div></div>
-
-<!-- S6: THE BIG PRINT IS COMING -->
-<div class="slide dark-slide s6">
-<div class="slide-inner" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding-bottom:12vh">
-<div class="tag anim fu del1" style="color:var(--btc)">A MAKRÓ HÁTTÉR</div>
-<h2 class="serif anim fu del2" style="color:#fff;font-size:clamp(36px,4.5vw,64px);margin-top:1.5vh">The <span style="color:var(--btc)">Big Print</span> is coming</h2>
-<p class="sub anim fu del3" style="max-width:75%;margin:2vh auto 0">A globális adósság-torony fenntarthatatlan. Kétféle kimenet: defláció + default, vagy <em>inflációs monetizálás</em>. A történelem mindig az utóbbit választotta.</p>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:3vw;margin-top:4vh;max-width:85%">
-<div class="dark-card anim crd del4" style="display:flex;gap:16px;align-items:flex-start">
-<div class="ph dark circle" style="min-width:clamp(60px,6vw,90px);height:clamp(60px,6vw,90px);border-radius:50%">Lyn Alden fotó</div>
-<div><div class="name">Lyn Alden</div><div class="role" style="margin-bottom:8px">MAKRÓ STRATÉGA</div>
-<p style="font-style:italic;font-size:clamp(13px,1.1vw,16px)">"Semmi nem állíthatja meg ezt a vonatot. A fiskális dominancia korszakában a QE már nem eszköz — kényszer."</p></div>
-</div>
-<div class="dark-card anim crd del5" style="display:flex;gap:16px;align-items:flex-start">
-<div class="ph dark circle" style="min-width:clamp(60px,6vw,90px);height:clamp(60px,6vw,90px);border-radius:50%">Lawrence Lepard fotó</div>
-<div><div class="name">Lawrence Lepard</div><div class="role" style="margin-bottom:8px">EQUITY MANAGEMENT · "BIG PRINT"</div>
-<p style="font-style:italic;font-size:clamp(13px,1.1vw,16px)">"Amikor a Big Print megérkezik, a szűkös monetáris eszközök átárazódnak. A Bitcoin az egyetlen, ami nem hígul fel."</p></div>
-</div>
-</div>
-</div></div>
-
-<!-- S7: AMIRE VAN HATÁSOD -->
-<div class="slide dark-slide s7">
-<div class="slide-inner center-col">
-<h2 class="serif anim fu del1" style="color:var(--btc);font-size:clamp(40px,5.5vw,80px);text-align:center;line-height:1.1">A saját tetteidre.</h2>
-<p class="anim fu del2" style="color:rgba(255,255,255,.35);font-size:clamp(14px,1.3vw,18px);margin-top:4vh">Amire VAN hatásod.</p>
-</div></div>
-
-<!-- S8: AMIT 3 NAP UTÁN TUDUNK -->
-<div class="slide s8">
-<div class="slide-inner center-col" style="background:var(--warm)">
-<div class="tag anim fu del1">VISSZATEKINTÉS</div>
-<h2 class="title anim fu del2" style="margin-top:1vh">Amit <strong>3 nap</strong> alatt megtanultunk</h2>
-<div style="display:flex;gap:clamp(12px,2vw,28px);margin-top:5vh;flex-wrap:wrap;justify-content:center">
-<div class="card anim crd del3" style="text-align:center;min-width:clamp(160px,18vw,240px)"><div style="font-family:'Playfair Display',serif;font-size:clamp(36px,4vw,60px);color:var(--btc);font-weight:700">21M</div><p style="color:var(--muted);margin-top:4px">soha több · véges</p></div>
-<div class="card anim crd del4" style="text-align:center;min-width:clamp(160px,18vw,240px)"><div style="font-family:'Playfair Display',serif;font-size:clamp(36px,4vw,60px);color:var(--btc);font-weight:700">10<sup>77</sup></div><p style="color:var(--muted);margin-top:4px">kombináció · feltörhetetlen</p></div>
-<div class="card anim crd del5" style="text-align:center;min-width:clamp(160px,18vw,240px)"><div style="font-family:'Playfair Display',serif;font-size:clamp(36px,4vw,60px);color:var(--btc);font-weight:700">1M+</div><p style="color:var(--muted);margin-top:4px">trx/sec · Lightning</p></div>
-</div>
-<p class="quiet anim fu del6" style="margin-top:4vh">Ezt 3 nap alatt tanultátok meg. A kérdés: <strong style="color:var(--dark)">mit TESZEL vele?</strong></p>
-</div></div>
-
-<!-- S9: FEKTESS MAGADBA -->
-<div class="slide s9">
-<div class="slide-inner split" style="background:var(--warm)">
-<div class="left-col">
-<div class="tag anim fu del1">CSELEKVÉS</div>
-<h2 class="title anim fu del2" style="margin-top:1vh">Először: fektess <strong>magadba</strong></h2>
-<p class="body anim fu del3" style="margin-top:2.5vh"><strong>Egészség. Tudás. Energia.</strong></p>
-<p class="body anim fu del4" style="margin-top:1.5vh">"Amit ebből megtermelsz, azt tedd Bitcoinba — mert az a legbiztonságosabb hely."</p>
-<div style="margin-top:3vh">
-<p class="body anim fu del5"><strong>1.</strong> Magad — egészség, tudás</p>
-<p class="body anim fu del5" style="margin-top:8px"><strong>2.</strong> Akik melletted vannak — család, közösség</p>
-<p class="body anim fu del6" style="margin-top:8px"><strong>3.</strong> Mindenki más</p>
-</div>
-</div>
-<div class="ph anim fs del3" style="height:50vh;border-radius:16px">[KÉP: Koncentrikus körök — én → család → közösség, warm tónusú, napfényes]</div>
-</div></div>
-
-<!-- S10: HA MAGÁNSZEMÉLY VAGY -->
-<div class="slide s10">
-<div class="slide-inner center-col" style="background:var(--warm)">
-<div class="tag anim fu del1">MAGÁNSZEMÉLYEKNEK</div>
-<h2 class="title anim fu del2" style="margin-top:1vh">Ha <strong>magánszemély</strong> vagy</h2>
-<p class="body anim fu del3" style="margin-top:3vh;max-width:70%;text-align:center;font-size:clamp(18px,1.8vw,26px)">Ülsz itt, ebben a teremben.<br>Amit tehetsz: <strong>elkezded.</strong></p>
-<div style="display:flex;gap:clamp(12px,2vw,28px);margin-top:4vh;flex-wrap:wrap;justify-content:center">
-<div class="card anim crd del4" style="text-align:center;padding:clamp(18px,2vh,28px) clamp(24px,3vw,40px)"><div style="font-family:'Playfair Display',serif;font-size:clamp(28px,3vw,44px);color:var(--btc);font-weight:700">heti 3000 Ft</div></div>
-<div class="card anim crd del5" style="text-align:center;padding:clamp(18px,2vh,28px) clamp(24px,3vw,40px)"><div style="font-family:'Playfair Display',serif;font-size:clamp(28px,3vw,44px);color:var(--btc);font-weight:700">havi 50.000</div></div>
-</div>
-<p class="quiet anim fu del6" style="margin-top:3vh;max-width:65%;text-align:center">Mindegy melyik. A lényeg hogy <strong style="color:var(--dark)">ELKEZDED.</strong><br>A Bitcoin nem vár rád, de nem is megy el nélküled.</p>
-</div></div>
-
-<!-- S11: HA VÁLLALKOZÓ VAGY -->
-<div class="slide s11">
-<div class="slide-inner" style="background:var(--warm);display:flex;flex-direction:column;justify-content:center;padding-left:8%;padding-right:8%">
-<div class="tag anim fu del1">VÁLLALKOZÓKNAK</div>
-<h2 class="title anim fu del2" style="margin-top:1vh">Ha <strong>vállalkozó</strong> vagy</h2>
-<p class="body anim fu del3" style="margin-top:2vh;font-size:clamp(20px,2vw,28px)">Fogadd el a Bitcoint. <strong>Nincs hátránya.</strong></p>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(10px,1.5vw,20px);margin-top:3vh;max-width:90%">
-<div class="card anim crd del3"><h3>1</h3><p>Az elején úgysem fizetnek sokan vele</p></div>
-<div class="card anim crd del4"><h3>2</h3><p>Ha mégis → a többi forgalmad is felmegy</p></div>
-<div class="card anim crd del5"><h3>3</h3><p>Nagyon jó marketing</p></div>
-<div class="card anim crd del6"><h3>4</h3><p>Társadalmi felelősség — jót teszel</p></div>
-</div>
-<p class="quiet anim fu del6" style="margin-top:3vh"><strong style="color:var(--dark)">Mi csináljuk, nem csak beszélünk róla.</strong></p>
-</div></div>
-
-<!-- S12: ZÁRLAT -->
-<div class="slide dark-slide s12">
-<div class="slide-inner center-col">
-<h2 class="serif anim fu del1" style="color:#fff;font-size:clamp(26px,3.2vw,48px);font-style:italic;max-width:80%;text-align:center;line-height:1.3">„Amerre a figyelem irányul,<br>arra megy az <span style="color:var(--btc)">energia</span>."</h2>
-<p class="anim fu del2" style="color:rgba(255,255,255,.7);font-size:clamp(18px,2vw,28px);margin-top:4vh;font-weight:500;text-align:center">Irányítsd a figyelmedet arra,<br>amire <strong style="color:var(--btc)">hatásod van</strong>.</p>
-<p class="anim fu del3" style="color:var(--btc);font-size:clamp(22px,2.5vw,36px);margin-top:5vh;font-weight:700">Köszönöm. Kezdd ma.</p>
-<p class="anim fu del4" style="color:rgba(255,255,255,.3);font-size:clamp(14px,1.2vw,18px);margin-top:4vh">Kovács Ferenc · ferenckovacs.com</p>
-</div></div>
-
-</div><!-- /deck -->
+<div class="slide-counter" id="counter"></div>
+<div class="key-hint" id="hint">← → nyilakkal vagy kattintással &nbsp;|&nbsp; F = teljes képernyő</div>
 
 <script>
-const slides=document.querySelectorAll('.slide');
-const total=slides.length;
-let current=0;
-function goTo(n){
-  if(n<0||n>=total)return;
-  slides[current].classList.remove('active');
-  current=n;
-  slides[current].classList.add('active');
-  document.getElementById('progress').style.width=((current+1)/total*100)+'%';
-  document.getElementById('counter').textContent=(current+1)+' / '+total;
-}
-function next(){if(current<total-1)goTo(current+1)}
-function prev(){if(current>0)goTo(current-1)}
-document.addEventListener('keydown',e=>{
-  if(e.key==='ArrowRight'||e.key===' ')next();
-  else if(e.key==='ArrowLeft')prev();
-  else if(e.key==='Home')goTo(0);
-  else if(e.key==='End')goTo(total-1);
-  else if(e.key==='f'||e.key==='F'){if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.()}
+// === Navigation engine ===
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let current = 0, transitioning = false;
+
+const subSteps = {};
+slides.forEach((s, i) => {
+  const c = parseInt(s.dataset.clicks || '0', 10);
+  if(c) subSteps[i] = {step: 0, max: c};
 });
-document.addEventListener('click',e=>{if(e.clientX/window.innerWidth<.3)prev();else next()});
-let tx=0;
-document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX});
-document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50)dx<0?next():prev()});
-document.getElementById('progress').style.width=(1/total*100)+'%';
-document.getElementById('counter').textContent='1 / '+total;
+
+function revealStep(slideIdx) {
+  const st = subSteps[slideIdx];
+  if(!st) return false;
+  if(st.step >= st.max) return false;
+  st.step++;
+  const slide = slides[slideIdx];
+  if(slide.classList.contains('b4')) {
+    const pills = slide.querySelectorAll('.danger-pill');
+    if(pills[st.step - 1]) pills[st.step - 1].classList.add('pill-shown');
+    if(st.step === st.max) {
+      const note = slide.querySelector('.footer-note');
+      if(note) note.classList.add('shown');
+    }
+  }
+  return true;
+}
+
+function resetSubSteps(slideIdx) {
+  const st = subSteps[slideIdx];
+  if(!st) return;
+  st.step = 0;
+  const slide = slides[slideIdx];
+  if(slide.classList.contains('b4')) {
+    slide.querySelectorAll('.danger-pill').forEach(p => p.classList.remove('pill-shown'));
+    const note = slide.querySelector('.footer-note');
+    if(note) note.classList.remove('shown');
+  }
+}
+
+function goTo(n) {
+  if(n < 0 || n >= total || n === current || transitioning) return;
+  transitioning = true;
+  const old = slides[current];
+  old.classList.remove('active');
+  old.classList.add('exiting');
+  setTimeout(() => {
+    resetSubSteps(current);
+    old.classList.remove('exiting');
+    transitioning = false;
+  }, 660);
+  current = n;
+  setTimeout(() => slides[current].classList.add('active'), 120);
+  document.getElementById('progress').style.width = ((current + 1) / total * 100) + '%';
+  document.getElementById('counter').textContent = (current + 1) + ' / ' + total;
+}
+
+function next() { if(revealStep(current)) return; goTo(current + 1); }
+
+function prev() {
+  const st = subSteps[current];
+  if(st && st.step > 0) {
+    st.step--;
+    const slide = slides[current];
+    if(slide.classList.contains('b4')) {
+      const pills = slide.querySelectorAll('.danger-pill');
+      if(pills[st.step]) pills[st.step].classList.remove('pill-shown');
+      if(st.step < st.max) {
+        const note = slide.querySelector('.footer-note');
+        if(note) note.classList.remove('shown');
+      }
+    }
+    return;
+  }
+  goTo(current - 1);
+}
+
+document.addEventListener('keydown', e => {
+  if(e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next(); }
+  else if(e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); prev(); }
+  else if(e.key === 'Home') goTo(0);
+  else if(e.key === 'End') goTo(total - 1);
+  else if(e.key === 'f' || e.key === 'F') {
+    if(!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+    else document.exitFullscreen?.();
+  }
+});
+document.addEventListener('click', e => { if(e.clientX / window.innerWidth < .3) prev(); else next(); });
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
+document.addEventListener('touchend', e => { const dx = e.changedTouches[0].clientX - tx; if(Math.abs(dx) > 50) dx < 0 ? next() : prev(); });
+
+setTimeout(() => { document.getElementById('hint').style.opacity = '0'; }, 6000);
+document.getElementById('progress').style.width = (1 / total * 100) + '%';
+document.getElementById('counter').textContent = '1 / ' + total;
 </script>
 </body>
 </html>
