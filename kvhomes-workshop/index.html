@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow">
+  <title>KV Homes Workshop 2026 — Munkaanyagok</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏠</text></svg>">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --bg:#0a0e14;--bg-elevated:#121820;--bg-elevated-2:#1a2230;
+      --accent:#F7931A;--accent-hover:#FFB347;--blue:#003366;--blue-light:#0055aa;
+      --green:#22c55e;--yellow:#f5b431;--gray:#4a4f57;
+      --text:#fff;--text-muted:#8a919e;--text-dim:#5a606a;
+      --border:rgba(0,51,102,0.25);--border-accent:rgba(247,147,26,0.15);--border-muted:rgba(138,145,158,0.12);
+    }
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;letter-spacing:-0.011em}
+    .container{max-width:880px;margin:0 auto;padding:48px 24px 96px}
+    header{padding-bottom:48px;border-bottom:1px solid var(--border);margin-bottom:48px}
+    .badge{display:inline-block;padding:6px 14px;background:rgba(0,51,102,0.15);border:1px solid var(--border);border-radius:56px;color:var(--blue-light);font-size:13px;font-weight:500;letter-spacing:0.02em;margin-bottom:20px;text-transform:uppercase}
+    h1{font-size:48px;font-weight:300;line-height:1.05;letter-spacing:-1.2px;margin-bottom:16px}
+    h1 .accent{color:var(--accent)}
+    h1 .blue{color:var(--blue-light)}
+    .subtitle{font-size:19px;color:var(--text-muted);font-weight:300;max-width:640px}
+    .meta{display:flex;gap:24px;margin-top:24px;flex-wrap:wrap}
+    .meta-item{font-size:14px;color:var(--text-muted)}
+    .meta-item strong{color:var(--text);font-weight:500}
+    .summary-bar{display:flex;gap:24px;padding:20px 0 0;flex-wrap:wrap}
+    .summary-stat{font-size:13px;color:var(--text-muted)}
+    .summary-stat strong{color:var(--text);font-weight:500;font-size:15px}
+    .day-divider{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+    .day-divider .label{font-size:13px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em;white-space:nowrap}
+    .day-divider .line{flex:1;height:1px;background:var(--border-accent)}
+    .cards{display:grid;gap:16px;margin-bottom:56px}
+    .card{background:var(--bg-elevated);border:1px solid var(--border);border-radius:16px;padding:28px;transition:all .2s ease}
+    .card:hover{border-color:var(--blue-light);transform:translateY(-2px)}
+    .card-num{font-size:12px;color:var(--accent);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px}
+    .card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+    .card-title{font-size:22px;font-weight:500;letter-spacing:-0.02em;flex:1}
+    .card-status{font-size:12px;font-weight:500;padding:4px 10px;border-radius:24px;white-space:nowrap}
+    .card-status.done{background:rgba(34,197,94,0.12);color:var(--green)}
+    .card-status.progress{background:rgba(245,180,49,0.12);color:var(--yellow)}
+    .card-status.planned{background:rgba(138,145,158,0.08);color:var(--text-dim)}
+    .card-status.break{background:rgba(0,51,102,0.12);color:var(--blue-light)}
+    .card-time{font-size:14px;color:var(--text-muted);margin-bottom:10px}
+    .card-time strong{color:var(--text);font-weight:500}
+    .card-desc{font-size:15px;color:var(--text-muted);line-height:1.6}
+    .card-speaker{font-size:13px;color:var(--blue-light);margin-top:8px;font-weight:500}
+    .progress-row{display:flex;align-items:center;gap:12px;margin-top:14px}
+    .progress-bar{flex:1;height:4px;background:var(--bg-elevated-2);border-radius:4px;overflow:hidden}
+    .progress-fill{height:100%;border-radius:4px;transition:width .4s ease}
+    .progress-fill.done{background:var(--green)}
+    .progress-fill.progress{background:var(--yellow)}
+    .progress-fill.planned{background:var(--gray)}
+    .progress-pct{font-size:12px;color:var(--text-dim);font-weight:500;min-width:36px;text-align:right}
+    .card-actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:500;text-decoration:none;transition:all .15s ease}
+    .btn svg{width:16px;height:16px}
+    .btn-primary{background:var(--blue);color:var(--text)}
+    .btn-primary:hover{background:var(--blue-light)}
+    .btn-secondary{background:var(--bg-elevated-2);color:var(--text-muted);border:1px solid var(--border-muted)}
+    .btn-secondary:hover{color:var(--text);border-color:var(--blue-light)}
+    .btn-disabled{background:var(--bg-elevated-2);color:var(--text-dim);cursor:default;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:500}
+    .btn-guide{background:rgba(247,147,26,0.1);color:var(--accent);border:1px solid var(--border-accent)}
+    .btn-guide:hover{background:rgba(247,147,26,0.2)}
+    footer{border-top:1px solid var(--border-muted);padding-top:32px;text-align:center}
+    .private{font-size:12px;color:var(--accent);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px}
+    footer p{font-size:14px;color:var(--text-dim)}
+    .guide-banner{background:linear-gradient(135deg,rgba(0,51,102,0.15),rgba(247,147,26,0.1));border:1px solid var(--border-accent);border-radius:16px;padding:24px 28px;margin-bottom:56px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+    .guide-banner-text{flex:1;min-width:200px}
+    .guide-banner-text h3{font-size:16px;font-weight:500;margin-bottom:4px}
+    .guide-banner-text p{font-size:14px;color:var(--text-muted)}
+    @media(max-width:600px){h1{font-size:36px}.card{padding:20px}.meta{gap:12px}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge">KV Homes · NORDii System Workshop</div>
+      <h1>KV Homes <span class="accent">Workshop</span> 2026</h1>
+      <p class="subtitle">Első workshop — előadások, technológia és csapatbemutató. Építészeknek, mérnököknek, fejlesztőknek.</p>
+      <div class="meta">
+        <div class="meta-item"><strong>2026. április 16.</strong> csütörtök</div>
+        <div class="meta-item"><strong>Hotel Atlantis</strong> Hajdúszoboszló</div>
+        <div class="meta-item"><strong>14:00–</strong> → vacsora 19:00</div>
+      </div>
+      <div class="summary-bar">
+        <div class="summary-stat"><strong>6</strong> programpont</div>
+        <div class="summary-stat"><strong>0</strong> kész</div>
+        <div class="summary-stat"><strong>2</strong> folyamatban</div>
+        <div class="summary-stat"><strong>4</strong> tervezett</div>
+      </div>
+    </header>
+
+    <div class="guide-banner">
+      <div class="guide-banner-text">
+        <h3>📖 Előadóként használd a Claude-ot</h3>
+        <p>Hogyan építs HTML prezentációt a Claude AI segítségével — lépésről lépésre útmutató Karancsi Sándornak és a csapatnak.</p>
+      </div>
+      <a class="btn btn-guide" href="claude-guide.html">Útmutató megnyitása →</a>
+    </div>
+
+    <div class="day-divider"><span class="label">Program · ápr. 16.</span><span class="line"></span></div>
+    <div class="cards">
+
+      <div class="card" style="border-left:3px solid var(--accent)">
+        <div class="card-num">01 · Megnyitó</div>
+        <div class="card-header">
+          <h3 class="card-title">Miért + Hogyan — a KV Homes story</h3>
+          <span class="card-status progress">⚙ Folyamatban</span>
+        </div>
+        <div class="card-time"><strong>14:00</strong> · 35–45 perc</div>
+        <p class="card-desc">KV Homes história, NORDii franchise út, digitális tervezés filozófiája, mérnöki gondolkodás, üzleti modell — és igen: Bitcoinban is el lehet nálunk házat vásárolni.</p>
+        <div class="card-speaker">Kovács Ferenc — ügyvezető igazgató, tulajdonos</div>
+        <div class="progress-row">
+          <div class="progress-bar"><div class="progress-fill progress" style="width:30%"></div></div>
+          <span class="progress-pct">30%</span>
+        </div>
+        <div class="card-actions">
+          <span class="btn btn-disabled">Slide-ok készülnek</span>
+        </div>
+      </div>
+
+      <div class="card" style="border-left:3px solid var(--blue-light)">
+        <div class="card-num">02 · A gyakorlat</div>
+        <div class="card-header">
+          <h3 class="card-title">NORDii System technológia — kivitelezés és statika</h3>
+          <span class="card-status progress">⚙ Folyamatban</span>
+        </div>
+        <div class="card-time"><strong>~14:45</strong> · 45 perc</div>
+        <p class="card-desc">Betekintés a NORDii System technológiába: tér-elem anatómia, rétegrend, NORDii vs. hagyományos építés, az építés 5 lépése (BIM→gyártás→alapozás→szerelés→gépészet), statikai megfontolások, C40/50 teljesítmény.</p>
+        <div class="card-speaker">Karancsi Sándor — kivitelezési üzletág igazgató, okl. építőmérnök</div>
+        <div class="progress-row">
+          <div class="progress-bar"><div class="progress-fill progress" style="width:40%"></div></div>
+          <span class="progress-pct">40%</span>
+        </div>
+        <div class="card-actions">
+          <span class="btn btn-disabled">Slide-ok készülnek (PDF vázlat kész)</span>
+        </div>
+      </div>
+
+      <div class="card" style="border-left:3px solid var(--gray);opacity:0.7">
+        <div class="card-num">☕ Kávészünet</div>
+        <div class="card-header">
+          <h3 class="card-title">Szünet + informális kérdések</h3>
+          <span class="card-status break">~15:30</span>
+        </div>
+        <div class="card-time">15 perc</div>
+      </div>
+
+      <div class="card">
+        <div class="card-num">03 · Az otthon</div>
+        <div class="card-header">
+          <h3 class="card-title">Építészet — 6 mintaház + látványtervek</h3>
+          <span class="card-status planned">○ Tervezett</span>
+        </div>
+        <div class="card-time"><strong>~15:45</strong> · 45 perc</div>
+        <p class="card-desc">Móricz Anett és a 3 fős építész csapat bemutatja a mintaház kínálatot: alaprajzok, látványtervek, építészeti filozófia, BIM workflow az építész szemszögéből.</p>
+        <div class="card-speaker">Móricz Anett — építész csapatvezető</div>
+        <div class="progress-row">
+          <div class="progress-bar"><div class="progress-fill planned" style="width:0%"></div></div>
+          <span class="progress-pct">0%</span>
+        </div>
+        <div class="card-actions"><span class="btn btn-disabled">Hamarosan</span></div>
+      </div>
+
+      <div class="card" style="border-left:3px solid var(--gray);opacity:0.7">
+        <div class="card-num">☕ Szünet</div>
+        <div class="card-header">
+          <h3 class="card-title">Rövid szünet</h3>
+          <span class="card-status break">~16:30</span>
+        </div>
+        <div class="card-time">10 perc</div>
+      </div>
+
+      <div class="card">
+        <div class="card-num">04 · A jövő</div>
+        <div class="card-header">
+          <h3 class="card-title">Kazincbarcikai projekt — önkormányzati felszólalás</h3>
+          <span class="card-status planned">○ Tervezett</span>
+        </div>
+        <div class="card-time"><strong>~16:40</strong> · 20–25 perc</div>
+        <p class="card-desc">Polgármester és alpolgármester felszólalása a több milliárdos kazincbarcikai lakóprojektről. Laci egyeztet a delegáció összetételéről.</p>
+        <div class="card-speaker">Önkormányzat + Kovács Ferenc</div>
+        <div class="progress-row">
+          <div class="progress-bar"><div class="progress-fill planned" style="width:0%"></div></div>
+          <span class="progress-pct">0%</span>
+        </div>
+        <div class="card-actions"><span class="btn btn-disabled">Hamarosan</span></div>
+      </div>
+
+      <div class="card" style="border-left:3px solid var(--accent)">
+        <div class="card-num">+1 · One more thing</div>
+        <div class="card-header">
+          <h3 class="card-title">Bérlakási program + EU támogatás</h3>
+          <span class="card-status planned">○ Tervezett</span>
+        </div>
+        <div class="card-time"><strong>~17:05</strong> · 10–15 perc</div>
+        <p class="card-desc">Hogyan léphetnek be önkormányzatok a bérlakási programba: kamattámogatott projekthitel és vissza nem térítendő EU-s támogatás. A részletek a napokban véglegesednek.</p>
+        <div class="card-speaker">Kovács Ferenc</div>
+        <div class="progress-row">
+          <div class="progress-bar"><div class="progress-fill planned" style="width:0%"></div></div>
+          <span class="progress-pct">0%</span>
+        </div>
+        <div class="card-actions"><span class="btn btn-disabled">Hamarosan</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-num">Zárlat</div>
+        <div class="card-header">
+          <h3 class="card-title">Q&A + következő lépések</h3>
+          <span class="card-status planned">○ Tervezett</span>
+        </div>
+        <div class="card-time"><strong>~17:20</strong> · 10 perc → szabad networking → vacsora 19:00</div>
+        <p class="card-desc">Kérdések a közönségtől, kapcsolatfelvételi lehetőség a csapattal, majd szabad beszélgetés és vacsora a Hotel Atlantis éttermében.</p>
+      </div>
+
+    </div>
+
+    <footer>
+      <div class="private">Privát · Nem indexelt</div>
+      <p>Csak a linket ismerők számára. Ne oszd meg.</p>
+    </footer>
+  </div>
+</body>
+</html>

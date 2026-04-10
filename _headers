@@ -17,3 +17,8 @@
   X-Robots-Tag: noindex, nofollow, noarchive, nosnippet
   Cache-Control: private, no-cache, no-store, must-revalidate
   Referrer-Policy: no-referrer
+
+/kvhomes-workshop/*
+  X-Robots-Tag: noindex, nofollow, noarchive, nosnippet
+  Cache-Control: private, no-cache, no-store, must-revalidate
+  Referrer-Policy: no-referrer

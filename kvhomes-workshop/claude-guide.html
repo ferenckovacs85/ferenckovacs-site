@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Claude útmutató — HTML prezentáció építés</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0e14;--card:#121820;--accent:#F7931A;--blue:#003366;--text:#fff;--muted:#8a919e;--border:rgba(0,51,102,0.25)}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:720px;margin:0 auto;padding:48px 24px 96px}
+h1{font-size:36px;font-weight:300;letter-spacing:-1px;margin-bottom:8px}
+h1 span{color:var(--accent)}
+.sub{font-size:17px;color:var(--muted);margin-bottom:40px}
+h2{font-size:22px;font-weight:500;margin-top:40px;margin-bottom:12px;color:var(--accent)}
+p{margin-bottom:16px;color:#ccc;font-size:15px}
+ol,ul{margin:0 0 20px 24px;color:#ccc;font-size:15px}
+li{margin-bottom:8px}
+code{font-family:'SF Mono',Menlo,monospace;font-size:0.88em;background:rgba(247,147,26,0.1);padding:2px 6px;border-radius:4px;color:var(--accent)}
+pre{background:var(--card);border:1px solid var(--border);padding:20px;border-radius:12px;overflow-x:auto;margin:20px 0;font-size:13px;line-height:1.6;color:#ddd}
+pre code{background:none;padding:0;color:inherit}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin:20px 0}
+.card h3{font-size:16px;font-weight:600;margin-bottom:8px}
+.back{display:inline-block;color:var(--accent);text-decoration:none;font-size:14px;margin-bottom:32px}
+.back:hover{text-decoration:underline}
+strong{color:var(--text)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back" href="index.html">← Vissza a workshop oldalra</a>
+<h1>HTML prezentáció <span>Claude-dal</span></h1>
+<p class="sub">Útmutató Karancsi Sándornak és a csapatnak — hogyan építs professzionális prezentációt AI segítségével, lépésről lépésre.</p>
+
+<h2>1. Mi ez?</h2>
+<p>Feri és a csapata <strong>Claude AI-t</strong> használ HTML prezentációk építéséhez. Nem PowerPoint, hanem <strong>self-contained HTML fájlok</strong> amik:</p>
+<ul>
+<li>Offline is futnak (nincs internet-függőség a helyszínen)</li>
+<li>Projektoron tökéletesek (16:9, Full HD-ra optimalizálva)</li>
+<li>Mobilon is nézhetőek (útközben átnézheted)</li>
+<li>Billentyűzettel (nyilak) és touch-csal (swipe) navigálhatóak</li>
+<li>Bármilyen böngészőben megnyílnak (Chrome, Safari, Firefox)</li>
+</ul>
+
+<h2>2. Hogyan kezdj?</h2>
+<ol>
+<li>Töltsd le a <strong>Claude desktop app</strong>-ot: <code>claude.ai/download</code></li>
+<li>Nyisd meg és válaszd a <strong>Cowork</strong> módot (bal oldali menüben)</li>
+<li>Illeszd be az alábbi promptot, és utána add hozzá a saját tartalmadat</li>
+</ol>
+
+<h2>3. A prompt ami működik</h2>
+<p>Másold be ezt a szöveget a Claude-ba, és cseréld ki a <code>[TARTALOM]</code> részt a saját slide-jaid szövegére:</p>
+
+<pre><code>Készíts egy offline futó HTML prezentációt az alábbi tartalomból.
+
+Szabályok:
+- 16:9 arány (width:min(100vw,177.78vh); height:min(100vh,56.25vw))
+- Billentyűzet (nyilak) + touch swipe navigáció
+- Slide counter jobb alul
+- Design: világos háttér, KV Homes kék (#003366) header sáv,
+  narancs (#F7931A) accent kiemelésekhez,
+  -apple-system sans-serif font
+- Képeket base64-be kódold bele hogy offline is működjön
+- Projektor szabály: tartalom a felső 2/3-ban
+  (az alsó 1/3 nem látszik projektoron, a vászon 70cm-re van a földtől)
+- Magyar nyelv
+- Minden slide-nak legyen egyedi CSS osztálya (.s1, .s2, stb.)
+
+Tartalom:
+[IDE ILLESZD BE A SLIDE-OK SZÖVEGÉT]
+
+Minden slide-hoz írd le:
+- Cím
+- Tartalom (szöveg, számok, felsorolás)
+- Ha van kép: a kép leírása (Grok-kal generáljuk majd)</code></pre>
+
+<h2>4. Iterálj, ne egyben csináld</h2>
+<div class="card">
+<h3>A legfontosabb tipp</h3>
+<p>Ne egy hatalmas promptban adj meg mindent. Pont mint egy tervezővel dolgoznál:</p>
+<ol>
+<li>Adj tartalmat (pl. 3-4 slide szövegét)</li>
+<li>Nézd meg amit csinált</li>
+<li>Kérj módosítást ("a 2. slide-on a szám legyen nagyobb", "cseréld a hátteret sötétre")</li>
+<li>Ha jó, adj hozzá a következő 3-4 slide-ot</li>
+</ol>
+<p>Így mindig kontrollálod az eredményt és nem kell újrakezdeni.</p>
+</div>
+
+<h2>5. Képek kezelése</h2>
+<p>A HTML prezentációkba a képeket <strong>base64 kódolva</strong> ágyazzuk be — így az egész fájl egyetlen .html, nem kell mellé mappa. Két módja van:</p>
+<ul>
+<li><strong>Claude beágyazza:</strong> ha a képfájlt feltöltöd a chatbe, Claude automatikusan base64-be kódolja és beleteszi a HTML-be</li>
+<li><strong>Külön img mappa:</strong> ha sok/nagy képed van (pl. renderek), jobb ha relatív útvonallal hivatkozol rájuk (<code>img/render1.jpg</code>) és a mappát melléteszed</li>
+</ul>
+
+<h2>6. Milyen skill-eket használ Feri?</h2>
+<p>Feri Claude Cowork setupja több "skill"-t használ — ezek speciális utasítás-csomagok amik javítják a minőséget:</p>
+<ul>
+<li><strong>mentor</strong> — tanácsadó testület (5 gondolkodó szintetizálva) stratégiai döntésekhez és előadás-felépítéshez</li>
+<li><strong>design-system</strong> — Coinbase + Stripe + 5 másik referencia design system, hogy a prezentáció profi legyen</li>
+<li><strong>pptx / docx / xlsx</strong> — dokumentum készítés (Word, Excel, PowerPoint) ha kellenek</li>
+<li><strong>yt-transcript</strong> — YouTube videó szövegének kinyerése (pl. korábbi előadás leirata)</li>
+</ul>
+<p>Neked nem kell ezeket beállítanod — a fenti prompt önmagában is működik. Ha többet szeretnél, kérdezd Ferit.</p>
+
+<h2>7. Gyors checklist a slide-okhoz</h2>
+<ul>
+<li>✅ <strong>Tartalom a felső 2/3-ban</strong> — projektoron az alsó harmad nem látszik</li>
+<li>✅ <strong>Maximum 6-8 sor szöveg slide-onként</strong> — a közönség nem fog olvasni, Te beszélsz</li>
+<li>✅ <strong>Számok nagy betűvel</strong> — "150 mm" jobb mint "A beton fal vastagsága 150 milliméter"</li>
+<li>✅ <strong>Egy üzenet / slide</strong> — ha két gondolatod van, csinálj két slide-ot</li>
+<li>✅ <strong>Fotók > szöveg</strong> — egy jó helyszíni fotó többet mond mint 10 felsoroláspont</li>
+</ul>
+
+<div class="card" style="border-color:var(--accent)">
+<h3>Kérdés? Elakadtál?</h3>
+<p>Szólj Ferinek (ifjkovacsferenc@kvkft.hu / +36 30 525 4475) — vagy nyisd meg a Claude-ot és írd be: <code>"Elakadtam az előadás építésében, segíts tovább"</code>. Claude emlékszik a korábbi kontextusra és folytatja ahol abbahagytad.</p>
+</div>
+
+<p style="margin-top:40px;font-size:13px;color:var(--muted);text-align:center">KV Homes Workshop 2026 · Privát útmutató · Nem indexelt</p>
+</div>
+</body>
+</html>
