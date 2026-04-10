@@ -180,7 +180,19 @@ hány slide-ot, és mi a fő üzenet? Aztán lépésről lépésre
 felépítjük együtt.</code></pre>
 </div>
 
-<h2>4. Iterálj, ne egyben csináld</h2>
+<h2>4. Hogyan add át Ferinek a kész slide-okat</h2>
+<div class="card">
+<h3>A workflow 4 lépésben</h3>
+<ol>
+<li><strong>Mentsd le a HTML fájlt</strong> amit a Claude generált (a Cowork automatikusan felajánlja a letöltést, vagy "Mentsd el fájlba" paranccsal kérheted)</li>
+<li><strong>Töltsd fel a céges OneDrive-ra:</strong> <code>OneDrive → Bitcoin / Előadások / 2026 / KVHomes-Workshop /</code> mappába (ha nincs ilyen mappa, hozd létre)</li>
+<li><strong>Írj egy emailt Ferinek</strong> (<code>ifjkovacsferenc@kvkft.hu</code>): "Szia, a slide-jaim felkerültek ide: [OneDrive link]. X slide van, nézd át kérlek."</li>
+<li><strong>Feri átnézi, feltölti</strong> a workshop hub-ra (<code>ferenckovacs.com/kvhomes-workshop/</code>) és frissíti a státuszt.</li>
+</ol>
+<p>Ha kérdésed van menet közben: szólj Ferinek Teamsben/emailben, vagy írd be a Claude-ba amit szeretnél változtatni — ő segít.</p>
+</div>
+
+<h2>5. Iterálj, ne egyben csináld</h2>
 <div class="card">
 <h3>A legfontosabb tipp</h3>
 <p>Ne egy hatalmas promptban adj meg mindent. Pont mint egy tervezővel dolgoznál:</p>
@@ -193,14 +205,14 @@ felépítjük együtt.</code></pre>
 <p>Így mindig kontrollálod az eredményt és nem kell újrakezdeni.</p>
 </div>
 
-<h2>5. Képek kezelése</h2>
+<h2>6. Képek kezelése</h2>
 <p>A HTML prezentációkba a képeket <strong>base64 kódolva</strong> ágyazzuk be — így az egész fájl egyetlen .html, nem kell mellé mappa. Két módja van:</p>
 <ul>
 <li><strong>Claude beágyazza:</strong> ha a képfájlt feltöltöd a chatbe, Claude automatikusan base64-be kódolja és beleteszi a HTML-be</li>
 <li><strong>Külön img mappa:</strong> ha sok/nagy képed van (pl. renderek), jobb ha relatív útvonallal hivatkozol rájuk (<code>img/render1.jpg</code>) és a mappát melléteszed</li>
 </ul>
 
-<h2>6. Milyen skill-eket használ Feri?</h2>
+<h2>7. Milyen skill-eket használ Feri?</h2>
 <p>Feri Claude Cowork setupja több "skill"-t használ — ezek speciális utasítás-csomagok amik javítják a minőséget:</p>
 <ul>
 <li><strong>mentor</strong> — tanácsadó testület (5 gondolkodó szintetizálva) stratégiai döntésekhez és előadás-felépítéshez</li>
@@ -210,7 +222,7 @@ felépítjük együtt.</code></pre>
 </ul>
 <p>Neked nem kell ezeket beállítanod — a fenti prompt önmagában is működik. Ha többet szeretnél, kérdezd Ferit.</p>
 
-<h2>7. Gyors checklist a slide-okhoz</h2>
+<h2>8. Gyors checklist a slide-okhoz</h2>
 <ul>
 <li>✅ <strong>Tartalom a felső 2/3-ban</strong> — projektoron az alsó harmad nem látszik</li>
 <li>✅ <strong>Maximum 6-8 sor szöveg slide-onként</strong> — a közönség nem fog olvasni, Te beszélsz</li>
