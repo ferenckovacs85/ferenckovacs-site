@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KV Homes Workshop 2026 — Megnyitó</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --accent:#00AEEF; --accent-glow:rgba(0,174,239,0.25); --accent-dark:#0088CC;
+  --dark:#1A252F; --dark2:#2C3E50; --gray:#7F8C8D; --muted:#A0B0B8;
+  --light:#ECF0F1; --warm:#F4F7F9; --accent-bg:rgba(0,174,239,0.06);
+  --gold:#F7931A; --gold-soft:rgba(247,147,26,0.12);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--dark);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+
+/* === ENGINE === */
+.deck{width:100vw;height:100vh;position:relative}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none}
+.slide.active{opacity:1;pointer-events:auto}
+.slide.exiting{opacity:1;pointer-events:none;animation:slideExit .55s ease-in forwards}
+@keyframes slideExit{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.01);filter:blur(4px)}}
+.slide-inner{width:min(100vw,177.78vh);height:min(100vh,56.25vw);position:relative;overflow:hidden}
+.progress-wrap{position:fixed;bottom:0;left:0;right:0;height:4px;background:rgba(0,0,0,0.15);z-index:100}
+.progress-fill{height:100%;background:var(--accent);transition:width .6s cubic-bezier(.22,1,.36,1);box-shadow:0 0 12px var(--accent-glow)}
+.slide-counter{position:fixed;bottom:14px;right:24px;font:500 16px 'Inter',sans-serif;color:rgba(255,255,255,0.2);z-index:100}
+
+/* === FULLBLEED BACKGROUNDS === */
+.slide-bg{position:fixed;inset:0;width:100vw;height:100vh;object-fit:cover;z-index:0;pointer-events:none}
+.slide-bg-color{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none}
+.slide-inner{z-index:1;position:relative}
+.vignette{position:absolute;inset:0;z-index:1;pointer-events:none}
+
+/* === ANIM === */
+.anim{opacity:0}.slide.active .anim{animation-fill-mode:both}
+@keyframes cFadeUp{from{opacity:0;transform:translateY(50px);filter:blur(4px)}to{opacity:1;transform:translateY(0);filter:blur(0)}}
+@keyframes cFadeScale{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+@keyframes cSlideRight{from{opacity:0;transform:translateX(-80px);filter:blur(3px)}to{opacity:1;transform:translateX(0);filter:blur(0)}}
+@keyframes clipReveal{from{opacity:0;clip-path:inset(0 100% 0 0)}to{opacity:1;clip-path:inset(0 0 0 0)}}
+@keyframes clipRevealR{from{opacity:0;clip-path:inset(0 0 0 100%)}to{opacity:1;clip-path:inset(0 0 0 0)}}
+@keyframes kenBurns{from{transform:scale(1)}to{transform:scale(1.06)}}
+@keyframes glowPulse{0%,100%{text-shadow:0 0 20px var(--accent-glow)}50%{text-shadow:0 0 40px var(--accent-glow),0 0 80px rgba(0,174,239,.1)}}
+@keyframes drawLine{from{width:0}to{width:100px}}
+@keyframes cardRise{from{opacity:0;transform:translateY(40px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes numPop{0%{opacity:0;transform:scale(.5)}60%{opacity:1;transform:scale(1.08)}100%{opacity:1;transform:scale(1)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+
+.slide.active .fu{animation:cFadeUp .9s cubic-bezier(.22,1,.36,1) both}
+.slide.active .fs{animation:cFadeScale .8s ease both}
+.slide.active .sr{animation:cSlideRight .9s cubic-bezier(.22,1,.36,1) both}
+.slide.active .cr{animation:clipReveal 1s cubic-bezier(.22,1,.36,1) both}
+.slide.active .crr{animation:clipRevealR 1s cubic-bezier(.22,1,.36,1) both}
+.slide.active .kb{animation:kenBurns 12s ease both}
+.slide.active .gp{animation:glowPulse 3s ease-in-out infinite}
+.slide.active .dl{animation:drawLine .8s cubic-bezier(.22,1,.36,1) both}
+.slide.active .crd{animation:cardRise .8s cubic-bezier(.22,1,.36,1) both}
+.slide.active .np{animation:numPop .7s cubic-bezier(.22,1,.36,1) both}
+
+.d1{animation-delay:.1s!important}.d2{animation-delay:.25s!important}
+.d3{animation-delay:.45s!important}.d4{animation-delay:.65s!important}
+.d5{animation-delay:.85s!important}.d6{animation-delay:1.05s!important}
+.d7{animation-delay:1.25s!important}.d8{animation-delay:1.5s!important}
+
+h1,h2,h3.serif,.serif{font-family:'Playfair Display',Georgia,serif}
+
+/* ========================================
+   FULL HD PROJECTOR: min 28px body,
+   headings 48-80px, sub 24-32px
+   ======================================== */
+
+/* === SLIDE TYPES === */
+
+/* DARK FULL */
+.dark-full .slide-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;text-align:center;padding:6%}
+
+/* SPLIT: photo left or right */
+.split-r .slide-inner{display:flex;color:var(--dark)}
+.split-r .content{width:52%;height:100%;display:flex;flex-direction:column;justify-content:center;padding:5% 4% 5% 6%;position:relative;z-index:2}
+.split-r .photo{width:48%;height:100%;overflow:hidden;position:relative}
+.split-r .photo img{width:100%;height:100%;object-fit:cover;display:block}
+.split-r .photo::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none}
+.split-r .photo-gradient-l::before{background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.4) 12%,transparent 35%)}
+.split-r .photo-gradient-dark-l::before{background:linear-gradient(90deg,var(--dark) 0%,rgba(26,37,47,.6) 12%,transparent 35%)}
+
+.split-l .slide-inner{display:flex;color:var(--dark)}
+.split-l .photo{width:48%;height:100%;overflow:hidden;position:relative}
+.split-l .photo img{width:100%;height:100%;object-fit:cover;display:block}
+.split-l .photo::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none}
+.split-l .photo-gradient-r::before{background:linear-gradient(270deg,#fff 0%,rgba(255,255,255,.4) 12%,transparent 35%)}
+.split-l .content{width:52%;height:100%;display:flex;flex-direction:column;justify-content:center;padding:5% 6% 5% 4%;position:relative;z-index:2}
+
+/* WHITE FULL */
+.white-full .slide-inner{background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:5%;color:var(--dark)}
+
+/* ACCENT FULL */
+.accent-full .slide-inner{background:var(--accent);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:5%;color:#fff}
+
+/* WARM FULL */
+.warm-full .slide-inner{background:var(--warm);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4%;color:var(--dark)}
+
+/* COMMON ELEMENTS */
+.tag{font-size:18px;letter-spacing:5px;text-transform:uppercase;font-weight:600}
+.tag-accent{color:var(--accent)}
+.tag-gold{color:var(--gold)}
+.tag-white{color:rgba(255,255,255,.6)}
+.tag-red{color:#e74c3c}
+.divider{height:3px;background:var(--accent);border-radius:2px}
+.accent-bar{position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--accent);z-index:3}
+
+/* === GROK PLACEHOLDER SYSTEM === */
+/* Each slide has a <!-- GROK: ... --> comment with the prompt.
+   Replace the .grok-placeholder div with an <img> once generated. */
+.grok-placeholder{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none;display:flex;align-items:center;justify-content:center}
+.grok-placeholder::after{content:attr(data-prompt);position:absolute;bottom:12px;left:12px;right:12px;font-size:11px;color:rgba(255,255,255,0.15);font-family:monospace;line-height:1.4;pointer-events:none;z-index:1}
+.grok-placeholder.dark-bg{background:var(--dark)}
+.grok-placeholder.dark2-bg{background:var(--dark2)}
+.grok-placeholder.white-bg{background:#fff}
+.grok-placeholder.warm-bg{background:var(--warm)}
+.grok-placeholder.accent-bg-full{background:var(--accent)}
+.grok-placeholder.light-bg{background:var(--light)}
+
+/* Keyboard hint */
+.kb-hint{position:fixed;top:16px;right:24px;font-size:13px;color:rgba(255,255,255,0.12);z-index:100;letter-spacing:.5px}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<!-- ============================================================
+     SLIDE 1: TITLE
+     ============================================================ -->
+<div class="slide active dark-full" data-id="1">
+<!-- GROK PROMPT: Dark navy (#1A252F) background, subtle architectural blueprint wireframe lines in light blue (#00AEEF, opacity 0.08), faint CAD-style floor plan outlines, geometric grid pattern, clean and modern, very low contrast, 1920x1080 -->
+<div class="grok-placeholder dark-bg" data-prompt="GROK: Dark navy (#1A252F) bg, subtle architectural blueprint wireframe lines in light blue (#00AEEF, 8% opacity), faint CAD floor plan outlines, geometric grid, clean modern, 1920x1080"></div>
+<div class="slide-inner">
+  <img src="https://ferenckovacs.com/kv_homes_logo.png" class="anim fs d1" style="height:10vh;margin-bottom:3vh;filter:brightness(0) invert(1);opacity:.85" alt="KV Homes">
+  <span class="tag tag-white anim fu d2" style="font-size:20px;letter-spacing:8px">WORKSHOP 2026</span>
+  <h1 class="serif anim fu d3" style="font-size:clamp(48px,6.5vw,84px);color:#fff;font-weight:300;letter-spacing:-0.03em;margin-top:2vh">Miért + <strong style="color:var(--accent)">Hogyan</strong></h1>
+  <p class="anim fu d4" style="font-size:clamp(20px,2.2vw,28px);color:var(--muted);margin-top:2.5vh;font-weight:300">A KV Homes story — honnan jöttünk és hová tartunk</p>
+  <div class="divider anim dl d5" style="width:100px;margin-top:3vh"></div>
+  <p class="anim fu d6" style="font-size:clamp(16px,1.6vw,22px);color:rgba(255,255,255,.35);margin-top:3vh;letter-spacing:4px;text-transform:uppercase">Kovács Ferenc</p>
+  <p class="anim fu d7" style="font-size:clamp(15px,1.4vw,20px);color:rgba(255,255,255,.2);margin-top:1.5vh">2026. április 16. · Hotel Atlantis, Hajdúszoboszló</p>
+</div>
+</div>
+
+<!-- ============================================================
+     SLIDE 2: MISSION
+     ============================================================ -->
+<div class="slide white-full" data-id="2">
+<!-- GROK PROMPT: White background, very faint light blue (#00AEEF, 5% opacity) architectural line drawings of modern houses, subtle geometric hexagon pattern, airy and minimal, low contrast, 1920x1080 -->
+<div class="grok-placeholder white-bg" data-prompt="GROK: White bg, very faint light blue (#00AEEF, 5% opacity) architectural line drawings of modern houses, subtle geometric hexagons, airy minimal, 1920x1080"></div>
+<div class="slide-inner">
+  <img src="https://ferenckovacs.com/kv_cegcsoport_logo.png" class="anim fs d1" style="height:8vh;margin-bottom:3vh;opacity:.7" alt="KV Cégcsoport">
+  <h2 class="serif anim fu d2" style="font-size:clamp(36px,4.5vw,64px);font-weight:400;letter-spacing:-0.02em;line-height:1.3;max-width:85%;color:var(--dark)">Innovációval egy egészségesebb<br>társadalom felé</h2>
+  <p class="anim fu d3" style="font-size:clamp(20px,2vw,28px);color:var(--gray);margin-top:3vh;max-width:70%;line-height:1.7;font-weight:300">Valódi értéket adunk — legyen szó pihenésről, otthonteremtésről vagy pénzügyi tudatosságról.</p>
+  <div class="divider anim dl d4" style="width:80px;margin-top:3vh"></div>
+</div>
+</div>
+
+<!-- ============================================================
+     SLIDE 3: CÉGCSOPORT — KV KFT + FOTÓ
+     ============================================================ -->
+<div class="slide split-r" data-id="3">
+<div class="grok-placeholder white-bg"></div>
+<div class="slide-inner" style="background:#fff">
+  <div class="content">
+    <div class="accent-bar anim cr d1"></div>
+    <span class="tag tag-accent anim fu d1">KV Cégcsoport</span>
+    <h2 class="serif anim fu d2" style="font-size:clamp(32px,3.5vw,52px);font-weight:500;margin-top:2vh;line-height:1.2">30+ év az<br>építőiparban</h2>
+    <p class="anim fu d3" style="font-size:clamp(18px,1.8vw,24px);color:var(--gray);margin-top:2.5vh;line-height:1.7">A KV Építőipari Kft. <strong style="color:var(--dark)">1992 óta</strong> van jelen a magyar építőiparban. Előregyártott vasbeton elemek tervezése és gyártása, szállodaüzemeltetés, ingatlanfejlesztés.</p>
+    <p class="anim fu d4" style="font-size:clamp(18px,1.8vw,24px);color:var(--gray);margin-top:1.5vh;line-height:1.7">Több mint <strong style="color:var(--accent)">600 lakás</strong> megépítve, <strong style="color:var(--accent)">2 négycsillagos szálloda</strong>, saját gyártóüzem Berentén.</p>
+  </div>
+  <div class="photo photo-gradient-l">
+    <img src="https://ferenckovacs.com/kvkft_vbelement.jpeg" alt="KV Kft előregyártott vasbeton elem" class="anim kb d1">
+  </div>
+</div>
+</div>
+
+<!-- ============================================================
+     SLIDE 4: HOTEL AURORA
+     ============================================================ -->
+<div class="slide split-l" data-id="4">
+<div class="grok-placeholder white-bg"></div>
+<div class="slide-inner" style="background:#fff">
+  <div class="photo photo-gradient-r">
+    <img src="https://ferenckovacs.com/hotel_aurora.jpeg" alt="Hotel Aurora Miskolctapolca" class="anim kb d1">
+  </div>
+  <div class="content">
+    <span class="tag tag-accent anim fu d1">Szállodák</span>
+    <h2 class="serif anim fu d2" style="font-size:clamp(30px,3.2vw,48px);font-weight:500;margin-top:2vh;line-height:1.2">Hotel Aurora ★★★★<br><span style="font-size:.65em;color:var(--gray);font-weight:300">Miskolctapolca</span></h2>
+    <p class="anim fu d3" style="font-size:clamp(18px,1.8vw,24px);color:var(--gray);margin-top:2vh;line-height:1.7"><strong style="color:var(--dark)">78 szoba</strong>, 400 m² wellness, 230 m² konferenciaterem. Üzleti wellness szálloda a Bükk-hegység lábánál — 2013 óta.</p>
+    <h2 class="serif anim fu d4" style="font-size:clamp(30px,3.2vw,48px);font-weight:500;margin-top:4vh;line-height:1.2">Hotel Atlantis ★★★★<br><span style="font-size:.65em;color:var(--gray);font-weight:300">Hajdúszoboszló</span></h2>
+    <p class="anim fu d5" style="font-size:clamp(18px,1.8vw,24px);color:var(--gray);margin-top:2vh;line-height:1.7"><strong style="color:var(--dark)">96 szoba</strong>, 1 600 m² wellness — családi szálloda. Ma itt vagyunk.</p>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================
+     SLIDE 5: INGATLANFEJLESZTÉS
+     ============================================================ -->
+<div class="slide split-r" data-id="5">
+<div class="grok-placeholder white-bg"></div>
+<div class="slide-inner" style="background:#fff">
+  <div class="content">
+    <div class="accent-bar anim cr d1"></div>
+    <span class="tag tag-accent anim fu d1">Ingatlanfejlesztés</span>
+    <h2 class="serif anim fu d2" style="font-size:clamp(32px,3.5vw,52px);font-weight:500;margin-top:2vh;line-height:1.2">600+ társasházi lakás<br><span style="font-size:.6em;color:var(--gray);font-weight:300">Több mint egy évtized fejlesztés</span></h2>
+    <p class="anim fu d3" style="font-size:clamp(18px,1.8vw,24px);color:var(--gray);margin-top:2.5vh;line-height:1.7">Saját beruházásos ingatlanfejlesztés <strong style="color:var(--dark)">kéregpanel-technológiával</strong>. Borsodban és országos szinten.</p>
+    <p class="anim fu d4" style="font-size:clamp(18px,1.8vw,24px);color:var(--gray);margin-top:1.5vh;line-height:1.7">Ez a tapasztalat vezetett el a <strong style="color:var(--accent)">KV Homes-hoz</strong>.</p>
+  </div>
+  <div class="photo photo-gradient-l">
+    <img src="https://ferenckovacs.com/tarsashaz.jpeg" alt="Társasház fejlesztés" class="anim kb d1">
+  </div>
+</div>
+</div>
+
+<!-- ============================================================
+     SLIDE 6: TIMELINE
+     ============================================================ -->
+<div class="slide dark-full" data-id="6">
+<!-- GROK PROMPT: Dark navy (#1A252F) bg, faint blue (#00AEEF, 6% opacity) blueprint/CAD wireframe timeline visualization with horizontal lines and nodes, architectural drafting style, subtle grid, 1920x1080 -->
+<div class="grok-placeholder dark-bg" data-prompt="GROK: Dark navy bg, faint blue (#00AEEF, 6%) blueprint timeline with horizontal lines and nodes, architectural drafting style, subtle grid, 1920x1080"></div>
+<div class="slide-inner" style="padding:4% 5%;text-align:left;display:flex;flex-direction:column;justify-content:center">
+  <h2 class="serif anim fu d1" style="font-size:clamp(32px,3.5vw,52px);font-weight:400;color:#fff;text-align:center;margin-bottom:1vh">Honnan indultunk</h2>
+  <p class="anim fu d2" style="font-size:clamp(18px,1.6vw,22px);color:var(--muted);text-align:center;margin-bottom:3vh;font-weight:300">Két szál, egy cél</p>
+  <div style="display:flex;gap:4%;width:92%;margin:0 auto">
+    <div style="flex:1" class="anim sr d2">
+      <div style="font-size:16px;color:var(--accent);font-weight:700;letter-spacing:3px;text-transform:uppercase;padding-bottom:1.5vh;border-bottom:2px solid var(--accent);margin-bottom:2vh">Kovács Ferenc</div>
+      <div style="display:flex;gap:1.5vw;margin-bottom:1.8vh;align-items:flex-start"><span style="font-size:16px;color:var(--accent);font-weight:700;min-width:5.5vw;text-align:right">1999</span><span style="font-size:17px;color:var(--muted);line-height:1.5"><strong style="color:#fff">Koós Károly Építőipari Szki</strong> — Miskolc</span></div>
+      <div style="display:flex;gap:1.5vw;margin-bottom:1.8vh;align-items:flex-start"><span style="font-size:16px;color:var(--accent);font-weight:700;min-width:5.5vw;text-align:right">2003–09</span><span style="font-size:17px;color:var(--muted);line-height:1.5"><strong style="color:#fff">BME Építőmérnöki Kar</strong> — tartószerkezet + menedzsment</span></div>
+      <div style="display:flex;gap:1.5vw;margin-bottom:1.8vh;align-items:flex-start"><span style="font-size:16px;color:var(--accent);font-weight:700;min-width:5.5vw;text-align:right">2009</span><span style="font-size:17px;color:var(--muted);line-height:1.5"><strong style="color:#fff">Visszatérés</strong> — átvettem a családi vállalkozást</span></div>
+      <div style="display:flex;gap:1.5vw;align-items:flex-start"><span style="font-size:16px;color:var(--accent);font-weight:700;min-width:5.5vw;text-align:right">2025 →</span><span style="font-size:17px;color:var(--accent);line-height:1.5;font-weight:600">KV Homes — az új fejezet</span></div>
+    </div>
+    <div style="flex:1" class="anim sr d4">
+      <div style="font-size:16px;color:var(--muted);font-weight:700;letter-spacing:3px;text-transform:uppercase;padding-bottom:1.5vh;border-bottom:2px solid var(--muted);margin-bottom:2vh">KV Cégcsoport</div>
+      <div style="display:flex;gap:1.5vw;margin-bottom:1.5vh;align-items:flex-start"><span style="font-size:16px;color:var(--muted);font-weight:700;min-width:5.5vw;text-align:right">1992</span><span style="font-size:17px;color:var(--muted);line-height:1.5"><strong style="color:#fff">Alapítás</strong> — édesapám indította</span></div>
+      <div style="display:flex;gap:1.5vw;margin-bottom:1.5vh;align-items:flex-start"><span style="font-size:16px;color:var(--muted);font-weight:700;min-width:5.5vw;text-align:right">1992–00</span><span style="font-size:17px;color:var(--muted);line-height:1.5"><strong style="color:#fff">Generálkivitelezés</strong> — HU + DE, 250 fő</span></div>
+      <div style="display:flex;gap:1.5vw;margin-bottom:1.5vh;align-items:flex-start"><span style="font-size:16px;color:var(--muted);font-weight:700;min-width:5.5vw;text-align:right">2000–09</span><span style="font-size:17px;color:var(--muted);line-height:1.5"><strong style="color:#fff">Ingatlanfejlesztés</strong> — kéregpanel</span></div>
+      <div style="display:flex;gap:1.5vw;margin-bottom:1.5vh;align-items:flex-start"><span style="font-size:16px;color:var(--muted);font-weight:700;min-width:5.5vw;text-align:right">2010</span><span style="font-size:17px;color:var(--muted);line-height:1.5"><strong style="color:#fff">Vasbeton elemgyártás</strong></span></div>
+      <div style="display:flex;gap:1.5vw;margin-bottom:1.5vh;align-items:flex-start"><span style="font-size:16px;color:var(--muted);font-weight:700;min-width:5.5vw;text-align:right">2011–13</span><span style="font-size:17px;color:var(--muted);line-height:1.5"><strong style="color:#fff">Atlantis + Aurora</strong> ★★★★</span></div>
+      <div style="display:flex;gap:1.5vw;align-items:flex-start"><span style="font-size:16px;color:var(--muted);font-weight:700;min-width:5.5vw;text-align:right">2026 →</span><span style="font-size:17px;color:var(--accent);line-height:1.5;font-weight:600">KV Homes — országos</span></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================
+     SLIDE 7: KEY NUMBERS
+     ============================================================ -->
+<div class="slide dark-full" data-id="7">
+<!-- GROK PROMPT: Dark navy (#1A252F) bg, subtle blue (#00AEEF, 8%) wireframe architectural elements - building outlines, structural grid lines, faint blueprint-style technical drawings, modern minimalist, 1920x1080 -->
+<div class="grok-placeholder dark-bg" data-prompt="GROK: Dark navy bg, subtle blue (#00AEEF, 8%) wireframe building outlines, structural grid lines, faint blueprint technical drawings, modern minimalist, 1920x1080"></div>
+<div class="slide-inner">
+  <h2 class="serif anim fu d1" style="font-size:clamp(32px,3.5vw,52px);font-weight:400;color:#fff">Három évtized számokban</h2>
+  <div class="divider anim dl d2" style="width:80px;margin-top:2.5vh"></div>
+  <div style="display:flex;gap:2.5%;margin-top:5vh;width:85%">
+    <div class="anim crd d2" style="flex:1;text-align:center;padding:4% 2%;background:rgba(255,255,255,0.04);border-radius:14px;border:1px solid rgba(0,174,239,0.15)">
+      <div class="anim np d3" style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(40px,4.5vw,68px);font-weight:700;color:var(--accent)">30+</div>
+      <div style="font-size:clamp(16px,1.4vw,20px);color:var(--muted);margin-top:1vh">év az építőiparban</div>
+    </div>
+    <div class="anim crd d3" style="flex:1;text-align:center;padding:4% 2%;background:rgba(255,255,255,0.04);border-radius:14px;border:1px solid rgba(0,174,239,0.15)">
+      <div class="anim np d4" style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(40px,4.5vw,68px);font-weight:700;color:var(--accent)">600+</div>
+      <div style="font-size:clamp(16px,1.4vw,20px);color:var(--muted);margin-top:1vh">megépített lakás</div>
+    </div>
+    <div class="anim crd d4" style="flex:1;text-align:center;padding:4% 2%;background:rgba(255,255,255,0.04);border-radius:14px;border:1px solid rgba(0,174,239,0.15)">
+      <div class="anim np d5" style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(40px,4.5vw,68px);font-weight:700;color:var(--accent)">2</div>
+      <div style="font-size:clamp(16px,1.4vw,20px);color:var(--muted);margin-top:1vh">négycsillagos hotel</div>
+    </div>
+    <div class="anim crd d5" style="flex:1;text-align:center;padding:4% 2%;background:rgba(255,255,255,0.04);border-radius:14px;border:1px solid rgba(0,174,239,0.15)">
+      <div class="anim np d6" style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(40px,4.5vw,68px);font-weight:700;color:var(--accent)">174</div>
+      <div style="font-size:clamp(16px,1.4vw,20px);color:var(--muted);margin-top:1vh">szoba összesen</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================
+     SLIDE 8: TRANSITION — THE ROAD
+     ============================================================ -->
+<div class="slide dark-full" data-id="8">
+<!-- GROK PROMPT: Dark slate (#2C3E50) bg, subtle blue (#00AEEF, 10%) hand-drawn CAD-style road/path leading to a modern house outline, architectural sketch feel, blueprint aesthetic with white lines on dark, 1920x1080 -->
+<div class="grok-placeholder dark2-bg" data-prompt="GROK: Dark slate (#2C3E50) bg, subtle blue (#00AEEF, 10%) hand-drawn CAD road/path leading to modern house outline, architectural sketch, blueprint white lines on dark, 1920x1080"></div>
+<div class="slide-inner">
+  <h2 class="serif anim fu d1" style="font-size:clamp(40px,5.5vw,76px);font-weight:300;color:#fff;letter-spacing:-0.02em;line-height:1.2">Hogyan jutottunk<br><em style="color:var(--accent);font-style:italic">a KV Homes-hoz?</em></h2>
+  <p class="anim fu d3" style="font-size:clamp(20px,2vw,28px);color:var(--muted);margin-top:3vh;font-weight:300;max-width:65%">Az út a generálkivitelezéstől a gyári precizitásig</p>
+  <div class="divider anim dl d4" style="width:100px;margin-top:3vh"></div>
+</div>
+</div>
+
+<!-- ============================================================
+     SLIDE 9: THE PROBLEM
+     ============================================================ -->
+<div class="slide white-full" data-id="9">
+<!-- GROK PROMPT: White bg, very faint red/gray (#e74c3c, 4%) cracked wall texture, deteriorating building outline, subtle aging pattern, old vs new contrast, minimal, 1920x1080 -->
+<div class="grok-placeholder white-bg" data-prompt="GROK: White bg, very faint red/gray (4%) cracked wall texture, deteriorating building outline, subtle aging pattern, old vs new contrast, minimal, 1920x1080"></div>
+<div class="slide-inner">
+  <span class="tag tag-red anim fu d1">A probléma</span>
+  <h2 class="serif anim fu d2" style="font-size:clamp(36px,4vw,60px);font-weight:400;margin-top:2vh;color:var(--dark)">A magyar lakásállomány elavult</h2>
+  <p class="anim fu d3" style="font-size:clamp(20px,2vw,28px);color:var(--gray);margin-top:2vh;max-width:70%;line-height:1.7;font-weight:300">A házak túlnyomó többsége 25 évnél idősebb, energiapazarló. A hagyományos építőipar nem tud válaszolni a 21. század kihívásaira.</p>
+  <div style="display:flex;gap:6%;margin-top:5vh;align-items:center">
+    <div class="anim np d3" style="text-align:center">
+      <div style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(56px,7vw,96px);color:#e74c3c;font-weight:700">174</div>
+      <div style="font-size:clamp(18px,1.6vw,24px);color:var(--gray)">kWh/m²/év · <strong style="color:var(--dark)">magyar átlag</strong></div>
+    </div>
+    <div class="anim fu d4" style="font-size:48px;color:var(--muted)">→</div>
+    <div class="anim np d5" style="text-align:center">
+      <div style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(56px,7vw,96px);color:var(--accent);font-weight:700">12,2</div>
+      <div style="font-size:clamp(18px,1.6vw,24px);color:var(--gray)">kWh/m²/év · <strong style="color:var(--accent)">KV Homes</strong></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================
+     SLIDE 10: THE DISCOVERY — NORDII
+     ============================================================ -->
+<div class="slide dark-full" data-id="10">
+<!-- GROK PROMPT: Dark navy (#1A252F) bg, subtle Scandinavian-style architectural wireframe of modular building elements in light blue (#00AEEF, 10%), factory assembly line feel, prefabricated concrete modules, clean CAD aesthetic, 1920x1080 -->
+<div class="grok-placeholder dark-bg" data-prompt="GROK: Dark navy bg, Scandinavian-style architectural wireframe of modular building elements in light blue (#00AEEF, 10%), factory assembly, prefab concrete modules, CAD aesthetic, 1920x1080"></div>
+<div class="slide-inner">
+  <span class="tag tag-accent anim fu d1" style="font-size:20px">NORDii System</span>
+  <h2 class="serif anim fu d2" style="font-size:clamp(36px,4.5vw,64px);font-weight:300;color:#fff;margin-top:2vh;line-height:1.25">Egy skandináv technológia,<br>ami <em style="color:var(--accent);font-style:italic">mindent megváltoztatott</em></h2>
+  <p class="anim fu d3" style="font-size:clamp(20px,2vw,28px);color:var(--muted);margin-top:3vh;max-width:65%;line-height:1.7;font-weight:300">Előregyártott vasbeton térelemek — milliméterpontos, kontrollált körülmények között gyártva, helyszínen csak összeszerelve.</p>
+  <div style="display:flex;gap:3%;margin-top:5vh;width:80%">
+    <div class="anim crd d4" style="flex:1;text-align:center;padding:3.5%;background:rgba(255,255,255,0.05);border-radius:14px;border:1px solid rgba(0,174,239,0.15)">
+      <div style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,3vw,44px);color:var(--accent);font-weight:700">C40/50</div>
+      <div style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);margin-top:.8vh">Betonszilárdság<br><span style="font-size:.85em;opacity:.7">Hidakhoz használt minőség</span></div>
+    </div>
+    <div class="anim crd d5" style="flex:1;text-align:center;padding:3.5%;background:rgba(255,255,255,0.05);border-radius:14px;border:1px solid rgba(0,174,239,0.15)">
+      <div style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,3vw,44px);color:var(--accent);font-weight:700">0,04 mm</div>
+      <div style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);margin-top:.8vh">Lézerszkenner<br><span style="font-size:.85em;opacity:.7">40 mikron precizitás</span></div>
+    </div>
+    <div class="anim crd d6" style="flex:1;text-align:center;padding:3.5%;background:rgba(255,255,255,0.05);border-radius:14px;border:1px solid rgba(0,174,239,0.15)">
+      <div style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,3vw,44px);color:var(--accent);font-weight:700">BIM</div>
+      <div style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);margin-top:.8vh">Digitális iker<br><span style="font-size:.85em;opacity:.7">ArchiCAD tervezés</span></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================
+     SLIDE 11: QUOTE — MÁST CSINÁLUNK
+     ============================================================ -->
+<div class="slide" data-id="11">
+<!-- GROK PROMPT: Warm light beige (#F4F7F9) bg, subtle faint blueprint-style architectural line drawing of a modern house cross-section in blue (#00AEEF, 6%), very soft, editorial feel, 1920x1080 -->
+<div class="grok-placeholder warm-bg" data-prompt="GROK: Warm beige (#F4F7F9) bg, faint blueprint architectural cross-section of modern house in blue (#00AEEF, 6%), soft editorial feel, 1920x1080"></div>
+<div class="slide-inner" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8%">
+  <div class="anim fs d1" style="font-size:clamp(72px,10vw,120px);color:var(--accent);opacity:.2;line-height:1;font-family:Georgia,serif">"</div>
+  <blockquote class="serif anim fu d2" style="font-size:clamp(28px,3.5vw,52px);color:var(--dark);font-weight:400;line-height:1.45;font-style:italic;max-width:80%;margin-top:-3vh">Mi nem azt mondjuk, hogy jobban csináljuk a régit — hanem hogy <strong style="color:var(--accent);font-style:normal">mást csinálunk</strong>.</blockquote>
+  <p class="anim fu d4" style="font-size:clamp(18px,1.6vw,24px);color:var(--gray);margin-top:4vh;font-family:'Inter',sans-serif">— Kovács Ferenc</p>
+</div>
+</div>
+
+<!-- ============================================================
+     SLIDE 12: WHY IT CAUGHT ME — PHILOSOPHY
+     ============================================================ -->
+<div class="slide split-r" data-id="12">
+<div class="grok-placeholder dark-bg"></div>
+<div class="slide-inner" style="background:var(--dark);color:#fff">
+  <div class="content" style="color:#fff">
+    <div class="accent-bar anim cr d1"></div>
+    <span class="tag tag-accent anim fu d1">Miért fogott meg?</span>
+    <h2 class="serif anim fu d2" style="font-size:clamp(30px,3.2vw,48px);font-weight:400;color:#fff;margin-top:2vh;line-height:1.25">Gyári precizitás.<br>Mérnöki gondolkodás.<br>Digitális tervezés.</h2>
+    <p class="anim fu d3" style="font-size:clamp(18px,1.8vw,24px);color:var(--muted);margin-top:2.5vh;line-height:1.7">Nem a téglát rakjuk jobban — <strong style="color:#fff">a rendszert gondoltuk újra</strong>. A gyárban készül el az épület 95%-a, a helyszínen csak összeáll.</p>
+    <p class="anim fu d4" style="font-size:clamp(18px,1.8vw,24px);color:var(--muted);margin-top:1.5vh;line-height:1.7">Az épület <strong style="color:var(--accent)">szétszerelhető és újra összerakható</strong>.</p>
+  </div>
+  <div class="photo photo-gradient-dark-l" style="background:rgba(0,174,239,0.03)">
+    <!-- GROK PROMPT: Photo-realistic factory interior with precast concrete wall elements being manufactured, clean industrial space, blue-tinted lighting, modern production line, workers in safety gear, 1920x1080 -->
+    <!-- Replace with actual factory photo when available -->
+    <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:rgba(0,174,239,0.04)">
+      <div style="text-align:center;padding:8%">
+        <div style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(80px,10vw,140px);color:var(--accent);opacity:.12;font-weight:700">95%</div>
+        <div style="font-size:clamp(16px,1.6vw,22px);color:var(--muted);margin-top:1vh">gyárban készül</div>
+        <div style="width:60px;height:2px;background:var(--accent);margin:2vh auto;opacity:.3"></div>
+        <div style="font-size:clamp(14px,1.3vw,18px);color:rgba(255,255,255,.3)">Időjárástól független<br>Kontrollált körülmények</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================
+     SLIDE 13: QUOTE KARANCSI
+     ============================================================ -->
+<div class="slide" data-id="13">
+<!-- GROK PROMPT: Warm white (#F4F7F9) bg, faint blue (#00AEEF, 5%) exploded axonometric view of a prefabricated concrete room module, technical drawing style, CAD wireframe, very subtle, 1920x1080 -->
+<div class="grok-placeholder warm-bg" data-prompt="GROK: Warm white bg, faint blue (#00AEEF, 5%) exploded axonometric prefab concrete room module, technical CAD wireframe, very subtle, 1920x1080"></div>
+<div class="slide-inner" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8%">
+  <div class="anim fs d1" style="font-size:clamp(72px,10vw,120px);color:var(--accent);opacity:.2;line-height:1;font-family:Georgia,serif">"</div>
+  <blockquote class="serif anim fu d2" style="font-size:clamp(28px,3.5vw,52px);color:var(--dark);font-weight:400;line-height:1.45;font-style:italic;max-width:80%;margin-top:-3vh">A NORDii System nem csupán egy technológia — ez egy <strong style="color:var(--accent);font-style:normal">gondolkodásmód</strong>.</blockquote>
+  <p class="anim fu d4" style="font-size:clamp(18px,1.6vw,24px);color:var(--gray);margin-top:4vh;font-family:'Inter',sans-serif">— Karancsi Sándor, kivitelezési üzletág igazgató</p>
+</div>
+</div>
+
+<!-- ============================================================
+     SLIDE 14: THE 4 KEY NUMBERS
+     ============================================================ -->
+<div class="slide white-full" data-id="14">
+<!-- GROK PROMPT: White bg, very faint light blue (#00AEEF, 4%) four interconnected geometric shapes (circle, hexagon, square, triangle) with thin wireframe lines, minimal architectural drafting style, 1920x1080 -->
+<div class="grok-placeholder white-bg" data-prompt="GROK: White bg, faint blue (#00AEEF, 4%) four interconnected geometric shapes with wireframe lines, minimal architectural drafting, 1920x1080"></div>
+<div class="slide-inner">
+  <h2 class="serif anim fu d1" style="font-size:clamp(32px,3.5vw,52px);font-weight:400;color:var(--dark)">Az elvek, számokban</h2>
+  <p class="anim fu d2" style="font-size:clamp(18px,1.6vw,24px);color:var(--gray);margin-top:1vh;font-weight:300">A KV Homes rendszer négy pillére</p>
+  <div class="divider anim dl d3" style="width:80px;margin-top:2vh"></div>
+  <div style="display:flex;gap:2%;margin-top:5vh;width:90%">
+    <div class="anim crd d3" style="flex:1;background:var(--warm);border-radius:14px;padding:4% 3%;text-align:center;border:1px solid rgba(0,0,0,0.06);border-top:5px solid var(--accent);min-height:22vh;display:flex;flex-direction:column;align-items:center;justify-content:center">
+      <div class="anim np d4" style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(36px,4vw,60px);font-weight:700;color:var(--accent)">~3</div>
+      <div style="font-size:clamp(14px,1.1vw,17px);color:var(--gray);margin-top:.5vh;text-transform:uppercase;letter-spacing:2px;font-weight:500">hónap</div>
+      <div style="font-size:clamp(16px,1.4vw,20px);color:var(--dark);margin-top:1vh;font-weight:500">Kulcsrakész otthon</div>
+    </div>
+    <div class="anim crd d4" style="flex:1;background:var(--warm);border-radius:14px;padding:4% 3%;text-align:center;border:1px solid rgba(0,0,0,0.06);border-top:5px solid var(--accent);min-height:22vh;display:flex;flex-direction:column;align-items:center;justify-content:center">
+      <div class="anim np d5" style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(36px,4vw,60px);font-weight:700;color:var(--accent)">A+++</div>
+      <div style="font-size:clamp(14px,1.1vw,17px);color:var(--gray);margin-top:.5vh;text-transform:uppercase;letter-spacing:2px;font-weight:500">besorolás</div>
+      <div style="font-size:clamp(16px,1.4vw,20px);color:var(--dark);margin-top:1vh;font-weight:500">Energetikai csúcs</div>
+    </div>
+    <div class="anim crd d5" style="flex:1;background:var(--warm);border-radius:14px;padding:4% 3%;text-align:center;border:1px solid rgba(0,0,0,0.06);border-top:5px solid var(--accent);min-height:22vh;display:flex;flex-direction:column;align-items:center;justify-content:center">
+      <div class="anim np d6" style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(36px,4vw,60px);font-weight:700;color:var(--accent)">12,2</div>
+      <div style="font-size:clamp(14px,1.1vw,17px);color:var(--gray);margin-top:.5vh;text-transform:uppercase;letter-spacing:2px;font-weight:500">kWh/m²/év</div>
+      <div style="font-size:clamp(16px,1.4vw,20px);color:var(--dark);margin-top:1vh;font-weight:500">Fogyasztás</div>
+    </div>
+    <div class="anim crd d6" style="flex:1;background:var(--warm);border-radius:14px;padding:4% 3%;text-align:center;border:1px solid rgba(0,0,0,0.06);border-top:5px solid var(--accent);min-height:22vh;display:flex;flex-direction:column;align-items:center;justify-content:center">
+      <div class="anim np d7" style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(36px,4vw,60px);font-weight:700;color:var(--accent)">100+</div>
+      <div style="font-size:clamp(14px,1.1vw,17px);color:var(--gray);margin-top:.5vh;text-transform:uppercase;letter-spacing:2px;font-weight:500">év</div>
+      <div style="font-size:clamp(16px,1.4vw,20px);color:var(--dark);margin-top:1vh;font-weight:500">Élettartam</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================
+     SLIDE 15: COMPARISON
+     ============================================================ -->
+<div class="slide white-full" data-id="15">
+<!-- GROK PROMPT: White bg, faint split composition - left side: gray (#7F8C8D, 4%) old crumbling brick pattern, right side: blue (#00AEEF, 4%) clean geometric grid - subtle contrast between old and new, 1920x1080 -->
+<div class="grok-placeholder white-bg" data-prompt="GROK: White bg, left: faint gray old brick pattern, right: faint blue clean grid — old vs new contrast, subtle, 1920x1080"></div>
+<div class="slide-inner">
+  <h2 class="serif anim fu d1" style="font-size:clamp(30px,3.2vw,48px);font-weight:400;color:var(--dark)">Hagyományos vs. KV Homes</h2>
+  <div class="divider anim dl d2" style="width:80px;margin-top:2vh"></div>
+  <div style="display:flex;gap:3%;margin-top:4vh;width:88%">
+    <div class="anim sr d2" style="flex:1;border-radius:16px;padding:3.5% 4%;background:var(--light);border:1px solid rgba(0,0,0,0.08)">
+      <h3 style="font-size:clamp(20px,2vw,28px);color:var(--gray);font-weight:700;margin-bottom:2.5vh">Hagyományos építés</h3>
+      <div style="display:flex;justify-content:space-between;padding:1.5vh 0;border-bottom:1px solid rgba(0,0,0,0.06);font-size:clamp(16px,1.4vw,20px)"><span style="color:var(--gray)">Átadás</span><span style="font-weight:600;color:var(--dark)">12–18 hónap</span></div>
+      <div style="display:flex;justify-content:space-between;padding:1.5vh 0;border-bottom:1px solid rgba(0,0,0,0.06);font-size:clamp(16px,1.4vw,20px)"><span style="color:var(--gray)">Energetika</span><span style="font-weight:600;color:var(--dark)">B–D besorolás</span></div>
+      <div style="display:flex;justify-content:space-between;padding:1.5vh 0;border-bottom:1px solid rgba(0,0,0,0.06);font-size:clamp(16px,1.4vw,20px)"><span style="color:var(--gray)">Fogyasztás</span><span style="font-weight:600;color:var(--dark)">174 kWh/m²/év</span></div>
+      <div style="display:flex;justify-content:space-between;padding:1.5vh 0;border-bottom:1px solid rgba(0,0,0,0.06);font-size:clamp(16px,1.4vw,20px)"><span style="color:var(--gray)">Élettartam</span><span style="font-weight:600;color:var(--dark)">50–80 év</span></div>
+      <div style="display:flex;justify-content:space-between;padding:1.5vh 0;font-size:clamp(16px,1.4vw,20px)"><span style="color:var(--gray)">Minőség</span><span style="font-weight:600;color:var(--dark)">Helyszíni improvizáció</span></div>
+    </div>
+    <div class="anim sr d4" style="flex:1;border-radius:16px;padding:3.5% 4%;background:var(--accent-bg);border:2px solid var(--accent)">
+      <h3 style="font-size:clamp(20px,2vw,28px);color:var(--accent);font-weight:700;margin-bottom:2.5vh">KV Homes</h3>
+      <div style="display:flex;justify-content:space-between;padding:1.5vh 0;border-bottom:1px solid rgba(0,174,239,0.1);font-size:clamp(16px,1.4vw,20px)"><span style="color:var(--gray)">Átadás</span><span style="font-weight:700;color:var(--accent)">~3 hónap</span></div>
+      <div style="display:flex;justify-content:space-between;padding:1.5vh 0;border-bottom:1px solid rgba(0,174,239,0.1);font-size:clamp(16px,1.4vw,20px)"><span style="color:var(--gray)">Energetika</span><span style="font-weight:700;color:var(--accent)">A+++ besorolás</span></div>
+      <div style="display:flex;justify-content:space-between;padding:1.5vh 0;border-bottom:1px solid rgba(0,174,239,0.1);font-size:clamp(16px,1.4vw,20px)"><span style="color:var(--gray)">Fogyasztás</span><span style="font-weight:700;color:var(--accent)">12,2 kWh/m²/év</span></div>
+      <div style="display:flex;justify-content:space-between;padding:1.5vh 0;border-bottom:1px solid rgba(0,174,239,0.1);font-size:clamp(16px,1.4vw,20px)"><span style="color:var(--gray)">Élettartam</span><span style="font-weight:700;color:var(--accent)">100+ év</span></div>
+      <div style="display:flex;justify-content:space-between;padding:1.5vh 0;font-size:clamp(16px,1.4vw,20px)"><span style="color:var(--gray)">Minőség</span><span style="font-weight:700;color:var(--accent)">Gyári precizitás (0,04mm)</span></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================
+     SLIDE 16: TECHNOLOGY
+     ============================================================ -->
+<div class="slide dark-full" data-id="16">
+<!-- GROK PROMPT: Dark navy (#1A252F) bg, faint blue (#00AEEF, 8%) exploded technical diagram of house layers - foundation, walls, insulation, roof, HVAC system - CAD wireframe style, blueprint aesthetic, each layer slightly separated, 1920x1080 -->
+<div class="grok-placeholder dark-bg" data-prompt="GROK: Dark navy bg, faint blue (#00AEEF, 8%) exploded technical diagram of house layers - foundation, walls, insulation, roof, HVAC - CAD wireframe blueprint, layers separated, 1920x1080"></div>
+<div class="slide-inner">
+  <h2 class="serif anim fu d1" style="font-size:clamp(30px,3.2vw,48px);font-weight:400;color:#fff">Ami minden modellbe benne van</h2>
+  <p class="anim fu d2" style="font-size:clamp(16px,1.4vw,22px);color:var(--muted);margin-top:1vh">Alapáron — nincs felár, nincs rejtett költség</p>
+  <div class="divider anim dl d2" style="width:80px;margin-top:2vh"></div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5%;margin-top:4vh;width:90%">
+    <!-- GROK PROMPT FOR ICONS: Each icon should be a clean white wireframe icon on transparent bg, architectural/technical style, matching the blueprint aesthetic. Generate separately: concrete block, thermometer/energy, heat pump, ventilation fan, window/glass, electrical panel -->
+    <div class="anim crd d3" style="background:rgba(255,255,255,0.04);border-radius:12px;padding:3.5% 3%;text-align:center;border:1px solid rgba(0,174,239,0.12)">
+      <!-- GROK ICON: Clean white wireframe concrete block icon, architectural CAD style, transparent bg, 200x200 -->
+      <div style="font-size:clamp(14px,1.2vw,17px);color:var(--accent);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1vh">Vasbeton tér-elem</div>
+      <p style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);line-height:1.5">C40/50 beton · 15 cm fal<br>100 éves élettartam</p>
+    </div>
+    <div class="anim crd d4" style="background:rgba(255,255,255,0.04);border-radius:12px;padding:3.5% 3%;text-align:center;border:1px solid rgba(0,174,239,0.12)">
+      <div style="font-size:clamp(14px,1.2vw,17px);color:var(--accent);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1vh">A+++ energetika</div>
+      <p style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);line-height:1.5">16 cm PIR tető · 22 cm Graphit fal<br>16 cm XPS padló</p>
+    </div>
+    <div class="anim crd d5" style="background:rgba(255,255,255,0.04);border-radius:12px;padding:3.5% 3%;text-align:center;border:1px solid rgba(0,174,239,0.12)">
+      <div style="font-size:clamp(14px,1.2vw,17px);color:var(--accent);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1vh">Hőszivattyú</div>
+      <p style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);line-height:1.5">Fűtés + hűtés egyben<br>Szobánkénti szabályozás · gáz nélkül</p>
+    </div>
+    <div class="anim crd d5" style="background:rgba(255,255,255,0.04);border-radius:12px;padding:3.5% 3%;text-align:center;border:1px solid rgba(0,174,239,0.12)">
+      <div style="font-size:clamp(14px,1.2vw,17px);color:var(--accent);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1vh">Hővisszanyerős szellőzés</div>
+      <p style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);line-height:1.5">Folyamatos friss levegő<br>Automatikus légcsere</p>
+    </div>
+    <div class="anim crd d6" style="background:rgba(255,255,255,0.04);border-radius:12px;padding:3.5% 3%;text-align:center;border:1px solid rgba(0,174,239,0.12)">
+      <div style="font-size:clamp(14px,1.2vw,17px);color:var(--accent);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1vh">Prémium nyílászáró</div>
+      <p style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);line-height:1.5">3 rétegű hővédő üveg<br>Többkamrás tokszerkezet</p>
+    </div>
+    <div class="anim crd d7" style="background:rgba(255,255,255,0.04);border-radius:12px;padding:3.5% 3%;text-align:center;border:1px solid rgba(0,174,239,0.12)">
+      <div style="font-size:clamp(14px,1.2vw,17px);color:var(--accent);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1vh">Teljes műszaki csomag</div>
+      <p style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);line-height:1.5">Burkolatok · szaniterek<br>LED · strukturált hálózat</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================
+     SLIDE 17: AKTÍV HÁZ — ENERGIATERMELŐ OTTHON
+     ============================================================ -->
+<div class="slide dark-full" data-id="17">
+<!-- GROK PROMPT: Dark navy (#1A252F) bg, faint green-blue energy flow lines (#00AEEF + #22c55e, 8% opacity) connecting a house outline with solar panels on roof to a battery symbol to a power grid symbol, energy flow arrows, futuristic smart grid wireframe, blueprint CAD style, 1920x1080 -->
+<div class="grok-placeholder dark-bg" data-prompt="GROK: Dark navy bg, faint green-blue energy flow lines (#00AEEF + #22c55e, 8%) connecting house with solar panels → battery → power grid, energy flow arrows, smart grid wireframe, blueprint CAD, 1920x1080"></div>
+<div class="slide-inner" style="padding:4% 5%;display:flex;flex-direction:column;align-items:center;justify-content:center">
+  <span class="tag tag-accent anim fu d1" style="font-size:20px;background:rgba(34,197,94,0.12);color:#22c55e;border-color:rgba(34,197,94,0.25)">Nem csak ház</span>
+  <h2 class="serif anim fu d2" style="font-size:clamp(36px,4.5vw,64px);font-weight:300;color:#fff;margin-top:2vh;line-height:1.25;text-align:center">Energiatermelő <em style="color:var(--accent);font-style:italic">aktív otthon</em></h2>
+  <p class="anim fu d3" style="font-size:clamp(18px,1.6vw,24px);color:var(--muted);margin-top:2vh;max-width:70%;text-align:center;line-height:1.7;font-weight:300">A KV Homes nem passzív fogyasztó — napelemet és akkumulátort is adunk a házhoz. Az otthon termel, tárol, és hamarosan kereskedik is.</p>
+  <div style="display:flex;gap:2.5%;margin-top:4vh;width:90%">
+    <div class="anim crd d4" style="flex:1;background:rgba(255,255,255,0.04);border-radius:14px;padding:4% 3%;text-align:center;border:1px solid rgba(34,197,94,0.15);border-top:4px solid #22c55e">
+      <!-- GROK ICON: Clean white wireframe solar panel icon on house roof, CAD style, transparent bg, 200x200 -->
+      <div style="font-size:clamp(14px,1.2vw,17px);color:#22c55e;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1vh">Napelem</div>
+      <p style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);line-height:1.6">Integrált tetőrendszer<br>Termelés az első naptól</p>
+    </div>
+    <div class="anim crd d5" style="flex:1;background:rgba(255,255,255,0.04);border-radius:14px;padding:4% 3%;text-align:center;border:1px solid rgba(34,197,94,0.15);border-top:4px solid #22c55e">
+      <!-- GROK ICON: Clean white wireframe battery/energy storage icon, CAD style, transparent bg, 200x200 -->
+      <div style="font-size:clamp(14px,1.2vw,17px);color:#22c55e;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1vh">Akkumulátor</div>
+      <p style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);line-height:1.6">Otthoni energiatárolás<br>Éjszakai felhasználás naptól</p>
+    </div>
+    <div class="anim crd d6" style="flex:1;background:rgba(255,255,255,0.04);border-radius:14px;padding:4% 3%;text-align:center;border:1px solid rgba(0,174,239,0.15);border-top:4px solid var(--accent)">
+      <!-- GROK ICON: Clean white wireframe energy trading/exchange icon with arrows and grid symbol, CAD style, transparent bg, 200x200 -->
+      <div style="font-size:clamp(14px,1.2vw,17px);color:var(--accent);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1vh">Aggregátor</div>
+      <p style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);line-height:1.6">Magánszemélyek is szerződhetnek<br>A ház kereskedhet az árammal</p>
+    </div>
+  </div>
+  <div class="anim fu d7" style="margin-top:4vh;background:rgba(0,174,239,0.06);border:1px solid rgba(0,174,239,0.12);border-radius:12px;padding:2.5% 4%;max-width:80%;text-align:center">
+    <p style="font-size:clamp(16px,1.4vw,22px);color:#fff;line-height:1.7;font-weight:300">2026-tól <strong style="color:var(--accent)">EU-irányelv:</strong> minden okos mérővel rendelkező fogyasztó <strong style="color:var(--accent)">dinamikus árazást</strong> kérhet. A ház csúcsidőben drágán ad el, olcsón tölt — a KV Homes otthon nem költség, hanem <strong style="color:#22c55e">infrastruktúra-befektetés</strong>.</p>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================
+     SLIDE 18: 3 TAKEAWAYS
+     ============================================================ -->
+<div class="slide accent-full" data-id="18">
+<!-- GROK PROMPT: Solid bright blue (#00AEEF) bg, faint white (15% opacity) architectural wireframe pattern of connected houses, geometric network, modern clean feel, 1920x1080 -->
+<div class="grok-placeholder accent-bg-full" data-prompt="GROK: Solid bright blue (#00AEEF) bg, faint white (15%) architectural wireframe connected houses, geometric network, modern clean, 1920x1080"></div>
+<div class="slide-inner">
+  <span class="tag tag-white anim fu d1" style="font-size:18px">Amit a vendég hazavisz</span>
+  <h2 class="serif anim fu d2" style="font-size:clamp(32px,3.5vw,52px);font-weight:400;margin-top:2vh">Három szám, ami mindent elmond</h2>
+  <div style="display:flex;gap:3%;margin-top:5vh;width:85%">
+    <div class="anim crd d3" style="flex:1;background:rgba(255,255,255,0.15);border-radius:16px;padding:5% 4%;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);text-align:center">
+      <div style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(40px,4.5vw,68px);font-weight:700">~3 hó</div>
+      <div style="font-size:clamp(18px,1.6vw,24px);margin-top:1.5vh;opacity:.85;font-weight:300;line-height:1.5">Kulcsrakész otthon<br><span style="opacity:.6;font-size:.85em">a hagyományos 12–18 hónap helyett</span></div>
+    </div>
+    <div class="anim crd d4" style="flex:1;background:rgba(255,255,255,0.15);border-radius:16px;padding:5% 4%;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);text-align:center">
+      <div style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(40px,4.5vw,68px);font-weight:700">A+++</div>
+      <div style="font-size:clamp(18px,1.6vw,24px);margin-top:1.5vh;opacity:.85;font-weight:300;line-height:1.5">A legjobb energetika<br><span style="opacity:.6;font-size:.85em">a magyar piacon elérhető</span></div>
+    </div>
+    <div class="anim crd d5" style="flex:1;background:rgba(255,255,255,0.15);border-radius:16px;padding:5% 4%;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);text-align:center">
+      <div style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(40px,4.5vw,68px);font-weight:700">100+</div>
+      <div style="font-size:clamp(18px,1.6vw,24px);margin-top:1.5vh;opacity:.85;font-weight:300;line-height:1.5">Év élettartam<br><span style="opacity:.6;font-size:.85em">nem neked, hanem az unokáidnak is</span></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================
+     SLIDE 19: HOUSE RENDERS — VISUAL
+     ============================================================ -->
+<div class="slide split-r" data-id="19">
+<div class="grok-placeholder white-bg"></div>
+<div class="slide-inner" style="background:#fff">
+  <div class="content">
+    <div class="accent-bar anim cr d1"></div>
+    <span class="tag tag-accent anim fu d1">Mintaházak</span>
+    <h2 class="serif anim fu d2" style="font-size:clamp(32px,3.5vw,52px);font-weight:500;margin-top:2vh;line-height:1.2;color:var(--dark)">6 modell —<br>1 rendszer</h2>
+    <p class="anim fu d3" style="font-size:clamp(18px,1.8vw,24px);color:var(--gray);margin-top:2vh;line-height:1.7">Cottage · Levander · Horizon<br>Twin · Origin · Harmony</p>
+    <p class="anim fu d4" style="font-size:clamp(18px,1.8vw,24px);color:var(--gray);margin-top:1.5vh;line-height:1.7"><strong style="color:var(--dark)">57 m²-től 147 m²-ig</strong><br>Egyedi tervezés, azonos technológia</p>
+  </div>
+  <div class="photo photo-gradient-l">
+    <img src="https://ferenckovacs.com/kvhomes_render1.jpeg" alt="KV Homes Twin" class="anim kb d1">
+  </div>
+</div>
+</div>
+
+<!-- ============================================================
+     SLIDE 20: RENDER 2
+     ============================================================ -->
+<div class="slide split-l" data-id="20">
+<div class="grok-placeholder white-bg"></div>
+<div class="slide-inner" style="background:#fff">
+  <div class="photo photo-gradient-r">
+    <img src="https://ferenckovacs.com/kvhomes_render2.jpeg" alt="KV Homes Harmony" class="anim kb d1">
+  </div>
+  <div class="content">
+    <span class="tag tag-accent anim fu d1">Árak</span>
+    <h2 class="serif anim fu d2" style="font-size:clamp(26px,2.8vw,40px);font-weight:500;margin-top:2vh;line-height:1.3;color:var(--dark)">Kulcsrakész árak</h2>
+    <div class="anim fu d3" style="margin-top:2.5vh;font-size:clamp(16px,1.4vw,20px);color:var(--gray);line-height:2.2">
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(0,0,0,0.06);padding:.8vh 0"><span><strong style="color:var(--dark)">Cottage</strong> · 57 m²</span><span style="color:var(--accent);font-weight:700">~47 M Ft</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(0,0,0,0.06);padding:.8vh 0"><span><strong style="color:var(--dark)">Levander</strong> · 91 m²</span><span style="color:var(--accent);font-weight:700">~75 M Ft</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(0,0,0,0.06);padding:.8vh 0"><span><strong style="color:var(--dark)">Horizon</strong> · 96 m²</span><span style="color:var(--accent);font-weight:700">~88 M Ft</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(0,0,0,0.06);padding:.8vh 0"><span><strong style="color:var(--dark)">Twin</strong> · 110 m²/lak.</span><span style="color:var(--accent);font-weight:700">~91 M Ft</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(0,0,0,0.06);padding:.8vh 0"><span><strong style="color:var(--dark)">Origin</strong> · 112 m²</span><span style="color:var(--accent);font-weight:700">~92 M Ft</span></div>
+      <div style="display:flex;justify-content:space-between;padding:.8vh 0"><span><strong style="color:var(--dark)">Harmony</strong> · 147 m²</span><span style="color:var(--accent);font-weight:700">~137 M Ft</span></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================
+     SLIDE 21: RENDER 3 — TÁMOGATÁSOK
+     ============================================================ -->
+<div class="slide split-r" data-id="21">
+<div class="grok-placeholder white-bg"></div>
+<div class="slide-inner" style="background:#fff">
+  <div class="content">
+    <div class="accent-bar anim cr d1"></div>
+    <span class="tag tag-accent anim fu d1">Támogatások</span>
+    <h2 class="serif anim fu d2" style="font-size:clamp(28px,3vw,44px);font-weight:500;margin-top:2vh;line-height:1.2;color:var(--dark)">A+++ = maximális<br>jogosultság</h2>
+    <div class="anim fu d3" style="margin-top:3vh">
+      <div style="padding:2vh 0;border-bottom:1px solid rgba(0,0,0,0.06)">
+        <div style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(22px,2.2vw,32px);color:var(--accent);font-weight:700">10M + 50M Ft</div>
+        <div style="font-size:clamp(16px,1.4vw,20px);color:var(--dark);font-weight:600">CSOK Plusz</div>
+        <div style="font-size:clamp(14px,1.2vw,17px);color:var(--gray)">Vissza nem térítendő + kedvezményes hitel</div>
+      </div>
+      <div style="padding:2vh 0;border-bottom:1px solid rgba(0,0,0,0.06)">
+        <div style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(22px,2.2vw,32px);color:var(--accent);font-weight:700">10M Ft</div>
+        <div style="font-size:clamp(16px,1.4vw,20px);color:var(--dark);font-weight:600">Babaváró</div>
+        <div style="font-size:clamp(14px,1.2vw,17px);color:var(--gray)">Kamatmentes, kombinálható</div>
+      </div>
+      <div style="padding:2vh 0">
+        <div style="font-size:clamp(16px,1.4vw,20px);color:var(--dark);font-weight:600">MFB Zöld Otthon · Falusi CSOK</div>
+        <div style="font-size:clamp(14px,1.2vw,17px);color:var(--gray)">Kedvezményes kamat + ÁFA-visszaigénylés</div>
+      </div>
+    </div>
+  </div>
+  <div class="photo photo-gradient-l">
+    <img src="https://ferenckovacs.com/kvhomes_render3.jpeg" alt="KV Homes Horizon" class="anim kb d1">
+  </div>
+</div>
+</div>
+
+<!-- ============================================================
+     SLIDE 22: PARTNERS
+     ============================================================ -->
+<div class="slide white-full" data-id="22">
+<!-- GROK PROMPT: White bg, very faint blue (#00AEEF, 3%) network/connection diagram with nodes and thin lines, partnership network visualization, minimal geometric, 1920x1080 -->
+<div class="grok-placeholder white-bg" data-prompt="GROK: White bg, very faint blue (#00AEEF, 3%) network diagram with nodes and thin lines, partnership visualization, minimal geometric, 1920x1080"></div>
+<div class="slide-inner">
+  <h2 class="serif anim fu d1" style="font-size:clamp(30px,3.2vw,48px);font-weight:400;color:var(--dark)">Stratégiai partnerek</h2>
+  <div class="divider anim dl d2" style="width:80px;margin-top:2vh"></div>
+  <div style="display:flex;flex-wrap:wrap;gap:1.5%;justify-content:center;margin-top:5vh;width:80%">
+    <div class="anim crd d2" style="background:var(--light);border-radius:10px;padding:2% 3.5%;font-size:clamp(16px,1.6vw,22px);color:var(--dark);font-weight:500;border:1px solid rgba(0,0,0,0.04);margin-bottom:1.2%">Mapei</div>
+    <div class="anim crd d3" style="background:var(--light);border-radius:10px;padding:2% 3.5%;font-size:clamp(16px,1.6vw,22px);color:var(--dark);font-weight:500;border:1px solid rgba(0,0,0,0.04);margin-bottom:1.2%">Hilti</div>
+    <div class="anim crd d3" style="background:var(--light);border-radius:10px;padding:2% 3.5%;font-size:clamp(16px,1.6vw,22px);color:var(--dark);font-weight:500;border:1px solid rgba(0,0,0,0.04);margin-bottom:1.2%">Dörken</div>
+    <div class="anim crd d4" style="background:var(--light);border-radius:10px;padding:2% 3.5%;font-size:clamp(16px,1.6vw,22px);color:var(--dark);font-weight:500;border:1px solid rgba(0,0,0,0.04);margin-bottom:1.2%">Lindab</div>
+    <div class="anim crd d4" style="background:var(--light);border-radius:10px;padding:2% 3.5%;font-size:clamp(16px,1.6vw,22px);color:var(--dark);font-weight:500;border:1px solid rgba(0,0,0,0.04);margin-bottom:1.2%">Lambda</div>
+    <div class="anim crd d5" style="background:var(--light);border-radius:10px;padding:2% 3.5%;font-size:clamp(16px,1.6vw,22px);color:var(--dark);font-weight:500;border:1px solid rgba(0,0,0,0.04);margin-bottom:1.2%">Baumit</div>
+    <div class="anim crd d5" style="background:var(--light);border-radius:10px;padding:2% 3.5%;font-size:clamp(16px,1.6vw,22px);color:var(--dark);font-weight:500;border:1px solid rgba(0,0,0,0.04);margin-bottom:1.2%">Midea</div>
+    <div class="anim crd d6" style="background:var(--light);border-radius:10px;padding:2% 3.5%;font-size:clamp(16px,1.6vw,22px);color:var(--dark);font-weight:500;border:1px solid rgba(0,0,0,0.04);margin-bottom:1.2%">Knauf</div>
+    <div class="anim crd d6" style="background:var(--light);border-radius:10px;padding:2% 3.5%;font-size:clamp(16px,1.6vw,22px);color:var(--dark);font-weight:500;border:1px solid rgba(0,0,0,0.04);margin-bottom:1.2%">Kingspan</div>
+    <div class="anim crd d7" style="background:var(--light);border-radius:10px;padding:2% 3.5%;font-size:clamp(16px,1.6vw,22px);color:var(--dark);font-weight:500;border:1px solid rgba(0,0,0,0.04);margin-bottom:1.2%">Hun-Therm</div>
+    <div class="anim crd d7" style="background:var(--light);border-radius:10px;padding:2% 3.5%;font-size:clamp(16px,1.6vw,22px);color:var(--dark);font-weight:500;border:1px solid rgba(0,0,0,0.04);margin-bottom:1.2%">Hörmann</div>
+  </div>
+  <p class="serif anim fu d8" style="font-size:clamp(18px,1.6vw,24px);color:var(--gray);margin-top:4vh;font-style:italic;max-width:70%">Iparági vezetők a háttérben — prémium minőség, megbízható rendszer.</p>
+</div>
+</div>
+
+<!-- ============================================================
+     SLIDE 23: BITCOIN
+     ============================================================ -->
+<div class="slide dark-full" data-id="23">
+<!-- GROK PROMPT: Dark navy (#1A252F) bg, subtle Bitcoin symbol wireframe in orange (#F7931A, 8%) combined with house outline, digital currency meets real estate concept, geometric lines, blueprint style, 1920x1080 -->
+<div class="grok-placeholder dark-bg" data-prompt="GROK: Dark navy bg, subtle Bitcoin wireframe in orange (#F7931A, 8%) combined with house outline, digital currency meets real estate, blueprint geometric, 1920x1080"></div>
+<div class="slide-inner" style="display:flex;align-items:center">
+  <div style="width:55%;height:100%;display:flex;flex-direction:column;justify-content:center;padding:5% 4% 5% 6%;position:relative">
+    <div style="position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--gold)" class="anim cr d1"></div>
+    <span class="tag anim fu d1" style="font-size:20px;color:var(--gold);letter-spacing:5px">BITCOIN ELFOGADÁS</span>
+    <h2 class="serif anim fu d2" style="font-size:clamp(30px,3.2vw,48px);font-weight:400;color:#fff;margin-top:2vh;line-height:1.25">Nálunk házat is lehet venni<br><strong style="color:var(--gold)">Bitcoinban</strong></h2>
+    <p class="anim fu d3" style="font-size:clamp(18px,1.8vw,24px);color:var(--muted);margin-top:2.5vh;line-height:1.7">Két szállodánkban már elfogadjuk. A KV Homes-nál is lehetőség nyílik rá, hogy az otthonod digitális értékkel vásárold meg.</p>
+  </div>
+  <div style="width:45%;height:100%;display:flex;align-items:center;justify-content:center;padding:4%">
+    <div style="display:flex;flex-direction:column;gap:2.5vh;width:85%">
+      <div class="anim crd d4" style="background:rgba(247,147,26,0.06);border-radius:14px;padding:3.5%;border:1px solid rgba(247,147,26,0.15);text-align:center">
+        <div style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,3vw,44px);font-weight:700;color:var(--gold)">186,5M sat</div>
+        <div style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);margin-top:.5vh">Vállalati bitcoin készlet</div>
+      </div>
+      <div class="anim crd d5" style="background:rgba(247,147,26,0.06);border-radius:14px;padding:3.5%;border:1px solid rgba(247,147,26,0.15);text-align:center">
+        <div style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,3vw,44px);font-weight:700;color:var(--gold)">1%</div>
+        <div style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);margin-top:.5vh">Árbevétel BTC-be</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================
+     SLIDE 24: CLOSING
+     ============================================================ -->
+<div class="slide dark-full" data-id="24">
+<!-- GROK PROMPT: Dark navy (#1A252F) bg, elegant blue (#00AEEF, 10%) radial glow in center, subtle architectural blueprint wireframe of a complete KV Homes house fading out towards edges, premium closing feel, 1920x1080 -->
+<div class="grok-placeholder dark-bg" data-prompt="GROK: Dark navy bg, elegant blue (#00AEEF, 10%) radial glow center, subtle blueprint wireframe of KV Homes house fading to edges, premium closing feel, 1920x1080"></div>
+<div class="slide-inner">
+  <img src="https://ferenckovacs.com/kv_homes_logo.png" class="anim fs d1" style="height:8vh;margin-bottom:3vh;filter:brightness(0) invert(1);opacity:.7" alt="KV Homes">
+  <h2 class="serif anim fu d2" style="font-size:clamp(40px,5vw,72px);font-weight:300;color:#fff;letter-spacing:-0.02em">Köszönjük a <strong style="color:var(--accent)">figyelmet!</strong></h2>
+  <p class="anim fu d3" style="font-size:clamp(20px,1.8vw,26px);color:var(--muted);margin-top:3vh">info@kvhomes.hu</p>
+  <p class="anim fu d4" style="font-size:clamp(22px,2vw,30px);color:var(--accent);margin-top:1vh;font-weight:500">kvhomes.hu</p>
+  <div class="divider anim dl d5" style="width:80px;margin-top:3vh"></div>
+  <p class="anim fu d6" style="font-size:clamp(16px,1.4vw,22px);color:rgba(255,255,255,.3);margin-top:3vh;letter-spacing:4px;text-transform:uppercase">Kovács Ferenc — KV Homes Workshop 2026</p>
+</div>
+</div>
+
+</div><!-- /deck -->
+
+<!-- Progress bar -->
+<div class="progress-wrap"><div class="progress-fill" id="progress"></div></div>
+<div class="slide-counter" id="counter"></div>
+<div class="kb-hint">← → nyilakkal navigálj</div>
+
+<script>
+(function(){
+  const slides=document.querySelectorAll('.slide');
+  const total=slides.length;
+  let cur=0;
+  const prog=document.getElementById('progress');
+  const ctr=document.getElementById('counter');
+  let busy=false;
+
+  function show(n){
+    if(busy||n<0||n>=total||n===cur)return;
+    busy=true;
+    const old=slides[cur];
+    const nxt=slides[n];
+    old.classList.add('exiting');
+    old.classList.remove('active');
+    old.querySelectorAll('.anim').forEach(el=>{el.style.animation='none';el.offsetHeight;el.style.animation=''});
+    nxt.classList.add('active');
+    cur=n;
+    prog.style.width=((cur+1)/total*100)+'%';
+    ctr.textContent=(cur+1)+' / '+total;
+    setTimeout(()=>{old.classList.remove('exiting');busy=false},600);
+  }
+
+  prog.style.width=(1/total*100)+'%';
+  ctr.textContent='1 / '+total;
+
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();show(cur+1)}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(cur-1)}
+    else if(e.key==='Home')show(0);
+    else if(e.key==='End')show(total-1);
+  });
+
+  let tx=0;
+  document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
+  document.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-tx;
+    if(Math.abs(dx)>50){dx<0?show(cur+1):show(cur-1)}
+  });
+
+  document.addEventListener('click',e=>{
+    if(e.target.closest('a'))return;
+    const x=e.clientX/window.innerWidth;
+    if(x>.7)show(cur+1);
+    else if(x<.3)show(cur-1);
+  });
+
+  document.addEventListener('keydown',()=>{
+    const h=document.querySelector('.kb-hint');
+    if(h)h.style.display='none';
+  },{once:true});
+})();
+</script>
+</body>
+</html>
