@@ -15,6 +15,8 @@
       --green:#22c55e;--yellow:#f5b431;--gray:#4a4f57;
       --text:#fff;--text-muted:#8a919e;--text-dim:#5a606a;
       --border:rgba(0,51,102,0.25);--border-accent:rgba(247,147,26,0.15);--border-muted:rgba(138,145,158,0.12);
+      /* időarányos kártyamagasságok (5.6px/perc alap) */
+      --h-10:56px;--h-15:84px;--h-25:140px;--h-35:196px;--h-45:252px;
     }
     body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;letter-spacing:-0.011em}
     .container{max-width:880px;margin:0 auto;padding:48px 24px 96px}
@@ -33,8 +35,8 @@
     .day-divider{display:flex;align-items:center;gap:16px;margin-bottom:20px}
     .day-divider .label{font-size:13px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em;white-space:nowrap}
     .day-divider .line{flex:1;height:1px;background:var(--border-accent)}
-    .cards{display:grid;gap:16px;margin-bottom:56px}
-    .card{background:var(--bg-elevated);border:1px solid var(--border);border-radius:16px;padding:28px;transition:all .2s ease}
+    .cards{display:grid;gap:16px;margin-bottom:56px;scroll-snap-type:y proximity;overflow-y:auto;-webkit-overflow-scrolling:touch}
+    .card{background:var(--bg-elevated);border:1px solid var(--border);border-radius:16px;padding:28px;transition:all .2s ease;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center}
     .card:hover{border-color:var(--blue-light);transform:translateY(-2px)}
     .card-num{font-size:12px;color:var(--accent);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px}
     .card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:8px}
@@ -87,10 +89,10 @@
         <div class="meta-item"><strong>14:00–</strong> → vacsora 19:00</div>
       </div>
       <div class="summary-bar">
-        <div class="summary-stat"><strong>8</strong> programpont</div>
+        <div class="summary-stat"><strong>7</strong> programpont</div>
         <div class="summary-stat"><strong>0</strong> kész</div>
         <div class="summary-stat"><strong>2</strong> folyamatban</div>
-        <div class="summary-stat"><strong>6</strong> tervezett</div>
+        <div class="summary-stat"><strong>5</strong> tervezett</div>
       </div>
     </header>
 
@@ -113,7 +115,7 @@
     <div class="day-divider"><span class="label">Program · ápr. 16.</span><span class="line"></span></div>
     <div class="cards">
 
-      <div class="card" style="border-left:3px solid var(--accent)">
+      <div class="card" style="border-left:3px solid var(--accent);min-height:var(--h-35)">
         <div class="card-num">01 · Megnyitó</div>
         <div class="card-header">
           <h3 class="card-title">Miért + Hogyan — a KV Homes story</h3>
@@ -131,32 +133,22 @@
         </div>
       </div>
 
-      <div class="card" style="border-left:3px solid var(--blue-light);opacity:0.85">
-        <div class="card-num">Q&A</div>
-        <div class="card-header">
-          <h3 class="card-title">Kérdések és válaszok — megnyitó</h3>
-          <span class="card-status break">~14:35</span>
-        </div>
-        <div class="card-time"><strong>~14:35</strong> · 10 perc</div>
-        <p class="card-desc">Kérdések a közönségtől a megnyitó előadáshoz kapcsolódóan.</p>
-      </div>
-
-      <div class="card" style="border-left:3px solid var(--gray);opacity:0.7">
+      <div class="card" style="border-left:3px solid var(--gray);opacity:0.7;min-height:var(--h-15)">
         <div class="card-num">☕ Kávészünet</div>
         <div class="card-header">
           <h3 class="card-title">Szünet + informális beszélgetés</h3>
-          <span class="card-status break">~14:45</span>
+          <span class="card-status break">~14:35</span>
         </div>
         <div class="card-time">15 perc</div>
       </div>
 
-      <div class="card" style="border-left:3px solid var(--blue-light)">
+      <div class="card" style="border-left:3px solid var(--blue-light);min-height:var(--h-45)">
         <div class="card-num">02 · A gyakorlat</div>
         <div class="card-header">
           <h3 class="card-title">NORDii System technológia — kivitelezés és statika</h3>
           <span class="card-status progress">⚙ Folyamatban</span>
         </div>
-        <div class="card-time"><strong>~15:00</strong> · 45 perc</div>
+        <div class="card-time"><strong>~14:50</strong> · 45 perc</div>
         <p class="card-desc">Betekintés a NORDii System technológiába: tér-elem anatómia, rétegrend, NORDii vs. hagyományos építés, az építés 5 lépése (BIM→gyártás→alapozás→szerelés→gépészet), statikai megfontolások, C40/50 teljesítmény.</p>
         <div class="card-speaker">Karancsi Sándor — kivitelezési üzletág igazgató, okl. építőmérnök</div>
         <div class="progress-row">
@@ -168,22 +160,22 @@
         </div>
       </div>
 
-      <div class="card" style="border-left:3px solid var(--gray);opacity:0.7">
+      <div class="card" style="border-left:3px solid var(--gray);opacity:0.7;min-height:var(--h-10)">
         <div class="card-num">☕ Szünet</div>
         <div class="card-header">
           <h3 class="card-title">Rövid szünet</h3>
-          <span class="card-status break">~15:45</span>
+          <span class="card-status break">~15:35</span>
         </div>
         <div class="card-time">10 perc</div>
       </div>
 
-      <div class="card">
+      <div class="card" style="min-height:var(--h-45)">
         <div class="card-num">03 · Az otthon</div>
         <div class="card-header">
           <h3 class="card-title">Építészet — 6 mintaház + látványtervek</h3>
           <span class="card-status planned">○ Tervezett</span>
         </div>
-        <div class="card-time"><strong>~15:55</strong> · 45 perc</div>
+        <div class="card-time"><strong>~15:45</strong> · 45 perc</div>
         <p class="card-desc">Móricz Anett és a 3 fős építész csapat bemutatja a mintaház kínálatot: alaprajzok, látványtervek, építészeti filozófia, BIM workflow az építész szemszögéből.</p>
         <div class="card-speaker">Móricz Anett — építész csapatvezető</div>
         <div class="progress-row">
@@ -193,13 +185,13 @@
         <div class="card-actions"><span class="btn btn-disabled">Hamarosan</span></div>
       </div>
 
-      <div class="card" style="border-left:3px solid var(--green)">
+      <div class="card" style="border-left:3px solid var(--green);min-height:var(--h-15)">
         <div class="card-num">04 · Az energia</div>
         <div class="card-header">
           <h3 class="card-title">Energetikai hatékonyság — aktív ház, napelem, aggregátor</h3>
           <span class="card-status planned">○ Tervezett</span>
         </div>
-        <div class="card-time"><strong>~16:40</strong> · 15 perc</div>
+        <div class="card-time"><strong>~16:30</strong> · 15 perc</div>
         <p class="card-desc">A NORDii System energetikai teljesítménye: A+++ besorolás, hőszivattyú, napelem + akkumulátor, aggregátori lehetőségek magánszemélyeknek, dinamikus árazás 2026-tól — miért infrastruktúra-befektetés egy KV Homes otthon.</p>
         <div class="card-speaker">Panghy Gáspár — NORDii alapító, szerkezettervező</div>
         <div class="progress-row">
@@ -209,13 +201,13 @@
         <div class="card-actions"><span class="btn btn-disabled">Hamarosan</span></div>
       </div>
 
-      <div class="card" style="border-left:3px solid var(--accent)">
+      <div class="card" style="border-left:3px solid var(--accent);min-height:var(--h-25)">
         <div class="card-num">05 · A jövő</div>
         <div class="card-header">
           <h3 class="card-title">Kazincbarcikai projekt — felvezetés + önkormányzat</h3>
           <span class="card-status planned">○ Tervezett</span>
         </div>
-        <div class="card-time"><strong>~16:55</strong> · 20–30 perc</div>
+        <div class="card-time"><strong>~16:45</strong> · 20–30 perc</div>
         <p class="card-desc">Kovács Ferenc vezeti fel a több milliárdos kazincbarcikai lakóprojektet (számok, helyszín, vízió), majd ha a polgármester/alpolgármester felszólalni szeretne, átadja nekik a szót. Kérdések a közönségtől.</p>
         <div class="card-speaker">Kovács Ferenc + Önkormányzat (ha felszólalnak)</div>
         <div class="progress-row">
@@ -225,13 +217,13 @@
         <div class="card-actions"><span class="btn btn-disabled">Hamarosan</span></div>
       </div>
 
-      <div class="card" style="border-left:3px solid var(--accent)">
+      <div class="card" style="border-left:3px solid var(--accent);min-height:var(--h-15)">
         <div class="card-num">+1 · One more thing</div>
         <div class="card-header">
           <h3 class="card-title">Bérlakási program + EU támogatás</h3>
           <span class="card-status planned">○ Tervezett</span>
         </div>
-        <div class="card-time"><strong>~17:25</strong> · 10–15 perc</div>
+        <div class="card-time"><strong>~17:10</strong> · 10–15 perc</div>
         <p class="card-desc">Hogyan léphetnek be önkormányzatok a bérlakási programba: kamattámogatott projekthitel és vissza nem térítendő EU-s támogatás. A részletek a napokban véglegesednek.</p>
         <div class="card-speaker">Kovács Ferenc</div>
         <div class="progress-row">
@@ -241,13 +233,13 @@
         <div class="card-actions"><span class="btn btn-disabled">Hamarosan</span></div>
       </div>
 
-      <div class="card">
+      <div class="card" style="min-height:var(--h-10)">
         <div class="card-num">Zárlat</div>
         <div class="card-header">
           <h3 class="card-title">Következő lépések + networking</h3>
           <span class="card-status planned">○ Tervezett</span>
         </div>
-        <div class="card-time"><strong>~17:40</strong> · szabad networking → vacsora 19:00</div>
+        <div class="card-time"><strong>~17:25</strong> · szabad networking → vacsora 19:00</div>
         <p class="card-desc">Kapcsolatfelvételi lehetőség a csapattal, majd szabad beszélgetés és vacsora a Hotel Atlantis éttermében.</p>
       </div>
 
