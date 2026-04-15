@@ -136,7 +136,7 @@ h3{font-size:clamp(22px,2.4vw,34px);font-weight:600}
 </head>
 <body>
 <div class="brand-mark">KV Homes · BLOKK by NORDii</div>
-<div class="hud"><span id="hudIdx">01</span><span>/</span><span id="hudTot">08</span></div>
+<div class="hud"><span id="hudIdx">01</span><span>/</span><span id="hudTot">09</span></div>
 
 <div class="deck" id="deck">
 
@@ -180,10 +180,68 @@ h3{font-size:clamp(22px,2.4vw,34px);font-weight:600}
     </div>
   </section>
 
-  <!-- ====== 03 · DE A KÍNÁLAT MINŐSÉGE A PROBLÉMA ====== -->
+  <!-- ====== 03 · A SZAKADÉK — CHART ====== -->
+  <section class="slide" data-steps="4">
+    <div class="kicker reveal d1">02 · A piac ma</div>
+    <h2 class="reveal d1">A szakadék.</h2>
+
+    <div class="reveal d2" style="margin-top:2vh;display:flex;gap:3vw;align-items:center;justify-content:center">
+      <svg viewBox="0 0 1000 500" style="width:78%;height:auto;max-height:58vh" role="img" aria-label="Lakásárak vs. lakbérek 2016-2025">
+        <!-- grid -->
+        <g stroke="#e5e2dc" stroke-width="1">
+          <line x1="60" y1="440" x2="960" y2="440"/>
+          <line x1="60" y1="354" x2="960" y2="354"/>
+          <line x1="60" y1="268" x2="960" y2="268"/>
+          <line x1="60" y1="182" x2="960" y2="182"/>
+          <line x1="60" y1="96" x2="960" y2="96"/>
+        </g>
+        <!-- y labels -->
+        <g font-family="Inter" font-size="12" fill="#6b6b6b" text-anchor="end">
+          <text x="54" y="444">100</text>
+          <text x="54" y="358">175</text>
+          <text x="54" y="272">250</text>
+          <text x="54" y="186">325</text>
+          <text x="54" y="100">400</text>
+        </g>
+        <!-- x labels -->
+        <g font-family="Inter" font-size="12" fill="#6b6b6b" text-anchor="middle">
+          <text x="60" y="465">2016</text>
+          <text x="240" y="465">2018</text>
+          <text x="420" y="465">2020</text>
+          <text x="600" y="465">2022</text>
+          <text x="780" y="465">2024</text>
+          <text x="927" y="465">2025 Q3</text>
+        </g>
+        <!-- baseline at 100 -->
+        <line x1="60" y1="440" x2="960" y2="440" stroke="#b08b4b" stroke-dasharray="4 4" stroke-width="1"/>
+        <!-- házárak (narancs) -->
+        <polyline fill="none" stroke="#e8742a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"
+          points="60,423 150,394 240,371 330,343 420,320 510,286 600,229 690,206 780,149 870,86 927,74"/>
+        <!-- lakbérek (zöld) -->
+        <polyline fill="none" stroke="#0a6b4a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"
+          points="60,423 150,406 240,389 330,377 420,383 510,371 600,349 690,331 780,314 870,297 927,297"/>
+        <!-- end point markers + labels -->
+        <circle cx="927" cy="74" r="5" fill="#e8742a"/>
+        <text x="920" y="60" font-family="Playfair Display" font-size="20" fill="#e8742a" font-weight="600" text-anchor="end">Lakásárak +320%</text>
+        <circle cx="927" cy="297" r="5" fill="#0a6b4a"/>
+        <text x="920" y="288" font-family="Playfair Display" font-size="18" fill="#0a6b4a" font-weight="600" text-anchor="end">Lakbérek +130%</text>
+        <!-- baseline label -->
+        <text x="66" y="435" font-family="Inter" font-size="11" fill="#b08b4b" font-weight="600">2015 = 100</text>
+      </svg>
+    </div>
+
+    <div class="reveal d3" style="margin-top:1.5vh;text-align:center;font-size:clamp(15px,1.25vw,19px);color:var(--ink-soft);max-width:1100px;margin-left:auto;margin-right:auto">
+      A két görbe <strong>nem maradhat örökre külön</strong>. A tőke a lakást értéktárolóként pumpálta — a bérlés <strong>4% hozamnál</strong> nehezen fut versenyt a kockázatmentes kamattal.
+    </div>
+    <div class="reveal" data-step="3" style="margin-top:1vh;text-align:center;font-size:clamp(12px,0.95vw,14px);color:var(--muted);letter-spacing:0.04em">
+      Forrás: MNB, KSH, ingatlan.com, Portfolio · 2025 Q3
+    </div>
+  </section>
+
+  <!-- ====== 04 · DE A KÍNÁLAT MINŐSÉGE A PROBLÉMA ====== -->
   <section class="slide split reverse" data-steps="4">
     <div class="text">
-      <div class="kicker reveal d1">02 · A probléma</div>
+      <div class="kicker reveal d1">03 · A probléma</div>
       <h2 class="reveal d1">De a kínálat<br>minősége a probléma.</h2>
       <div class="lead reveal d2" style="margin-top:4vh">
         A <strong>hazai lakásállomány 80%-a</strong> rossz energiahatékonyságú.
@@ -202,7 +260,7 @@ h3{font-size:clamp(22px,2.4vw,34px);font-weight:600}
 
   <!-- ====== 04 · MI EZT MÁSKÉPP CSINÁLJUK ====== -->
   <section class="slide" data-steps="5">
-    <div class="kicker reveal d1">03 · A megoldás</div>
+    <div class="kicker reveal d1">04 · A megoldás</div>
     <h2 class="reveal d1">Mi ezt másképp csináljuk.</h2>
 
     <div class="pillars reveal d2" style="margin-top:5vh">
@@ -234,7 +292,7 @@ h3{font-size:clamp(22px,2.4vw,34px);font-weight:600}
       <img src="images/blokk-utca-nordii.jpg" alt="BLOKK by NORDii — utcakép">
     </div>
     <div class="text">
-      <div class="kicker reveal d1">04 · A koncepció</div>
+      <div class="kicker reveal d1">05 · A koncepció</div>
       <h2 class="reveal d1">BLOKK by&nbsp;NORDii.</h2>
       <div class="lead reveal d2" style="margin-top:3vh">
         Moduláris bérlakás-rendszer, önkormányzati telekre szabva.
@@ -259,7 +317,7 @@ h3{font-size:clamp(22px,2.4vw,34px);font-weight:600}
 
   <!-- ====== 06 · A BÉRLŐ ZSEBE ====== -->
   <section class="slide" data-steps="4">
-    <div class="kicker reveal d1">05 · A valódi különbség</div>
+    <div class="kicker reveal d1">06 · A valódi különbség</div>
     <h2 class="reveal d1">A bérlő zsebe.</h2>
 
     <div class="compare reveal d2" style="margin-top:4vh">
@@ -289,7 +347,7 @@ h3{font-size:clamp(22px,2.4vw,34px);font-weight:600}
 
   <!-- ====== 07 · KÖZÖS PROJEKT MODELL ====== -->
   <section class="slide" data-steps="5">
-    <div class="kicker reveal d1">06 · Hogyan csináljuk együtt</div>
+    <div class="kicker reveal d1">07 · Hogyan csináljuk együtt</div>
     <h2 class="reveal d1">Közös projektcég,<br>közös érték.</h2>
 
     <ol class="checklist num reveal d2" style="margin-top:4vh;max-width:1200px">
