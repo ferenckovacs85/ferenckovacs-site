@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>BLOKK by NORDii · Megfizethető bérlakás önkormányzatoknak</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#111;
+  --ink-soft:#2a2a2a;
+  --muted:#6b6b6b;
+  --line:#e5e2dc;
+  --warm:#faf8f3;
+  --warm-2:#f2ede3;
+  --accent:#0a6b4a;     /* zöld — fenntarthatóság */
+  --accent-2:#b08b4b;   /* arany — prémium */
+  --red:#c2352d;
+  --shadow:0 8px 28px rgba(20,18,12,0.08);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#f4efe6;color:var(--ink);font-family:'Inter',sans-serif;overflow:hidden;height:100%}
+body::before{content:'';position:fixed;inset:0;background:linear-gradient(135deg,#f7f3ea 0%,#efe8d9 100%);z-index:-2}
+body::after{content:'';position:fixed;inset:0;background:
+  radial-gradient(circle at 15% 20%,rgba(10,107,74,0.04) 0,transparent 40%),
+  radial-gradient(circle at 85% 75%,rgba(176,139,75,0.05) 0,transparent 45%);
+  z-index:-1;pointer-events:none}
+
+.deck{position:relative;width:100vw;height:100vh;aspect-ratio:16/9;max-width:calc(100vh*16/9);max-height:calc(100vw*9/16);margin:auto;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.slide{position:absolute;inset:0;padding:6vh 7vw;display:flex;flex-direction:column;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.5s ease}
+.slide.active{opacity:1;pointer-events:auto}
+
+/* Typography */
+h1,h2,h3{font-family:'Playfair Display',serif;font-weight:500;margin:0;line-height:1.1}
+h1{font-size:clamp(38px,5.2vw,76px)}
+h2{font-size:clamp(30px,4vw,58px)}
+h3{font-size:clamp(22px,2.4vw,34px);font-weight:600}
+.kicker{font-family:'Inter',sans-serif;font-size:clamp(11px,0.95vw,14px);letter-spacing:0.22em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:2vh}
+.lead{font-size:clamp(17px,1.55vw,24px);line-height:1.55;color:var(--ink-soft);max-width:900px}
+.muted{color:var(--muted)}
+
+/* Pill / badge */
+.pill{display:inline-block;padding:6px 14px;border-radius:999px;background:var(--accent);color:#fff;font-size:clamp(11px,0.9vw,13px);font-weight:600;letter-spacing:0.08em;text-transform:uppercase}
+.pill.gold{background:var(--accent-2)}
+.pill.outline{background:transparent;border:1.5px solid var(--accent);color:var(--accent)}
+.pill.red{background:var(--red)}
+
+/* Reveal engine */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity 0.6s cubic-bezier(.2,.7,.2,1),transform 0.6s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:translateY(0)}
+.reveal.d1{transition-delay:0.1s}
+.reveal.d2{transition-delay:0.25s}
+.reveal.d3{transition-delay:0.4s}
+
+/* Layouts */
+.layout-hero{align-items:center;text-align:center}
+.layout-hero h1{font-size:clamp(48px,6.4vw,110px);line-height:1.0}
+.layout-hero .sub{font-size:clamp(18px,1.7vw,26px);color:var(--muted);margin-top:3vh;max-width:900px}
+
+.split{display:grid;grid-template-columns:55% 45%;gap:4vw;align-items:center;height:100%}
+.split.reverse{grid-template-columns:45% 55%}
+.split .visual{height:78vh;max-height:78vh;overflow:hidden;border-radius:16px;box-shadow:var(--shadow);background:#ddd}
+.split .visual img{width:100%;height:100%;object-fit:cover;display:block}
+.split .text{display:flex;flex-direction:column;justify-content:center}
+
+/* Scale cards */
+.scale-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2vw;margin-top:3vh}
+.scale-grid.cols-3{grid-template-columns:repeat(3,1fr)}
+.scale-grid.cols-2{grid-template-columns:repeat(2,1fr)}
+.scale-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:2.2vh 1.4vw;box-shadow:var(--shadow);display:flex;flex-direction:column;justify-content:center;min-height:16vh}
+.scale-card .num{font-family:'Playfair Display',serif;font-size:clamp(30px,3.4vw,50px);color:var(--accent);font-weight:600;line-height:1}
+.scale-card .num.gold{color:var(--accent-2)}
+.scale-card .num.red{color:var(--red)}
+.scale-card .label{font-size:clamp(12px,1vw,15px);color:var(--muted);margin-top:0.8vh;line-height:1.35}
+
+/* Comparison table */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:2vw;margin-top:3vh}
+.compare .col{background:#fff;border-radius:14px;padding:3vh 2vw;box-shadow:var(--shadow);border-top:4px solid var(--line)}
+.compare .col.best{border-top-color:var(--accent)}
+.compare .col h4{font-family:'Inter',sans-serif;font-size:clamp(14px,1.1vw,17px);text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin:0 0 2vh 0;font-weight:600}
+.compare .col.best h4{color:var(--accent)}
+.compare .row{display:flex;justify-content:space-between;align-items:baseline;padding:1.2vh 0;border-bottom:1px solid var(--line);font-size:clamp(15px,1.25vw,19px)}
+.compare .row:last-child{border-bottom:none;font-weight:600;font-size:clamp(18px,1.5vw,24px);color:var(--ink);margin-top:1vh}
+.compare .row .val{font-family:'Playfair Display',serif;font-size:clamp(17px,1.4vw,22px)}
+.compare .col.best .row:last-child .val{color:var(--accent)}
+
+/* Savings highlight */
+.savings-bar{margin-top:3vh;background:#fff;border-radius:14px;padding:3vh 2vw;box-shadow:var(--shadow);text-align:center}
+.savings-bar .big{font-family:'Playfair Display',serif;font-size:clamp(54px,6.5vw,110px);color:var(--accent);font-weight:700;line-height:1}
+.savings-bar .big .unit{font-size:0.4em;color:var(--muted);font-weight:400}
+.savings-bar .desc{font-size:clamp(15px,1.3vw,20px);color:var(--ink-soft);margin-top:1vh}
+
+/* List */
+.checklist{list-style:none;padding:0;margin:3vh 0 0 0}
+.checklist li{position:relative;padding:1.5vh 0 1.5vh 2.5vw;font-size:clamp(16px,1.35vw,22px);color:var(--ink-soft);border-bottom:1px solid var(--line);line-height:1.4}
+.checklist li::before{content:'';position:absolute;left:0;top:2.3vh;width:1.2vw;height:1.2vw;min-width:14px;min-height:14px;background:var(--accent);border-radius:50%;display:flex}
+.checklist li::after{content:'✓';position:absolute;left:0.15vw;top:1.95vh;color:#fff;font-size:clamp(11px,0.9vw,14px);font-weight:bold}
+.checklist li strong{color:var(--ink);font-weight:600}
+.checklist.num{counter-reset:n}
+.checklist.num li{counter-increment:n;padding-left:3vw}
+.checklist.num li::before{background:var(--accent-2)}
+.checklist.num li::after{content:counter(n);left:0.32vw;top:1.7vh;color:#fff;font-size:clamp(12px,1vw,15px);font-weight:700}
+
+/* Quote block */
+.quote{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(22px,2.4vw,36px);line-height:1.3;color:var(--ink);padding:3vh 0;border-left:3px solid var(--accent-2);padding-left:2vw;margin:3vh 0}
+.quote cite{display:block;font-family:'Inter',sans-serif;font-style:normal;font-size:clamp(12px,1vw,15px);color:var(--muted);margin-top:1.5vh;letter-spacing:0.08em;text-transform:uppercase}
+
+/* HUD */
+.hud{position:fixed;bottom:2vh;right:2vw;font-family:'Inter',sans-serif;font-size:13px;color:var(--muted);letter-spacing:0.1em;z-index:100}
+.hud span{margin:0 4px}
+.brand-mark{position:fixed;top:2.2vh;left:2vw;font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(13px,1.1vw,16px);color:var(--muted);z-index:100;letter-spacing:0.03em}
+
+/* Closing */
+.closing{text-align:center}
+.closing h1{font-size:clamp(40px,5.4vw,82px);line-height:1.05;max-width:1100px;margin:0 auto}
+.closing .emphasis{color:var(--accent)}
+.closing .cta{margin-top:5vh;padding:2.5vh 3vw;background:var(--accent);color:#fff;border-radius:14px;display:inline-block;font-size:clamp(16px,1.4vw,22px);font-weight:500;line-height:1.5;max-width:900px}
+.closing .cta strong{font-weight:700}
+
+/* Section divider slide */
+.section-divider{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding-left:10vw}
+.section-divider .chapter-num{font-family:'Playfair Display',serif;font-size:clamp(80px,11vw,180px);color:var(--accent-2);opacity:0.25;line-height:1;font-weight:700}
+.section-divider h2{margin-top:-2vh;max-width:1100px}
+
+/* Three-pillar grid (slide 3) */
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6vw;margin-top:4vh}
+.pillar{background:#fff;border-radius:14px;padding:3vh 1.6vw;box-shadow:var(--shadow);border-top:4px solid var(--accent)}
+.pillar .ico{font-family:'Playfair Display',serif;font-size:clamp(34px,3.8vw,54px);color:var(--accent);font-weight:700;line-height:1}
+.pillar h4{font-family:'Playfair Display',serif;font-size:clamp(20px,1.9vw,28px);margin:1.5vh 0 1vh 0;color:var(--ink);font-weight:600}
+.pillar p{font-size:clamp(13px,1.1vw,16px);color:var(--ink-soft);line-height:1.45;margin:0}
+
+</style>
+</head>
+<body>
+<div class="brand-mark">KV Homes · BLOKK by NORDii</div>
+<div class="hud"><span id="hudIdx">01</span><span>/</span><span id="hudTot">08</span></div>
+
+<div class="deck" id="deck">
+
+  <!-- ====== 01 · CÍMDIA ====== -->
+  <section class="slide layout-hero active" data-steps="4">
+    <div class="reveal d1 in"><span class="pill gold">+1 · One more thing</span></div>
+    <h1 class="reveal d1" style="margin-top:3vh">Megfizethető<br>otthon.<br><span style="color:var(--accent);font-style:italic">Rezsi nélkül.</span></h1>
+    <div class="sub reveal d2">Bérlakási program önkormányzatoknak — BLOKK by NORDii + EU-s finanszírozás</div>
+    <div class="reveal d3" style="margin-top:5vh;color:var(--muted);font-size:clamp(13px,1.1vw,17px);letter-spacing:0.08em">
+      KV&nbsp;Homes Workshop · 2026. április 16. · Hajdúszoboszló
+    </div>
+  </section>
+
+  <!-- ====== 02 · AZ IDŐ MOST JÖTT EL ====== -->
+  <section class="slide" data-steps="5">
+    <div class="kicker reveal d1">01 · A momentum</div>
+    <h2 class="reveal d1">Az idő most jött el.</h2>
+
+    <div class="scale-grid cols-3 reveal d2" style="margin-top:5vh">
+      <div class="scale-card">
+        <div class="num red">3 millió</div>
+        <div class="label">magyar érintett lakhatási szegénységben</div>
+      </div>
+      <div class="scale-card">
+        <div class="num red">#1</div>
+        <div class="label">EU leggyorsabb lakásár-emelkedés · 2025 Q4</div>
+      </div>
+      <div class="scale-card">
+        <div class="num gold">100 Mrd Ft</div>
+        <div class="label">MFB Társasház Plusz keret · aktív</div>
+      </div>
+    </div>
+
+    <div class="quote reveal d3" style="margin-top:4vh;max-width:1100px">
+      „Aki nem tud venni, az bérel."
+      <cite>Portfolio.hu · 2026. április 15.</cite>
+    </div>
+
+    <div class="reveal" data-step="4" style="margin-top:2vh;font-size:clamp(15px,1.3vw,20px);color:var(--ink-soft);max-width:1000px">
+      A bérleti piac lett a nyomás alatti szelep. EU-s és hazai források <strong>ma valóban mozognak</strong> — zöld finanszírozás, közvetlen pályázatok, önkormányzati programok. <span class="muted">Ez szándék és momentum — nem politika.</span>
+    </div>
+  </section>
+
+  <!-- ====== 03 · DE A KÍNÁLAT MINŐSÉGE A PROBLÉMA ====== -->
+  <section class="slide split reverse" data-steps="4">
+    <div class="text">
+      <div class="kicker reveal d1">02 · A probléma</div>
+      <h2 class="reveal d1">De a kínálat<br>minősége a probléma.</h2>
+      <div class="lead reveal d2" style="margin-top:4vh">
+        A <strong>hazai lakásállomány 80%-a</strong> rossz energiahatékonyságú.
+      </div>
+      <div class="lead reveal d3" style="margin-top:2.5vh">
+        Új bérlakás a régi módon = <strong style="color:var(--red)">új rezsi-csapda</strong>.
+      </div>
+      <div class="reveal" data-step="3" style="margin-top:4vh;font-size:clamp(17px,1.5vw,23px);color:var(--accent);font-weight:600">
+        Ha meg akarjuk oldani — másképp kell építeni.
+      </div>
+    </div>
+    <div class="visual reveal d2">
+      <img src="images/blokk-homlokzat.jpg" alt="Modern bérlakás homlokzat">
+    </div>
+  </section>
+
+  <!-- ====== 04 · MI EZT MÁSKÉPP CSINÁLJUK ====== -->
+  <section class="slide" data-steps="5">
+    <div class="kicker reveal d1">03 · A megoldás</div>
+    <h2 class="reveal d1">Mi ezt másképp csináljuk.</h2>
+
+    <div class="pillars reveal d2" style="margin-top:5vh">
+      <div class="pillar">
+        <div class="ico">01</div>
+        <h4>Professzionális tervezés</h4>
+        <p>BIM-alapú, parametrikus — minden négyzetméter optimalizálva. Egy modellből gyártósor, statika, energetika, üzemeltetés.</p>
+      </div>
+      <div class="pillar">
+        <div class="ico">02</div>
+        <h4>Megbízható, gyors kivitelezés</h4>
+        <p>NORDii System: gyárban előregyártott tér-elemek, 5 lépéses helyszíni szerelés. Tervezett átfutás, kiszámítható minőség.</p>
+      </div>
+      <div class="pillar">
+        <div class="ico">03</div>
+        <h4>Energiahatékony, innovatív</h4>
+        <p>Aktív-ház kategória: hőszivattyú, napelem, akkumulátor. Nulla vagy minimális rezsi — működés közben.</p>
+      </div>
+    </div>
+
+    <div class="reveal" data-step="4" style="margin-top:4vh;font-size:clamp(16px,1.4vw,22px);color:var(--ink-soft);text-align:center">
+      Tervezünk. Gyártjuk. Építjük. <strong style="color:var(--accent)">Üzemeltetjük — egy kézből.</strong>
+    </div>
+  </section>
+
+  <!-- ====== 05 · BLOKK BY NORDii KONCEPCIÓ ====== -->
+  <section class="slide split" data-steps="5">
+    <div class="visual reveal d1">
+      <img src="images/blokk-utca-nordii.jpg" alt="BLOKK by NORDii — utcakép">
+    </div>
+    <div class="text">
+      <div class="kicker reveal d1">04 · A koncepció</div>
+      <h2 class="reveal d1">BLOKK by&nbsp;NORDii.</h2>
+      <div class="lead reveal d2" style="margin-top:3vh">
+        Moduláris bérlakás-rendszer, önkormányzati telekre szabva.
+      </div>
+
+      <div class="scale-grid cols-2 reveal d3" style="margin-top:3vh">
+        <div class="scale-card">
+          <div class="num">24–40</div>
+          <div class="label">lakás / egység · 96–160 fő</div>
+        </div>
+        <div class="scale-card">
+          <div class="num gold">64%</div>
+          <div class="label">zöldfelület</div>
+        </div>
+      </div>
+
+      <div class="reveal" data-step="4" style="margin-top:3vh;font-size:clamp(15px,1.3vw,20px);color:var(--ink-soft);line-height:1.5">
+        Parametrikus tervezés → <strong>a telek adta lehetőséghez igazítjuk</strong>. Aktív-ház kategória → <strong style="color:var(--accent)">nulla vagy minimális rezsi a bérlőnek.</strong>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 06 · A BÉRLŐ ZSEBE ====== -->
+  <section class="slide" data-steps="4">
+    <div class="kicker reveal d1">05 · A valódi különbség</div>
+    <h2 class="reveal d1">A bérlő zsebe.</h2>
+
+    <div class="compare reveal d2" style="margin-top:4vh">
+      <div class="col">
+        <h4>Hagyományos bérlakás</h4>
+        <div class="row"><span>Bérleti díj</span><span class="val">~90 000 Ft</span></div>
+        <div class="row"><span>Rezsi (tél)</span><span class="val">~60 000 Ft</span></div>
+        <div class="row"><span>Havi összes</span><span class="val">150 000 Ft</span></div>
+      </div>
+      <div class="col best">
+        <h4>BLOKK by NORDii</h4>
+        <div class="row"><span>Bérleti díj</span><span class="val">~100 000 Ft</span></div>
+        <div class="row"><span>Rezsi (aktív ház)</span><span class="val">~10 000 Ft</span></div>
+        <div class="row"><span>Havi összes</span><span class="val">110 000 Ft</span></div>
+      </div>
+    </div>
+
+    <div class="savings-bar reveal d3" style="margin-top:3vh">
+      <div class="big">−27%<span class="unit"> havonta</span></div>
+      <div class="desc">A bérlőnek <strong>~40 000 Ft/hó</strong> marad a zsebében — ez <strong style="color:var(--accent)">~500 000 Ft / év megtakarítás.</strong></div>
+    </div>
+
+    <div class="reveal" data-step="3" style="margin-top:2vh;text-align:center;font-size:clamp(14px,1.15vw,18px);color:var(--muted)">
+      Önkormányzat bevétele ugyanaz. Bérlőnek dupla annyi élhetőség. <strong style="color:var(--ink-soft)">Társadalmi érték.</strong>
+    </div>
+  </section>
+
+  <!-- ====== 07 · KÖZÖS PROJEKT MODELL ====== -->
+  <section class="slide" data-steps="5">
+    <div class="kicker reveal d1">06 · Hogyan csináljuk együtt</div>
+    <h2 class="reveal d1">Közös projektcég,<br>közös érték.</h2>
+
+    <ol class="checklist num reveal d2" style="margin-top:4vh;max-width:1200px">
+      <li><strong>Önkormányzat adja a telket</strong> — nem kell eladnia, apportként kerül a közös projektcégbe.</li>
+      <li><strong>Közös finanszírozási modell</strong> — MFB Társasház Plusz + EU pályázat + önerő kombináció.</li>
+      <li><strong>Lakások tőke-arányban dedikáltan kerülnek szétosztásra</strong> — az önkormányzat megkapja a neki járó bérlakás-készletet, a KV cégcsoport a sajátját.</li>
+      <li><strong>18 hónapos átfutás</strong> — BIM-tervezéstől kulcsátadásig.</li>
+    </ol>
+
+    <div class="reveal" data-step="4" style="margin-top:3vh;font-size:clamp(15px,1.3vw,20px);color:var(--ink-soft);max-width:1200px">
+      Gyakorlati érték a közösségnek. <strong>Marketing-érték az önkormányzatnak</strong> és a környéken élőknek — modern, zöld, megfizethető otthonok a településükön.
+    </div>
+  </section>
+
+  <!-- ====== 08 · ZÁRÓ — MELY TELEPÜLÉSEKKEL KEZDJÜK ====== -->
+  <section class="slide closing" data-steps="3">
+    <div class="reveal d1 in"><span class="pill">07 · A döntés</span></div>
+    <h1 class="reveal d1" style="margin-top:4vh">
+      Nem az a kérdés,<br>
+      <span class="muted" style="font-style:italic;font-weight:400">lesz-e bérlakás-program.</span><br>
+      <span class="emphasis">Az a kérdés: <strong>mely településekkel</strong> kezdjük.</span>
+    </h1>
+
+    <div class="cta reveal d2" style="margin-top:5vh">
+      Aki ma este <strong>a vacsoránál jelzi</strong>, május végéig megkapja a <strong>telek-auditot</strong> és a <strong>közös projektcég pénzügyi modelljét.</strong>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const deck=document.getElementById('deck');
+const slides=Array.from(deck.querySelectorAll('.slide'));
+const hi=document.getElementById('hudIdx'),ht=document.getElementById('hudTot');
+ht.textContent=String(slides.length).padStart(2,'0');
+
+let idx=0, step=0;
+
+function render(){
+  slides.forEach((s,i)=>s.classList.toggle('active',i===idx));
+  const cur=slides[idx];
+  const total=parseInt(cur.dataset.steps||'1',10);
+  const revs=cur.querySelectorAll('.reveal');
+  revs.forEach(r=>{
+    const d=r.dataset.step?parseInt(r.dataset.step,10):(r.classList.contains('d3')?3:(r.classList.contains('d2')?2:1));
+    if(d<=step) r.classList.add('in'); else r.classList.remove('in');
+  });
+  hi.textContent=String(idx+1).padStart(2,'0');
+}
+
+function next(){
+  const cur=slides[idx];
+  const total=parseInt(cur.dataset.steps||'1',10);
+  if(step<total){step++;render();return}
+  if(idx<slides.length-1){idx++;step=1;render()}
+}
+function prev(){
+  if(step>1){step--;render();return}
+  if(idx>0){idx--;step=parseInt(slides[idx].dataset.steps||'1',10);render()}
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();next()}
+  else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();prev()}
+  else if(e.key==='Home'){idx=0;step=1;render()}
+  else if(e.key==='End'){idx=slides.length-1;step=parseInt(slides[idx].dataset.steps||'1',10);render()}
+});
+
+document.addEventListener('click',e=>{
+  if(e.target.closest('a,button')) return;
+  if(e.clientX<window.innerWidth/2) prev(); else next();
+});
+
+step=1;render();
+</script>
+</body>
+</html>
