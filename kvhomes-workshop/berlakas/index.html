@@ -64,7 +64,22 @@ h3{font-size:clamp(22px,2.4vw,34px);font-weight:600}
 .split.reverse{grid-template-columns:45% 55%}
 .split .visual{height:78vh;max-height:78vh;overflow:hidden;border-radius:16px;box-shadow:var(--shadow);background:#ddd}
 .split .visual img{width:100%;height:100%;object-fit:cover;display:block}
+.imgstack{position:relative;width:100%;height:100%}
+.imgstack img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 0.6s ease}
+.imgstack img.on{opacity:1}
+.imgstack .caption{position:absolute;left:12px;bottom:12px;background:rgba(10,107,74,0.92);color:#fff;padding:6px 12px;border-radius:8px;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;z-index:2}
 .split .text{display:flex;flex-direction:column;justify-content:center}
+/* FULL BLEED képek: az egész slide hátterét kitöltik, gradient a szöveg felé */
+.slide.fullbleed{padding:0}
+.slide.fullbleed .bg{position:absolute;inset:0;z-index:0;overflow:hidden}
+.slide.fullbleed .bg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.05)}
+.slide.fullbleed .bg.imgstack img{opacity:0;transition:opacity 0.7s ease}
+.slide.fullbleed .bg.imgstack img.on{opacity:1}
+.slide.fullbleed .bg::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg, rgba(250,248,243,0.97) 0%, rgba(250,248,243,0.92) 35%, rgba(250,248,243,0.55) 60%, rgba(250,248,243,0.0) 90%)}
+.slide.fullbleed.right .bg::after{background:linear-gradient(270deg, rgba(250,248,243,0.97) 0%, rgba(250,248,243,0.92) 35%, rgba(250,248,243,0.55) 60%, rgba(250,248,243,0.0) 90%)}
+.slide.fullbleed .content{position:relative;z-index:1;padding:6vh 7vw;height:100%;display:flex;flex-direction:column;justify-content:center;width:55%}
+.slide.fullbleed.right .content{margin-left:45%}
+.slide.fullbleed .caption{position:absolute;z-index:2;right:24px;bottom:24px;background:rgba(10,107,74,0.92);color:#fff;padding:7px 14px;border-radius:8px;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600}
 
 /* Scale cards */
 .scale-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2vw;margin-top:3vh}
@@ -95,14 +110,12 @@ h3{font-size:clamp(22px,2.4vw,34px);font-weight:600}
 
 /* List */
 .checklist{list-style:none;padding:0;margin:3vh 0 0 0}
-.checklist li{position:relative;padding:1.5vh 0 1.5vh 2.5vw;font-size:clamp(16px,1.35vw,22px);color:var(--ink-soft);border-bottom:1px solid var(--line);line-height:1.4}
-.checklist li::before{content:'';position:absolute;left:0;top:2.3vh;width:1.2vw;height:1.2vw;min-width:14px;min-height:14px;background:var(--accent);border-radius:50%;display:flex}
-.checklist li::after{content:'✓';position:absolute;left:0.15vw;top:1.95vh;color:#fff;font-size:clamp(11px,0.9vw,14px);font-weight:bold}
+.checklist li{position:relative;padding:1.3vh 0 1.3vh 52px;font-size:clamp(15px,1.3vw,21px);color:var(--ink-soft);border-bottom:1px solid var(--line);line-height:1.4}
+.checklist li::before{content:'✓';position:absolute;left:0;top:1.3vh;width:32px;height:32px;background:var(--accent);border-radius:50%;color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1}
 .checklist li strong{color:var(--ink);font-weight:600}
 .checklist.num{counter-reset:n}
-.checklist.num li{counter-increment:n;padding-left:3vw}
-.checklist.num li::before{background:var(--accent-2)}
-.checklist.num li::after{content:counter(n);left:0.32vw;top:1.7vh;color:#fff;font-size:clamp(12px,1vw,15px);font-weight:700}
+.checklist.num li{counter-increment:n}
+.checklist.num li::before{content:counter(n);background:var(--accent-2);font-size:15px}
 
 /* Quote block */
 .quote{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(22px,2.4vw,36px);line-height:1.3;color:var(--ink);padding:3vh 0;border-left:3px solid var(--accent-2);padding-left:2vw;margin:3vh 0}
@@ -155,28 +168,31 @@ h3{font-size:clamp(22px,2.4vw,34px);font-weight:600}
     <div class="kicker reveal d1">01 · A momentum</div>
     <h2 class="reveal d1">Az idő most jött el.</h2>
 
-    <div class="scale-grid cols-3 reveal d2" style="margin-top:5vh">
+    <div class="scale-grid cols-3 reveal d2" style="margin-top:4.5vh">
       <div class="scale-card">
         <div class="num red">3 millió</div>
         <div class="label">magyar érintett lakhatási szegénységben</div>
       </div>
       <div class="scale-card">
-        <div class="num red">#1</div>
-        <div class="label">EU leggyorsabb lakásár-emelkedés · 2025 Q4</div>
+        <div class="num gold">100 Mrd Ft</div>
+        <div class="label">MFB Társasház Plusz · Magyar keret, aktív</div>
       </div>
       <div class="scale-card">
-        <div class="num gold">100 Mrd Ft</div>
-        <div class="label">MFB Társasház Plusz keret · aktív</div>
+        <div class="num" style="color:#003399">€10 Mrd</div>
+        <div class="label">EU Affordable Housing Plan · 2026–27 új keret</div>
       </div>
     </div>
 
-    <div class="quote reveal d3" style="margin-top:4vh;max-width:1100px">
+    <div class="quote reveal d3" style="margin-top:3.5vh;max-width:1100px">
       „Aki nem tud venni, az bérel."
       <cite>Portfolio.hu · 2026. április 15.</cite>
     </div>
 
-    <div class="reveal" data-step="4" style="margin-top:2vh;font-size:clamp(15px,1.3vw,20px);color:var(--ink-soft);max-width:1000px">
-      A bérleti piac lett a nyomás alatti szelep. EU-s és hazai források <strong>ma valóban mozognak</strong> — zöld finanszírozás, közvetlen pályázatok, önkormányzati programok. <span class="muted">Ez szándék és momentum — nem politika.</span>
+    <div class="reveal" data-step="4" style="margin-top:2vh;font-size:clamp(14px,1.2vw,19px);color:var(--ink-soft);max-width:1100px">
+      <strong>Két forrás, egy irány:</strong> a magyar MFB keret mellé <strong>frissen aktiválva az EU €10 milliárdos csomagja</strong> (2026–27), amit a <strong>€43 Mrd kohéziós alap</strong> egészít ki, és az EIB 2029-ig <strong>€6 Mrd közvetlen hitelt</strong> szán energiahatékony bérlakásokra. <span class="muted">Vissza nem térítendő támogatás + kedvezményes hitel kombinációja.</span>
+    </div>
+    <div class="reveal" data-step="4" style="margin-top:1vh;font-size:clamp(11px,0.9vw,13px);color:var(--muted);letter-spacing:0.04em">
+      Forrás: European Commission, Affordable Housing Plan (2026 január) · EIB 2025-542 sajtóközlemény
     </div>
   </section>
 
@@ -287,17 +303,21 @@ h3{font-size:clamp(22px,2.4vw,34px);font-weight:600}
   </section>
 
   <!-- ====== 05 · BLOKK BY NORDii KONCEPCIÓ ====== -->
-  <section class="slide split" data-steps="5">
-    <div class="visual reveal d1">
-      <img src="images/blokk-utca-nordii.jpg" alt="BLOKK by NORDii — utcakép">
+  <section class="slide fullbleed right" data-steps="5">
+    <div class="bg imgstack" data-rotate>
+      <img src="images/blokk-utca-nordii.jpg" alt="BLOKK utcakép" class="on">
+      <img src="images/blokk-kornyezet.jpg"   alt="BLOKK környezet">
+      <img src="images/nappali-render.jpg"    alt="Nappali">
+      <img src="images/konyha-nappali.jpg"    alt="Konyha-nappali">
+      <img src="images/furdo-design.jpg"      alt="Fürdő">
     </div>
-    <div class="text">
+    <div class="caption">Utcakép · NORDii</div>
+    <div class="content">
       <div class="kicker reveal d1">05 · A koncepció</div>
       <h2 class="reveal d1">BLOKK by&nbsp;NORDii.</h2>
       <div class="lead reveal d2" style="margin-top:3vh">
         Moduláris bérlakás-rendszer, önkormányzati telekre szabva.
       </div>
-
       <div class="scale-grid cols-2 reveal d3" style="margin-top:3vh">
         <div class="scale-card">
           <div class="num">24–40</div>
@@ -308,71 +328,99 @@ h3{font-size:clamp(22px,2.4vw,34px);font-weight:600}
           <div class="label">zöldfelület</div>
         </div>
       </div>
-
       <div class="reveal" data-step="4" style="margin-top:3vh;font-size:clamp(15px,1.3vw,20px);color:var(--ink-soft);line-height:1.5">
-        Parametrikus tervezés → <strong>a telek adta lehetőséghez igazítjuk</strong>. Aktív-ház kategória → <strong style="color:var(--accent)">nulla vagy minimális rezsi a bérlőnek.</strong>
+        <strong>A telek adta lehetőséghez igazítjuk</strong> minden egységet. Aktív-ház kategória → <strong style="color:var(--accent)">nulla vagy minimális rezsi a bérlőnek.</strong>
       </div>
     </div>
   </section>
 
   <!-- ====== 06 · A BÉRLŐ ZSEBE ====== -->
-  <section class="slide" data-steps="4">
-    <div class="kicker reveal d1">06 · A valódi különbség</div>
-    <h2 class="reveal d1">A bérlő zsebe.</h2>
-
-    <div class="compare reveal d2" style="margin-top:4vh">
-      <div class="col">
-        <h4>Hagyományos bérlakás</h4>
-        <div class="row"><span>Bérleti díj</span><span class="val">~90 000 Ft</span></div>
-        <div class="row"><span>Rezsi (tél)</span><span class="val">~60 000 Ft</span></div>
-        <div class="row"><span>Havi összes</span><span class="val">150 000 Ft</span></div>
-      </div>
-      <div class="col best">
-        <h4>BLOKK by NORDii</h4>
-        <div class="row"><span>Bérleti díj</span><span class="val">~100 000 Ft</span></div>
-        <div class="row"><span>Rezsi (aktív ház)</span><span class="val">~10 000 Ft</span></div>
-        <div class="row"><span>Havi összes</span><span class="val">110 000 Ft</span></div>
-      </div>
+  <section class="slide fullbleed right" data-steps="4">
+    <div class="bg">
+      <img src="images/nappali-render.jpg" alt="Aktív-ház nappali">
     </div>
+    <div class="content">
+      <div class="kicker reveal d1">06 · A valódi különbség</div>
+      <h2 class="reveal d1">A bérlő zsebe.</h2>
 
-    <div class="savings-bar reveal d3" style="margin-top:3vh">
-      <div class="big">−27%<span class="unit"> havonta</span></div>
-      <div class="desc">A bérlőnek <strong>~40 000 Ft/hó</strong> marad a zsebében — ez <strong style="color:var(--accent)">~500 000 Ft / év megtakarítás.</strong></div>
-    </div>
+      <div class="compare reveal d2" style="margin-top:3vh">
+        <div class="col">
+          <h4>Hagyományos</h4>
+          <div class="row"><span>Bérleti díj</span><span class="val">~90 e Ft</span></div>
+          <div class="row"><span>Rezsi (tél)</span><span class="val">~60 e Ft</span></div>
+          <div class="row"><span>Havi összes</span><span class="val">150 e Ft</span></div>
+        </div>
+        <div class="col best">
+          <h4>BLOKK by NORDii</h4>
+          <div class="row"><span>Bérleti díj</span><span class="val">~100 e Ft</span></div>
+          <div class="row"><span>Rezsi</span><span class="val">~10 e Ft</span></div>
+          <div class="row"><span>Havi összes</span><span class="val">110 e Ft</span></div>
+        </div>
+      </div>
 
-    <div class="reveal" data-step="3" style="margin-top:2vh;text-align:center;font-size:clamp(14px,1.15vw,18px);color:var(--muted)">
-      Önkormányzat bevétele ugyanaz. Bérlőnek dupla annyi élhetőség. <strong style="color:var(--ink-soft)">Társadalmi érték.</strong>
+      <div class="savings-bar reveal d3" style="margin-top:2.5vh">
+        <div class="big">−27%<span class="unit"> havonta</span></div>
+        <div class="desc"><strong>~40 e Ft/hó</strong> → <strong style="color:var(--accent)">~500 e Ft / év</strong> a bérlő zsebében.</div>
+      </div>
+
+      <div class="reveal" data-step="3" style="margin-top:2vh;font-size:clamp(13px,1.1vw,17px);color:var(--muted)">
+        Önkormányzat bevétele ugyanaz. Bérlőnek dupla annyi élhetőség.
+      </div>
+      <div class="reveal" data-step="3" style="margin-top:0.8vh;font-size:clamp(10px,0.85vw,12px);color:var(--muted);letter-spacing:0.03em">
+        Forrás: 60 m² tégla-panel átlag · KSH fűtési szezon 2024 · MEKH árak · kalkuláció konzervatív téli csúcs
+      </div>
     </div>
   </section>
 
   <!-- ====== 07 · KÖZÖS PROJEKT MODELL ====== -->
-  <section class="slide" data-steps="5">
+  <section class="slide fullbleed" data-steps="5">
+    <div class="bg">
+      <img src="images/blokk-legi-render-2.jpg" alt="BLOKK légi nézet">
+    </div>
+    <div class="content">
     <div class="kicker reveal d1">07 · Hogyan csináljuk együtt</div>
     <h2 class="reveal d1">Közös projektcég,<br>közös érték.</h2>
 
-    <ol class="checklist num reveal d2" style="margin-top:4vh;max-width:1200px">
+    <ol class="checklist num reveal d2" style="margin-top:3vh">
       <li><strong>Önkormányzat adja a telket</strong> — nem kell eladnia, apportként kerül a közös projektcégbe.</li>
       <li><strong>Közös finanszírozási modell</strong> — MFB Társasház Plusz + EU pályázat + önerő kombináció.</li>
-      <li><strong>Lakások tőke-arányban dedikáltan kerülnek szétosztásra</strong> — az önkormányzat megkapja a neki járó bérlakás-készletet, a KV cégcsoport a sajátját.</li>
-      <li><strong>18 hónapos átfutás</strong> — BIM-tervezéstől kulcsátadásig.</li>
+      <li><strong>Lakások tőke-arányban szétosztva</strong> — önkormányzatnál marad a saját bérlakás-készlete, a településen.</li>
     </ol>
 
-    <div class="reveal" data-step="4" style="margin-top:3vh;font-size:clamp(15px,1.3vw,20px);color:var(--ink-soft);max-width:1200px">
-      Gyakorlati érték a közösségnek. <strong>Marketing-érték az önkormányzatnak</strong> és a környéken élőknek — modern, zöld, megfizethető otthonok a településükön.
+    <div class="scale-grid cols-2 reveal d3" style="margin-top:2.5vh">
+      <div class="scale-card">
+        <div class="num">6 hó</div>
+        <div class="label">Mini-társasház · kulcsátadásig</div>
+      </div>
+      <div class="scale-card">
+        <div class="num gold">12 hó</div>
+        <div class="label">Társasház · kulcsátadásig</div>
+      </div>
+    </div>
+
+    <div class="reveal" data-step="4" style="margin-top:2.5vh;font-size:clamp(14px,1.2vw,18px);color:var(--ink-soft)">
+      Gyakorlati érték a közösségnek. <strong>Marketing-érték az önkormányzatnak.</strong>
+    </div>
     </div>
   </section>
 
-  <!-- ====== 08 · ZÁRÓ — MELY TELEPÜLÉSEKKEL KEZDJÜK ====== -->
-  <section class="slide closing" data-steps="3">
-    <div class="reveal d1 in"><span class="pill">07 · A döntés</span></div>
+  <!-- ====== 09 · ZÁRÓ — INDÍTSUK EL ====== -->
+  <section class="slide closing" data-steps="4">
+    <div class="reveal d1 in"><span class="pill">08 · Indítsuk el</span></div>
     <h1 class="reveal d1" style="margin-top:4vh">
       Nem az a kérdés,<br>
       <span class="muted" style="font-style:italic;font-weight:400">lesz-e bérlakás-program.</span><br>
       <span class="emphasis">Az a kérdés: <strong>mely településekkel</strong> kezdjük.</span>
     </h1>
 
-    <div class="cta reveal d2" style="margin-top:5vh">
-      Aki ma este <strong>a vacsoránál jelzi</strong>, május végéig megkapja a <strong>telek-auditot</strong> és a <strong>közös projektcég pénzügyi modelljét.</strong>
+    <ol class="checklist num reveal d2" style="margin-top:4vh;max-width:1000px">
+      <li><strong>Értékesítőink itt vannak</strong> — mintaházak, lakások.</li>
+      <li><strong>Társasházi modul</strong> — ma este bemutatjuk.</li>
+      <li><strong>Keressétek a kollégáimat</strong> — konkrét helyszínről egyeztetünk.</li>
+    </ol>
+
+    <div class="reveal" data-step="3" style="margin-top:3vh;font-size:clamp(17px,1.55vw,24px);color:var(--accent);font-weight:600">
+      Tudunk lépni. <strong>Ma estétől indítható.</strong>
     </div>
   </section>
 
@@ -386,34 +434,53 @@ ht.textContent=String(slides.length).padStart(2,'0');
 
 let idx=0, step=0;
 
+function revealStep(r){
+  if(r.dataset.step) return parseInt(r.dataset.step,10);
+  if(r.classList.contains('d3')) return 3;
+  if(r.classList.contains('d2')) return 2;
+  return 1;
+}
+function maxStep(slide){
+  const revs=slide.querySelectorAll('.reveal');
+  let m=1;
+  revs.forEach(r=>{const d=revealStep(r); if(d>m) m=d;});
+  return m;
+}
+
 function render(){
   slides.forEach((s,i)=>s.classList.toggle('active',i===idx));
   const cur=slides[idx];
-  const total=parseInt(cur.dataset.steps||'1',10);
-  const revs=cur.querySelectorAll('.reveal');
-  revs.forEach(r=>{
-    const d=r.dataset.step?parseInt(r.dataset.step,10):(r.classList.contains('d3')?3:(r.classList.contains('d2')?2:1));
-    if(d<=step) r.classList.add('in'); else r.classList.remove('in');
+  cur.querySelectorAll('.reveal').forEach(r=>{
+    if(revealStep(r)<=step) r.classList.add('in'); else r.classList.remove('in');
   });
+  // BLOKK image rotation per step
+  const rot=cur.querySelector('[data-rotate]');
+  if(rot){
+    const imgs=rot.querySelectorAll('img');
+    const activeI = Math.min(step-1, imgs.length-1);
+    imgs.forEach((im,i)=>im.classList.toggle('on', i === activeI));
+    const cap=rot.querySelector('.caption');
+    if(cap && imgs[activeI]) cap.textContent=imgs[activeI].alt;
+  }
   hi.textContent=String(idx+1).padStart(2,'0');
 }
 
 function next(){
   const cur=slides[idx];
-  const total=parseInt(cur.dataset.steps||'1',10);
+  const total=maxStep(cur);
   if(step<total){step++;render();return}
   if(idx<slides.length-1){idx++;step=1;render()}
 }
 function prev(){
   if(step>1){step--;render();return}
-  if(idx>0){idx--;step=parseInt(slides[idx].dataset.steps||'1',10);render()}
+  if(idx>0){idx--;step=maxStep(slides[idx]);render()}
 }
 
 document.addEventListener('keydown',e=>{
   if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();next()}
   else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();prev()}
   else if(e.key==='Home'){idx=0;step=1;render()}
-  else if(e.key==='End'){idx=slides.length-1;step=parseInt(slides[idx].dataset.steps||'1',10);render()}
+  else if(e.key==='End'){idx=slides.length-1;step=maxStep(slides[idx]);render()}
 });
 
 document.addEventListener('click',e=>{
