@@ -1,770 +1,1667 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="hu">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KV Homes Workshop 2026 — Megnyitó</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KV Homes Workshop 2026 — Feri megnyitó</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+/* ============================================================
+   KV Homes Workshop 2026 — Megnyitó v2
+   Apple-szerű minimalista dizájn, finom fade/blur animációk.
+   ============================================================ */
+
 :root {
-  --accent:#00AEEF; --accent-glow:rgba(0,174,239,0.25); --accent-dark:#0088CC;
-  --dark:#1A252F; --dark2:#2C3E50; --gray:#7F8C8D; --muted:#A0B0B8;
-  --light:#ECF0F1; --warm:#F4F7F9; --accent-bg:rgba(0,174,239,0.06);
-  --gold:#F7931A; --gold-soft:rgba(247,147,26,0.12);
+  --accent: #2E7FC9;        /* KV Homes kék — világosabb, tisztább navy */
+  --accent-glow: rgba(46,127,201,0.18);
+  --accent-dark: #1E5FAC;
+  --accent-bg: rgba(46,127,201,0.06);
+  --dark: #1A252F;          /* eredeti KV sötét navy */
+  --dark2: #2C3E50;         /* eredeti slate */
+  --gray: #7F8C8D;          /* eredeti másodlagos szürke */
+  --gray-2: #34495E;
+  --muted: #A0B0B8;
+  --light: #ECF0F1;
+  --warm: #F4F7F9;
+  --white: #FFFFFF;
+  --gold: #F7931A;          /* Bitcoin narancs — csak BTC dián */
+  --gold-soft: rgba(247,147,26,0.12);
+
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
 }
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;overflow:hidden;background:var(--dark);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
 
-/* === ENGINE === */
-.deck{width:100vw;height:100vh;position:relative}
-.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none}
-.slide.active{opacity:1;pointer-events:auto}
-.slide.exiting{opacity:1;pointer-events:none;animation:slideExit .55s ease-in forwards}
-@keyframes slideExit{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.01);filter:blur(4px)}}
-.slide-inner{width:min(100vw,177.78vh);height:min(100vh,56.25vw);position:relative;overflow:hidden}
-.progress-wrap{position:fixed;bottom:0;left:0;right:0;height:4px;background:rgba(0,0,0,0.15);z-index:100}
-.progress-fill{height:100%;background:var(--accent);transition:width .6s cubic-bezier(.22,1,.36,1);box-shadow:0 0 12px var(--accent-glow)}
-.slide-counter{position:fixed;bottom:14px;right:24px;font:500 16px 'Inter',sans-serif;color:rgba(255,255,255,0.2);z-index:100}
+* { box-sizing: border-box; margin: 0; padding: 0; border: 0; }
+html, body { width: 100vw; height: 100vh; min-width: 100vw; min-height: 100vh; overflow: hidden; background: var(--dark); font-family: var(--font); transition: background .7s var(--ease); }
+html.bg-white, body.bg-white { background: var(--white); }
+html.bg-warm,  body.bg-warm  { background: var(--warm); }
+html.bg-dark,  body.bg-dark  { background: var(--dark); }
+html.bg-dark2, body.bg-dark2 { background: var(--dark2); }
+html.bg-accent,body.bg-accent{ background: var(--accent); }
+body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 
-/* === FULLBLEED BACKGROUNDS === */
-.slide-bg{position:fixed;inset:0;width:100vw;height:100vh;object-fit:cover;z-index:0;pointer-events:none}
-.slide-bg-color{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none}
-.slide-inner{z-index:1;position:relative}
-.vignette{position:absolute;inset:0;z-index:1;pointer-events:none}
+/* ============================================================
+   Deck / slide container — true full bleed, no letterbox
+   ============================================================ */
+.deck {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100vw; height: 100vh;
+  min-width: 100vw; min-height: 100vh;
+  overflow: hidden;
+  margin: 0; padding: 0;
+}
 
-/* === ANIM === */
-.anim{opacity:0}.slide.active .anim{animation-fill-mode:both}
-@keyframes cFadeUp{from{opacity:0;transform:translateY(50px);filter:blur(4px)}to{opacity:1;transform:translateY(0);filter:blur(0)}}
-@keyframes cFadeScale{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
-@keyframes cSlideRight{from{opacity:0;transform:translateX(-80px);filter:blur(3px)}to{opacity:1;transform:translateX(0);filter:blur(0)}}
-@keyframes clipReveal{from{opacity:0;clip-path:inset(0 100% 0 0)}to{opacity:1;clip-path:inset(0 0 0 0)}}
-@keyframes clipRevealR{from{opacity:0;clip-path:inset(0 0 0 100%)}to{opacity:1;clip-path:inset(0 0 0 0)}}
-@keyframes kenBurns{from{transform:scale(1)}to{transform:scale(1.06)}}
-@keyframes glowPulse{0%,100%{text-shadow:0 0 20px var(--accent-glow)}50%{text-shadow:0 0 40px var(--accent-glow),0 0 80px rgba(0,174,239,.1)}}
-@keyframes drawLine{from{width:0}to{width:100px}}
-@keyframes cardRise{from{opacity:0;transform:translateY(40px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
-@keyframes numPop{0%{opacity:0;transform:scale(.5)}60%{opacity:1;transform:scale(1.08)}100%{opacity:1;transform:scale(1)}}
-@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.slide {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity .7s var(--ease);
+  padding: 0;
+  overflow: hidden;
+}
+.slide.active { opacity: 1; pointer-events: auto; }
 
-.slide.active .fu{animation:cFadeUp .9s cubic-bezier(.22,1,.36,1) both}
-.slide.active .fs{animation:cFadeScale .8s ease both}
-.slide.active .sr{animation:cSlideRight .9s cubic-bezier(.22,1,.36,1) both}
-.slide.active .cr{animation:clipReveal 1s cubic-bezier(.22,1,.36,1) both}
-.slide.active .crr{animation:clipRevealR 1s cubic-bezier(.22,1,.36,1) both}
-.slide.active .kb{animation:kenBurns 12s ease both}
-.slide.active .gp{animation:glowPulse 3s ease-in-out infinite}
-.slide.active .dl{animation:drawLine .8s cubic-bezier(.22,1,.36,1) both}
-.slide.active .crd{animation:cardRise .8s cubic-bezier(.22,1,.36,1) both}
-.slide.active .np{animation:numPop .7s cubic-bezier(.22,1,.36,1) both}
+/* Slide backgrounds */
+.slide.dark  { background: var(--dark); color: var(--white); }
+.slide.dark2 { background: var(--dark2); color: var(--white); }
+.slide.white { background: var(--white); color: var(--dark); }
+.slide.warm  { background: var(--warm);  color: var(--dark); }
+.slide.accent { background: var(--accent); color: var(--white); }
+.slide.night  { background: var(--dark2); color: var(--white); }
 
-.d1{animation-delay:.1s!important}.d2{animation-delay:.25s!important}
-.d3{animation-delay:.45s!important}.d4{animation-delay:.65s!important}
-.d5{animation-delay:.85s!important}.d6{animation-delay:1.05s!important}
-.d7{animation-delay:1.25s!important}.d8{animation-delay:1.5s!important}
+/* Clarke quote — 4-step reveal, emph on "technológia" and "varázslattól" */
+.slide.clarke .clarke-line { display: inline; }
+.slide.clarke .clarke-word {
+  display: inline;
+  opacity: 0;
+  filter: blur(8px);
+  transition: opacity 0.8s cubic-bezier(.2,.7,.2,1), filter 0.8s cubic-bezier(.2,.7,.2,1), color 1s cubic-bezier(.2,.7,.2,1), text-shadow 1s cubic-bezier(.2,.7,.2,1);
+}
+.slide.clarke .clarke-word.in { opacity: 1; filter: blur(0); }
+.slide.clarke .emph {
+  position: relative;
+  font-style: italic;
+  color: rgba(255,255,255,0.92);
+}
+.slide.clarke .emph.emph-tech.in {
+  color: var(--accent);
+  text-shadow: 0 0 28px rgba(247,147,26,0.35);
+}
+.slide.clarke .emph.emph-magic.in {
+  color: #f0e6d2;
+  text-shadow: 0 0 28px rgba(255,255,255,0.25);
+}
 
-h1,h2,h3.serif,.serif{font-family:'Playfair Display',Georgia,serif}
+/* ============================================================
+   Reveal animations — Apple-style fade + blur + slight lift
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  filter: blur(8px);
+  transition: opacity .9s var(--ease-out), transform .9s var(--ease-out), filter .9s var(--ease-out);
+}
+.reveal.in {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+.reveal.d1 { transition-delay: .05s; }
+.reveal.d2 { transition-delay: .15s; }
+.reveal.d3 { transition-delay: .25s; }
+.reveal.d4 { transition-delay: .35s; }
 
-/* ========================================
-   FULL HD PROJECTOR: min 28px body,
-   headings 48-80px, sub 24-32px
-   ======================================== */
+/* ============================================================
+   Typography (Apple-scale)
+   ============================================================ */
+h1, h2, h3 { font-family: var(--font-serif); font-weight: 500; letter-spacing: -0.015em; line-height: 1.05; }
+h1 { font-weight: 600; }
+h1 { font-size: clamp(48px, 7.2vw, 108px); font-weight: 600; letter-spacing: -0.02em; }
+h2 { font-size: clamp(40px, 5.8vw, 84px); font-weight: 500; letter-spacing: -0.015em; }
+h3 { font-size: clamp(28px, 3.8vw, 56px); font-weight: 500; letter-spacing: -0.01em; }
+p, li { font-size: clamp(18px, 1.8vw, 28px); line-height: 1.5; color: inherit; }
+.small { font-size: clamp(14px, 1.2vw, 18px); color: var(--gray); letter-spacing: 0.01em; }
+.muted-dark { color: rgba(255,255,255,0.6); }
+.muted-light { color: var(--gray); }
 
-/* === SLIDE TYPES === */
+/* Display / hero text */
+.hero { font-family: var(--font-serif); font-size: clamp(56px, 8.2vw, 132px); font-weight: 600; letter-spacing: -0.025em; line-height: 1.02; }
+.mono { font-variant-numeric: tabular-nums; }
 
-/* DARK FULL */
-.dark-full .slide-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;text-align:center;padding:6%}
+/* ============================================================
+   Layouts
+   ============================================================ */
+.center { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: clamp(12px, 2vh, 28px); max-width: 1400px; margin: 0 auto; width: 100%; }
+.left { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; text-align: left; gap: clamp(10px, 1.6vh, 20px); width: 100%; }
+.slide.center, .slide.left, .slide > .center, .slide > .left { padding: 6vh 8vw; }
+.slide.center > .center, .slide.left > .left { padding: 0; }
 
-/* SPLIT: photo left or right */
-.split-r .slide-inner{display:flex;color:var(--dark)}
-.split-r .content{width:52%;height:100%;display:flex;flex-direction:column;justify-content:center;padding:5% 4% 5% 6%;position:relative;z-index:2}
-.split-r .photo{width:48%;height:100%;overflow:hidden;position:relative}
-.split-r .photo img{width:100%;height:100%;object-fit:cover;display:block}
-.split-r .photo::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none}
-.split-r .photo-gradient-l::before{background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.4) 12%,transparent 35%)}
-.split-r .photo-gradient-dark-l::before{background:linear-gradient(90deg,var(--dark) 0%,rgba(26,37,47,.6) 12%,transparent 35%)}
+/* Hero slides — full bleed typography, minimal padding */
+.slide.hero { padding: 4vh 4vw; }
+.slide.hero .center { max-width: none; }
+.slide.hero h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(56px, 10.5vw, 176px);
+  max-width: none;
+  letter-spacing: -0.025em;
+  line-height: 1.02;
+  font-weight: 600;
+}
+.slide.hero .cover .logo { height: clamp(72px, 11vh, 140px); }
+.slide.hero .sub { font-size: clamp(20px, 2vw, 32px); }
 
-.split-l .slide-inner{display:flex;color:var(--dark)}
-.split-l .photo{width:48%;height:100%;overflow:hidden;position:relative}
-.split-l .photo img{width:100%;height:100%;object-fit:cover;display:block}
-.split-l .photo::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none}
-.split-l .photo-gradient-r::before{background:linear-gradient(270deg,#fff 0%,rgba(255,255,255,.4) 12%,transparent 35%)}
-.split-l .content{width:52%;height:100%;display:flex;flex-direction:column;justify-content:center;padding:5% 6% 5% 4%;position:relative;z-index:2}
+.split {
+  display: grid; grid-template-columns: 1.1fr 1fr; gap: 0;
+  width: 100%; height: 100%; align-items: stretch;
+}
+.split .visual { height: 100%; width: 100%; display: block; overflow: hidden; position: relative; }
+.split .visual img {
+  width: 100%; height: 100%; object-fit: cover; object-position: center center;
+  display: block; border-radius: 0; box-shadow: none;
+  transform-origin: center center;
+  transform: scale(1);
+  transition: transform 6s ease-out;
+  /* Fade the photo itself into the background — dissolve right edge */
+  -webkit-mask-image: linear-gradient(105deg,
+    #000 0%, #000 55%, rgba(0,0,0,0.85) 75%, rgba(0,0,0,0.35) 92%, rgba(0,0,0,0) 100%);
+          mask-image: linear-gradient(105deg,
+    #000 0%, #000 55%, rgba(0,0,0,0.85) 75%, rgba(0,0,0,0.35) 92%, rgba(0,0,0,0) 100%);
+}
+/* Bitcoin-opener-style zoom: triggered on slide activation */
+.slide.active .split .visual img {
+  transform: scale(1.06);
+}
 
-/* WHITE FULL */
-.white-full .slide-inner{background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:5%;color:var(--dark)}
+/* ============================================================
+   Editorial (dark hero with bg photo + overlay)
+   ============================================================ */
+.editorial-bg {
+  position: absolute; inset: 0; z-index: 0; overflow: hidden;
+  background: var(--dark);
+}
+.editorial-bg .bg-photo {
+  position: absolute; top: 50%; left: 50%;
+  width: 100%; height: 100%;
+  object-fit: cover; opacity: 0.16;
+  transform: translate(-50%, -50%) scale(1.04);
+  transform-origin: center center;
+  animation: slowZoom 28s ease-in-out infinite alternate;
+}
+.editorial-bg::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, rgba(26,37,47,0.55) 0%, rgba(26,37,47,0.92) 75%);
+}
+.slide.editorial > .center { position: relative; z-index: 2; }
+.split .content { display: flex; flex-direction: column; gap: clamp(8px, 1.4vh, 18px); justify-content: center; padding: 6vh 6vw; }
 
-/* ACCENT FULL */
-.accent-full .slide-inner{background:var(--accent);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:5%;color:#fff}
+/* ============================================================
+   Pills / param badges (Apple product-page feel)
+   ============================================================ */
+.pills { display: flex; flex-wrap: wrap; gap: 10px 12px; margin-top: 18px; }
+.pill {
+  display: inline-flex; align-items: center;
+  padding: 10px 18px;
+  border-radius: 100px;
+  background: rgba(0,174,239,0.08);
+  color: var(--accent-dark);
+  font-weight: 500;
+  font-size: clamp(15px, 1.4vw, 20px);
+  border: 1px solid rgba(0,174,239,0.15);
+}
+.pill.dark { background: rgba(255,255,255,0.08); color: #fff; border-color: rgba(255,255,255,0.14); }
+.pill.big { padding: 14px 26px; font-size: clamp(18px, 1.8vw, 26px); }
 
-/* WARM FULL */
-.warm-full .slide-inner{background:var(--warm);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4%;color:var(--dark)}
+/* ============================================================
+   Comparison (Average vs. KV Homes)
+   ============================================================ */
+.compare {
+  display: grid; grid-template-columns: 1.6fr 1fr 1fr;
+  gap: 0;
+  width: 100%; max-width: 1400px;
+  margin: 0 auto;
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+.compare > div {
+  padding: 18px 24px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  display: flex; align-items: center;
+  font-size: clamp(16px, 1.5vw, 22px);
+}
+.compare .head {
+  font-weight: 600; font-size: clamp(14px, 1.2vw, 18px);
+  color: var(--gray); letter-spacing: 0.08em; text-transform: uppercase;
+  border-bottom: 2px solid rgba(0,0,0,0.08);
+}
+.compare .row-label { font-weight: 500; color: var(--gray-2); }
+.compare .val-avg { color: var(--gray-2); }
+.compare .val-kv { color: var(--accent-dark); font-weight: 600; }
 
-/* COMMON ELEMENTS */
-.tag{font-size:18px;letter-spacing:5px;text-transform:uppercase;font-weight:600}
-.tag-accent{color:var(--accent)}
-.tag-gold{color:var(--gold)}
-.tag-white{color:rgba(255,255,255,.6)}
-.tag-red{color:#e74c3c}
-.divider{height:3px;background:var(--accent);border-radius:2px}
-.accent-bar{position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--accent);z-index:3}
+/* ============================================================
+   Takeaway cards (3 main points)
+   ============================================================ */
+.takeaways { display: flex; flex-direction: column; gap: clamp(16px, 2.4vh, 36px); width: 100%; max-width: 1200px; }
+.takeaway {
+  display: flex; align-items: flex-start; gap: 24px;
+  padding: clamp(16px, 2.2vh, 28px) 0;
+  border-top: 1px solid rgba(255,255,255,0.2);
+}
+.takeaway .num {
+  font-size: clamp(28px, 3vw, 48px); font-weight: 300;
+  opacity: 0.5; min-width: 60px;
+  font-variant-numeric: tabular-nums;
+}
+.takeaway .text { font-size: clamp(22px, 2.6vw, 40px); font-weight: 500; letter-spacing: -0.02em; line-height: 1.2; }
 
-/* === GROK PLACEHOLDER SYSTEM === */
-/* Each slide has a <!-- GROK: ... --> comment with the prompt.
-   Replace the .grok-placeholder div with an <img> once generated. */
-.grok-placeholder{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none;display:flex;align-items:center;justify-content:center}
-.grok-placeholder::after{content:attr(data-prompt);position:absolute;bottom:12px;left:12px;right:12px;font-size:11px;color:rgba(255,255,255,0.15);font-family:monospace;line-height:1.4;pointer-events:none;z-index:1}
-.grok-placeholder.dark-bg{background:var(--dark)}
-.grok-placeholder.dark2-bg{background:var(--dark2)}
-.grok-placeholder.white-bg{background:#fff}
-.grok-placeholder.warm-bg{background:var(--warm)}
-.grok-placeholder.accent-bg-full{background:var(--accent)}
-.grok-placeholder.light-bg{background:var(--light)}
+/* ============================================================
+   Timeline (Slide 8) — interactive 30 év
+   ============================================================ */
+.tl-slide { padding: 0; }
+.tl-wrap { display: grid; grid-template-rows: auto 1fr; gap: 0; width: 100%; height: 100%; }
 
-/* Keyboard hint */
-.kb-hint{position:fixed;top:16px;right:24px;font-size:13px;color:rgba(255,255,255,0.12);z-index:100;letter-spacing:.5px}
+.tl-bar { display: flex; align-items: center; justify-content: space-between; position: relative; padding: 3.5vh 25vw 3.5vh 6vw; }
+.tl-bar::before {
+  content: ''; position: absolute; top: 50%;
+  left: calc(6vw + 10.5px); right: calc(25vw + 10.5px);
+  height: 2px;
+  background: rgba(255,255,255,0.12); transform: translateY(-50%);
+}
+.tl-bar::after {
+  content: ''; position: absolute; top: 50%;
+  left: calc(6vw + 10.5px); right: calc(25vw + 10.5px);
+  height: 2px;
+  background: var(--accent);
+  transform: translateY(-50%) scaleX(var(--tl-progress, 0));
+  transform-origin: left center;
+  transition: transform .6s var(--ease);
+}
+.tl-dot {
+  width: 21px; height: 21px; border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  position: relative; z-index: 1;
+  cursor: pointer; transition: all .3s var(--ease);
+  border: 2px solid transparent;
+}
+.tl-dot.done { background: var(--accent); }
+.tl-dot.current { background: var(--accent); box-shadow: 0 0 0 8px rgba(0,174,239,0.25); transform: scale(1.18); }
+
+.tl-body {
+  display: grid; grid-template-columns: 1fr 1.2fr; gap: 0;
+  align-items: stretch;
+  width: 100%; height: 100%;
+}
+.tl-text { display: flex; flex-direction: column; gap: 18px; justify-content: center; padding: 0 6vw 6vh 6vw; }
+.tl-year { font-family: var(--font-serif); font-size: clamp(48px, 6vw, 96px); font-weight: 600; letter-spacing: -0.02em; color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; }
+.tl-title { font-family: var(--font-serif); font-size: clamp(28px, 3.2vw, 48px); font-weight: 500; letter-spacing: -0.015em; }
+.tl-desc { font-size: clamp(18px, 1.8vw, 26px); line-height: 1.5; color: rgba(255,255,255,0.7); max-width: 520px; min-height: calc(1.5em * 2); }
+.tl-title { min-height: clamp(48px, 5.5vw, 80px); display: flex; align-items: center; }
+.tl-photo {
+  width: 100%; height: 100%; position: relative; overflow: hidden;
+  background-color: rgba(255,255,255,0.05);
+  /* Fade photo INTO text column (left edge dissolves) — applied to container so it's consistent across all images */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.15) 6%, rgba(0,0,0,0.55) 18%, rgba(0,0,0,0.85) 28%, #000 36%);
+          mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.15) 6%, rgba(0,0,0,0.55) 18%, rgba(0,0,0,0.85) 28%, #000 36%);
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+}
+.tl-photo img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center center;
+  transform: scale(1.04);
+  transition: transform 6s ease-out, opacity .5s ease;
+  will-change: transform;
+}
+.tl-photo img.zoom-in { transform: scale(1.18); }
+.tl-brand-logo { height: 1.8em; vertical-align: middle; display: inline-block; margin: 0 0.2em; }
+.tl-brand-logo--invert { filter: brightness(0) invert(1); }
+.tl-brand-x { color: var(--accent); font-weight: 500; margin: 0 0.25em; opacity: 0.85; font-size: 1.2em; }
+
+.tl-step {
+  display: none;
+  animation: tlIn .6s var(--ease-out) both;
+}
+.tl-step.active { display: contents; }
+@keyframes tlIn {
+  from { opacity: 0; transform: translateY(8px); filter: blur(6px); }
+  to   { opacity: 1; transform: translateY(0);   filter: blur(0); }
+}
+
+/* ============================================================
+   Cover (title) slide
+   ============================================================ */
+.cover { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 3vh; }
+.cover .logo { height: clamp(48px, 7vh, 96px); width: auto; margin-bottom: 2vh; }
+.cover-logos { display: flex; align-items: center; justify-content: center; gap: clamp(32px, 5vw, 72px); flex-wrap: wrap; }
+.cover-logo-cg    { height: clamp(60px, 9vh, 120px); width: auto; object-fit: contain; }
+.cover-logo-homes { height: clamp(60px, 9vh, 120px); width: auto; object-fit: contain; }
+.cover-divider { width: 1px; height: clamp(60px, 9vh, 120px); background: rgba(0,0,0,0.15); }
+.cover .sub { color: var(--gray); font-size: clamp(18px, 1.8vw, 26px); letter-spacing: 0.02em; }
+.cover-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background: var(--dark);
+}
+@keyframes slowZoom {
+  /* Csak az editorial-bg használja, ami abszolút pozicionált top:50% left:50%-ra. */
+  from { transform: translate(-50%, -50%) scale(1.03); }
+  to   { transform: translate(-50%, -50%) scale(1.09); }
+}
+/* Split slide-ok képéhez: tiszta zoom + lassú pan jobbra
+   (a szöveg felőli oldal — jobb szél — fokozatosan előtérbe kerül). */
+@keyframes kenBurnsPanRight {
+  from { transform: scale(1.06) translateX(-1.5%); }
+  to   { transform: scale(1.10) translateX(1.5%);  }
+}
+.cover > * { position: relative; z-index: 2; }
+/* Wrapper: teljes szélességű abszolút sáv, flex-szel középre */
+.cover-cg-wrap {
+  position: absolute; top: 4vh; left: 0; right: 0;
+  display: flex; justify-content: center; align-items: center;
+  z-index: 3; pointer-events: none;
+}
+.cover-cg-mark {
+  height: clamp(22px, 2.6vh, 32px);
+  width: auto;
+  opacity: 0.5;
+  display: block;
+}
+/* Reveal + brightness/invert kombinálva, hogy mindkettő érvényesüljön */
+.cover-cg-mark.reveal     { filter: brightness(0) invert(1) blur(8px); }
+.cover-cg-mark.reveal.in  { filter: brightness(0) invert(1) blur(0); }
+
+/* ============================================================
+   Team cards
+   ============================================================ */
+.team { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; width: 100%; margin-top: 3vh; }
+.tcard {
+  padding: 22px 20px; border-radius: 16px;
+  background: rgba(0,0,0,0.035);
+  border: 1px solid rgba(0,0,0,0.06);
+  border-left: 4px solid rgba(0,0,0,0.15);
+  display: flex; flex-direction: column; gap: 8px;
+  min-height: 110px;
+  justify-content: center;
+}
+.tcard .name { font-size: clamp(16px, 1.4vw, 22px); font-weight: 600; letter-spacing: -0.01em; }
+.tcard .role { font-size: clamp(13px, 1.1vw, 16px); color: var(--gray); line-height: 1.35; }
+
+/* Role-group color coding — blue family */
+.tcard--exec    { background: rgba(15, 42, 82, 0.06);   border-left-color: #0F2A52; } /* deep navy — kivitelezés */
+.tcard--design  { background: rgba(30, 95, 140, 0.06);  border-left-color: #1E5F8C; } /* teal-blue — tervezés */
+.tcard--sales   { background: rgba(70, 140, 200, 0.08); border-left-color: #468CC8; } /* mid blue — sales */
+.tcard--estate  { background: rgba(120, 170, 210, 0.10);border-left-color: #78AAD2; } /* sky blue — ingatlan */
+
+/* Partner card — NORDii Systems */
+.team-partner {
+  display: flex; justify-content: center; width: 100%; margin-top: 22px;
+}
+.tcard--partner {
+  display: flex; flex-direction: row; align-items: center; gap: 22px;
+  padding: 22px 28px; border-radius: 16px;
+  background: rgba(247,147,26,0.06);
+  border: 1px solid rgba(247,147,26,0.28);
+  min-width: 520px;
+  min-height: 110px;
+}
+.tcard--partner .partner-logo {
+  height: 52px; width: auto; flex-shrink: 0;
+}
+.tcard--partner .partner-text { display: flex; flex-direction: column; gap: 4px; }
+.tcard--partner .partner-badge {
+  font-size: clamp(11px, 0.85vw, 13px);
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--accent); font-weight: 600;
+}
+
+/* ============================================================
+   HUD / counter / hints
+   ============================================================ */
+.hud {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12px; color: rgba(255,255,255,0.3);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+  z-index: 100;
+  pointer-events: none;
+  font-family: var(--font);
+}
+.hud.light { color: rgba(0,0,0,0.25); }
+
+.nav-hint {
+  position: fixed; bottom: 22px; right: 28px;
+  font-size: 11px; color: rgba(255,255,255,0.25);
+  letter-spacing: 0.08em; text-transform: uppercase;
+  z-index: 100;
+}
+.nav-hint.light { color: rgba(0,0,0,0.2); }
+
+/* Logo watermark on non-cover slides */
+.wm {
+  position: fixed; top: 22px; right: 28px;
+  height: 28px; opacity: 0.35;
+  z-index: 50;
+  transition: opacity .3s var(--ease);
+}
+.wm.light { filter: none; }
+.wm.dark  { filter: brightness(0) invert(1); opacity: 0.35; }
+
+/* One more thing callout */
+.omt-tag {
+  font-size: clamp(14px, 1.3vw, 20px);
+  letter-spacing: 0.12em;
+  text-transform: lowercase;
+  color: var(--gray);
+  font-style: italic;
+  font-weight: 300;
+  margin-bottom: 2vh;
+}
+.omt-line {
+  display: flex; align-items: baseline; gap: 24px;
+  padding: 22px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  width: 100%; max-width: 1100px;
+}
+.omt-num { font-size: clamp(20px, 2vw, 28px); color: var(--gray); font-weight: 300; min-width: 120px; letter-spacing: 0.08em; text-transform: uppercase; }
+.omt-text { font-family: var(--font-serif); font-size: clamp(28px, 3.2vw, 52px); font-weight: 500; letter-spacing: -0.01em; font-style: italic; }
+.omt-btc { color: var(--gold); }
+
+/* Bitcoin vision slide — three-step ascending */
+.btc-slide .btc-stack {
+  display: flex; flex-direction: column; align-items: center;
+  gap: clamp(20px, 3vh, 42px);
+  margin-top: 3vh;
+  max-width: 1400px;
+}
+.btc-slide .btc-headline {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(48px, 6.8vw, 108px);
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  color: #fff;
+}
+.btc-slide .btc-accent { color: var(--gold); font-style: italic; font-weight: 400; }
+.btc-slide .btc-lead {
+  font-family: var(--font-serif);
+  font-size: clamp(20px, 2.1vw, 32px);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: rgba(255,255,255,0.82);
+  max-width: 1100px;
+  margin: 0 auto;
+  font-weight: 300;
+}
+.btc-slide .btc-lead .ln { display: block; }
+.btc-slide .btc-lead .ln + .ln { margin-top: 0.35em; }
+.btc-slide .btc-scale {
+  font-family: var(--font-serif);
+  font-size: clamp(22px, 2.4vw, 38px);
+  letter-spacing: -0.01em;
+  color: rgba(255,255,255,0.85);
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4em;
+  font-weight: 400;
+}
+.btc-slide .btc-sep { color: var(--gold); opacity: 0.7; }
+.btc-slide .btc-closer {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(18px, 1.7vw, 26px);
+  color: rgba(255,255,255,0.6);
+  margin-top: 1vh;
+  letter-spacing: -0.005em;
+}
+
+/* ============================================================
+   Pieces
+   ============================================================ */
+.kicker {
+  font-family: var(--font);
+  font-size: clamp(13px, 1.1vw, 18px);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.kicker.muted { color: var(--gray); }
+
+.value-stack { display: flex; flex-direction: column; gap: clamp(8px, 1.2vh, 16px); align-items: flex-start; margin-top: 2vh; }
+.value-row { font-size: clamp(20px, 2vw, 30px); font-weight: 500; letter-spacing: -0.015em; }
+.value-row .num { color: var(--accent); font-weight: 600; margin-right: 14px; font-variant-numeric: tabular-nums; }
+
+/* ---- DIA 9 — A varázslat nem trükk ---- */
+.magic-slide .magic-lead {
+  font-family: var(--font-serif);
+  font-size: clamp(20px, 1.9vw, 28px);
+  color: var(--gray);
+  font-style: italic;
+  letter-spacing: -0.01em;
+  margin-top: 1.2vh;
+}
+.magic-pillars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(16px, 1.8vw, 28px);
+  margin-top: 3.5vh;
+}
+.magic-pillar {
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 14px;
+  padding: clamp(16px, 1.8vw, 26px);
+  background: rgba(255,255,255,0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.magic-pillar .mp-num {
+  font-size: clamp(13px, 1.05vw, 16px);
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+.magic-pillar .mp-title {
+  font-family: var(--font-serif);
+  font-size: clamp(22px, 2.1vw, 32px);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+}
+.magic-pillar .mp-desc {
+  font-size: clamp(14px, 1.2vw, 18px);
+  line-height: 1.45;
+  color: var(--gray-2);
+}
+
+.magic-base {
+  margin-top: 2.5vh;
+  padding: clamp(18px, 2vw, 28px) clamp(20px, 2.4vw, 34px);
+  border-left: 4px solid var(--accent);
+  background: linear-gradient(90deg, rgba(247,147,26,0.08) 0%, rgba(247,147,26,0) 65%);
+  border-radius: 4px;
+}
+.magic-base .mb-label {
+  font-size: clamp(12px, 1vw, 15px);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
+}
+.magic-base .mb-headline {
+  font-family: var(--font-serif);
+  font-size: clamp(22px, 2.2vw, 34px);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  margin-top: 6px;
+}
+.magic-base .mb-stats {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  font-size: clamp(14px, 1.15vw, 18px);
+  color: var(--gray-2);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+.magic-base .mb-stats .dot { color: var(--gray); opacity: 0.5; }
+
+.magic-closer {
+  margin-top: 2.2vh;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(20px, 1.95vw, 30px);
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+
+.stage-list { display: flex; flex-direction: column; gap: 14px; margin-top: 2vh; width: 100%; max-width: 1100px; }
+.stage-item {
+  display: grid; grid-template-columns: 120px 1fr; align-items: baseline;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+.stage-item .time { font-variant-numeric: tabular-nums; color: var(--gray); letter-spacing: 0.04em; font-size: clamp(14px, 1.2vw, 18px); font-weight: 500; }
+.stage-item .what { font-size: clamp(18px, 1.7vw, 24px); font-weight: 500; }
+
+/* ============================================================
+   Trust pillars (Miért most? — bizalmi válság)
+   ============================================================ */
+.trust-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: clamp(24px, 3vw, 48px);
+  width: 100%; max-width: 1200px;
+  margin: 5vh auto 4vh auto;
+}
+.trust-card {
+  border-top: 1px solid rgba(255,255,255,0.18);
+  padding: 22px 4px 0 4px;
+  display: flex; flex-direction: column; gap: 14px;
+  text-align: left;
+}
+.trust-num {
+  font-family: var(--font);
+  font-size: clamp(12px, 1vw, 15px);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.trust-label {
+  font-family: var(--font-serif);
+  font-size: clamp(32px, 3.6vw, 56px);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: #fff;
+  line-height: 1.05;
+}
+.trust-desc {
+  font-family: var(--font);
+  font-size: clamp(15px, 1.35vw, 20px);
+  color: rgba(255,255,255,0.65);
+  line-height: 1.45;
+  font-weight: 300;
+}
+.trust-close {
+  font-family: var(--font-serif);
+  font-style: italic; font-weight: 400;
+  font-size: clamp(20px, 2.1vw, 32px);
+  color: rgba(255,255,255,0.78);
+  letter-spacing: -0.005em;
+  margin-top: 2vh;
+}
+
+/* ============================================================
+   Audience cards (Kinek szól ez? — 4 közönségszelet, step-reveal)
+   ============================================================ */
+.audience-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: clamp(20px, 2.4vw, 36px);
+  width: 100%; max-width: 1300px;
+  margin: 4vh auto 0 auto;
+}
+.aud-card {
+  padding: clamp(20px, 2.1vw, 32px);
+  background: rgba(0,0,0,0.025);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 14px;
+  display: flex; flex-direction: column; gap: 11px;
+  transition: transform .6s var(--ease), box-shadow .6s var(--ease), border-color .6s var(--ease);
+}
+.aud-card.in {
+  border-color: rgba(46,127,201,0.25);
+  box-shadow: 0 12px 40px -24px rgba(46,127,201,0.3);
+}
+.aud-num {
+  font-family: var(--font);
+  font-size: clamp(12px, 1vw, 15px);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.aud-label {
+  font-family: var(--font-serif);
+  font-size: clamp(22px, 2.3vw, 34px);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--dark);
+  line-height: 1.1;
+}
+.aud-voice {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(14px, 1.25vw, 18px);
+  color: var(--gray-2);
+  line-height: 1.4;
+  padding-left: 14px;
+  border-left: 2px solid var(--accent);
+}
+.aud-answer {
+  font-family: var(--font);
+  font-size: clamp(13px, 1.15vw, 17px);
+  color: var(--dark);
+  font-weight: 500;
+  line-height: 1.45;
+  margin-top: 2px;
+}
+
+/* ============================================================
+   Dashboard comparison (Átlag vs KV) — bar chart rows
+   ============================================================ */
+.dash {
+  display: flex; flex-direction: column;
+  gap: clamp(6px, 0.8vh, 12px);
+  width: 100%;
+  margin: 1.5vh 0 0 0;
+}
+.dash-row {
+  display: grid;
+  grid-template-columns: 240px 1fr 170px;
+  align-items: center;
+  gap: clamp(18px, 2vw, 36px);
+  padding: clamp(8px, 1vh, 14px) 0;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.dash-row:last-child { border-bottom: none; }
+.dash-label {
+  font-family: var(--font);
+  font-size: clamp(18px, 1.6vw, 25px);
+  color: var(--dark);
+  font-weight: 600;
+  line-height: 1.2;
+}
+.dash-label .sub {
+  display: block;
+  font-size: clamp(12px, 0.95vw, 15px);
+  color: var(--gray-2);
+  font-weight: 400;
+  margin-top: 3px;
+  letter-spacing: 0.01em;
+}
+.dash-bars { display: flex; flex-direction: column; gap: 8px; }
+.dash-track {
+  display: grid;
+  grid-template-columns: 72px 1fr 160px;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--font);
+  font-size: clamp(16px, 1.35vw, 21px);
+  font-variant-numeric: tabular-nums;
+}
+.dash-track .t-label {
+  color: var(--gray-2);
+  font-size: clamp(12px, 0.98vw, 15px);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.dash-track .t-label.kv { color: var(--accent); font-weight: 600; }
+.bar-wrap {
+  height: 16px;
+  background: rgba(0,0,0,0.05);
+  border-radius: 8px;
+  position: relative;
+  overflow: visible;
+}
+.bar {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 0;
+  background: #9ca3ad;
+  border-radius: 8px;
+  transition: width 1.4s cubic-bezier(.2,.7,.2,1);
+}
+.dash-row.in .bar { width: var(--w, 0); }
+.bar.kv { background: var(--accent); }
+.dash-track .num {
+  color: var(--dark);
+  font-weight: 600;
+  text-align: left;
+  font-size: clamp(17px, 1.45vw, 22px);
+}
+.dash-track .num.kv { color: var(--accent); font-weight: 600; }
+.dash-multi {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(34px, 3.4vw, 56px);
+  color: var(--accent);
+  font-weight: 500;
+  text-align: right;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity 0.8s cubic-bezier(.2,.7,.2,1) 0.6s;
+}
+.dash-row.in .dash-multi { opacity: 1; }
+.dash-multi.sm {
+  font-size: clamp(11px, 0.85vw, 13px);
+  color: var(--gray-2);
+  font-style: normal;
+  font-family: var(--font);
+  letter-spacing: 0;
+  line-height: 1.3;
+  font-weight: 400;
+}
+
+/* Range bar for price row */
+.bar-wrap.range {
+  background: linear-gradient(to right, rgba(0,0,0,0.05), rgba(0,0,0,0.14));
+  height: 16px;
+}
+.bar-wrap.range .rng-marker {
+  position: absolute; top: -9px; bottom: -9px;
+  left: calc(var(--mark) - 3px);
+  width: 6px;
+  background: var(--accent);
+  border-radius: 3px;
+  box-shadow: 0 0 0 6px rgba(247,147,26,0.18), 0 4px 16px rgba(247,147,26,0.35);
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.8s cubic-bezier(.2,.7,.2,1), transform 0.8s cubic-bezier(.3,1.5,.6,1);
+}
+.bar-wrap.range .rng-marker.in { opacity: 1; transform: scale(1); }
+.bar-wrap.range .rng-end {
+  position: absolute; top: 22px;
+  font-size: clamp(11px, 0.8vw, 13px);
+  color: var(--gray-2);
+  font-variant-numeric: tabular-nums;
+}
+.bar-wrap.range .rng-end.lo { left: 0; }
+.bar-wrap.range .rng-end.hi { right: 0; }
+.price-kv-num {
+  opacity: 0;
+  transition: opacity 0.8s cubic-bezier(.2,.7,.2,1) 0.2s;
+}
+.price-kv-num.in { opacity: 1; }
+
+/* Energy row — special: center-anchored bars, RED negative = AKTÍV HÁZ */
+.dash-row.energy {
+  background: linear-gradient(to right, rgba(247,147,26,0.03), rgba(200,16,46,0.03));
+  border-radius: 10px;
+  padding-left: 14px;
+  padding-right: 14px;
+  margin-top: 4px;
+  border-bottom: none;
+  border: 1px solid rgba(0,0,0,0.07);
+}
+.energy-track {
+  display: grid;
+  grid-template-columns: 62px 1fr 130px;
+  align-items: center;
+  gap: 14px;
+}
+.bar-center {
+  height: 20px;
+  background: rgba(0,0,0,0.04);
+  border-radius: 10px;
+  position: relative;
+  overflow: visible;
+}
+.bar-center .zero-line {
+  position: absolute; top: -7px; bottom: -7px;
+  left: 50%; width: 2px;
+  background: rgba(0,0,0,0.35);
+  border-radius: 1px;
+}
+.bar-center .bar-pos {
+  position: absolute; left: 50%; top: 0; bottom: 0;
+  width: 0;
+  background: #9ca3ad;
+  border-radius: 0 10px 10px 0;
+  transition: width 1.4s cubic-bezier(.2,.7,.2,1);
+}
+.bar-center .bar-pos.kv { background: var(--accent); }
+.dash-row.energy.in .bar-pos { width: var(--w, 0); }
+.bar-center .bar-neg {
+  position: absolute; right: 50%; top: 0; bottom: 0;
+  width: 0;
+  background: #c8102e;
+  border-radius: 10px 0 0 10px;
+  box-shadow: 0 0 24px rgba(200,16,46,0.3);
+  transition: width 1.3s cubic-bezier(.2,.7,.2,1);
+}
+.dash-row.energy:has(.phase-trigger.in) .bar-neg { width: 10%; }
+
+.kv-val-swap {
+  position: relative;
+  min-height: 22px;
+  display: flex;
+  align-items: center;
+}
+.kv-val-swap .val {
+  position: absolute; left: 0; top: 50%;
+  transform: translateY(-50%);
+  transition: opacity 0.8s cubic-bezier(.2,.7,.2,1);
+  white-space: nowrap;
+}
+.kv-val-swap .val.phase2 { opacity: 0; }
+.dash-row.energy:has(.phase-trigger.in) .val.phase1 { opacity: 0; }
+.dash-row.energy:has(.phase-trigger.in) .val.phase2 { opacity: 1; }
+.dash-row.energy:has(.phase-trigger.in) .bar-pos.kv { opacity: 0; transition: opacity 0.6s ease; }
+
+/* Multi swap: ~12× → áthúzott ~12× + ∞ */
+.multi-swap {
+  position: relative;
+  min-height: clamp(40px, 4vw, 64px);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.multi-swap .multi-phase {
+  position: absolute; right: 0; top: 50%;
+  transform: translateY(-50%);
+  transition: opacity 0.8s cubic-bezier(.2,.7,.2,1);
+  display: inline-flex; align-items: center; gap: 0.35em;
+  white-space: nowrap;
+}
+.multi-swap .multi-phase.phase2 { opacity: 0; }
+.dash-row.energy:has(.phase-trigger.in) .multi-phase.phase1 { opacity: 0; }
+.dash-row.energy:has(.phase-trigger.in) .multi-phase.phase2 { opacity: 1; }
+.multi-swap .strike {
+  position: relative;
+  color: var(--gray-2);
+  font-size: 0.55em;
+  font-style: italic;
+  opacity: 0.7;
+}
+.multi-swap .strike::after {
+  content: ''; position: absolute; left: -4%; right: -4%; top: 52%;
+  height: 2px; background: #c8102e; transform: rotate(-8deg);
+  border-radius: 2px;
+}
+.multi-swap .inf {
+  font-size: 1.35em;
+  color: var(--accent);
+  font-style: italic;
+  line-height: 1;
+  font-weight: 500;
+}
+
+.aktiv-hz {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 600;
+  color: #c8102e;
+  font-size: clamp(14px, 1.15vw, 18px);
+  letter-spacing: 0.03em;
+}
+.phase-trigger { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 </style>
 </head>
 <body>
+
 <div class="deck" id="deck">
 
-<!-- ============================================================
-     SLIDE 1: TITLE
-     ============================================================ -->
-<div class="slide active dark-full" data-id="1">
-<!-- GROK PROMPT: Dark navy (#1A252F) background, subtle architectural blueprint wireframe lines in light blue (#00AEEF, opacity 0.08), faint CAD-style floor plan outlines, geometric grid pattern, clean and modern, very low contrast, 1920x1080 -->
-<div class="grok-placeholder dark-bg" data-prompt="GROK: Dark navy (#1A252F) bg, subtle architectural blueprint wireframe lines in light blue (#00AEEF, 8% opacity), faint CAD floor plan outlines, geometric grid, clean modern, 1920x1080"></div>
-<div class="slide-inner">
-  <img src="https://ferenckovacs.com/kv_homes_logo.png" class="anim fs d1" style="height:10vh;margin-bottom:3vh;filter:brightness(0) invert(1);opacity:.85" alt="KV Homes">
-  <span class="tag tag-white anim fu d2" style="font-size:20px;letter-spacing:8px">WORKSHOP 2026</span>
-  <h1 class="serif anim fu d3" style="font-size:clamp(48px,6.5vw,84px);color:#fff;font-weight:300;letter-spacing:-0.03em;margin-top:2vh">Miért + <strong style="color:var(--accent)">Hogyan</strong></h1>
-  <p class="anim fu d4" style="font-size:clamp(20px,2.2vw,28px);color:var(--muted);margin-top:2.5vh;font-weight:300">A KV Homes story — honnan jöttünk és hová tartunk</p>
-  <div class="divider anim dl d5" style="width:100px;margin-top:3vh"></div>
-  <p class="anim fu d6" style="font-size:clamp(16px,1.6vw,22px);color:rgba(255,255,255,.35);margin-top:3vh;letter-spacing:4px;text-transform:uppercase">Kovács Ferenc</p>
-  <p class="anim fu d7" style="font-size:clamp(15px,1.4vw,20px);color:rgba(255,255,255,.2);margin-top:1.5vh">2026. április 16. · Hotel Atlantis, Hajdúszoboszló</p>
-</div>
-</div>
-
-<!-- ============================================================
-     SLIDE 2: MISSION
-     ============================================================ -->
-<div class="slide white-full" data-id="2">
-<!-- GROK PROMPT: White background, very faint light blue (#00AEEF, 5% opacity) architectural line drawings of modern houses, subtle geometric hexagon pattern, airy and minimal, low contrast, 1920x1080 -->
-<div class="grok-placeholder white-bg" data-prompt="GROK: White bg, very faint light blue (#00AEEF, 5% opacity) architectural line drawings of modern houses, subtle geometric hexagons, airy minimal, 1920x1080"></div>
-<div class="slide-inner">
-  <img src="https://ferenckovacs.com/kv_cegcsoport_logo.png" class="anim fs d1" style="height:8vh;margin-bottom:3vh;opacity:.7" alt="KV Cégcsoport">
-  <h2 class="serif anim fu d2" style="font-size:clamp(36px,4.5vw,64px);font-weight:400;letter-spacing:-0.02em;line-height:1.3;max-width:85%;color:var(--dark)">Innovációval egy egészségesebb<br>társadalom felé</h2>
-  <p class="anim fu d3" style="font-size:clamp(20px,2vw,28px);color:var(--gray);margin-top:3vh;max-width:70%;line-height:1.7;font-weight:300">Valódi értéket adunk — legyen szó pihenésről, otthonteremtésről vagy pénzügyi tudatosságról.</p>
-  <div class="divider anim dl d4" style="width:80px;margin-top:3vh"></div>
-</div>
-</div>
-
-<!-- ============================================================
-     SLIDE 3: CÉGCSOPORT — KV KFT + FOTÓ
-     ============================================================ -->
-<div class="slide split-r" data-id="3">
-<div class="grok-placeholder white-bg"></div>
-<div class="slide-inner" style="background:#fff">
-  <div class="content">
-    <div class="accent-bar anim cr d1"></div>
-    <span class="tag tag-accent anim fu d1">KV Cégcsoport</span>
-    <h2 class="serif anim fu d2" style="font-size:clamp(32px,3.5vw,52px);font-weight:500;margin-top:2vh;line-height:1.2">30+ év az<br>építőiparban</h2>
-    <p class="anim fu d3" style="font-size:clamp(18px,1.8vw,24px);color:var(--gray);margin-top:2.5vh;line-height:1.7">A KV Építőipari Kft. <strong style="color:var(--dark)">1992 óta</strong> van jelen a magyar építőiparban. Előregyártott vasbeton elemek tervezése és gyártása, szállodaüzemeltetés, ingatlanfejlesztés.</p>
-    <p class="anim fu d4" style="font-size:clamp(18px,1.8vw,24px);color:var(--gray);margin-top:1.5vh;line-height:1.7">Több mint <strong style="color:var(--accent)">600 lakás</strong> megépítve, <strong style="color:var(--accent)">2 négycsillagos szálloda</strong>, saját gyártóüzem Berentén.</p>
-  </div>
-  <div class="photo photo-gradient-l">
-    <img src="https://ferenckovacs.com/kvkft_vbelement.jpeg" alt="KV Kft előregyártott vasbeton elem" class="anim kb d1">
-  </div>
-</div>
-</div>
-
-<!-- ============================================================
-     SLIDE 4: HOTEL AURORA
-     ============================================================ -->
-<div class="slide split-l" data-id="4">
-<div class="grok-placeholder white-bg"></div>
-<div class="slide-inner" style="background:#fff">
-  <div class="photo photo-gradient-r">
-    <img src="https://ferenckovacs.com/hotel_aurora.jpeg" alt="Hotel Aurora Miskolctapolca" class="anim kb d1">
-  </div>
-  <div class="content">
-    <span class="tag tag-accent anim fu d1">Szállodák</span>
-    <h2 class="serif anim fu d2" style="font-size:clamp(30px,3.2vw,48px);font-weight:500;margin-top:2vh;line-height:1.2">Hotel Aurora ★★★★<br><span style="font-size:.65em;color:var(--gray);font-weight:300">Miskolctapolca</span></h2>
-    <p class="anim fu d3" style="font-size:clamp(18px,1.8vw,24px);color:var(--gray);margin-top:2vh;line-height:1.7"><strong style="color:var(--dark)">78 szoba</strong>, 400 m² wellness, 230 m² konferenciaterem. Üzleti wellness szálloda a Bükk-hegység lábánál — 2013 óta.</p>
-    <h2 class="serif anim fu d4" style="font-size:clamp(30px,3.2vw,48px);font-weight:500;margin-top:4vh;line-height:1.2">Hotel Atlantis ★★★★<br><span style="font-size:.65em;color:var(--gray);font-weight:300">Hajdúszoboszló</span></h2>
-    <p class="anim fu d5" style="font-size:clamp(18px,1.8vw,24px);color:var(--gray);margin-top:2vh;line-height:1.7"><strong style="color:var(--dark)">96 szoba</strong>, 1 600 m² wellness — családi szálloda. Ma itt vagyunk.</p>
-  </div>
-</div>
-</div>
-
-<!-- ============================================================
-     SLIDE 5: INGATLANFEJLESZTÉS
-     ============================================================ -->
-<div class="slide split-r" data-id="5">
-<div class="grok-placeholder white-bg"></div>
-<div class="slide-inner" style="background:#fff">
-  <div class="content">
-    <div class="accent-bar anim cr d1"></div>
-    <span class="tag tag-accent anim fu d1">Ingatlanfejlesztés</span>
-    <h2 class="serif anim fu d2" style="font-size:clamp(32px,3.5vw,52px);font-weight:500;margin-top:2vh;line-height:1.2">600+ társasházi lakás<br><span style="font-size:.6em;color:var(--gray);font-weight:300">Több mint egy évtized fejlesztés</span></h2>
-    <p class="anim fu d3" style="font-size:clamp(18px,1.8vw,24px);color:var(--gray);margin-top:2.5vh;line-height:1.7">Saját beruházásos ingatlanfejlesztés <strong style="color:var(--dark)">kéregpanel-technológiával</strong>. Borsodban és országos szinten.</p>
-    <p class="anim fu d4" style="font-size:clamp(18px,1.8vw,24px);color:var(--gray);margin-top:1.5vh;line-height:1.7">Ez a tapasztalat vezetett el a <strong style="color:var(--accent)">KV Homes-hoz</strong>.</p>
-  </div>
-  <div class="photo photo-gradient-l">
-    <img src="https://ferenckovacs.com/tarsashaz.jpeg" alt="Társasház fejlesztés" class="anim kb d1">
-  </div>
-</div>
-</div>
-
-<!-- ============================================================
-     SLIDE 6: TIMELINE
-     ============================================================ -->
-<div class="slide dark-full" data-id="6">
-<!-- GROK PROMPT: Dark navy (#1A252F) bg, faint blue (#00AEEF, 6% opacity) blueprint/CAD wireframe timeline visualization with horizontal lines and nodes, architectural drafting style, subtle grid, 1920x1080 -->
-<div class="grok-placeholder dark-bg" data-prompt="GROK: Dark navy bg, faint blue (#00AEEF, 6%) blueprint timeline with horizontal lines and nodes, architectural drafting style, subtle grid, 1920x1080"></div>
-<div class="slide-inner" style="padding:4% 5%;text-align:left;display:flex;flex-direction:column;justify-content:center">
-  <h2 class="serif anim fu d1" style="font-size:clamp(32px,3.5vw,52px);font-weight:400;color:#fff;text-align:center;margin-bottom:1vh">Honnan indultunk</h2>
-  <p class="anim fu d2" style="font-size:clamp(18px,1.6vw,22px);color:var(--muted);text-align:center;margin-bottom:3vh;font-weight:300">Két szál, egy cél</p>
-  <div style="display:flex;gap:4%;width:92%;margin:0 auto">
-    <div style="flex:1" class="anim sr d2">
-      <div style="font-size:16px;color:var(--accent);font-weight:700;letter-spacing:3px;text-transform:uppercase;padding-bottom:1.5vh;border-bottom:2px solid var(--accent);margin-bottom:2vh">Kovács Ferenc</div>
-      <div style="display:flex;gap:1.5vw;margin-bottom:1.8vh;align-items:flex-start"><span style="font-size:16px;color:var(--accent);font-weight:700;min-width:5.5vw;text-align:right">1999</span><span style="font-size:17px;color:var(--muted);line-height:1.5"><strong style="color:#fff">Koós Károly Építőipari Szki</strong> — Miskolc</span></div>
-      <div style="display:flex;gap:1.5vw;margin-bottom:1.8vh;align-items:flex-start"><span style="font-size:16px;color:var(--accent);font-weight:700;min-width:5.5vw;text-align:right">2003–09</span><span style="font-size:17px;color:var(--muted);line-height:1.5"><strong style="color:#fff">BME Építőmérnöki Kar</strong> — tartószerkezet + menedzsment</span></div>
-      <div style="display:flex;gap:1.5vw;margin-bottom:1.8vh;align-items:flex-start"><span style="font-size:16px;color:var(--accent);font-weight:700;min-width:5.5vw;text-align:right">2009</span><span style="font-size:17px;color:var(--muted);line-height:1.5"><strong style="color:#fff">Visszatérés</strong> — átvettem a családi vállalkozást</span></div>
-      <div style="display:flex;gap:1.5vw;align-items:flex-start"><span style="font-size:16px;color:var(--accent);font-weight:700;min-width:5.5vw;text-align:right">2025 →</span><span style="font-size:17px;color:var(--accent);line-height:1.5;font-weight:600">KV Homes — az új fejezet</span></div>
+  <!-- ========================================================
+       DIA 0 — CÍM
+       ======================================================== -->
+  <section class="slide dark center hero" data-steps="1">
+    <div class="cover-bg"></div>
+    <div class="cover-cg-wrap">
+      <img src="images/kv_cegcsoport_logo.png" alt="KV Cégcsoport" class="cover-cg-mark reveal d1">
     </div>
-    <div style="flex:1" class="anim sr d4">
-      <div style="font-size:16px;color:var(--muted);font-weight:700;letter-spacing:3px;text-transform:uppercase;padding-bottom:1.5vh;border-bottom:2px solid var(--muted);margin-bottom:2vh">KV Cégcsoport</div>
-      <div style="display:flex;gap:1.5vw;margin-bottom:1.5vh;align-items:flex-start"><span style="font-size:16px;color:var(--muted);font-weight:700;min-width:5.5vw;text-align:right">1992</span><span style="font-size:17px;color:var(--muted);line-height:1.5"><strong style="color:#fff">Alapítás</strong> — édesapám indította</span></div>
-      <div style="display:flex;gap:1.5vw;margin-bottom:1.5vh;align-items:flex-start"><span style="font-size:16px;color:var(--muted);font-weight:700;min-width:5.5vw;text-align:right">1992–00</span><span style="font-size:17px;color:var(--muted);line-height:1.5"><strong style="color:#fff">Generálkivitelezés</strong> — HU + DE, 250 fő</span></div>
-      <div style="display:flex;gap:1.5vw;margin-bottom:1.5vh;align-items:flex-start"><span style="font-size:16px;color:var(--muted);font-weight:700;min-width:5.5vw;text-align:right">2000–09</span><span style="font-size:17px;color:var(--muted);line-height:1.5"><strong style="color:#fff">Ingatlanfejlesztés</strong> — kéregpanel</span></div>
-      <div style="display:flex;gap:1.5vw;margin-bottom:1.5vh;align-items:flex-start"><span style="font-size:16px;color:var(--muted);font-weight:700;min-width:5.5vw;text-align:right">2010</span><span style="font-size:17px;color:var(--muted);line-height:1.5"><strong style="color:#fff">Vasbeton elemgyártás</strong></span></div>
-      <div style="display:flex;gap:1.5vw;margin-bottom:1.5vh;align-items:flex-start"><span style="font-size:16px;color:var(--muted);font-weight:700;min-width:5.5vw;text-align:right">2011–13</span><span style="font-size:17px;color:var(--muted);line-height:1.5"><strong style="color:#fff">Atlantis + Aurora</strong> ★★★★</span></div>
-      <div style="display:flex;gap:1.5vw;align-items:flex-start"><span style="font-size:16px;color:var(--muted);font-weight:700;min-width:5.5vw;text-align:right">2026 →</span><span style="font-size:17px;color:var(--accent);line-height:1.5;font-weight:600">KV Homes — országos</span></div>
+    <div class="cover">
+      <img src="images/kv_homes_logo.png" alt="KV Homes" class="logo reveal d2" style="filter:brightness(0) invert(1); height:clamp(72px,10vh,140px); opacity:0.95;">
+      <h1 class="reveal d3" style="color:#fff; margin-top:3vh; font-style:italic; font-weight:500;">Workshop&nbsp;2026</h1>
+      <div class="sub reveal d4" style="color:rgba(255,255,255,0.65); margin-top:1vh;">Hotel Atlantis · Hajdúszoboszló · 2026. április 16.</div>
     </div>
-  </div>
-</div>
-</div>
+  </section>
 
-<!-- ============================================================
-     SLIDE 7: KEY NUMBERS
-     ============================================================ -->
-<div class="slide dark-full" data-id="7">
-<!-- GROK PROMPT: Dark navy (#1A252F) bg, subtle blue (#00AEEF, 8%) wireframe architectural elements - building outlines, structural grid lines, faint blueprint-style technical drawings, modern minimalist, 1920x1080 -->
-<div class="grok-placeholder dark-bg" data-prompt="GROK: Dark navy bg, subtle blue (#00AEEF, 8%) wireframe building outlines, structural grid lines, faint blueprint technical drawings, modern minimalist, 1920x1080"></div>
-<div class="slide-inner">
-  <h2 class="serif anim fu d1" style="font-size:clamp(32px,3.5vw,52px);font-weight:400;color:#fff">Három évtized számokban</h2>
-  <div class="divider anim dl d2" style="width:80px;margin-top:2.5vh"></div>
-  <div style="display:flex;gap:2.5%;margin-top:5vh;width:85%">
-    <div class="anim crd d2" style="flex:1;text-align:center;padding:4% 2%;background:rgba(255,255,255,0.04);border-radius:14px;border:1px solid rgba(0,174,239,0.15)">
-      <div class="anim np d3" style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(40px,4.5vw,68px);font-weight:700;color:var(--accent)">30+</div>
-      <div style="font-size:clamp(16px,1.4vw,20px);color:var(--muted);margin-top:1vh">év az építőiparban</div>
+  <!-- ========================================================
+       DIA 1 — SOHA TÖBBET
+       ======================================================== -->
+  <section class="slide dark center hero" data-steps="1">
+    <div class="center">
+      <div class="kicker reveal d1" style="color:var(--accent);">2023</div>
+      <h1 class="reveal d2" style="color:#fff; font-style:italic; font-weight:500;">„Soha többet nem építek lakást&nbsp;senkinek.”</h1>
     </div>
-    <div class="anim crd d3" style="flex:1;text-align:center;padding:4% 2%;background:rgba(255,255,255,0.04);border-radius:14px;border:1px solid rgba(0,174,239,0.15)">
-      <div class="anim np d4" style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(40px,4.5vw,68px);font-weight:700;color:var(--accent)">600+</div>
-      <div style="font-size:clamp(16px,1.4vw,20px);color:var(--muted);margin-top:1vh">megépített lakás</div>
-    </div>
-    <div class="anim crd d4" style="flex:1;text-align:center;padding:4% 2%;background:rgba(255,255,255,0.04);border-radius:14px;border:1px solid rgba(0,174,239,0.15)">
-      <div class="anim np d5" style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(40px,4.5vw,68px);font-weight:700;color:var(--accent)">2</div>
-      <div style="font-size:clamp(16px,1.4vw,20px);color:var(--muted);margin-top:1vh">négycsillagos hotel</div>
-    </div>
-    <div class="anim crd d5" style="flex:1;text-align:center;padding:4% 2%;background:rgba(255,255,255,0.04);border-radius:14px;border:1px solid rgba(0,174,239,0.15)">
-      <div class="anim np d6" style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(40px,4.5vw,68px);font-weight:700;color:var(--accent)">174</div>
-      <div style="font-size:clamp(16px,1.4vw,20px);color:var(--muted);margin-top:1vh">szoba összesen</div>
-    </div>
-  </div>
-</div>
-</div>
+  </section>
 
-<!-- ============================================================
-     SLIDE 8: TRANSITION — THE ROAD
-     ============================================================ -->
-<div class="slide dark-full" data-id="8">
-<!-- GROK PROMPT: Dark slate (#2C3E50) bg, subtle blue (#00AEEF, 10%) hand-drawn CAD-style road/path leading to a modern house outline, architectural sketch feel, blueprint aesthetic with white lines on dark, 1920x1080 -->
-<div class="grok-placeholder dark2-bg" data-prompt="GROK: Dark slate (#2C3E50) bg, subtle blue (#00AEEF, 10%) hand-drawn CAD road/path leading to modern house outline, architectural sketch, blueprint white lines on dark, 1920x1080"></div>
-<div class="slide-inner">
-  <h2 class="serif anim fu d1" style="font-size:clamp(40px,5.5vw,76px);font-weight:300;color:#fff;letter-spacing:-0.02em;line-height:1.2">Hogyan jutottunk<br><em style="color:var(--accent);font-style:italic">a KV Homes-hoz?</em></h2>
-  <p class="anim fu d3" style="font-size:clamp(20px,2vw,28px);color:var(--muted);margin-top:3vh;font-weight:300;max-width:65%">Az út a generálkivitelezéstől a gyári precizitásig</p>
-  <div class="divider anim dl d4" style="width:100px;margin-top:3vh"></div>
-</div>
-</div>
+  <!-- ========================================================
+       DIA 2 — EDDIG TARTOTTAM MAGAM EHHEZ
+       ======================================================== -->
+  <section class="slide dark center hero" data-steps="1">
+    <div class="center">
+      <div class="kicker reveal d1" style="color:var(--accent);">Egy évvel ezelőttig</div>
+      <h1 class="reveal d2" style="color:#fff; font-style:italic; font-weight:500;">Eddig tartottam magam&nbsp;ehhez.</h1>
+    </div>
+  </section>
 
-<!-- ============================================================
-     SLIDE 9: THE PROBLEM
-     ============================================================ -->
-<div class="slide white-full" data-id="9">
-<!-- GROK PROMPT: White bg, very faint red/gray (#e74c3c, 4%) cracked wall texture, deteriorating building outline, subtle aging pattern, old vs new contrast, minimal, 1920x1080 -->
-<div class="grok-placeholder white-bg" data-prompt="GROK: White bg, very faint red/gray (4%) cracked wall texture, deteriorating building outline, subtle aging pattern, old vs new contrast, minimal, 1920x1080"></div>
-<div class="slide-inner">
-  <span class="tag tag-red anim fu d1">A probléma</span>
-  <h2 class="serif anim fu d2" style="font-size:clamp(36px,4vw,60px);font-weight:400;margin-top:2vh;color:var(--dark)">A magyar lakásállomány elavult</h2>
-  <p class="anim fu d3" style="font-size:clamp(20px,2vw,28px);color:var(--gray);margin-top:2vh;max-width:70%;line-height:1.7;font-weight:300">A házak túlnyomó többsége 25 évnél idősebb, energiapazarló. A hagyományos építőipar nem tud válaszolni a 21. század kihívásaira.</p>
-  <div style="display:flex;gap:6%;margin-top:5vh;align-items:center">
-    <div class="anim np d3" style="text-align:center">
-      <div style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(56px,7vw,96px);color:#e74c3c;font-weight:700">174</div>
-      <div style="font-size:clamp(18px,1.6vw,24px);color:var(--gray)">kWh/m²/év · <strong style="color:var(--dark)">magyar átlag</strong></div>
-    </div>
-    <div class="anim fu d4" style="font-size:48px;color:var(--muted)">→</div>
-    <div class="anim np d5" style="text-align:center">
-      <div style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(56px,7vw,96px);color:var(--accent);font-weight:700">12,2</div>
-      <div style="font-size:clamp(18px,1.6vw,24px);color:var(--gray)">kWh/m²/év · <strong style="color:var(--accent)">KV Homes</strong></div>
-    </div>
-  </div>
-</div>
-</div>
+  <!-- ========================================================
+       DIA 3 — MIÉRT MOST? (bizalmi válság)
+       ======================================================== -->
+  <section class="slide dark center" data-steps="6">
+    <div class="center" style="max-width:1400px; padding:0 6vw;">
+      <div class="kicker reveal d1" style="color:var(--accent);">Miért most</div>
+      <h2 style="color:#fff; font-weight:500; max-width:1100px; margin:0 auto;">
+        <span class="reveal d2">Magyarország nem az építéstől&nbsp;fél.</span><br>
+        <span class="reveal" data-step="1" style="font-style:italic;">Hanem a&nbsp;csalódástól.</span>
+      </h2>
 
-<!-- ============================================================
-     SLIDE 10: THE DISCOVERY — NORDII
-     ============================================================ -->
-<div class="slide dark-full" data-id="10">
-<!-- GROK PROMPT: Dark navy (#1A252F) bg, subtle Scandinavian-style architectural wireframe of modular building elements in light blue (#00AEEF, 10%), factory assembly line feel, prefabricated concrete modules, clean CAD aesthetic, 1920x1080 -->
-<div class="grok-placeholder dark-bg" data-prompt="GROK: Dark navy bg, Scandinavian-style architectural wireframe of modular building elements in light blue (#00AEEF, 10%), factory assembly, prefab concrete modules, CAD aesthetic, 1920x1080"></div>
-<div class="slide-inner">
-  <span class="tag tag-accent anim fu d1" style="font-size:20px">NORDii System</span>
-  <h2 class="serif anim fu d2" style="font-size:clamp(36px,4.5vw,64px);font-weight:300;color:#fff;margin-top:2vh;line-height:1.25">Egy skandináv technológia,<br>ami <em style="color:var(--accent);font-style:italic">mindent megváltoztatott</em></h2>
-  <p class="anim fu d3" style="font-size:clamp(20px,2vw,28px);color:var(--muted);margin-top:3vh;max-width:65%;line-height:1.7;font-weight:300">Előregyártott vasbeton térelemek — milliméterpontos, kontrollált körülmények között gyártva, helyszínen csak összeszerelve.</p>
-  <div style="display:flex;gap:3%;margin-top:5vh;width:80%">
-    <div class="anim crd d4" style="flex:1;text-align:center;padding:3.5%;background:rgba(255,255,255,0.05);border-radius:14px;border:1px solid rgba(0,174,239,0.15)">
-      <div style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,3vw,44px);color:var(--accent);font-weight:700">C40/50</div>
-      <div style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);margin-top:.8vh">Betonszilárdság<br><span style="font-size:.85em;opacity:.7">Hidakhoz használt minőség</span></div>
-    </div>
-    <div class="anim crd d5" style="flex:1;text-align:center;padding:3.5%;background:rgba(255,255,255,0.05);border-radius:14px;border:1px solid rgba(0,174,239,0.15)">
-      <div style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,3vw,44px);color:var(--accent);font-weight:700">0,04 mm</div>
-      <div style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);margin-top:.8vh">Lézerszkenner<br><span style="font-size:.85em;opacity:.7">40 mikron precizitás</span></div>
-    </div>
-    <div class="anim crd d6" style="flex:1;text-align:center;padding:3.5%;background:rgba(255,255,255,0.05);border-radius:14px;border:1px solid rgba(0,174,239,0.15)">
-      <div style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,3vw,44px);color:var(--accent);font-weight:700">BIM</div>
-      <div style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);margin-top:.8vh">Digitális iker<br><span style="font-size:.85em;opacity:.7">ArchiCAD tervezés</span></div>
-    </div>
-  </div>
-</div>
-</div>
+      <div class="trust-grid">
+        <div class="trust-card reveal" data-step="2">
+          <div class="trust-num">01</div>
+          <div class="trust-label">Idő</div>
+          <div class="trust-desc">Ígértek egy évet — két év múlva költöztek. Ha költöztek.</div>
+        </div>
+        <div class="trust-card reveal" data-step="3">
+          <div class="trust-num">02</div>
+          <div class="trust-label">Ár</div>
+          <div class="trust-desc">A költségvetés másfélszeresét fizették ki — és még akkor sem kész.</div>
+        </div>
+        <div class="trust-card reveal" data-step="4">
+          <div class="trust-num">03</div>
+          <div class="trust-label">Minőség</div>
+          <div class="trust-desc">Ami új volt, egy év alatt megfáradt. Repedések, penész, utánajárás.</div>
+        </div>
+      </div>
 
-<!-- ============================================================
-     SLIDE 11: QUOTE — MÁST CSINÁLUNK
-     ============================================================ -->
-<div class="slide" data-id="11">
-<!-- GROK PROMPT: Warm light beige (#F4F7F9) bg, subtle faint blueprint-style architectural line drawing of a modern house cross-section in blue (#00AEEF, 6%), very soft, editorial feel, 1920x1080 -->
-<div class="grok-placeholder warm-bg" data-prompt="GROK: Warm beige (#F4F7F9) bg, faint blueprint architectural cross-section of modern house in blue (#00AEEF, 6%), soft editorial feel, 1920x1080"></div>
-<div class="slide-inner" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8%">
-  <div class="anim fs d1" style="font-size:clamp(72px,10vw,120px);color:var(--accent);opacity:.2;line-height:1;font-family:Georgia,serif">"</div>
-  <blockquote class="serif anim fu d2" style="font-size:clamp(28px,3.5vw,52px);color:var(--dark);font-weight:400;line-height:1.45;font-style:italic;max-width:80%;margin-top:-3vh">Mi nem azt mondjuk, hogy jobban csináljuk a régit — hanem hogy <strong style="color:var(--accent);font-style:normal">mást csinálunk</strong>.</blockquote>
-  <p class="anim fu d4" style="font-size:clamp(18px,1.6vw,24px);color:var(--gray);margin-top:4vh;font-family:'Inter',sans-serif">— Kovács Ferenc</p>
-</div>
-</div>
+      <p class="trust-close reveal" data-step="5">Ezt rakjuk most rendbe.</p>
+    </div>
+  </section>
 
-<!-- ============================================================
-     SLIDE 12: WHY IT CAUGHT ME — PHILOSOPHY
-     ============================================================ -->
-<div class="slide split-r" data-id="12">
-<div class="grok-placeholder dark-bg"></div>
-<div class="slide-inner" style="background:var(--dark);color:#fff">
-  <div class="content" style="color:#fff">
-    <div class="accent-bar anim cr d1"></div>
-    <span class="tag tag-accent anim fu d1">Miért fogott meg?</span>
-    <h2 class="serif anim fu d2" style="font-size:clamp(30px,3.2vw,48px);font-weight:400;color:#fff;margin-top:2vh;line-height:1.25">Gyári precizitás.<br>Mérnöki gondolkodás.<br>Digitális tervezés.</h2>
-    <p class="anim fu d3" style="font-size:clamp(18px,1.8vw,24px);color:var(--muted);margin-top:2.5vh;line-height:1.7">Nem a téglát rakjuk jobban — <strong style="color:#fff">a rendszert gondoltuk újra</strong>. A gyárban készül el az épület 95%-a, a helyszínen csak összeáll.</p>
-    <p class="anim fu d4" style="font-size:clamp(18px,1.8vw,24px);color:var(--muted);margin-top:1.5vh;line-height:1.7">Az épület <strong style="color:var(--accent)">szétszerelhető és újra összerakható</strong>.</p>
-  </div>
-  <div class="photo photo-gradient-dark-l" style="background:rgba(0,174,239,0.03)">
-    <!-- GROK PROMPT: Photo-realistic factory interior with precast concrete wall elements being manufactured, clean industrial space, blue-tinted lighting, modern production line, workers in safety gear, 1920x1080 -->
-    <!-- Replace with actual factory photo when available -->
-    <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:rgba(0,174,239,0.04)">
-      <div style="text-align:center;padding:8%">
-        <div style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(80px,10vw,140px);color:var(--accent);opacity:.12;font-weight:700">95%</div>
-        <div style="font-size:clamp(16px,1.6vw,22px);color:var(--muted);margin-top:1vh">gyárban készül</div>
-        <div style="width:60px;height:2px;background:var(--accent);margin:2vh auto;opacity:.3"></div>
-        <div style="font-size:clamp(14px,1.3vw,18px);color:rgba(255,255,255,.3)">Időjárástól független<br>Kontrollált körülmények</div>
+  <!-- ========================================================
+       DIA 4 — NORDII SYSTEM
+       ======================================================== -->
+  <section class="slide warm" data-steps="1">
+    <div class="split">
+      <div class="visual reveal d1">
+        <img src="images/dia-03-nordii.jpg" alt="NORDii térelem">
+      </div>
+      <div class="content">
+        <div class="kicker reveal d1">Az ötlet</div>
+        <h2 class="reveal d2">NORDii&nbsp;System</h2>
+        <p class="reveal d3" style="color:var(--gray-2); margin-top:8px;">
+          Panghy Gáspár — alapító, innovátor.
+        </p>
+        <p class="reveal d4" style="margin-top:16px; max-width:540px;">
+          Előregyártott vasbeton térelemekből épített családi házak.
+          Egy ötlet, ami egy év alatt termékké vált.
+        </p>
       </div>
     </div>
-  </div>
-</div>
-</div>
+  </section>
 
-<!-- ============================================================
-     SLIDE 13: QUOTE KARANCSI
-     ============================================================ -->
-<div class="slide" data-id="13">
-<!-- GROK PROMPT: Warm white (#F4F7F9) bg, faint blue (#00AEEF, 5%) exploded axonometric view of a prefabricated concrete room module, technical drawing style, CAD wireframe, very subtle, 1920x1080 -->
-<div class="grok-placeholder warm-bg" data-prompt="GROK: Warm white bg, faint blue (#00AEEF, 5%) exploded axonometric prefab concrete room module, technical CAD wireframe, very subtle, 1920x1080"></div>
-<div class="slide-inner" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8%">
-  <div class="anim fs d1" style="font-size:clamp(72px,10vw,120px);color:var(--accent);opacity:.2;line-height:1;font-family:Georgia,serif">"</div>
-  <blockquote class="serif anim fu d2" style="font-size:clamp(28px,3.5vw,52px);color:var(--dark);font-weight:400;line-height:1.45;font-style:italic;max-width:80%;margin-top:-3vh">A NORDii System nem csupán egy technológia — ez egy <strong style="color:var(--accent);font-style:normal">gondolkodásmód</strong>.</blockquote>
-  <p class="anim fu d4" style="font-size:clamp(18px,1.6vw,24px);color:var(--gray);margin-top:4vh;font-family:'Inter',sans-serif">— Karancsi Sándor, kivitelezési üzletág igazgató</p>
-</div>
-</div>
-
-<!-- ============================================================
-     SLIDE 14: THE 4 KEY NUMBERS
-     ============================================================ -->
-<div class="slide white-full" data-id="14">
-<!-- GROK PROMPT: White bg, very faint light blue (#00AEEF, 4%) four interconnected geometric shapes (circle, hexagon, square, triangle) with thin wireframe lines, minimal architectural drafting style, 1920x1080 -->
-<div class="grok-placeholder white-bg" data-prompt="GROK: White bg, faint blue (#00AEEF, 4%) four interconnected geometric shapes with wireframe lines, minimal architectural drafting, 1920x1080"></div>
-<div class="slide-inner">
-  <h2 class="serif anim fu d1" style="font-size:clamp(32px,3.5vw,52px);font-weight:400;color:var(--dark)">Az elvek, számokban</h2>
-  <p class="anim fu d2" style="font-size:clamp(18px,1.6vw,24px);color:var(--gray);margin-top:1vh;font-weight:300">A KV Homes rendszer négy pillére</p>
-  <div class="divider anim dl d3" style="width:80px;margin-top:2vh"></div>
-  <div style="display:flex;gap:2%;margin-top:5vh;width:90%">
-    <div class="anim crd d3" style="flex:1;background:var(--warm);border-radius:14px;padding:4% 3%;text-align:center;border:1px solid rgba(0,0,0,0.06);border-top:5px solid var(--accent);min-height:22vh;display:flex;flex-direction:column;align-items:center;justify-content:center">
-      <div class="anim np d4" style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(36px,4vw,60px);font-weight:700;color:var(--accent)">~3</div>
-      <div style="font-size:clamp(14px,1.1vw,17px);color:var(--gray);margin-top:.5vh;text-transform:uppercase;letter-spacing:2px;font-weight:500">hónap</div>
-      <div style="font-size:clamp(16px,1.4vw,20px);color:var(--dark);margin-top:1vh;font-weight:500">Kulcsrakész otthon</div>
-    </div>
-    <div class="anim crd d4" style="flex:1;background:var(--warm);border-radius:14px;padding:4% 3%;text-align:center;border:1px solid rgba(0,0,0,0.06);border-top:5px solid var(--accent);min-height:22vh;display:flex;flex-direction:column;align-items:center;justify-content:center">
-      <div class="anim np d5" style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(36px,4vw,60px);font-weight:700;color:var(--accent)">A+++</div>
-      <div style="font-size:clamp(14px,1.1vw,17px);color:var(--gray);margin-top:.5vh;text-transform:uppercase;letter-spacing:2px;font-weight:500">besorolás</div>
-      <div style="font-size:clamp(16px,1.4vw,20px);color:var(--dark);margin-top:1vh;font-weight:500">Energetikai csúcs</div>
-    </div>
-    <div class="anim crd d5" style="flex:1;background:var(--warm);border-radius:14px;padding:4% 3%;text-align:center;border:1px solid rgba(0,0,0,0.06);border-top:5px solid var(--accent);min-height:22vh;display:flex;flex-direction:column;align-items:center;justify-content:center">
-      <div class="anim np d6" style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(36px,4vw,60px);font-weight:700;color:var(--accent)">12,2</div>
-      <div style="font-size:clamp(14px,1.1vw,17px);color:var(--gray);margin-top:.5vh;text-transform:uppercase;letter-spacing:2px;font-weight:500">kWh/m²/év</div>
-      <div style="font-size:clamp(16px,1.4vw,20px);color:var(--dark);margin-top:1vh;font-weight:500">Fogyasztás</div>
-    </div>
-    <div class="anim crd d6" style="flex:1;background:var(--warm);border-radius:14px;padding:4% 3%;text-align:center;border:1px solid rgba(0,0,0,0.06);border-top:5px solid var(--accent);min-height:22vh;display:flex;flex-direction:column;align-items:center;justify-content:center">
-      <div class="anim np d7" style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(36px,4vw,60px);font-weight:700;color:var(--accent)">100+</div>
-      <div style="font-size:clamp(14px,1.1vw,17px);color:var(--gray);margin-top:.5vh;text-transform:uppercase;letter-spacing:2px;font-weight:500">év</div>
-      <div style="font-size:clamp(16px,1.4vw,20px);color:var(--dark);margin-top:1vh;font-weight:500">Élettartam</div>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- ============================================================
-     SLIDE 15: COMPARISON
-     ============================================================ -->
-<div class="slide white-full" data-id="15">
-<!-- GROK PROMPT: White bg, faint split composition - left side: gray (#7F8C8D, 4%) old crumbling brick pattern, right side: blue (#00AEEF, 4%) clean geometric grid - subtle contrast between old and new, 1920x1080 -->
-<div class="grok-placeholder white-bg" data-prompt="GROK: White bg, left: faint gray old brick pattern, right: faint blue clean grid — old vs new contrast, subtle, 1920x1080"></div>
-<div class="slide-inner">
-  <h2 class="serif anim fu d1" style="font-size:clamp(30px,3.2vw,48px);font-weight:400;color:var(--dark)">Hagyományos vs. KV Homes</h2>
-  <div class="divider anim dl d2" style="width:80px;margin-top:2vh"></div>
-  <div style="display:flex;gap:3%;margin-top:4vh;width:88%">
-    <div class="anim sr d2" style="flex:1;border-radius:16px;padding:3.5% 4%;background:var(--light);border:1px solid rgba(0,0,0,0.08)">
-      <h3 style="font-size:clamp(20px,2vw,28px);color:var(--gray);font-weight:700;margin-bottom:2.5vh">Hagyományos építés</h3>
-      <div style="display:flex;justify-content:space-between;padding:1.5vh 0;border-bottom:1px solid rgba(0,0,0,0.06);font-size:clamp(16px,1.4vw,20px)"><span style="color:var(--gray)">Átadás</span><span style="font-weight:600;color:var(--dark)">12–18 hónap</span></div>
-      <div style="display:flex;justify-content:space-between;padding:1.5vh 0;border-bottom:1px solid rgba(0,0,0,0.06);font-size:clamp(16px,1.4vw,20px)"><span style="color:var(--gray)">Energetika</span><span style="font-weight:600;color:var(--dark)">B–D besorolás</span></div>
-      <div style="display:flex;justify-content:space-between;padding:1.5vh 0;border-bottom:1px solid rgba(0,0,0,0.06);font-size:clamp(16px,1.4vw,20px)"><span style="color:var(--gray)">Fogyasztás</span><span style="font-weight:600;color:var(--dark)">174 kWh/m²/év</span></div>
-      <div style="display:flex;justify-content:space-between;padding:1.5vh 0;border-bottom:1px solid rgba(0,0,0,0.06);font-size:clamp(16px,1.4vw,20px)"><span style="color:var(--gray)">Élettartam</span><span style="font-weight:600;color:var(--dark)">50–80 év</span></div>
-      <div style="display:flex;justify-content:space-between;padding:1.5vh 0;font-size:clamp(16px,1.4vw,20px)"><span style="color:var(--gray)">Minőség</span><span style="font-weight:600;color:var(--dark)">Helyszíni improvizáció</span></div>
-    </div>
-    <div class="anim sr d4" style="flex:1;border-radius:16px;padding:3.5% 4%;background:var(--accent-bg);border:2px solid var(--accent)">
-      <h3 style="font-size:clamp(20px,2vw,28px);color:var(--accent);font-weight:700;margin-bottom:2.5vh">KV Homes</h3>
-      <div style="display:flex;justify-content:space-between;padding:1.5vh 0;border-bottom:1px solid rgba(0,174,239,0.1);font-size:clamp(16px,1.4vw,20px)"><span style="color:var(--gray)">Átadás</span><span style="font-weight:700;color:var(--accent)">~3 hónap</span></div>
-      <div style="display:flex;justify-content:space-between;padding:1.5vh 0;border-bottom:1px solid rgba(0,174,239,0.1);font-size:clamp(16px,1.4vw,20px)"><span style="color:var(--gray)">Energetika</span><span style="font-weight:700;color:var(--accent)">A+++ besorolás</span></div>
-      <div style="display:flex;justify-content:space-between;padding:1.5vh 0;border-bottom:1px solid rgba(0,174,239,0.1);font-size:clamp(16px,1.4vw,20px)"><span style="color:var(--gray)">Fogyasztás</span><span style="font-weight:700;color:var(--accent)">12,2 kWh/m²/év</span></div>
-      <div style="display:flex;justify-content:space-between;padding:1.5vh 0;border-bottom:1px solid rgba(0,174,239,0.1);font-size:clamp(16px,1.4vw,20px)"><span style="color:var(--gray)">Élettartam</span><span style="font-weight:700;color:var(--accent)">100+ év</span></div>
-      <div style="display:flex;justify-content:space-between;padding:1.5vh 0;font-size:clamp(16px,1.4vw,20px)"><span style="color:var(--gray)">Minőség</span><span style="font-weight:700;color:var(--accent)">Gyári precizitás (0,04mm)</span></div>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- ============================================================
-     SLIDE 16: TECHNOLOGY
-     ============================================================ -->
-<div class="slide dark-full" data-id="16">
-<!-- GROK PROMPT: Dark navy (#1A252F) bg, faint blue (#00AEEF, 8%) exploded technical diagram of house layers - foundation, walls, insulation, roof, HVAC system - CAD wireframe style, blueprint aesthetic, each layer slightly separated, 1920x1080 -->
-<div class="grok-placeholder dark-bg" data-prompt="GROK: Dark navy bg, faint blue (#00AEEF, 8%) exploded technical diagram of house layers - foundation, walls, insulation, roof, HVAC - CAD wireframe blueprint, layers separated, 1920x1080"></div>
-<div class="slide-inner">
-  <h2 class="serif anim fu d1" style="font-size:clamp(30px,3.2vw,48px);font-weight:400;color:#fff">Ami minden modellbe benne van</h2>
-  <p class="anim fu d2" style="font-size:clamp(16px,1.4vw,22px);color:var(--muted);margin-top:1vh">Alapáron — nincs felár, nincs rejtett költség</p>
-  <div class="divider anim dl d2" style="width:80px;margin-top:2vh"></div>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5%;margin-top:4vh;width:90%">
-    <!-- GROK PROMPT FOR ICONS: Each icon should be a clean white wireframe icon on transparent bg, architectural/technical style, matching the blueprint aesthetic. Generate separately: concrete block, thermometer/energy, heat pump, ventilation fan, window/glass, electrical panel -->
-    <div class="anim crd d3" style="background:rgba(255,255,255,0.04);border-radius:12px;padding:3.5% 3%;text-align:center;border:1px solid rgba(0,174,239,0.12)">
-      <!-- GROK ICON: Clean white wireframe concrete block icon, architectural CAD style, transparent bg, 200x200 -->
-      <div style="font-size:clamp(14px,1.2vw,17px);color:var(--accent);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1vh">Vasbeton tér-elem</div>
-      <p style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);line-height:1.5">C40/50 beton · 15 cm fal<br>100 éves élettartam</p>
-    </div>
-    <div class="anim crd d4" style="background:rgba(255,255,255,0.04);border-radius:12px;padding:3.5% 3%;text-align:center;border:1px solid rgba(0,174,239,0.12)">
-      <div style="font-size:clamp(14px,1.2vw,17px);color:var(--accent);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1vh">A+++ energetika</div>
-      <p style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);line-height:1.5">16 cm PIR tető · 22 cm Graphit fal<br>16 cm XPS padló</p>
-    </div>
-    <div class="anim crd d5" style="background:rgba(255,255,255,0.04);border-radius:12px;padding:3.5% 3%;text-align:center;border:1px solid rgba(0,174,239,0.12)">
-      <div style="font-size:clamp(14px,1.2vw,17px);color:var(--accent);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1vh">Hőszivattyú</div>
-      <p style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);line-height:1.5">Fűtés + hűtés egyben<br>Szobánkénti szabályozás · gáz nélkül</p>
-    </div>
-    <div class="anim crd d5" style="background:rgba(255,255,255,0.04);border-radius:12px;padding:3.5% 3%;text-align:center;border:1px solid rgba(0,174,239,0.12)">
-      <div style="font-size:clamp(14px,1.2vw,17px);color:var(--accent);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1vh">Hővisszanyerős szellőzés</div>
-      <p style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);line-height:1.5">Folyamatos friss levegő<br>Automatikus légcsere</p>
-    </div>
-    <div class="anim crd d6" style="background:rgba(255,255,255,0.04);border-radius:12px;padding:3.5% 3%;text-align:center;border:1px solid rgba(0,174,239,0.12)">
-      <div style="font-size:clamp(14px,1.2vw,17px);color:var(--accent);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1vh">Prémium nyílászáró</div>
-      <p style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);line-height:1.5">3 rétegű hővédő üveg<br>Többkamrás tokszerkezet</p>
-    </div>
-    <div class="anim crd d7" style="background:rgba(255,255,255,0.04);border-radius:12px;padding:3.5% 3%;text-align:center;border:1px solid rgba(0,174,239,0.12)">
-      <div style="font-size:clamp(14px,1.2vw,17px);color:var(--accent);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1vh">Teljes műszaki csomag</div>
-      <p style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);line-height:1.5">Burkolatok · szaniterek<br>LED · strukturált hálózat</p>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- ============================================================
-     SLIDE 17: AKTÍV HÁZ — ENERGIATERMELŐ OTTHON
-     ============================================================ -->
-<div class="slide dark-full" data-id="17">
-<!-- GROK PROMPT: Dark navy (#1A252F) bg, faint green-blue energy flow lines (#00AEEF + #22c55e, 8% opacity) connecting a house outline with solar panels on roof to a battery symbol to a power grid symbol, energy flow arrows, futuristic smart grid wireframe, blueprint CAD style, 1920x1080 -->
-<div class="grok-placeholder dark-bg" data-prompt="GROK: Dark navy bg, faint green-blue energy flow lines (#00AEEF + #22c55e, 8%) connecting house with solar panels → battery → power grid, energy flow arrows, smart grid wireframe, blueprint CAD, 1920x1080"></div>
-<div class="slide-inner" style="padding:4% 5%;display:flex;flex-direction:column;align-items:center;justify-content:center">
-  <span class="tag tag-accent anim fu d1" style="font-size:20px;background:rgba(34,197,94,0.12);color:#22c55e;border-color:rgba(34,197,94,0.25)">Nem csak ház</span>
-  <h2 class="serif anim fu d2" style="font-size:clamp(36px,4.5vw,64px);font-weight:300;color:#fff;margin-top:2vh;line-height:1.25;text-align:center">Energiatermelő <em style="color:var(--accent);font-style:italic">aktív otthon</em></h2>
-  <p class="anim fu d3" style="font-size:clamp(18px,1.6vw,24px);color:var(--muted);margin-top:2vh;max-width:70%;text-align:center;line-height:1.7;font-weight:300">A KV Homes nem passzív fogyasztó — napelemet és akkumulátort is adunk a házhoz. Az otthon termel, tárol, és hamarosan kereskedik is.</p>
-  <div style="display:flex;gap:2.5%;margin-top:4vh;width:90%">
-    <div class="anim crd d4" style="flex:1;background:rgba(255,255,255,0.04);border-radius:14px;padding:4% 3%;text-align:center;border:1px solid rgba(34,197,94,0.15);border-top:4px solid #22c55e">
-      <!-- GROK ICON: Clean white wireframe solar panel icon on house roof, CAD style, transparent bg, 200x200 -->
-      <div style="font-size:clamp(14px,1.2vw,17px);color:#22c55e;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1vh">Napelem</div>
-      <p style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);line-height:1.6">Integrált tetőrendszer<br>Termelés az első naptól</p>
-    </div>
-    <div class="anim crd d5" style="flex:1;background:rgba(255,255,255,0.04);border-radius:14px;padding:4% 3%;text-align:center;border:1px solid rgba(34,197,94,0.15);border-top:4px solid #22c55e">
-      <!-- GROK ICON: Clean white wireframe battery/energy storage icon, CAD style, transparent bg, 200x200 -->
-      <div style="font-size:clamp(14px,1.2vw,17px);color:#22c55e;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1vh">Akkumulátor</div>
-      <p style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);line-height:1.6">Otthoni energiatárolás<br>Éjszakai felhasználás naptól</p>
-    </div>
-    <div class="anim crd d6" style="flex:1;background:rgba(255,255,255,0.04);border-radius:14px;padding:4% 3%;text-align:center;border:1px solid rgba(0,174,239,0.15);border-top:4px solid var(--accent)">
-      <!-- GROK ICON: Clean white wireframe energy trading/exchange icon with arrows and grid symbol, CAD style, transparent bg, 200x200 -->
-      <div style="font-size:clamp(14px,1.2vw,17px);color:var(--accent);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1vh">Aggregátor</div>
-      <p style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);line-height:1.6">Magánszemélyek is szerződhetnek<br>A ház kereskedhet az árammal</p>
-    </div>
-  </div>
-  <div class="anim fu d7" style="margin-top:4vh;background:rgba(0,174,239,0.06);border:1px solid rgba(0,174,239,0.12);border-radius:12px;padding:2.5% 4%;max-width:80%;text-align:center">
-    <p style="font-size:clamp(16px,1.4vw,22px);color:#fff;line-height:1.7;font-weight:300">2026-tól <strong style="color:var(--accent)">EU-irányelv:</strong> minden okos mérővel rendelkező fogyasztó <strong style="color:var(--accent)">dinamikus árazást</strong> kérhet. A ház csúcsidőben drágán ad el, olcsón tölt — a KV Homes otthon nem költség, hanem <strong style="color:#22c55e">infrastruktúra-befektetés</strong>.</p>
-  </div>
-</div>
-</div>
-
-<!-- ============================================================
-     SLIDE 18: 3 TAKEAWAYS
-     ============================================================ -->
-<div class="slide accent-full" data-id="18">
-<!-- GROK PROMPT: Solid bright blue (#00AEEF) bg, faint white (15% opacity) architectural wireframe pattern of connected houses, geometric network, modern clean feel, 1920x1080 -->
-<div class="grok-placeholder accent-bg-full" data-prompt="GROK: Solid bright blue (#00AEEF) bg, faint white (15%) architectural wireframe connected houses, geometric network, modern clean, 1920x1080"></div>
-<div class="slide-inner">
-  <span class="tag tag-white anim fu d1" style="font-size:18px">Amit a vendég hazavisz</span>
-  <h2 class="serif anim fu d2" style="font-size:clamp(32px,3.5vw,52px);font-weight:400;margin-top:2vh">Három szám, ami mindent elmond</h2>
-  <div style="display:flex;gap:3%;margin-top:5vh;width:85%">
-    <div class="anim crd d3" style="flex:1;background:rgba(255,255,255,0.15);border-radius:16px;padding:5% 4%;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);text-align:center">
-      <div style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(40px,4.5vw,68px);font-weight:700">~3 hó</div>
-      <div style="font-size:clamp(18px,1.6vw,24px);margin-top:1.5vh;opacity:.85;font-weight:300;line-height:1.5">Kulcsrakész otthon<br><span style="opacity:.6;font-size:.85em">a hagyományos 12–18 hónap helyett</span></div>
-    </div>
-    <div class="anim crd d4" style="flex:1;background:rgba(255,255,255,0.15);border-radius:16px;padding:5% 4%;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);text-align:center">
-      <div style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(40px,4.5vw,68px);font-weight:700">A+++</div>
-      <div style="font-size:clamp(18px,1.6vw,24px);margin-top:1.5vh;opacity:.85;font-weight:300;line-height:1.5">A legjobb energetika<br><span style="opacity:.6;font-size:.85em">a magyar piacon elérhető</span></div>
-    </div>
-    <div class="anim crd d5" style="flex:1;background:rgba(255,255,255,0.15);border-radius:16px;padding:5% 4%;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);text-align:center">
-      <div style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(40px,4.5vw,68px);font-weight:700">100+</div>
-      <div style="font-size:clamp(18px,1.6vw,24px);margin-top:1.5vh;opacity:.85;font-weight:300;line-height:1.5">Év élettartam<br><span style="opacity:.6;font-size:.85em">nem neked, hanem az unokáidnak is</span></div>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- ============================================================
-     SLIDE 19: HOUSE RENDERS — VISUAL
-     ============================================================ -->
-<div class="slide split-r" data-id="19">
-<div class="grok-placeholder white-bg"></div>
-<div class="slide-inner" style="background:#fff">
-  <div class="content">
-    <div class="accent-bar anim cr d1"></div>
-    <span class="tag tag-accent anim fu d1">Mintaházak</span>
-    <h2 class="serif anim fu d2" style="font-size:clamp(32px,3.5vw,52px);font-weight:500;margin-top:2vh;line-height:1.2;color:var(--dark)">6 modell —<br>1 rendszer</h2>
-    <p class="anim fu d3" style="font-size:clamp(18px,1.8vw,24px);color:var(--gray);margin-top:2vh;line-height:1.7">Cottage · Levander · Horizon<br>Twin · Origin · Harmony</p>
-    <p class="anim fu d4" style="font-size:clamp(18px,1.8vw,24px);color:var(--gray);margin-top:1.5vh;line-height:1.7"><strong style="color:var(--dark)">57 m²-től 147 m²-ig</strong><br>Egyedi tervezés, azonos technológia</p>
-  </div>
-  <div class="photo photo-gradient-l">
-    <img src="https://ferenckovacs.com/kvhomes_render1.jpeg" alt="KV Homes Twin" class="anim kb d1">
-  </div>
-</div>
-</div>
-
-<!-- ============================================================
-     SLIDE 20: RENDER 2
-     ============================================================ -->
-<div class="slide split-l" data-id="20">
-<div class="grok-placeholder white-bg"></div>
-<div class="slide-inner" style="background:#fff">
-  <div class="photo photo-gradient-r">
-    <img src="https://ferenckovacs.com/kvhomes_render2.jpeg" alt="KV Homes Harmony" class="anim kb d1">
-  </div>
-  <div class="content">
-    <span class="tag tag-accent anim fu d1">Árak</span>
-    <h2 class="serif anim fu d2" style="font-size:clamp(26px,2.8vw,40px);font-weight:500;margin-top:2vh;line-height:1.3;color:var(--dark)">Kulcsrakész árak</h2>
-    <div class="anim fu d3" style="margin-top:2.5vh;font-size:clamp(16px,1.4vw,20px);color:var(--gray);line-height:2.2">
-      <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(0,0,0,0.06);padding:.8vh 0"><span><strong style="color:var(--dark)">Cottage</strong> · 57 m²</span><span style="color:var(--accent);font-weight:700">~47 M Ft</span></div>
-      <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(0,0,0,0.06);padding:.8vh 0"><span><strong style="color:var(--dark)">Levander</strong> · 91 m²</span><span style="color:var(--accent);font-weight:700">~75 M Ft</span></div>
-      <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(0,0,0,0.06);padding:.8vh 0"><span><strong style="color:var(--dark)">Horizon</strong> · 96 m²</span><span style="color:var(--accent);font-weight:700">~88 M Ft</span></div>
-      <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(0,0,0,0.06);padding:.8vh 0"><span><strong style="color:var(--dark)">Twin</strong> · 110 m²/lak.</span><span style="color:var(--accent);font-weight:700">~91 M Ft</span></div>
-      <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(0,0,0,0.06);padding:.8vh 0"><span><strong style="color:var(--dark)">Origin</strong> · 112 m²</span><span style="color:var(--accent);font-weight:700">~92 M Ft</span></div>
-      <div style="display:flex;justify-content:space-between;padding:.8vh 0"><span><strong style="color:var(--dark)">Harmony</strong> · 147 m²</span><span style="color:var(--accent);font-weight:700">~137 M Ft</span></div>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- ============================================================
-     SLIDE 21: RENDER 3 — TÁMOGATÁSOK
-     ============================================================ -->
-<div class="slide split-r" data-id="21">
-<div class="grok-placeholder white-bg"></div>
-<div class="slide-inner" style="background:#fff">
-  <div class="content">
-    <div class="accent-bar anim cr d1"></div>
-    <span class="tag tag-accent anim fu d1">Támogatások</span>
-    <h2 class="serif anim fu d2" style="font-size:clamp(28px,3vw,44px);font-weight:500;margin-top:2vh;line-height:1.2;color:var(--dark)">A+++ = maximális<br>jogosultság</h2>
-    <div class="anim fu d3" style="margin-top:3vh">
-      <div style="padding:2vh 0;border-bottom:1px solid rgba(0,0,0,0.06)">
-        <div style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(22px,2.2vw,32px);color:var(--accent);font-weight:700">10M + 50M Ft</div>
-        <div style="font-size:clamp(16px,1.4vw,20px);color:var(--dark);font-weight:600">CSOK Plusz</div>
-        <div style="font-size:clamp(14px,1.2vw,17px);color:var(--gray)">Vissza nem térítendő + kedvezményes hitel</div>
+  <!-- ========================================================
+       DIA 4 — MI LETT EBBŐL
+       ======================================================== -->
+  <section class="slide warm" data-steps="1">
+    <div class="split">
+      <div class="visual reveal d1">
+        <img src="images/dia-04-haz.jpg" alt="KV Homes családi ház">
       </div>
-      <div style="padding:2vh 0;border-bottom:1px solid rgba(0,0,0,0.06)">
-        <div style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(22px,2.2vw,32px);color:var(--accent);font-weight:700">10M Ft</div>
-        <div style="font-size:clamp(16px,1.4vw,20px);color:var(--dark);font-weight:600">Babaváró</div>
-        <div style="font-size:clamp(14px,1.2vw,17px);color:var(--gray)">Kamatmentes, kombinálható</div>
-      </div>
-      <div style="padding:2vh 0">
-        <div style="font-size:clamp(16px,1.4vw,20px);color:var(--dark);font-weight:600">MFB Zöld Otthon · Falusi CSOK</div>
-        <div style="font-size:clamp(14px,1.2vw,17px);color:var(--gray)">Kedvezményes kamat + ÁFA-visszaigénylés</div>
+      <div class="content">
+        <div class="kicker reveal d1">Mi lett ebből</div>
+        <h2 class="reveal d2">Egy&nbsp;ház.<br>Három&nbsp;hónap.</h2>
+        <div class="pills reveal d3" style="margin-top:24px;">
+          <span class="pill big">100&nbsp;m²</span>
+          <span class="pill big">Kulcsrakész</span>
+          <span class="pill big">A+++</span>
+          <span class="pill big">Hőszivattyú</span>
+          <span class="pill big">Aktív&nbsp;szellőzés</span>
+          <span class="pill big">6&nbsp;kW&nbsp;napelem</span>
+          <span class="pill big">10&nbsp;kW&nbsp;akku</span>
+          <span class="pill big">Piaci&nbsp;ár</span>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="photo photo-gradient-l">
-    <img src="https://ferenckovacs.com/kvhomes_render3.jpeg" alt="KV Homes Horizon" class="anim kb d1">
-  </div>
-</div>
-</div>
+  </section>
 
-<!-- ============================================================
-     SLIDE 22: PARTNERS
-     ============================================================ -->
-<div class="slide white-full" data-id="22">
-<!-- GROK PROMPT: White bg, very faint blue (#00AEEF, 3%) network/connection diagram with nodes and thin lines, partnership network visualization, minimal geometric, 1920x1080 -->
-<div class="grok-placeholder white-bg" data-prompt="GROK: White bg, very faint blue (#00AEEF, 3%) network diagram with nodes and thin lines, partnership visualization, minimal geometric, 1920x1080"></div>
-<div class="slide-inner">
-  <h2 class="serif anim fu d1" style="font-size:clamp(30px,3.2vw,48px);font-weight:400;color:var(--dark)">Stratégiai partnerek</h2>
-  <div class="divider anim dl d2" style="width:80px;margin-top:2vh"></div>
-  <div style="display:flex;flex-wrap:wrap;gap:1.5%;justify-content:center;margin-top:5vh;width:80%">
-    <div class="anim crd d2" style="background:var(--light);border-radius:10px;padding:2% 3.5%;font-size:clamp(16px,1.6vw,22px);color:var(--dark);font-weight:500;border:1px solid rgba(0,0,0,0.04);margin-bottom:1.2%">Mapei</div>
-    <div class="anim crd d3" style="background:var(--light);border-radius:10px;padding:2% 3.5%;font-size:clamp(16px,1.6vw,22px);color:var(--dark);font-weight:500;border:1px solid rgba(0,0,0,0.04);margin-bottom:1.2%">Hilti</div>
-    <div class="anim crd d3" style="background:var(--light);border-radius:10px;padding:2% 3.5%;font-size:clamp(16px,1.6vw,22px);color:var(--dark);font-weight:500;border:1px solid rgba(0,0,0,0.04);margin-bottom:1.2%">Dörken</div>
-    <div class="anim crd d4" style="background:var(--light);border-radius:10px;padding:2% 3.5%;font-size:clamp(16px,1.6vw,22px);color:var(--dark);font-weight:500;border:1px solid rgba(0,0,0,0.04);margin-bottom:1.2%">Lindab</div>
-    <div class="anim crd d4" style="background:var(--light);border-radius:10px;padding:2% 3.5%;font-size:clamp(16px,1.6vw,22px);color:var(--dark);font-weight:500;border:1px solid rgba(0,0,0,0.04);margin-bottom:1.2%">Lambda</div>
-    <div class="anim crd d5" style="background:var(--light);border-radius:10px;padding:2% 3.5%;font-size:clamp(16px,1.6vw,22px);color:var(--dark);font-weight:500;border:1px solid rgba(0,0,0,0.04);margin-bottom:1.2%">Baumit</div>
-    <div class="anim crd d5" style="background:var(--light);border-radius:10px;padding:2% 3.5%;font-size:clamp(16px,1.6vw,22px);color:var(--dark);font-weight:500;border:1px solid rgba(0,0,0,0.04);margin-bottom:1.2%">Midea</div>
-    <div class="anim crd d6" style="background:var(--light);border-radius:10px;padding:2% 3.5%;font-size:clamp(16px,1.6vw,22px);color:var(--dark);font-weight:500;border:1px solid rgba(0,0,0,0.04);margin-bottom:1.2%">Knauf</div>
-    <div class="anim crd d6" style="background:var(--light);border-radius:10px;padding:2% 3.5%;font-size:clamp(16px,1.6vw,22px);color:var(--dark);font-weight:500;border:1px solid rgba(0,0,0,0.04);margin-bottom:1.2%">Kingspan</div>
-    <div class="anim crd d7" style="background:var(--light);border-radius:10px;padding:2% 3.5%;font-size:clamp(16px,1.6vw,22px);color:var(--dark);font-weight:500;border:1px solid rgba(0,0,0,0.04);margin-bottom:1.2%">Hun-Therm</div>
-    <div class="anim crd d7" style="background:var(--light);border-radius:10px;padding:2% 3.5%;font-size:clamp(16px,1.6vw,22px);color:var(--dark);font-weight:500;border:1px solid rgba(0,0,0,0.04);margin-bottom:1.2%">Hörmann</div>
-  </div>
-  <p class="serif anim fu d8" style="font-size:clamp(18px,1.6vw,24px);color:var(--gray);margin-top:4vh;font-style:italic;max-width:70%">Iparági vezetők a háttérben — prémium minőség, megbízható rendszer.</p>
-</div>
-</div>
+  <!-- ========================================================
+       DIA 5 — ÁTLAG vs. KV HOMES
+       ======================================================== -->
+  <section class="slide white" data-steps="9">
+    <div class="left" style="width:100%; max-width:1500px; margin:0 auto; padding:2vh 4vw 0 4vw;">
+      <div class="kicker reveal d1 in" style="margin-bottom:0.6vh;">Összehasonlítás</div>
+      <h2 class="reveal d1 in" style="margin:0 0 1vh 0; font-size:clamp(32px, 3.6vw, 56px); line-height:1.05;">Átlag&nbsp;/&nbsp;KV&nbsp;Homes</h2>
 
-<!-- ============================================================
-     SLIDE 23: BITCOIN
-     ============================================================ -->
-<div class="slide dark-full" data-id="23">
-<!-- GROK PROMPT: Dark navy (#1A252F) bg, subtle Bitcoin symbol wireframe in orange (#F7931A, 8%) combined with house outline, digital currency meets real estate concept, geometric lines, blueprint style, 1920x1080 -->
-<div class="grok-placeholder dark-bg" data-prompt="GROK: Dark navy bg, subtle Bitcoin wireframe in orange (#F7931A, 8%) combined with house outline, digital currency meets real estate, blueprint geometric, 1920x1080"></div>
-<div class="slide-inner" style="display:flex;align-items:center">
-  <div style="width:55%;height:100%;display:flex;flex-direction:column;justify-content:center;padding:5% 4% 5% 6%;position:relative">
-    <div style="position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--gold)" class="anim cr d1"></div>
-    <span class="tag anim fu d1" style="font-size:20px;color:var(--gold);letter-spacing:5px">BITCOIN ELFOGADÁS</span>
-    <h2 class="serif anim fu d2" style="font-size:clamp(30px,3.2vw,48px);font-weight:400;color:#fff;margin-top:2vh;line-height:1.25">Nálunk házat is lehet venni<br><strong style="color:var(--gold)">Bitcoinban</strong></h2>
-    <p class="anim fu d3" style="font-size:clamp(18px,1.8vw,24px);color:var(--muted);margin-top:2.5vh;line-height:1.7">Két szállodánkban már elfogadjuk. A KV Homes-nál is lehetőség nyílik rá, hogy az otthonod digitális értékkel vásárold meg.</p>
-  </div>
-  <div style="width:45%;height:100%;display:flex;align-items:center;justify-content:center;padding:4%">
-    <div style="display:flex;flex-direction:column;gap:2.5vh;width:85%">
-      <div class="anim crd d4" style="background:rgba(247,147,26,0.06);border-radius:14px;padding:3.5%;border:1px solid rgba(247,147,26,0.15);text-align:center">
-        <div style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,3vw,44px);font-weight:700;color:var(--gold)">186,5M sat</div>
-        <div style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);margin-top:.5vh">Vállalati bitcoin készlet</div>
+      <div class="dash">
+        <!-- 1. Építési idő -->
+        <div class="dash-row reveal" data-step="1">
+          <div class="dash-label">Építési idő<span class="sub">hónap</span></div>
+          <div class="dash-bars">
+            <div class="dash-track"><span class="t-label">Átlag</span><div class="bar-wrap"><div class="bar" style="--w:87.5%"></div></div><span class="num">18–24 hónap</span></div>
+            <div class="dash-track"><span class="t-label kv">KV</span><div class="bar-wrap"><div class="bar kv" style="--w:12.5%"></div></div><span class="num kv">3 hónap</span></div>
+          </div>
+          <div class="dash-multi">~7×</div>
+        </div>
+
+        <!-- 2. Fűtés — súlyozott COP -->
+        <div class="dash-row reveal" data-step="2">
+          <div class="dash-label">Fűtés<span class="sub">COP — 1 kWh áramból hő</span></div>
+          <div class="dash-bars">
+            <div class="dash-track"><span class="t-label">Átlag</span><div class="bar-wrap"><div class="bar" style="--w:40%"></div></div><span class="num">2,4</span></div>
+            <div class="dash-track"><span class="t-label kv">KV</span><div class="bar-wrap"><div class="bar kv" style="--w:100%"></div></div><span class="num kv">6,0</span></div>
+          </div>
+          <div class="dash-multi">~2,5×</div>
+        </div>
+
+        <!-- 3. Napelem + akku -->
+        <div class="dash-row reveal" data-step="3">
+          <div class="dash-label">Napelem + akku<span class="sub">kWh / év · alapáron</span></div>
+          <div class="dash-bars">
+            <div class="dash-track"><span class="t-label">Átlag</span><div class="bar-wrap"><div class="bar" style="--w:0%"></div></div><span class="num">0 kWh</span></div>
+            <div class="dash-track"><span class="t-label kv">KV</span><div class="bar-wrap"><div class="bar kv" style="--w:100%"></div></div><span class="num kv">6 600 kWh</span></div>
+          </div>
+          <div class="dash-multi sm">+ 10 kWh<br>akku</div>
+        </div>
+
+        <!-- 4. Terv mélysége -->
+        <div class="dash-row reveal" data-step="4">
+          <div class="dash-label">Tervdokumentáció<span class="sub">Ft · családi ház</span></div>
+          <div class="dash-bars">
+            <div class="dash-track"><span class="t-label">Átlag</span><div class="bar-wrap"><div class="bar" style="--w:13%"></div></div><span class="num">~800 e Ft</span></div>
+            <div class="dash-track"><span class="t-label kv">KV</span><div class="bar-wrap"><div class="bar kv" style="--w:100%"></div></div><span class="num kv">~6 M Ft</span></div>
+          </div>
+          <div class="dash-multi">~7,5×</div>
+        </div>
+
+        <!-- 5. Ár — range bar (step 5) + KV marker reveal (step 6) -->
+        <div class="dash-row reveal" data-step="5">
+          <div class="dash-label">Ár<span class="sub">Ft / m² · kulcsrakész</span></div>
+          <div class="dash-bars">
+            <div class="dash-track">
+              <span class="t-label">Piac</span>
+              <div class="bar-wrap range">
+                <div class="rng-marker reveal" data-step="6" style="--mark:23.5%"></div>
+                <div class="rng-end lo">650 e</div>
+                <div class="rng-end hi">1,5 M</div>
+              </div>
+              <span class="num kv price-kv-num reveal" data-step="6">850 e Ft</span>
+            </div>
+          </div>
+          <div class="dash-multi sm">Alsó sáv ára,<br>prémium minőség</div>
+        </div>
+
+        <!-- 6. Fajlagos energia — center-anchored, 2-phase (step 7: 147 vs 12; step 8: AKTÍV HÁZ piros negatív) -->
+        <div class="dash-row energy reveal" data-step="7" style="position:relative;">
+          <div class="dash-label">Fajlagos energia<span class="sub">kWh / m² / év · 0 = középpont</span></div>
+          <div class="dash-bars">
+            <div class="energy-track">
+              <span class="t-label">Átlag</span>
+              <div class="bar-center">
+                <div class="zero-line"></div>
+                <div class="bar-pos" style="--w:49%"></div>
+              </div>
+              <span class="num">147</span>
+            </div>
+            <div class="energy-track">
+              <span class="t-label kv">KV</span>
+              <div class="bar-center">
+                <div class="zero-line"></div>
+                <div class="bar-pos kv" style="--w:4%"></div>
+                <div class="bar-neg"></div>
+              </div>
+              <div class="kv-val-swap">
+                <span class="val phase1 num kv">12</span>
+                <span class="val phase2 aktiv-hz">AKTÍV&nbsp;HÁZ</span>
+              </div>
+            </div>
+          </div>
+          <div class="dash-multi multi-swap">
+            <span class="multi-phase phase1">~12×</span>
+            <span class="multi-phase phase2"><span class="strike">~12×</span><span class="inf">∞</span></span>
+          </div>
+          <div class="phase-trigger reveal" data-step="8"></div>
+        </div>
       </div>
-      <div class="anim crd d5" style="background:rgba(247,147,26,0.06);border-radius:14px;padding:3.5%;border:1px solid rgba(247,147,26,0.15);text-align:center">
-        <div style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,3vw,44px);font-weight:700;color:var(--gold)">1%</div>
-        <div style="font-size:clamp(15px,1.3vw,19px);color:var(--muted);margin-top:.5vh">Árbevétel BTC-be</div>
+
+      <div class="small reveal d1 in" style="margin-top:1.5vh; opacity:0.55; font-size:clamp(10px, 0.75vw, 12px);">Források: KSH · 9/2023 ÉKM · EU EPBD · MKIK · KV belső mérések (Gáspár energetikai számítás).</div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       DIA 6 — KINEK SZÓL EZ? (4 közönségszelet, step-reveal)
+       ======================================================== -->
+  <section class="slide white" data-steps="5">
+    <div class="left" style="width:100%; max-width:1400px; margin:0 auto; padding:2vh 6vw 0 6vw;">
+      <div class="kicker reveal d1 in" style="margin-bottom:0.6vh;">Kinek szól</div>
+      <h2 class="reveal d1 in" style="margin:0 0 1vh 0; font-size:clamp(32px, 3.6vw, 56px); line-height:1.05;">Ugyanaz a ház. Négy&nbsp;nézőpont.</h2>
+
+      <div class="audience-grid" style="margin-top:1.5vh;">
+        <div class="aud-card reveal" data-step="1">
+          <div class="aud-num">01 · Építészet</div>
+          <div class="aud-label">„Saját stílus, nem&nbsp;konzerv."</div>
+          <div class="aud-voice">Minden anyagnak megvan a maga építészeti nyelve.<br>Ennek is van — modern és hagyományos köntössel is.</div>
+          <div class="aud-answer">Anyag, amihez tervezni szabad.</div>
+        </div>
+
+        <div class="aud-card reveal" data-step="2">
+          <div class="aud-num">02 · Kivitelezés</div>
+          <div class="aud-label">„Partner, nem&nbsp;konkurencia."</div>
+          <div class="aud-voice">Nem minden ingatlant mi fejlesztünk.<br>Gyártunk tartószerkezetet, kulcsrakész lakást is.</div>
+          <div class="aud-answer">Te fejlesztesz, mi gyártunk.</div>
+        </div>
+
+        <div class="aud-card reveal" data-step="3">
+          <div class="aud-num">03 · Városfejlesztés</div>
+          <div class="aud-label">„Város, amiért&nbsp;visszajönnek."</div>
+          <div class="aud-voice">Energiahatékony, karbantartható, magas minőségű bérlakás — gyorsan építve, a város polgárainak.</div>
+          <div class="aud-answer">6 hónap. A+++. Alacsony üzemeltetési költség.</div>
+        </div>
+
+        <div class="aud-card reveal" data-step="4">
+          <div class="aud-num">04 · Finanszírozás</div>
+          <div class="aud-label">„Rövid kitettség,<br>stabil&nbsp;fedezet."</div>
+          <div class="aud-voice">6 hónap átfutás 24 helyett.<br>Sorozatgyártás, nem egyedi projekt.<br>A+++ — tartós piaci érték.</div>
+          <div class="aud-answer">Ipari termék banki logikával — nem építőipari kockázat.</div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
+  </section>
+
+  <!-- ========================================================
+       DIA 7 — CLARKE
+       ======================================================== -->
+  <section class="slide night center clarke" data-steps="5">
+    <div class="center">
+      <h2 style="font-weight:300; max-width:1600px; font-size:clamp(36px,4.8vw,72px); line-height:1.2;">
+        <span class="clarke-line">
+          <span class="clarke-word reveal" data-step="1">„Minden&nbsp;kellőképpen&nbsp;fejlett</span>
+          <span class="clarke-word emph emph-tech reveal" data-step="2">technológia</span>
+        </span>
+        <br>
+        <span class="clarke-line">
+          <span class="clarke-word reveal" data-step="3">megkülönböztethetetlen&nbsp;a</span>
+          <span class="clarke-word emph emph-magic reveal" data-step="4">varázslattól.”</span>
+        </span>
+      </h2>
+      <div class="sub reveal d3" style="margin-top:4vh;">Arthur&nbsp;C.&nbsp;Clarke · 1973</div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       DIA 7 — HOL A TRÜKK
+       ======================================================== -->
+  <section class="slide dark center" data-steps="1">
+    <div class="center">
+      <h1 class="reveal d1" style="font-weight:300;">Hol a&nbsp;trükk?</h1>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       DIA 8 — 30 ÉV (INTERAKTÍV IDŐVONAL)
+       ======================================================== -->
+  <section class="slide dark tl-slide" data-steps="16" data-timeline="1">
+    <div class="tl-wrap">
+      <div class="tl-bar" id="tlBar">
+        <!-- 9 dot -->
+      </div>
+
+      <div class="tl-body">
+        <div class="tl-text">
+          <div class="tl-year" id="tlYear">1992</div>
+          <div class="tl-title" id="tlTitle">Alapítás</div>
+          <div class="tl-desc" id="tlDesc">Édesapám megalapítja a céget. Debrecen, első generálkivitelezés.</div>
+        </div>
+        <div class="tl-photo" id="tlPhoto"><img id="tlImg" src="images/dia-08-tl-1-alapitas.jpg" alt=""></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       DIA 9 — A VARÁZSLAT NEM TRÜKK
+       ======================================================== -->
+  <section class="slide white magic-slide" data-steps="4">
+    <div class="left" style="width:100%;max-width:1400px;margin:0 auto;">
+      <div class="kicker reveal d1 in">A varázslat</div>
+      <h2 class="reveal d1 in">A&nbsp;varázslat nem trükk.</h2>
+      <p class="magic-lead reveal d2 in">Mérnöki innováció. Építési kultúra. Üzleti modell.</p>
+
+      <div class="magic-pillars reveal" data-step="1">
+        <div class="magic-pillar">
+          <div class="mp-num mono">01</div>
+          <div class="mp-title">Mérnöki innováció</div>
+          <div class="mp-desc">Saját acélsablon, BIM-es kiviteli terv, 0–3&nbsp;mm tűrés.</div>
+        </div>
+        <div class="magic-pillar">
+          <div class="mp-num mono">02</div>
+          <div class="mp-title">Építési kultúra</div>
+          <div class="mp-desc">20 év előregyártás, saját szakemberek, ismételhető minőség.</div>
+        </div>
+        <div class="magic-pillar">
+          <div class="mp-num mono">03</div>
+          <div class="mp-title">Üzleti modell</div>
+          <div class="mp-desc">Teljes értéklánc — gyártás, kivitelezés, energetika egy kézben.</div>
+        </div>
+      </div>
+
+      <div class="magic-base reveal" data-step="2">
+        <div class="mb-label">Kiindulópont</div>
+        <div class="mb-headline">Tartószerkezet — időben és méretben stabil pont.</div>
+        <div class="mb-stats"><span>0–3&nbsp;mm tűrés</span><span class="dot">·</span><span>10–15&nbsp;t / elem</span><span class="dot">·</span><span>saját&nbsp;acélsablon</span></div>
+      </div>
+
+      <p class="magic-closer reveal" data-step="3">Stabil alap nélkül minden nagy dolog&nbsp;kártyavár.</p>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       DIA 10 — MERRE TARTUNK
+       ======================================================== -->
+  <section class="slide white magic-slide" data-steps="5">
+    <div class="left" style="width:100%;max-width:1400px;margin:0 auto;">
+      <div class="kicker reveal d1 in">A következő 10 év</div>
+      <h2 class="reveal d1 in">Amerre&nbsp;tartunk.</h2>
+      <p class="magic-lead reveal d2 in">Ami ma működik. Amit jövőre megduplázunk. Amit azután exportálunk.</p>
+
+      <div class="magic-pillars">
+        <div class="magic-pillar reveal" data-step="1">
+          <div class="mp-num mono">MA</div>
+          <div class="mp-title">Berentei üzem</div>
+          <div class="mp-desc"><strong style="color:var(--ink);">20&nbsp;000 m² / év</strong> házgyártási kapacitás.</div>
+        </div>
+        <div class="magic-pillar reveal" data-step="2">
+          <div class="mp-num mono">JÖVŐRE</div>
+          <div class="mp-title">Második magyar üzem</div>
+          <div class="mp-desc">Új gyártóbázis indul — a&nbsp;skála&nbsp;megduplázódik.</div>
+        </div>
+        <div class="magic-pillar reveal" data-step="3">
+          <div class="mp-num mono">AZUTÁN</div>
+          <div class="mp-title">Nemzetközi piac</div>
+          <div class="mp-desc">Közép-Európa → Európa → globális.</div>
+        </div>
+      </div>
+
+      <div class="magic-base reveal" data-step="4">
+        <div class="mb-label">Amit skálázunk</div>
+        <div class="mb-headline">A sorozatgyártás skálázható. A&nbsp;minőség&nbsp;is.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       DIA 11 — 3 TAKEAWAY
+       ======================================================== -->
+  <section class="slide accent center" data-steps="4">
+    <div class="center" style="width:100%;">
+      <div class="kicker reveal d1 in" style="color:rgba(255,255,255,0.7);">Amit vigyél haza</div>
+
+      <div class="takeaways" style="margin-top:4vh;">
+        <div class="takeaway reveal" data-step="1">
+          <div class="num mono">01</div>
+          <div class="text">Nem kozmetikáztuk. Újraépítettük.</div>
+        </div>
+        <div class="takeaway reveal" data-step="2">
+          <div class="num mono">02</div>
+          <div class="text">3 hónap alatt. A+++ energetikájú lakás. Kulcsrakészen.</div>
+        </div>
+        <div class="takeaway reveal" data-step="3">
+          <div class="num mono">03</div>
+          <div class="text">Értéket adunk, otthont teremtünk — együtt&nbsp;építjük.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       DIA 11 — ONE MORE THING (BTC)
+       ======================================================== -->
+  <section class="slide dark center btc-slide" data-steps="5">
+    <div class="center" style="width:100%;">
+      <div class="omt-tag reveal d1 in">one more thing…</div>
+
+      <div class="btc-stack">
+        <div class="btc-headline reveal" data-step="1">
+          Lakást <span class="btc-accent">Bitcoinért</span>.
+        </div>
+        <div class="btc-lead reveal" data-step="2">
+          <span class="ln">Globális digitális pénzügyi rendszer.</span>
+          <span class="ln">Az emberekért jött létre. Az emberek működtetik.</span>
+          <span class="ln">Az emberek energiáját köti össze valós javakkal.</span>
+        </div>
+        <div class="btc-scale reveal" data-step="3">
+          <span>Magyarországon.</span>
+          <span class="btc-sep">·</span>
+          <span>Európában.</span>
+          <span class="btc-sep">·</span>
+          <span>Globálisan.</span>
+        </div>
+        <div class="btc-closer reveal" data-step="4">
+          Ez az álom. Erről szól a következő&nbsp;tíz&nbsp;év.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       DIA 12 — MI VÁR RÁNK + CSAPAT
+       ======================================================== -->
+  <section class="slide warm" data-steps="9">
+    <div class="left" style="width:100%;max-width:1500px;margin:0 auto;">
+      <div class="kicker reveal d1 in">A mai nap</div>
+      <h2 class="reveal d1 in">A csapat,<br>aki ma beszél.</h2>
+
+      <div class="team" style="margin-top:4vh;">
+        <div class="tcard tcard--exec reveal" data-step="1">
+          <div class="name">Karancsi Sándor</div>
+          <div class="role">Építőipari kivitelezési<br>üzletág vezető</div>
+        </div>
+        <div class="tcard tcard--exec reveal" data-step="2">
+          <div class="name">Bernáth Norbert</div>
+          <div class="role">Építésvezető</div>
+        </div>
+        <div class="tcard tcard--design reveal" data-step="3">
+          <div class="name">Móricz Anett<br>&amp; Móricz József</div>
+          <div class="role">Építész tervezők</div>
+        </div>
+        <div class="tcard tcard--sales reveal" data-step="4">
+          <div class="name">Léránt Gergő</div>
+          <div class="role">Operatív vezető ·<br>sales &amp; marketing</div>
+        </div>
+        <div class="tcard tcard--estate reveal" data-step="5">
+          <div class="name">Lázók János</div>
+          <div class="role">Ingatlanértékesítés</div>
+        </div>
+        <div class="tcard tcard--estate reveal" data-step="6">
+          <div class="name">Melegh Zsuzsanna</div>
+          <div class="role">Ingatlanértékesítés</div>
+        </div>
+      </div>
+
+      <div class="team-partner reveal" data-step="7">
+        <div class="tcard tcard--partner">
+          <img src="images/logo-nordii.png" alt="NORDii" class="partner-logo">
+          <div class="partner-text">
+            <div class="partner-badge">Innovátor partner</div>
+            <div class="name">Panghy Gáspár</div>
+            <div class="role">NORDii Systems alapító · innovátor</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal" data-step="8" style="margin-top:3.2vh; font-size:clamp(17px,1.55vw,22px); max-width:1100px; line-height:1.45; color:var(--ink);">
+        A szünetben kint állnak a&nbsp;makettek. Ott vagyunk mi&nbsp;is. <span style="color:var(--gray);">Konkrétumokról ott beszélünk — kinek mit&nbsp;jelent&nbsp;ez.</span>
+      </div>
+    </div>
+  </section>
+
 </div>
 
-<!-- ============================================================
-     SLIDE 24: CLOSING
-     ============================================================ -->
-<div class="slide dark-full" data-id="24">
-<!-- GROK PROMPT: Dark navy (#1A252F) bg, elegant blue (#00AEEF, 10%) radial glow in center, subtle architectural blueprint wireframe of a complete KV Homes house fading out towards edges, premium closing feel, 1920x1080 -->
-<div class="grok-placeholder dark-bg" data-prompt="GROK: Dark navy bg, elegant blue (#00AEEF, 10%) radial glow center, subtle blueprint wireframe of KV Homes house fading to edges, premium closing feel, 1920x1080"></div>
-<div class="slide-inner">
-  <img src="https://ferenckovacs.com/kv_homes_logo.png" class="anim fs d1" style="height:8vh;margin-bottom:3vh;filter:brightness(0) invert(1);opacity:.7" alt="KV Homes">
-  <h2 class="serif anim fu d2" style="font-size:clamp(40px,5vw,72px);font-weight:300;color:#fff;letter-spacing:-0.02em">Köszönjük a <strong style="color:var(--accent)">figyelmet!</strong></h2>
-  <p class="anim fu d3" style="font-size:clamp(20px,1.8vw,26px);color:var(--muted);margin-top:3vh">info@kvhomes.hu</p>
-  <p class="anim fu d4" style="font-size:clamp(22px,2vw,30px);color:var(--accent);margin-top:1vh;font-weight:500">kvhomes.hu</p>
-  <div class="divider anim dl d5" style="width:80px;margin-top:3vh"></div>
-  <p class="anim fu d6" style="font-size:clamp(16px,1.4vw,22px);color:rgba(255,255,255,.3);margin-top:3vh;letter-spacing:4px;text-transform:uppercase">Kovács Ferenc — KV Homes Workshop 2026</p>
-</div>
-</div>
+<!-- Watermark logo -->
+<img src="images/kv_homes_logo.png" alt="" id="wm" class="wm">
 
-</div><!-- /deck -->
-
-<!-- Progress bar -->
-<div class="progress-wrap"><div class="progress-fill" id="progress"></div></div>
-<div class="slide-counter" id="counter"></div>
-<div class="kb-hint">← → nyilakkal navigálj</div>
+<!-- HUD -->
+<div class="hud" id="hud"><span id="hudIndex">01</span><span>/</span><span id="hudTotal">13</span></div>
 
 <script>
-(function(){
-  const slides=document.querySelectorAll('.slide');
-  const total=slides.length;
-  let cur=0;
-  const prog=document.getElementById('progress');
-  const ctr=document.getElementById('counter');
-  let busy=false;
+/* ============================================================
+   Navigation engine — slide + inner step reveal
+   ============================================================ */
 
-  function show(n){
-    if(busy||n<0||n>=total||n===cur)return;
-    busy=true;
-    const old=slides[cur];
-    const nxt=slides[n];
-    old.classList.add('exiting');
-    old.classList.remove('active');
-    old.querySelectorAll('.anim').forEach(el=>{el.style.animation='none';el.offsetHeight;el.style.animation=''});
-    nxt.classList.add('active');
-    cur=n;
-    prog.style.width=((cur+1)/total*100)+'%';
-    ctr.textContent=(cur+1)+' / '+total;
-    setTimeout(()=>{old.classList.remove('exiting');busy=false},600);
+const deck = document.getElementById('deck');
+const slides = Array.from(deck.querySelectorAll('.slide'));
+const hudIndex = document.getElementById('hudIndex');
+const hudTotal = document.getElementById('hudTotal');
+const hud = document.getElementById('hud');
+const wm = document.getElementById('wm');
+
+let current = 0;
+let step = 0;          // 0-based step index within slide
+let lockTransition = false;
+
+hudTotal.textContent = String(slides.length).padStart(2, '0');
+
+/* ---- Timeline data ---- */
+const timeline = [
+  { year: '1992',      title: 'Alapítás',                 desc: 'Édesapám megalapítja a céget Berentén.',                img: 'images/dia-08-tl-1-alapitas.jpg',   pos: '78% 42%' },
+  { year: '1992–2000', title: 'Generálkivitelezés',       desc: 'Borsod és Németország — 250 fős saját dolgozói létszám.', img: 'images/dia-08-tl-2-debrecen.jpg',   pos: 'center center' },
+  { year: '2000–2024', title: 'Ingatlanfejlesztés',       desc: '600+ társasházi lakás fejlesztése és építése.',         img: 'images/dia-08-tl-3-tarsashaz.jpg',  pos: 'center 78%' },
+  { year: '2003–2009', title: 'BME · építkezésen',        desc: 'Egyetem és helyszín, egyszerre.',                       img: 'images/dia-08-tl-4-bme.jpg',        pos: 'center center' },
+  { year: '2009',      title: 'Visszatérés',              desc: 'A cégben, édesapámmal együtt.',                         img: 'images/dia-08-tl-5-visszateres.jpg', pos: 'center center' },
+  { year: '2010 →',    title: 'Vasbetonelem-gyártás',     desc: 'Komplett szakipari háttér — vasbeton előregyártás. 200 M → 2,5 Mrd nettó árbevétel tíz év alatt.', img: 'images/foto-03-vbelement.jpg', pos: 'center center' },
+  { year: '2010 →',    title: 'Saját acélsablon',         desc: 'Tervezéstől a gyártásig — nem vásárolt szerszám, hanem saját rendszer. 0–3 mm tűréshatár, 10–15 tonna/elem.', img: 'images/photo_2026-02-05 08.40.19.jpeg', pos: 'center center' },
+  { year: '2011 →',    title: 'Hotel Atlantis ★★★★',     desc: '96 szobás családi wellness szálloda — Hajdúszoboszló.',  img: 'images/atlantis-1.jpg',  pos: 'center center' },
+  { year: '2011 →',    title: 'Hotel Atlantis ★★★★',     desc: 'Saját beruházás — első szálloda az értékláncunkban.',    img: 'images/atlantis-2.jpg',  pos: 'center center' },
+  { year: '2011 →',    title: 'Hotel Atlantis ★★★★',     desc: 'Családi wellness — medence, élményfürdő, étterem.',      img: 'images/atlantis-3.jpg',  pos: 'center center' },
+  { year: '2013 →',    title: 'Hotel Aurora ★★★★',       desc: '80 szobás business + városi wellness — Hajdúszoboszló.', img: 'images/aurora-1.jpg',    pos: 'center center' },
+  { year: '2013 →',    title: 'Hotel Aurora ★★★★',       desc: 'Üzleti vendégkör — konferenciák, rendezvények.',         img: 'images/aurora-2.jpg',    pos: 'center center' },
+  { year: '2013 →',    title: 'Hotel Aurora ★★★★',       desc: 'Városi üzleti és wellness szálloda.',                    img: 'images/aurora-3.jpg',    pos: 'center center' },
+  { year: '2025 →',    titleHtml: '<img src="images/kv_homes_logo.png" alt="KV Homes" class="tl-brand-logo tl-brand-logo--invert"><span class="tl-brand-x">×</span><img src="images/logo-nordii.png" alt="NORDii" class="tl-brand-logo">', desc: 'Új szakasz az előgyártásban, újrakezdés a kivitelezésben.', img: 'images/dia-08-tl-9-nordii.jpg', pos: 'center center' },
+  { year: '2025 →',    titleHtml: '<img src="images/kv_homes_logo.png" alt="KV Homes" class="tl-brand-logo tl-brand-logo--invert"><span class="tl-brand-x">×</span><img src="images/logo-nordii.png" alt="NORDii" class="tl-brand-logo">', desc: 'Első projekt: Nyíregyháza — NORDii Homes beruházás.', img: 'images/kv-homes-2.jpg', pos: 'center center' },
+  { year: '2025 →',    titleHtml: '<img src="images/kv_homes_logo.png" alt="KV Homes" class="tl-brand-logo tl-brand-logo--invert"><span class="tl-brand-x">×</span><img src="images/logo-nordii.png" alt="NORDii" class="tl-brand-logo">', desc: 'Prémium térelem-rendszer, integrált energetikával.', img: 'images/kv-homes-3.jpg', pos: 'center center' },
+];
+
+const tlYear  = document.getElementById('tlYear');
+const tlTitle = document.getElementById('tlTitle');
+const tlDesc  = document.getElementById('tlDesc');
+const tlPhoto = document.getElementById('tlPhoto');
+const tlImg   = document.getElementById('tlImg');
+const tlBar   = document.getElementById('tlBar');
+
+/* Build timeline dots */
+timeline.forEach((_, i) => {
+  const d = document.createElement('div');
+  d.className = 'tl-dot';
+  d.dataset.idx = i;
+  d.addEventListener('click', (e) => {
+    e.stopPropagation();
+    step = i;
+    render();
+  });
+  tlBar.appendChild(d);
+});
+
+/* ============================================================
+   Render
+   ============================================================ */
+function render() {
+  slides.forEach((s, i) => s.classList.toggle('active', i === current));
+  const slide = slides[current];
+  const total = parseInt(slide.dataset.steps || '1', 10);
+  const isTimeline = slide.dataset.timeline === '1';
+
+  // HUD
+  hudIndex.textContent = String(current + 1).padStart(2, '0');
+  const isDark = slide.classList.contains('dark') || slide.classList.contains('dark2') || slide.classList.contains('night') || slide.classList.contains('accent');
+  hud.classList.toggle('light', !isDark);
+  wm.classList.toggle('dark', isDark);
+  wm.classList.toggle('light', !isDark);
+  wm.style.display = current === 0 ? 'none' : '';
+
+  // Sync body bg to active slide bg so letterbox area (if any) blends
+  const bgMap = ['white','warm','dark2','dark','accent','night'];
+  document.body.classList.remove('bg-white','bg-warm','bg-dark','bg-dark2','bg-accent');
+  document.documentElement.classList.remove('bg-white','bg-warm','bg-dark','bg-dark2','bg-accent');
+  let bgKey = 'dark';
+  if (slide.classList.contains('white'))  bgKey = 'white';
+  else if (slide.classList.contains('warm')) bgKey = 'warm';
+  else if (slide.classList.contains('dark2') || slide.classList.contains('night')) bgKey = 'dark2';
+  else if (slide.classList.contains('accent')) bgKey = 'accent';
+  else if (slide.classList.contains('dark')) bgKey = 'dark';
+  document.body.classList.add('bg-' + bgKey);
+  document.documentElement.classList.add('bg-' + bgKey);
+
+  // Reset all reveals in this slide
+  slide.querySelectorAll('.reveal').forEach(el => {
+    const ds = parseInt(el.dataset.step || '0', 10);
+    if (ds === 0) {
+      // delay-class reveals (d1..d4) reveal on slide entry
+      el.classList.add('in');
+    } else {
+      el.classList.toggle('in', ds <= step);
+    }
+  });
+
+  // Timeline special: update year/title/desc/photo + dots + progress
+  if (isTimeline) {
+    const t = timeline[Math.min(step, timeline.length - 1)];
+    if (t) {
+      tlYear.textContent = t.year;
+      if (t.titleHtml) { tlTitle.innerHTML = t.titleHtml; }
+      else { tlTitle.textContent = t.title; }
+      tlDesc.textContent = t.desc;
+      if (tlImg.getAttribute('src') !== t.img) {
+        tlImg.src = t.img;
+      }
+      tlImg.style.objectPosition = t.pos || 'center center';
+      // Alternate zoom in / zoom out for visual variety and fresh motion on every step
+      const zoomIn = (step % 2) === 0;
+      const startScale = zoomIn ? 1.04 : 1.18;
+      const endScale   = zoomIn ? 1.18 : 1.04;
+      tlImg.style.transition = 'none';
+      tlImg.style.transform = 'scale(' + startScale + ')';
+      void tlImg.offsetWidth;
+      tlImg.style.transition = 'transform 6s ease-out, opacity .5s ease';
+      tlImg.style.transform = 'scale(' + endScale + ')';
+    }
+    Array.from(tlBar.querySelectorAll('.tl-dot')).forEach((d, i) => {
+      d.classList.toggle('done', i < step);
+      d.classList.toggle('current', i === step);
+    });
+    const progress = timeline.length > 1 ? (step / (timeline.length - 1)) : 0;
+    tlBar.style.setProperty('--tl-progress', progress);
   }
+}
 
-  prog.style.width=(1/total*100)+'%';
-  ctr.textContent='1 / '+total;
+/* ============================================================
+   Navigation
+   ============================================================ */
+function next() {
+  if (lockTransition) return;
+  const slide = slides[current];
+  const total = parseInt(slide.dataset.steps || '1', 10);
+  if (step < total - 1) {
+    step++;
+    render();
+  } else if (current < slides.length - 1) {
+    current++;
+    step = 0;
+    lockTransition = true;
+    setTimeout(() => lockTransition = false, 350);
+    render();
+  }
+}
+function prev() {
+  if (lockTransition) return;
+  const slide = slides[current];
+  if (step > 0) {
+    step--;
+    render();
+  } else if (current > 0) {
+    current--;
+    const newSlide = slides[current];
+    const newTotal = parseInt(newSlide.dataset.steps || '1', 10);
+    step = newTotal - 1;
+    lockTransition = true;
+    setTimeout(() => lockTransition = false, 350);
+    render();
+  }
+}
+function goto(i) {
+  if (i < 0 || i >= slides.length) return;
+  current = i;
+  step = 0;
+  render();
+}
 
-  document.addEventListener('keydown',e=>{
-    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();show(cur+1)}
-    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(cur-1)}
-    else if(e.key==='Home')show(0);
-    else if(e.key==='End')show(total-1);
-  });
+/* Keyboard */
+window.addEventListener('keydown', (e) => {
+  if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) { e.preventDefault(); next(); }
+  else if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); prev(); }
+  else if (e.key === 'Home') { goto(0); }
+  else if (e.key === 'End') { goto(slides.length - 1); }
+});
 
-  let tx=0;
-  document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
-  document.addEventListener('touchend',e=>{
-    const dx=e.changedTouches[0].clientX-tx;
-    if(Math.abs(dx)>50){dx<0?show(cur+1):show(cur-1)}
-  });
+/* Click to advance (avoid timeline dots — handled above) */
+window.addEventListener('click', (e) => {
+  if (e.target.closest('.tl-dot')) return;
+  next();
+});
 
-  document.addEventListener('click',e=>{
-    if(e.target.closest('a'))return;
-    const x=e.clientX/window.innerWidth;
-    if(x>.7)show(cur+1);
-    else if(x<.3)show(cur-1);
-  });
-
-  document.addEventListener('keydown',()=>{
-    const h=document.querySelector('.kb-hint');
-    if(h)h.style.display='none';
-  },{once:true});
-})();
+/* Init */
+render();
 </script>
+
 </body>
 </html>
