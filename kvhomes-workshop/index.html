@@ -65,6 +65,9 @@
     .btn-secondary{background:var(--bg-elevated-2);color:var(--text-muted);border:1px solid var(--border-muted)}
     .btn-secondary:hover{color:var(--text);border-color:var(--blue-light)}
     .btn-disabled{background:var(--bg-elevated-2);color:var(--text-dim);cursor:default;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:500}
+    .btn-dl{background:var(--bg-elevated-2);color:var(--text-dim);cursor:default;pointer-events:none;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:500;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+    .btn-dl.ready{background:rgba(247,147,26,0.12);color:var(--accent);border:1px solid var(--border-accent);cursor:pointer;pointer-events:auto}
+    .btn-dl.ready:hover{background:rgba(247,147,26,0.22)}
     .btn-guide{background:rgba(247,147,26,0.1);color:var(--accent);border:1px solid var(--border-accent)}
     .btn-guide:hover{background:rgba(247,147,26,0.2)}
     footer{border-top:1px solid var(--border-muted);padding-top:32px;text-align:center}
@@ -90,9 +93,9 @@
       </div>
       <div class="summary-bar">
         <div class="summary-stat"><strong>7</strong> programpont</div>
-        <div class="summary-stat"><strong>0</strong> kész</div>
-        <div class="summary-stat"><strong>2</strong> folyamatban</div>
-        <div class="summary-stat"><strong>5</strong> tervezett</div>
+        <div class="summary-stat"><strong>3</strong> kész</div>
+        <div class="summary-stat"><strong>1</strong> folyamatban</div>
+        <div class="summary-stat"><strong>3</strong> tervezett</div>
       </div>
     </header>
 
@@ -102,6 +105,14 @@
         <p>Az eredettörténet, a program, amit a vendég hazavisz, és amit tudnod kell ha ott leszel. A technikai adatlap kimásolható panelben.</p>
       </div>
       <a class="btn btn-guide" href="csapat-osszefoglalo.html">Összefoglaló megnyitása →</a>
+    </div>
+
+    <div class="guide-banner" style="background:linear-gradient(135deg,rgba(0,51,102,0.12),rgba(10,107,74,0.08))">
+      <div class="guide-banner-text">
+        <h3>🎬 Konferencia presenter — videókeverőhöz</h3>
+        <p>Élő program, óra, timeline — előadások között a kevert képbe keverendő. Teljes képernyőre nyisd (F11), és a keverőpulton a bemenetként kezeld.</p>
+      </div>
+      <a class="btn btn-guide" href="presenter/">Presenter megnyitása →</a>
     </div>
 
     <div class="guide-banner" style="background:linear-gradient(135deg,rgba(247,147,26,0.08),rgba(0,51,102,0.1))">
@@ -157,7 +168,7 @@
           <span class="progress-pct">40%</span>
         </div>
         <div class="card-actions">
-          <span class="btn btn-disabled">Slide-ok készülnek (PDF vázlat kész)</span>
+          <a class="btn btn-dl" data-dl="downloads/KV_Homes_02_NORDii_System_Karancsi.zip" data-label-ready="Letöltés">Slide-ok készülnek (PDF vázlat kész)</a>
         </div>
       </div>
 
@@ -174,7 +185,7 @@
           <div class="progress-bar"><div class="progress-fill planned" style="width:0%"></div></div>
           <span class="progress-pct">0%</span>
         </div>
-        <div class="card-actions"><span class="btn btn-disabled">Hamarosan</span></div>
+        <div class="card-actions"><a class="btn btn-dl" data-dl="downloads/KV_Homes_03_Szkenneles_Lizakovszky.zip" data-label-ready="Letöltés">Hamarosan</a></div>
       </div>
 
       <div class="card" style="border-left:3px solid var(--gray);opacity:0.7;min-height:var(--h-15)">
@@ -199,7 +210,7 @@
           <div class="progress-bar"><div class="progress-fill planned" style="width:0%"></div></div>
           <span class="progress-pct">0%</span>
         </div>
-        <div class="card-actions"><span class="btn btn-disabled">Hamarosan</span></div>
+        <div class="card-actions"><a class="btn btn-dl" data-dl="downloads/KV_Homes_04_Epiteszet_Moricz.zip" data-label-ready="Letöltés">Hamarosan</a></div>
       </div>
 
       <div class="card" style="border-left:3px solid var(--green);min-height:var(--h-15)">
@@ -215,16 +226,7 @@
           <div class="progress-bar"><div class="progress-fill planned" style="width:0%"></div></div>
           <span class="progress-pct">0%</span>
         </div>
-        <div class="card-actions"><span class="btn btn-disabled">Hamarosan</span></div>
-      </div>
-
-      <div class="card" style="border-left:3px solid var(--gray);opacity:0.7;min-height:var(--h-15)">
-        <div class="card-num">☕ Kávészünet</div>
-        <div class="card-header">
-          <h3 class="card-title">Szünet</h3>
-          <span class="card-status break">~16:20</span>
-        </div>
-        <div class="card-time">15 perc</div>
+        <div class="card-actions"><a class="btn btn-dl" data-dl="downloads/KV_Homes_05_Energetika_Panghy.zip" data-label-ready="Letöltés">Hamarosan</a></div>
       </div>
 
       <div class="card" style="border-left:3px solid var(--accent);min-height:var(--h-25)">
@@ -233,7 +235,7 @@
           <h3 class="card-title">Kolor Garden — Kazincbarcika · Strand Lakópark</h3>
           <span class="card-status done">✓ Kész</span>
         </div>
-        <div class="card-time"><strong>~16:35</strong> · 20 perc</div>
+        <div class="card-time"><strong>~16:20</strong> · 20 perc</div>
         <p class="card-desc">Kovács Ferenc felvezeti a projektet: 122 család, 80 lakás + 42 családi ház, 15 500 m² zöldfelület, BuildEXT koncepció, KV generálkivitelezés — számok, vízió, ütemterv.</p>
         <div class="card-speaker">Kovács Ferenc</div>
         <div class="card-actions">
@@ -247,24 +249,21 @@
           <h3 class="card-title">Polgármesteri beszéd + szándéknyilatkozat aláírása</h3>
           <span class="card-status planned">○ Tervezett</span>
         </div>
-        <div class="card-time"><strong>~16:55</strong> · 10 perc</div>
+        <div class="card-time"><strong>~16:40</strong> · 10 perc</div>
         <p class="card-desc">Szitka Péter polgármester beszéde, majd a Kolor Garden szándéknyilatkozat aláírása K.K. 2016 × Kazincbarcika. Fotózás, rövid sajtó-momentum.</p>
         <div class="card-speaker">Szitka Péter polgármester × Kovács Ferenc</div>
+        <div class="card-actions"><a class="btn btn-dl" data-dl="downloads/KV_Homes_07_Szitka_Szandeknyilatkozat.zip" data-label-ready="Letöltés">Hamarosan</a></div>
       </div>
 
       <div class="card" style="border-left:3px solid var(--accent);min-height:var(--h-25)">
         <div class="card-num">+1 · One more thing</div>
         <div class="card-header">
           <h3 class="card-title">BLOKK by NORDii — bérlakási program önkormányzatoknak</h3>
-          <span class="card-status progress">⚙ Folyamatban</span>
+          <span class="card-status done">✓ Kész</span>
         </div>
-        <div class="card-time"><strong>~17:05</strong> · 15 perc</div>
+        <div class="card-time"><strong>~16:50</strong> · 15 perc</div>
         <p class="card-desc">Megfizethető otthon, rezsi nélkül: aktív-ház kategóriájú NORDii BLOKK bérlakás-modulok (24–40 lak/egység), közös projektcég önkormányzatokkal, MFB + EU finanszírozás. A bérlő zsebében −27%, havi ~40 000 Ft megtakarítás.</p>
         <div class="card-speaker">Kovács Ferenc</div>
-        <div class="progress-row">
-          <div class="progress-bar"><div class="progress-fill progress" style="width:70%"></div></div>
-          <span class="progress-pct">70%</span>
-        </div>
         <div class="card-actions">
           <a class="btn btn-primary" href="berlakas/">Megnyitás →</a>
           <a class="btn" href="downloads/KV_Homes_Berlakas_Program.zip" download>⬇ Letöltés (ZIP, 3.4 MB)</a>
@@ -317,5 +316,31 @@
       <p>Csak a linket ismerők számára. Ne oszd meg.</p>
     </footer>
   </div>
+  <script>
+    // Auto-detect downloadable presentations: if the file exists on the server,
+    // activate the button with filesize. Otherwise leave as "Hamarosan" stub.
+    (function(){
+      function fmtSize(bytes){
+        if(!bytes || isNaN(bytes)) return '';
+        var mb = bytes/1048576;
+        if(mb >= 1) return mb.toFixed(1).replace('.',',') + ' MB';
+        var kb = bytes/1024;
+        return Math.round(kb) + ' KB';
+      }
+      document.querySelectorAll('.btn-dl').forEach(function(el){
+        var url = el.getAttribute('data-dl');
+        if(!url) return;
+        fetch(url, {method:'HEAD'}).then(function(r){
+          if(!r.ok) return;
+          var size = fmtSize(r.headers.get('content-length'));
+          var label = el.getAttribute('data-label-ready') || 'Letöltés';
+          el.classList.add('ready');
+          el.setAttribute('href', url);
+          el.setAttribute('download', '');
+          el.textContent = '⬇ ' + label + (size ? ' (' + size + ')' : '');
+        }).catch(function(){});
+      });
+    })();
+  </script>
 </body>
 </html>
