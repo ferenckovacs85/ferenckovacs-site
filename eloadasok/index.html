@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Előadások — Kovács Ferenc</title>
+    <meta name="description" content="Előadások, prezentációk, gondolatok — Bitcoin edukáció, építőipar, jövő lakhatás. Kovács Ferenc nyilvános archívuma.">
+    <meta property="og:title" content="Előadások — Kovács Ferenc">
+    <meta property="og:description" content="Bitcoin, építőipar, lakhatás — amikről az elmúlt években előadtam, itt olvasható/nézhető formában.">
+    <meta property="og:type" content="website">
+    <style>
+        :root {
+            --bg: #07070a;
+            --surface: #0f1014;
+            --surface-hover: #15161b;
+            --border: #1a1a22;
+            --text: #e8e8ec;
+            --text-dim: #7a7a88;
+            --gold: #c9a55a;
+            --gold-soft: rgba(201,165,90,0.12);
+            --btc: #f7931a;
+            --btc-soft: rgba(247,147,26,0.10);
+            --blue: #4aa3df;
+            --blue-soft: rgba(74,163,223,0.10);
+            --green: #4ade80;
+            --green-soft: rgba(74,222,128,0.10);
+            --radius: 12px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* NAV */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            background: rgba(7,7,10,0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+        nav .inner {
+            max-width: 1100px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0.8rem 1.5rem;
+        }
+        nav .brand { font-weight: 600; font-size: 0.95rem; letter-spacing: 0.06em; color: #fff; text-decoration: none; }
+        nav .links { display: flex; gap: 1.6rem; align-items: center; }
+        nav .links a {
+            color: var(--text-dim); text-decoration: none; font-size: 0.78rem;
+            letter-spacing: 0.04em; text-transform: uppercase; transition: color 0.25s;
+        }
+        nav .links a:hover { color: #fff; }
+        nav .links a.active { color: #fff; }
+        .hamburger { display: none; background: none; border: none; color: #fff; font-size: 1.4rem; cursor: pointer; padding: 0.3rem; }
+
+        /* HERO */
+        .hero {
+            padding: 8rem 1.5rem 3rem;
+            max-width: 1100px; margin: 0 auto;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        .hero .section-label {
+            font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--gold); margin-bottom: 1rem; font-weight: 500;
+        }
+        .hero h1 {
+            font-size: clamp(2rem, 4.5vw, 3.2rem);
+            font-weight: 300; letter-spacing: -0.01em;
+            color: #fff; margin-bottom: 1rem;
+        }
+        .hero p.intro {
+            font-size: 0.95rem; color: var(--text-dim);
+            max-width: 680px; line-height: 1.85;
+        }
+        .hero .meta-bar {
+            display: flex; gap: 1.5rem; margin-top: 2rem;
+            flex-wrap: wrap;
+            font-size: 0.72rem; color: var(--text-dim);
+            letter-spacing: 0.06em; text-transform: uppercase;
+        }
+        .hero .meta-bar strong { color: var(--text); font-weight: 500; }
+
+        /* SECTION */
+        section.deck-section {
+            padding: 4rem 1.5rem; max-width: 1100px; margin: 0 auto;
+            border-top: 1px solid var(--border);
+        }
+        section.deck-section:first-of-type { border-top: none; }
+        .sec-label {
+            font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+            margin-bottom: 0.8rem; font-weight: 600;
+        }
+        .sec-label.btc { color: var(--btc); }
+        .sec-label.kvhomes { color: var(--blue); }
+        .sec-label.personal { color: var(--gold); }
+        .sec-title {
+            font-size: clamp(1.4rem, 2.8vw, 2rem);
+            font-weight: 300; letter-spacing: 0.01em;
+            color: #fff; margin-bottom: 0.8rem;
+        }
+        .sec-desc {
+            color: var(--text-dim); font-size: 0.88rem;
+            max-width: 680px; margin-bottom: 2.5rem; line-height: 1.8;
+        }
+
+        /* DECK GRID */
+        .deck-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1rem;
+        }
+        .deck-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.6rem 1.5rem 1.4rem;
+            text-decoration: none; color: var(--text);
+            transition: all 0.3s ease;
+            display: flex; flex-direction: column;
+            position: relative;
+        }
+        .deck-card.live { cursor: pointer; }
+        .deck-card.live:hover { border-color: #2a2a35; transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .deck-card.btc.live:hover { border-color: rgba(247,147,26,0.4); box-shadow: 0 10px 30px rgba(247,147,26,0.06); }
+        .deck-card.kvhomes.live:hover { border-color: rgba(74,163,223,0.4); box-shadow: 0 10px 30px rgba(74,163,223,0.06); }
+        .deck-card.personal.live:hover { border-color: rgba(201,165,90,0.4); box-shadow: 0 10px 30px rgba(201,165,90,0.06); }
+        .deck-card.pending { opacity: 0.82; cursor: default; }
+
+        .deck-badge {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            padding: 0.22rem 0.7rem; border-radius: 20px;
+            font-size: 0.62rem; font-weight: 600;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            margin-bottom: 0.9rem; align-self: flex-start;
+        }
+        .deck-badge.btc { background: var(--btc-soft); color: var(--btc); }
+        .deck-badge.kvhomes { background: var(--blue-soft); color: var(--blue); }
+        .deck-badge.personal { background: var(--gold-soft); color: var(--gold); }
+
+        .deck-title {
+            font-size: 1.05rem; font-weight: 500; color: #fff;
+            margin-bottom: 0.5rem; letter-spacing: 0.005em;
+            line-height: 1.4;
+        }
+        .deck-meta {
+            font-size: 0.7rem; color: var(--text-dim);
+            letter-spacing: 0.04em; margin-bottom: 0.8rem;
+        }
+        .deck-meta .dot { opacity: 0.5; margin: 0 0.4rem; }
+        .deck-desc {
+            font-size: 0.8rem; color: var(--text-dim);
+            line-height: 1.7; flex-grow: 1;
+            margin-bottom: 1.1rem;
+        }
+        .deck-footer {
+            padding-top: 0.9rem; border-top: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+            gap: 0.8rem; flex-wrap: wrap;
+        }
+        .deck-link {
+            font-size: 0.72rem; letter-spacing: 0.06em;
+            font-weight: 500;
+        }
+        .deck-link.btc { color: var(--btc); }
+        .deck-link.kvhomes { color: var(--blue); }
+        .deck-link.personal { color: var(--gold); }
+        .deck-status {
+            font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase;
+            font-weight: 600;
+            padding: 0.25rem 0.7rem;
+            border-radius: 20px;
+            background: rgba(138,145,158,0.08);
+            color: var(--text-dim);
+            border: 1px solid rgba(138,145,158,0.15);
+        }
+        .deck-status.ready {
+            background: var(--green-soft); color: var(--green);
+            border-color: rgba(74,222,128,0.2);
+        }
+
+        /* INFO BANNER */
+        .info-banner {
+            max-width: 1100px; margin: 0 auto;
+            padding: 1.4rem 1.5rem; margin-bottom: 0;
+            background: linear-gradient(135deg, rgba(201,165,90,0.06), rgba(74,163,223,0.04));
+            border-left: 2px solid var(--gold);
+            font-size: 0.82rem; color: var(--text-dim);
+            line-height: 1.7;
+        }
+        .info-banner strong { color: var(--text); font-weight: 500; }
+
+        /* FOOTER */
+        footer {
+            text-align: center; padding: 3rem 1.5rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-dim); font-size: 0.7rem; letter-spacing: 0.04em;
+            margin-top: 4rem;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            nav .links { display: none; }
+            .hamburger { display: block; }
+            nav.open .links {
+                display: flex; flex-direction: column;
+                position: absolute; top: 100%; left: 0; right: 0;
+                background: rgba(7,7,10,0.95); padding: 1rem 1.5rem;
+                border-bottom: 1px solid var(--border);
+            }
+            .hero { padding: 6rem 1.2rem 2.5rem; }
+            section.deck-section { padding: 3rem 1.2rem; }
+            .deck-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+    <div class="inner">
+        <a href="/hu/" class="brand">Kovács Ferenc</a>
+        <button class="hamburger" onclick="document.getElementById('nav').classList.toggle('open')" aria-label="Menü">☰</button>
+        <div class="links">
+            <a href="/hu/#cegcsoport">Cégcsoport</a>
+            <a href="/hu/#kvhomes">KV Homes</a>
+            <a href="/hu/#bitcoin">Bitcoin</a>
+            <a href="/eloadasok/" class="active">Előadások</a>
+            <a href="/kalkulatorok.html">Kalkulátorok</a>
+            <a href="/erdekessegek.html">Érdekességek</a>
+            <a href="/en/" style="border:1px solid var(--border);padding:0.2rem 0.6rem;border-radius:4px;font-size:0.7rem;">EN</a>
+        </div>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="section-label">Archívum</div>
+    <h1>Előadások és prezentációk</h1>
+    <p class="intro">
+        Az elmúlt évek során konferenciákon, workshopokon, közösségi eseményeken tartott előadásaim
+        — elsősorban Bitcoin edukáció és építőipari / lakhatási kérdések. Itt olvashatóan, saját
+        tempóban, az eredeti slide-okkal. A formátum interaktív: nyilakkal lapozható, kattintható.
+    </p>
+    <div class="meta-bar">
+        <div><strong>4 elérhető előadás</strong> · folyamatosan bővülő</div>
+        <div><strong>2026. április</strong> · Bitcoin Miskolc konferencia</div>
+    </div>
+</section>
+
+<!-- INFO -->
+<div class="info-banner">
+    <strong>Az archívum folyamatosan bővül.</strong> A kész előadások <em>"Elérhető"</em> státusszal
+    kattinthatóak, a még előkészítés alatt lévők a kártyájukon jelzik. A slide-ok nyilakkal és kattintással
+    lapozhatók — mobilon is.
+</div>
+
+<!-- BITCOIN -->
+<section class="deck-section">
+    <div class="sec-label btc">₿ Bitcoin</div>
+    <h2 class="sec-title">Bitcoin edukáció</h2>
+    <p class="sec-desc">
+        A Bitcoin Miskolc 2026 konferencián (2026. április 17–19., Hajdúszoboszló) tartott előadásaim.
+        Céljuk, hogy a Bitcoin működését gyakorlati, érthető formában átadják — sem hype, sem
+        technikai szakzsargon. Négy előadás, különböző mélységekben.
+    </p>
+    <div class="deck-grid">
+
+        <a href="/eloadasok/mi-a-bitcoin.html" class="deck-card btc live" target="_blank" rel="noopener">
+            <span class="deck-badge btc">₿ Alapok</span>
+            <div class="deck-title">Mi a Bitcoin?</div>
+            <div class="deck-meta">2026. április 17. <span class="dot">·</span> Hajdúszoboszló <span class="dot">·</span> 14 dia</div>
+            <p class="deck-desc">
+                A pénz evolúciójától a White Paper-ig. Genesis Block, könyvelés három korszaka,
+                digitális tulajdon (Kindle-Orwell, Ciprus), a három pillér, konszenzus ≠ demokrácia.
+                A kapudeck — ajánlott belépő.
+            </p>
+            <div class="deck-footer">
+                <span class="deck-link btc">Megnyitás →</span>
+                <span class="deck-status ready">● Elérhető</span>
+            </div>
+        </a>
+
+        <a href="/eloadasok/szamok-analogiak.html" class="deck-card btc live" target="_blank" rel="noopener">
+            <span class="deck-badge btc">₿ Számok</span>
+            <div class="deck-title">Bitcoin — számok és analógiák</div>
+            <div class="deck-meta">2026. április 17. <span class="dot">·</span> Hajdúszoboszló <span class="dot">·</span> 11 dia</div>
+            <p class="deck-desc">
+                A matematika, ami mögötte van. SHA-256 (10⁷⁷), a hálózat ereje (~17 Paks II reaktor),
+                Lightning sebesség, settlement parity (Visa + Mastercard), a szűkösség matematikája
+                (21 millió, soha több).
+            </p>
+            <div class="deck-footer">
+                <span class="deck-link btc">Megnyitás →</span>
+                <span class="deck-status ready">● Elérhető</span>
+            </div>
+        </a>
+
+        <a href="/eloadasok/arfolyam.html" class="deck-card btc live" target="_blank" rel="noopener">
+            <span class="deck-badge btc">₿ Piac</span>
+            <div class="deck-title">Merre megy az árfolyam?</div>
+            <div class="deck-meta">2026. április 18. <span class="dot">·</span> Hajdúszoboszló <span class="dot">·</span> 17 dia · interaktív</div>
+            <p class="deck-desc">
+                Hosszú távú perspektíva — ciklusok, halving, power law modell, intézményi adopció,
+                scarcity, Bitcoin vs. hagyományos eszközök. Nem árjóslat, hanem keretrendszer
+                a gondolkodáshoz. <em style="color:#7a7a88;font-size:0.85em">(65 MB — videókkal, wifin ajánlott)</em>
+            </p>
+            <div class="deck-footer">
+                <span class="deck-link btc">Megnyitás →</span>
+                <span class="deck-status ready">● Elérhető</span>
+            </div>
+        </a>
+
+        <a href="/eloadasok/barka.html" class="deck-card btc live" target="_blank" rel="noopener">
+            <span class="deck-badge btc">₿ Küldetés</span>
+            <div class="deck-title">A magyar Bitcoin Bárka</div>
+            <div class="deck-meta">2026. április 19. <span class="dot">·</span> Hajdúszoboszló <span class="dot">·</span> 9 dia · záró</div>
+            <p class="deck-desc">
+                A konferencia záró előadása. Noé döntése, a figyelem ereje, pengő hiperinfláció mint
+                történelmi lecke, fordulópont, miért pont a Bitcoin. Végül: "Építsd meg a saját
+                bárkád."
+            </p>
+            <div class="deck-footer">
+                <span class="deck-link btc">Megnyitás →</span>
+                <span class="deck-status ready">● Elérhető</span>
+            </div>
+        </a>
+
+    </div>
+</section>
+
+<!-- KV HOMES -->
+<section class="deck-section">
+    <div class="sec-label kvhomes">⌂ Építőipar / Lakhatás</div>
+    <h2 class="sec-title">KV Homes és a lakhatás jövője</h2>
+    <p class="sec-desc">
+        A KV Homes Workshop 2026-on (2026. április 16., Hotel Atlantis Hajdúszoboszló) tartott
+        saját előadásaim. Az építőipar modernizálása, a NORDii térelem-technológia, és egy
+        konkrét projekt bemutatása. Három évtized építőipari tapasztalat szűrt esszenciája.
+    </p>
+    <div class="deck-grid">
+
+        <div class="deck-card kvhomes pending">
+            <span class="deck-badge kvhomes">⌂ Vízió</span>
+            <div class="deck-title">KV Homes Workshop Megnyitó</div>
+            <div class="deck-meta">2026. április 16. <span class="dot">·</span> Hotel Atlantis <span class="dot">·</span> 24 dia · interaktív</div>
+            <p class="deck-desc">
+                A cégcsoport története 1992-től napjainkig, interaktív idővonalon. Miért
+                fordulunk a NORDii-val a lakhatás felé? Mit jelent az "aktív ház" koncepció?
+                Három takeaway a jövőre.
+            </p>
+            <div class="deck-footer">
+                <span class="deck-link kvhomes">Előkészítés alatt</span>
+                <span class="deck-status">○ Hamarosan</span>
+            </div>
+        </div>
+
+        <div class="deck-card kvhomes pending">
+            <span class="deck-badge kvhomes">⌂ Projekt</span>
+            <div class="deck-title">Kolor Garden — projektbemutató</div>
+            <div class="deck-meta">2026. április 16. <span class="dot">·</span> Hotel Atlantis</div>
+            <p class="deck-desc">
+                Egy konkrét ingatlanfejlesztési projekt. Helyszín, koncepció, típustervek, a döntések
+                mögötti gondolkodás. Annak, akit a gyakorlati oldal érdekel — nem csak a nagy képek.
+            </p>
+            <div class="deck-footer">
+                <span class="deck-link kvhomes">Előkészítés alatt</span>
+                <span class="deck-status">○ Hamarosan</span>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- SZEMÉLYES / JÖVŐBELI -->
+<section class="deck-section">
+    <div class="sec-label personal">↗ Személyes</div>
+    <h2 class="sec-title">Gondolatok, amiket megosztok</h2>
+    <p class="sec-desc">
+        Ide kerülnek majd a vegyes témájú előadásaim, közösségi eseményeken, BNI-n, családi / céges
+        évzárókon tartott gondolatébresztőim. Egyelőre üres — de épül.
+    </p>
+    <div class="deck-grid">
+
+        <div class="deck-card personal pending" style="opacity: 0.55;">
+            <span class="deck-badge personal">↗ Hamarosan</span>
+            <div class="deck-title">Újabb előadások</div>
+            <div class="deck-meta">Folyamatosan bővülő</div>
+            <p class="deck-desc">
+                Amint új anyagok készülnek — vagy a régi archívumból kerül elő egy, amit érdemes
+                megosztani — ide kerülnek. Iratkozz fel az egyik közösségi platformomon, ha követni
+                szeretnéd.
+            </p>
+            <div class="deck-footer">
+                <a href="/hu/#contact" class="deck-link personal">Kapcsolat →</a>
+                <span class="deck-status">○ Bővülő</span>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <p>© 2026 Kovács Ferenc — <a href="/hu/" style="color: var(--text-dim); text-decoration: underline;">főoldal</a></p>
+</footer>
+
+<script>
+    // Close mobile nav on click
+    document.querySelectorAll('nav .links a').forEach(function(link) {
+        link.addEventListener('click', function() {
+            document.getElementById('nav').classList.remove('open');
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -22,3 +22,10 @@ __pycache__/
 
 # MCP configuration (contains secrets)
 .mcp.json
+
+# Internal workflow docs (OneDrive-local, not for deploy)
+WORKFLOW.md
+
+# OneDrive temp/conflict files
+*.conflict
+*conflicting copy*
