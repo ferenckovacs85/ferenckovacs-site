@@ -25,6 +25,7 @@ __pycache__/
 
 # Internal workflow docs (OneDrive-local, not for deploy)
 WORKFLOW.md
+SITE_STATUS.md
 
 # OneDrive temp/conflict files
 *.conflict
