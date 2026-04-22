@@ -4,6 +4,37 @@ A ferenckovacs.com változásnaplója. A formátum a [Keep a Changelog](https://
 irányelveit követi. A git commit történet a teljes forrás; itt csak a szembetűnő felhasználói
 változások vannak összegyűjtve.
 
+## [2026-04-22] — Interaktív bányászat-szimulátor
+
+### Added
+- **`/bitcoin-mining-dice.html`** — Proof-of-Work szimulátor dobókocka-analógiával (magyar UI)
+  - 1920×1080 full-screen canvas, auto scale-to-fit
+  - Bányászat-állapot, retarget folyamat-kijelzés, blokk-idő átlag vizualizáció
+  - Hozzáadva a Kalkulátorok (`/kalkulatorok.html`) oldalra és mindkét főoldali sub-grid-be
+  - OG meta tagek a social preview-hez, back-link a Kalkulátorok oldalra
+- **`/en/bitcoin-mining-dice.html`** — ugyanaz angolul, back-link a `/en/napkin-math.html`-re
+- **Kétféle szünet a mining dice-ban** (mindkét nyelvre) — az első verzió utáni finomítás
+  - `Space` = **bányászat szünet** (idő megy tovább — hashrate-eltűnés szimulálása; jó retarget-hatás bemutatásához)
+  - `Shift+Space` vagy `P` vagy új ikon-gomb = **teljes game pause** (minden áll, idő is)
+  - Stats-kijelzés 3 állapota: 🟢 Élőben / ❚❚ Bányászat szünet (idő megy) / 🧊 Játék áll (idő is)
+- **Link frissítés** — az EN napkin-math és EN főoldal linkjei most a `/en/bitcoin-mining-dice.html`-re mutatnak (a „Hungarian UI" figyelmeztetés eltávolítva)
+
+### Technical
+- `gameNow()` helper, `state.totalPausedMs` accumulator: block timestamps, runtime, retarget ablakok mind „játékidő"-n alapulnak
+- Animáció-timingek (`justWon`, event `at`) valódi `Date.now()`-on maradtak a vizuális folyamatosság kedvéért
+- Reset kimossa a pause-akkumulátorokat is
+
+### Relevant commits
+- `cb7e630` → `5531b26` (rebase) — mining dice integráció
+- `0be6d8c` — kétféle szünet implementáció
+- `(ez a commit)` — angol fordítás + linkek + log frissítés
+
+### Convention (új)
+- **Minden magyar nyelvű új anyag után** az angol változatot is elkészítjük alapesetben.
+- Minden változást bejegyzünk a `CHANGELOG.md`-be (commit-olt) és a `SITE_STATUS.md`-be (OneDrive-local).
+
+---
+
 ## [2026-04-21] — Előadás archívum publikus élesítése
 
 ### Added — új tartalom
