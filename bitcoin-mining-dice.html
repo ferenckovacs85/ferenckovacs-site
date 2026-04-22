@@ -553,7 +553,19 @@ const state = {
   startedAt: null,
   events: [],
   flashRetarget: false,
+  // Game-level pause (az idő is megáll) vs mining-only pause (running=false, de idő megy)
+  gamePaused: false,
+  gamePausedAt: null,
+  totalPausedMs: 0,
 };
+
+// Játékidő: real time minusz akkumulált pause + aktuális pause delta.
+// Minden block-timestamp, startedAt, és runtime-statisztika ezen alapul.
+function gameNow() {
+  const real = Date.now();
+  const pausingDelta = state.gamePaused ? (real - state.gamePausedAt) : 0;
+  return real - state.totalPausedMs - pausingDelta;
+}
 
 function initMiners() {
   const preset = SPEED_PRESETS[state.speed];
@@ -672,11 +684,11 @@ function foundBlock(m, roll) {
     minerId: m.id, minerName: m.name, minerEmoji: m.emoji,
     tries: m.rolls,
     target: state.currentTarget,
-    timestamp: Date.now(),
+    timestamp: gameNow(),
   };
   state.chain.push(block);
   m.blocks++;
-  m.justWon = Date.now();
+  m.justWon = Date.now(); // animation timing — real-time
 
   pushEvent(`${m.emoji} ${m.name} dobott ${roll.dice.join('+')}=${roll.sum} — BLOKK!`, 'block');
   showBlockFoundOverlay(block);
@@ -774,6 +786,7 @@ function renderHeader() {
         `).join('')}
       </div>
       <button class="icon-btn" id="btn-sound" title="Hang">${state.soundEnabled ? '🔊' : '🔇'}</button>
+      <button class="icon-btn ${state.gamePaused ? 'active-pause' : ''}" id="btn-gpause" title="Játék szünet — az idő is megáll (Shift+Space)" style="${state.gamePaused ? 'background:rgba(247,147,26,0.22);color:var(--btc);border-color:rgba(247,147,26,0.4);' : ''}">${state.gamePaused ? '▶⏱' : '⏸⏱'}</button>
       <button class="icon-btn" id="btn-fs" title="Teljes képernyő">⛶</button>
       <button class="icon-btn" id="btn-reset" title="Reset">↻</button>
       <button class="${btnCls}" id="btn-main">${btnLabel}</button>
@@ -783,6 +796,7 @@ function renderHeader() {
   el.querySelector('#btn-reset').onclick = resetAll;
   el.querySelector('#btn-sound').onclick = () => { state.soundEnabled = !state.soundEnabled; renderHeader(); };
   el.querySelector('#btn-fs').onclick = toggleFullscreen;
+  el.querySelector('#btn-gpause').onclick = toggleGamePause;
   // Kezdő target +/-
   const tMinus = el.querySelector('#target-minus');
   if (tMinus) tMinus.onclick = () => {
@@ -828,7 +842,7 @@ function renderStats() {
   const inWindow = h % interval;
   const remaining = interval - inWindow;
   const progressPct = (inWindow / interval) * 100;
-  const runtime = state.startedAt ? Math.floor((Date.now() - state.startedAt) / 1000) : 0;
+  const runtime = state.startedAt ? Math.floor((gameNow() - state.startedAt) / 1000) : 0;
   const avg = h > 0 && state.startedAt ? (runtime / h).toFixed(1) : '—';
   const totalRolls = state.miners.reduce((a, m) => a + m.rolls, 0);
 
@@ -863,7 +877,13 @@ function renderStats() {
     <div class="stat-card">
       <div class="stat-label">Futásidő</div>
       <div id="s-time" class="stat-value mono">${formatTime(runtime)}</div>
-      <div class="stat-sub">${state.running ? '<span style="color:#22C55E">● Élőben</span>' : '<span style="color:#9CA3AF">❚❚ Szünet</span>'}</div>
+      <div class="stat-sub">${
+        state.gamePaused
+          ? '<span style="color:#60A5FA">🧊 Játék áll (idő is)</span>'
+          : state.running
+            ? '<span style="color:#22C55E">● Élőben</span>'
+            : '<span style="color:#9CA3AF">❚❚ Bányászat szünet (idő megy)</span>'
+      }</div>
     </div>
   `;
 }
@@ -1077,7 +1097,7 @@ function updateLight() {
   const h = state.chain.length;
   const interval = state.retargetInterval;
   const inWindow = h % interval;
-  const runtime = state.startedAt ? Math.floor((Date.now() - state.startedAt) / 1000) : 0;
+  const runtime = state.startedAt ? Math.floor((gameNow() - state.startedAt) / 1000) : 0;
   const avg = h > 0 && state.startedAt ? (runtime / h).toFixed(1) : '—';
   const totalRolls = state.miners.reduce((a, m) => a + m.rolls, 0);
   const elTime = document.getElementById('s-time');
@@ -1154,8 +1174,14 @@ function toggleRun() {
     stopLoop();
     pushEvent('❚❚ Szünet');
   } else {
+    if (state.gamePaused) {
+      // Ha game-pause van, nem indítható a bányászat — feloldás szükséges
+      pushEvent('⚠️ Oldd fel a Játék szünetet (⏯) — csak utána indulhat a bányászat');
+      renderAll();
+      return;
+    }
     if (!state.startedAt) {
-      state.startedAt = Date.now();
+      state.startedAt = gameNow();
       pushEvent('▶ Bányászat elindítva — dobják a kockákat!');
     } else {
       pushEvent('▶ Folytatás');
@@ -1173,8 +1199,32 @@ function resetAll() {
   state.startedAt = null;
   state.currentTarget = state.initialTarget;
   state.events = [];
+  // Pause-akkumulátorok is törlődnek
+  state.gamePaused = false;
+  state.gamePausedAt = null;
+  state.totalPausedMs = 0;
   initMiners();
   pushEvent('🔄 Reset — új verseny!');
+  renderAll();
+}
+
+// Játék szünet: az IDŐ is megáll (a bányászat is — mivel loop leáll).
+// Ez különbözik a mining szünettől, ahol az idő megy tovább (lásd: hashrate eltűnik a valóságban is).
+function toggleGamePause() {
+  if (state.gamePaused) {
+    // Resume: pause időtartam akkumulálva
+    state.totalPausedMs += Date.now() - state.gamePausedAt;
+    state.gamePausedAt = null;
+    state.gamePaused = false;
+    pushEvent('▶▶ Játék folytatás — idő újra folyik');
+    // Ha a bányászat futott game-pause előtt, indítsuk újra a loopot
+    if (state.running) startLoop();
+  } else {
+    state.gamePausedAt = Date.now();
+    state.gamePaused = true;
+    stopLoop();
+    pushEvent('🧊 Játék szünet — idő is áll');
+  }
   renderAll();
 }
 function toggleFullscreen() {
@@ -1185,7 +1235,9 @@ function toggleFullscreen() {
 // ----- Keyboard -----
 document.addEventListener('keydown', (e) => {
   if (e.target.tagName === 'INPUT') return;
-  if (e.code === 'Space') { e.preventDefault(); toggleRun(); }
+  if (e.code === 'Space' && e.shiftKey) { e.preventDefault(); toggleGamePause(); }
+  else if (e.code === 'Space') { e.preventDefault(); toggleRun(); }
+  else if (e.code === 'KeyP') { e.preventDefault(); toggleGamePause(); }
   else if (e.code === 'KeyR') resetAll();
   else if (e.code === 'KeyM') { state.soundEnabled = !state.soundEnabled; renderHeader(); }
   else if (e.code === 'KeyF') toggleFullscreen();
@@ -1209,8 +1261,8 @@ pushEvent('🎬 Készen áll — nyomd a ▶ Start gombot');
 renderAll();
 fitCanvas();
 
-// Futásidő frissítése szünet közben is
-setInterval(() => { if (!state.running) updateLight(); }, 1000);
+// Futásidő frissítése bányászat-szünet közben (game-pause alatt az idő áll, nincs mit frissíteni)
+setInterval(() => { if (!state.running && !state.gamePaused) updateLight(); }, 1000);
 
 /*
 ================================================================
