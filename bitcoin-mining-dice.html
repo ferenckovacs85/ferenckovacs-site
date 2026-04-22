@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1920, initial-scale=1" />
+<meta name="description" content="Interaktív Bitcoin bányászat szimulátor — dobókocka analógia a Proof-of-Work működéséhez. Nehézségi szint, retarget, blokk-idő vizuálisan.">
+<meta property="og:title" content="Bitcoin Bányászat — Kockadobás">
+<meta property="og:description" content="Interaktív szimulátor: így működik a Proof-of-Work dobókocka analógiával.">
+<meta property="og:type" content="website">
+
+<title>Bitcoin Bányászat — Kockadobás · Bitcoin Miskolc 2026</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body {
+  width: 100vw; height: 100vh;
+  overflow: hidden;
+  background: #000;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+}
+button { font-family: inherit; cursor: pointer; border: none; color: inherit; background: none; }
+.mono { font-family: "SF Mono", ui-monospace, Menlo, Monaco, Consolas, monospace; font-variant-numeric: tabular-nums; }
+
+:root {
+  --btc: #F7931A;
+  --btc-light: #FFB659;
+  --btc-dark: #D87C10;
+  --panel: #141414;
+  --border: rgba(247, 147, 26, 0.25);
+  --text-dim: rgba(255,255,255,0.55);
+  --text-faint: rgba(255,255,255,0.35);
+}
+
+/* ===== Scale-to-fit 1920x1080 ===== */
+.canvas-wrap {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: #000;
+}
+.canvas {
+  width: 1920px; height: 1080px;
+  transform-origin: center;
+  background: radial-gradient(ellipse at top, #1a1208 0%, #0a0a0a 60%);
+  padding: 24px;
+  display: grid;
+  grid-template-rows: 76px 172px 1fr 152px;
+  gap: 16px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* ===== Header ===== */
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 8px;
+}
+.header-label { font-size: 13px; font-weight: 500; letter-spacing: 0.35em; color: var(--text-dim); text-transform: uppercase; }
+.header-title { font-size: 40px; font-weight: 900; letter-spacing: -0.01em; color: var(--btc); text-shadow: 0 0 30px rgba(247,147,26,0.4); }
+.header-controls { display: flex; align-items: center; gap: 10px; }
+
+.speed-group { display: flex; gap: 4px; padding: 4px; background: rgba(255,255,255,0.05); border-radius: 10px; }
+.speed-btn {
+  padding: 10px 16px; font-size: 14px; font-weight: 600; border-radius: 7px;
+  color: var(--text-dim); background: transparent; transition: all 0.15s;
+}
+.speed-btn:hover { color: #fff; }
+.speed-btn.active { background: rgba(247,147,26,0.25); color: var(--btc); }
+
+.icon-btn {
+  width: 44px; height: 44px; font-size: 20px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  transition: all 0.12s;
+}
+.icon-btn:hover { background: rgba(255,255,255,0.12); }
+
+.target-setup {
+  display: flex; align-items: center; gap: 4px;
+  padding: 4px 6px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 10px;
+  transition: opacity 0.15s;
+}
+.target-setup.locked { opacity: 0.55; }
+.setup-label {
+  font-size: 12px; color: var(--text-dim); padding: 0 8px 0 4px;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+.target-btn {
+  width: 30px; height: 30px;
+  font-size: 22px; font-weight: 800;
+  color: var(--btc);
+  background: rgba(247,147,26,0.12);
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.12s;
+}
+.target-btn:hover:not(:disabled) { background: rgba(247,147,26,0.25); }
+.target-btn:disabled {
+  color: rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.03);
+  cursor: not-allowed;
+}
+.target-val {
+  font-size: 22px; font-weight: 900; color: #fff;
+  font-family: "SF Mono", ui-monospace, monospace;
+  min-width: 28px; text-align: center;
+  line-height: 1;
+}
+
+.main-btn {
+  padding: 12px 28px; font-size: 17px; font-weight: 700; border-radius: 10px;
+  background: linear-gradient(180deg, var(--btc) 0%, var(--btc-dark) 100%);
+  color: #0a0a0a;
+  box-shadow: 0 8px 24px rgba(247,147,26,0.35), inset 0 1px 0 rgba(255,255,255,0.25);
+  transition: all 0.1s;
+}
+.main-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.main-btn.pulse { animation: pulseBtn 1.8s ease-in-out infinite; }
+@keyframes pulseBtn {
+  0%, 100% { box-shadow: 0 8px 24px rgba(247,147,26,0.35), inset 0 1px 0 rgba(255,255,255,0.25), 0 0 0 0 rgba(247,147,26,0.7); }
+  50%      { box-shadow: 0 8px 24px rgba(247,147,26,0.35), inset 0 1px 0 rgba(255,255,255,0.25), 0 0 0 18px rgba(247,147,26,0); }
+}
+
+/* ===== Stats ===== */
+.stats { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; }
+.stat-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px 22px;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.stat-label { font-size: 11px; font-weight: 600; letter-spacing: 0.22em; color: var(--text-dim); text-transform: uppercase; }
+.stat-value { font-size: 54px; font-weight: 900; line-height: 1; letter-spacing: -0.02em; }
+.stat-value.orange { color: var(--btc); text-shadow: 0 0 25px rgba(247,147,26,0.4); }
+.stat-value.mono { font-family: "SF Mono", ui-monospace, Menlo, Monaco, Consolas, monospace; }
+.stat-sub { font-size: 13px; color: var(--text-dim); line-height: 1.3; }
+
+/* Retarget progress bar */
+.retarget-progress {
+  margin-top: 8px;
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+.retarget-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--btc-dark) 0%, var(--btc) 100%);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+  box-shadow: 0 0 10px rgba(247,147,26,0.5);
+}
+.retarget-split { font-size: 54px; font-weight: 900; line-height: 1; color: #fff; font-family: "SF Mono", ui-monospace, monospace; }
+.retarget-split .total { color: var(--text-dim); font-weight: 700; }
+.retarget-split .done { color: var(--btc); }
+
+.stats.retarget-shake { animation: shakeX 0.6s ease; }
+@keyframes shakeX {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-12px); }
+  40% { transform: translateX(12px); }
+  60% { transform: translateX(-7px); }
+  80% { transform: translateX(7px); }
+}
+
+/* ===== Main area ===== */
+.main {
+  display: grid;
+  grid-template-columns: 1236px 1fr;
+  gap: 16px;
+  min-height: 0;
+}
+.section-title {
+  font-size: 13px; font-weight: 600; letter-spacing: 0.3em; color: var(--text-dim);
+  text-transform: uppercase; padding: 0 8px; margin-bottom: 10px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.section-title .chip {
+  padding: 3px 10px; font-size: 11px; letter-spacing: 0.15em;
+  background: rgba(247,147,26,0.15); color: var(--btc); border-radius: 6px;
+}
+
+.miners-section { display: flex; flex-direction: column; min-height: 0; }
+.miners-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 12px;
+  flex: 1; min-height: 0;
+}
+
+/* ===== Miner tile ===== */
+.miner-tile {
+  background: linear-gradient(145deg, #181818 0%, #0e0e0e 100%);
+  border: 2px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 14px 18px;
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: space-between;
+  transition: all 0.15s;
+}
+.miner-tile.rolling {
+  border-color: rgba(247,147,26,0.6);
+  box-shadow: 0 0 40px rgba(247,147,26,0.25);
+}
+.miner-tile.won {
+  background: linear-gradient(145deg, #3a2810 0%, #1a1308 100%);
+  border-color: var(--btc);
+  animation: wonFlash 1.8s ease;
+}
+@keyframes wonFlash {
+  0%   { box-shadow: 0 0 0 0 rgba(247,147,26,0.9), 0 0 80px rgba(247,147,26,0.6); transform: scale(1); }
+  25%  { transform: scale(1.04); }
+  100% { box-shadow: 0 0 0 60px rgba(247,147,26,0), 0 0 80px rgba(247,147,26,0); transform: scale(1); }
+}
+
+.miner-head { display: flex; align-items: center; justify-content: space-between; }
+.miner-id { display: flex; align-items: center; gap: 12px; }
+.miner-emoji { font-size: 48px; line-height: 1; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5)); }
+.miner-name { font-size: 22px; font-weight: 800; line-height: 1.1; }
+.miner-sub { font-size: 13px; color: var(--text-dim); margin-top: 2px; }
+
+.miner-blocks-col { text-align: right; }
+.miner-blocks-lbl { font-size: 10px; font-weight: 600; letter-spacing: 0.25em; color: var(--text-dim); text-transform: uppercase; }
+.miner-blocks-num { font-size: 38px; font-weight: 900; color: var(--btc); line-height: 1; }
+
+/* ===== Dice row ===== */
+.dice-area {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 2px 0;
+}
+.dice-row {
+  display: flex; gap: 8px;
+  justify-content: center;
+}
+.die {
+  width: 44px; height: 44px;
+  background: linear-gradient(135deg, #ffffff 0%, #e8e8e8 60%, #cfcfcf 100%);
+  border-radius: 10px;
+  color: #0a0a0a;
+  font-size: 28px;
+  font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow:
+    0 4px 10px rgba(0,0,0,0.5),
+    inset 0 2px 0 rgba(255,255,255,0.7),
+    inset 0 -3px 0 rgba(0,0,0,0.15);
+  font-family: "SF Mono", ui-monospace, monospace;
+  transition: transform 0.15s ease;
+}
+.die.rolling { animation: dieRoll 0.28s cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes dieRoll {
+  0%   { transform: rotateX(0) scale(1); }
+  50%  { transform: rotateX(360deg) scale(1.15); }
+  100% { transform: rotateX(720deg) scale(1); }
+}
+.die.win {
+  background: linear-gradient(135deg, #FFB659 0%, #F7931A 60%, #D87C10 100%);
+  color: #fff;
+  box-shadow:
+    0 4px 20px rgba(247,147,26,0.7),
+    inset 0 2px 0 rgba(255,255,255,0.4),
+    inset 0 -3px 0 rgba(0,0,0,0.2);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  animation: dieWin 0.6s ease;
+}
+@keyframes dieWin {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+
+.dice-sum {
+  font-size: 62px;
+  font-weight: 900;
+  line-height: 1;
+  font-family: "SF Mono", ui-monospace, monospace;
+  color: #fff;
+  letter-spacing: -0.02em;
+  transition: color 0.2s, text-shadow 0.2s;
+}
+.dice-sum.win {
+  color: var(--btc);
+  text-shadow: 0 0 30px rgba(247,147,26,0.7);
+  animation: sumWin 0.6s ease;
+}
+@keyframes sumWin {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+.dice-sum-label {
+  font-size: 13px; letter-spacing: 0.08em; color: var(--text-faint);
+  font-family: "SF Mono", ui-monospace, monospace;
+  margin-top: -4px;
+  font-weight: 600;
+}
+.dice-sum-label.won {
+  color: var(--btc);
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.miner-foot { display: flex; align-items: center; justify-content: space-between; font-size: 13px; }
+.miner-foot .rolls { color: var(--text-dim); }
+.miner-foot .status { display: flex; align-items: center; gap: 6px; color: var(--text-dim); }
+.led { width: 9px; height: 9px; border-radius: 50%; background: #444; }
+.led.on { background: var(--btc); box-shadow: 0 0 8px var(--btc); animation: ledBlink 0.5s ease-in-out infinite; }
+@keyframes ledBlink { 0%,100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+/* ===== Sidebar ===== */
+.sidebar { display: flex; flex-direction: column; gap: 16px; min-height: 0; }
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.leaderboard { flex: 0 0 auto; display: flex; flex-direction: column; }
+.lb-rows { display: flex; flex-direction: column; }
+.lb-row {
+  display: grid; grid-template-columns: 44px 48px 1fr 60px;
+  align-items: center; gap: 8px;
+  padding: 8px 16px;
+  border-left: 4px solid transparent;
+  transition: all 0.3s ease;
+}
+.lb-row + .lb-row { border-top: 1px solid rgba(255,255,255,0.04); }
+.lb-row.rank-1 { background: linear-gradient(90deg, rgba(247,147,26,0.25), transparent 70%); border-left-color: var(--btc); }
+.lb-row.rank-2 { background: linear-gradient(90deg, rgba(200,200,200,0.15), transparent 70%); border-left-color: #9CA3AF; }
+.lb-row.rank-3 { background: linear-gradient(90deg, rgba(180,83,9,0.2), transparent 70%); border-left-color: #B45309; }
+.lb-medal { font-size: 22px; font-weight: 900; text-align: center; }
+.lb-emoji { font-size: 28px; }
+.lb-name { font-size: 18px; font-weight: 700; }
+.lb-blocks { font-size: 32px; font-weight: 900; color: var(--btc); text-align: right; font-family: "SF Mono", ui-monospace, monospace; }
+
+.events { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.events-list {
+  flex: 1;
+  overflow: hidden;
+  padding: 14px 18px;
+  display: flex; flex-direction: column; gap: 7px;
+}
+.event {
+  font-size: 14px; display: flex; align-items: baseline; justify-content: space-between;
+  gap: 10px; padding: 3px 0;
+  animation: slideInEvent 0.3s ease;
+}
+@keyframes slideInEvent {
+  from { transform: translateX(-10px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+.event .text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.event .ago { font-family: "SF Mono", ui-monospace, monospace; font-size: 12px; color: var(--text-faint); }
+.event.type-block .text { color: var(--btc); font-weight: 600; }
+.event.type-retarget .text { color: #FBBF24; font-weight: 600; }
+
+/* ===== Chain ===== */
+.chain-section { display: flex; flex-direction: column; min-height: 0; }
+.chain-row {
+  flex: 1;
+  display: flex; gap: 12px; align-items: stretch;
+  overflow: hidden;
+  padding: 2px 0;
+}
+.chain-block {
+  flex: 0 0 168px;
+  background: linear-gradient(135deg, #1f1f1f 0%, #2a2a2a 100%);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.chain-block.latest {
+  border-color: var(--btc);
+  box-shadow: 0 0 28px rgba(247,147,26,0.35);
+  animation: slideFromRight 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes slideFromRight {
+  from { transform: translateX(80px) scale(0.8); opacity: 0; }
+  to   { transform: translateX(0)   scale(1);   opacity: 1; }
+}
+.chain-block-top { display: flex; justify-content: space-between; align-items: baseline; }
+.chain-height { font-size: 22px; font-weight: 900; color: var(--btc); line-height: 1; }
+.chain-winning { font-family: "SF Mono", ui-monospace, monospace; font-size: 20px; font-weight: 700; color: #fff; }
+.chain-miner { display: flex; align-items: center; gap: 6px; }
+.chain-miner-emoji { font-size: 22px; }
+.chain-miner-name { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chain-tries { font-size: 11px; color: var(--text-dim); font-family: "SF Mono", ui-monospace, monospace; }
+
+.chain-empty { padding: 16px 22px; color: var(--text-faint); font-size: 18px; }
+
+/* ===== Overlays ===== */
+.block-overlay {
+  position: absolute; inset: 0; z-index: 60;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(247,147,26,0.2) 0%, rgba(0,0,0,0.5) 70%);
+  animation: overlayFade 1.8s ease forwards;
+}
+@keyframes overlayFade {
+  0%   { opacity: 0; transform: scale(0.9); }
+  15%  { opacity: 1; transform: scale(1); }
+  85%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.05); }
+}
+.overlay-content { text-align: center; }
+.overlay-emoji { font-size: 200px; line-height: 1; filter: drop-shadow(0 10px 40px rgba(247,147,26,0.6)); }
+.overlay-name { font-size: 68px; font-weight: 900; color: var(--btc); margin-top: 12px; letter-spacing: -0.02em; text-shadow: 0 0 40px rgba(247,147,26,0.5); }
+.overlay-block { font-size: 34px; font-weight: 700; margin-top: 6px; color: rgba(255,255,255,0.9); }
+.overlay-dice { display: flex; gap: 16px; justify-content: center; margin-top: 22px; }
+.overlay-die {
+  width: 90px; height: 90px;
+  background: linear-gradient(135deg, #FFB659 0%, #F7931A 50%, #D87C10 100%);
+  border-radius: 16px;
+  color: #fff;
+  font-size: 60px; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  font-family: "SF Mono", ui-monospace, monospace;
+  box-shadow: 0 8px 30px rgba(247,147,26,0.7);
+  text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+.overlay-explain { font-size: 20px; color: rgba(255,255,255,0.7); margin-top: 20px; }
+.overlay-explain b { color: var(--btc); font-weight: 800; }
+
+.pre-start-overlay {
+  position: absolute; inset: 0; z-index: 40;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(2px);
+}
+.pre-start-box {
+  padding: 28px 40px;
+  background: rgba(20,20,20,0.92);
+  border: 2px solid var(--btc);
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 20px 80px rgba(247,147,26,0.4);
+  animation: psBreathe 2.4s ease-in-out infinite;
+}
+@keyframes psBreathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+.pre-start-title { font-size: 44px; font-weight: 900; color: var(--btc); margin-bottom: 8px; }
+.pre-start-sub { font-size: 20px; color: var(--text-dim); }
+.pre-start-kbd { display: inline-block; padding: 3px 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); border-radius: 5px; font-family: "SF Mono", ui-monospace, monospace; font-size: 16px; margin: 0 3px; }
+
+/* Rules explainer (left-bottom corner, small, always visible) */
+.rules-chip {
+  position: absolute;
+  left: 32px; bottom: 32px;
+  z-index: 5;
+  background: rgba(0,0,0,0.7);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 13px;
+  color: var(--text-dim);
+  max-width: 460px;
+  line-height: 1.4;
+  pointer-events: none;
+}
+.rules-chip b { color: var(--btc); font-weight: 700; }
+</style>
+</head>
+<body>
+<a href="/kalkulatorok.html" id="archive-back" style="position:fixed;top:12px;left:12px;z-index:99999;background:rgba(10,10,10,0.75);color:#F7931A;text-decoration:none;padding:6px 12px 6px 10px;border:1px solid rgba(247,147,26,0.3);border-radius:20px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:all 0.2s;opacity:0.7" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.7">← Kalkulátorok</a>
+
+
+<div class="canvas-wrap">
+  <div id="canvas" class="canvas">
+    <div id="header-el" class="header"></div>
+    <div id="stats-el" class="stats"></div>
+    <div id="main-el" class="main"></div>
+    <div id="chain-el" class="chain-section"></div>
+    <div id="overlays"></div>
+  </div>
+</div>
+
+<script>
+// ==============================================================
+//  🎲 BITCOIN BÁNYÁSZAT — KOCKADOBÁSOS VIZUALIZÁCIÓ
+//  Minden bányász 3 klasszikus 1-6 oldalú kockát dob. Ha az
+//  összeg KISEBB, mint a TITKOS CÉLSZÁM → BLOKK!
+//  A célszám csak a blokk-találat pillanatában derül ki.
+// ==============================================================
+
+// ---------- Bitcoin legendák ----------
+const BITCOIN_LEGENDS = [
+  { id: 'satoshi', name: 'Satoshi',  emoji: '🧙', subtitle: 'Nakamoto' },
+  { id: 'hal',     name: 'Hal',      emoji: '⚡', subtitle: 'Finney' },
+  { id: 'adam',    name: 'Adam',     emoji: '🛡️', subtitle: 'Back' },
+  { id: 'nick',    name: 'Nick',     emoji: '🎩', subtitle: 'Szabo' },
+  { id: 'laszlo',  name: 'Laszlo',   emoji: '🍕', subtitle: 'Hanyecz' },
+  { id: 'gavin',   name: 'Gavin',    emoji: '🔧', subtitle: 'Andresen' },
+  { id: 'jameson', name: 'Jameson',  emoji: '🚀', subtitle: 'Lopp' },
+  { id: 'saylor',  name: 'Michael',  emoji: '💎', subtitle: 'Saylor' },
+];
+
+// ---------- Konfig ----------
+const DEFAULT_INITIAL_TARGET = 7;    // aki 7 alatt dob nyer (~9.3% esély)
+const MIN_TARGET = 4;
+const MAX_TARGET = 17;
+const BLOCK_TARGET_SECONDS = 15;
+const DEFAULT_RETARGET_INTERVAL = 10;
+const MIN_RETARGET = 3;
+const MAX_RETARGET = 20;
+const MAX_DIFFICULTY_CHANGE = 2;
+
+// URL paraméterek: ?start=N (kezdő szint), ?retarget=N (retarget interval)
+function readInitialTargetFromURL() {
+  const v = parseInt(new URLSearchParams(location.search).get('start'), 10);
+  if (Number.isFinite(v) && v >= MIN_TARGET && v <= MAX_TARGET) return v;
+  return DEFAULT_INITIAL_TARGET;
+}
+function readRetargetIntervalFromURL() {
+  const v = parseInt(new URLSearchParams(location.search).get('retarget'), 10);
+  if (Number.isFinite(v) && v >= MIN_RETARGET && v <= MAX_RETARGET) return v;
+  return DEFAULT_RETARGET_INTERVAL;
+}
+
+// Kumulatív eloszlás: P(3d6 összege < T) = CUMULATIVE[T] / 216
+const DICE_CUMULATIVE = {
+  3: 0, 4: 1, 5: 4, 6: 10, 7: 20, 8: 35, 9: 56, 10: 81, 11: 108,
+  12: 135, 13: 160, 14: 181, 15: 196, 16: 206, 17: 212, 18: 215, 19: 216
+};
+function probFromTarget(t) {
+  const clamp = Math.max(3, Math.min(19, t));
+  return (DICE_CUMULATIVE[clamp] || 0) / 216;
+}
+
+const SPEED_PRESETS = {
+  slow:   { min: 2800, max: 4200, label: 'Lassú',  hint: '~3-4 mp' },
+  normal: { min: 1700, max: 2700, label: 'Normál', hint: '~2 mp' },
+  fast:   { min: 700,  max: 1200, label: 'Gyors',  hint: '~1 mp' },
+  turbo:  { min: 200,  max: 450,  label: 'Turbó',  hint: '~0.3 mp' },
+};
+
+// ---------- State ----------
+const state = {
+  running: false,
+  speed: 'normal',
+  soundEnabled: true,
+  miners: [],
+  chain: [],
+  initialTarget: readInitialTargetFromURL(),
+  currentTarget: readInitialTargetFromURL(),
+  retargetInterval: readRetargetIntervalFromURL(),
+  startedAt: null,
+  events: [],
+  flashRetarget: false,
+};
+
+function initMiners() {
+  const preset = SPEED_PRESETS[state.speed];
+  state.miners = BITCOIN_LEGENDS.map(m => ({
+    ...m,
+    rolls: 0,
+    blocks: 0,
+    currentDice: null,       // [a, b, c]
+    currentSum: null,        // összeg
+    lastTryAt: 0,
+    tryInterval: preset.min + Math.random() * (preset.max - preset.min),
+    isRolling: false,
+    justWon: 0,
+  }));
+}
+
+// ---------- Logika ----------
+function roll3d6() {
+  const a = 1 + Math.floor(Math.random() * 6);
+  const b = 1 + Math.floor(Math.random() * 6);
+  const c = 1 + Math.floor(Math.random() * 6);
+  return { dice: [a, b, c], sum: a + b + c };
+}
+function difficultyFromTarget(t) {
+  const pInit = probFromTarget(state.initialTarget);
+  const pCur = probFromTarget(t);
+  if (pCur === 0) return Infinity;
+  return pInit / pCur;
+}
+function computeNewTarget(prev, actualSec, targetSec) {
+  let ratio = actualSec / targetSec;
+  if (ratio < 1 / MAX_DIFFICULTY_CHANGE) ratio = 1 / MAX_DIFFICULTY_CHANGE;
+  if (ratio > MAX_DIFFICULTY_CHANGE) ratio = MAX_DIFFICULTY_CHANGE;
+  const oldP = probFromTarget(prev);
+  const desiredP = oldP * ratio;
+  // Log-arányos közelség (simább, nem hajlamos nagyot ugrani)
+  let best = prev, bestDist = Infinity;
+  for (let t = MIN_TARGET; t <= MAX_TARGET; t++) {
+    const p = probFromTarget(t);
+    if (p === 0) continue;
+    const d = Math.abs(Math.log(p) - Math.log(desiredP));
+    if (d < bestDist) { bestDist = d; best = t; }
+  }
+  return best;
+}
+function pctStr(t) {
+  return (probFromTarget(t) * 100).toFixed(2);
+}
+function oneInStr(t) {
+  const p = probFromTarget(t);
+  if (p === 0) return '∞';
+  return Math.round(1 / p).toLocaleString('hu-HU');
+}
+
+// ---------- Hangok ----------
+let audioCtx = null;
+function wakeAudio() {
+  try { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){}
+}
+function playSound(type) {
+  if (!state.soundEnabled) return;
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const t = audioCtx.currentTime;
+    if (type === 'block') {
+      [523, 659, 784, 1047].forEach((f, i) => {
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.connect(g); g.connect(audioCtx.destination);
+        o.frequency.setValueAtTime(f, t + i * 0.08);
+        g.gain.setValueAtTime(0.22, t + i * 0.08);
+        g.gain.exponentialRampToValueAtTime(0.001, t + i * 0.08 + 0.55);
+        o.start(t + i * 0.08); o.stop(t + i * 0.08 + 0.55);
+      });
+    } else if (type === 'retarget') {
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.connect(g); g.connect(audioCtx.destination);
+      o.frequency.setValueAtTime(240, t);
+      o.frequency.exponentialRampToValueAtTime(1500, t + 0.7);
+      g.gain.setValueAtTime(0.16, t);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.7);
+      o.start(t); o.stop(t + 0.7);
+    }
+  } catch(e){}
+}
+
+// ---------- Események ----------
+function pushEvent(text, type = 'info') {
+  state.events.unshift({ text, type, at: Date.now(), id: Math.random().toString(36).slice(2) });
+  if (state.events.length > 18) state.events.pop();
+}
+
+// ---------- Bányász tick ----------
+function minerTick(m, now) {
+  m.lastTryAt = now;
+  const preset = SPEED_PRESETS[state.speed];
+  m.tryInterval = preset.min + Math.random() * (preset.max - preset.min);
+  m.isRolling = true;
+  m.rolls++;
+  const r = roll3d6();
+  m.currentDice = r.dice;
+  m.currentSum = r.sum;
+
+  if (r.sum < state.currentTarget) {
+    foundBlock(m, r);
+  }
+  setTimeout(() => { m.isRolling = false; }, 300);
+}
+
+function foundBlock(m, roll) {
+  const block = {
+    height: state.chain.length,
+    winningDice: roll.dice.slice(),
+    winningSum: roll.sum,
+    minerId: m.id, minerName: m.name, minerEmoji: m.emoji,
+    tries: m.rolls,
+    target: state.currentTarget,
+    timestamp: Date.now(),
+  };
+  state.chain.push(block);
+  m.blocks++;
+  m.justWon = Date.now();
+
+  pushEvent(`${m.emoji} ${m.name} dobott ${roll.dice.join('+')}=${roll.sum} — BLOKK!`, 'block');
+  showBlockFoundOverlay(block);
+  playSound('block');
+
+  maybeRetarget();
+  renderAll();
+}
+
+function maybeRetarget() {
+  const n = state.chain.length;
+  const interval = state.retargetInterval;
+  if (n === 0 || n % interval !== 0) return;
+  const windowStart = n === interval ? state.startedAt : state.chain[n - interval - 1].timestamp;
+  const actualSec = (state.chain[n - 1].timestamp - windowStart) / 1000;
+  const targetSec = BLOCK_TARGET_SECONDS * interval;
+  const oldT = state.currentTarget;
+  state.currentTarget = computeNewTarget(state.currentTarget, actualSec, targetSec);
+  const msg = oldT === state.currentTarget
+    ? `🔄 Nehézségi szint változatlan (${state.currentTarget})`
+    : oldT < state.currentTarget
+      ? `🔄 Nehézségi szint: ${oldT} → ${state.currentTarget} (📉 könnyebb lett)`
+      : `🔄 Nehézségi szint: ${oldT} → ${state.currentTarget} (📈 nehezebb lett)`;
+  pushEvent(msg, 'retarget');
+  playSound('retarget');
+  state.flashRetarget = true;
+  setTimeout(() => { state.flashRetarget = false; const el = document.getElementById('stats-el'); if (el) el.classList.remove('retarget-shake'); }, 700);
+}
+
+// ---------- Fő loop ----------
+let tickHandle = null;
+function startLoop() {
+  if (tickHandle) return;
+  const loop = () => {
+    if (!state.running) return;
+    const now = Date.now();
+    for (const m of state.miners) {
+      if (now - m.lastTryAt >= m.tryInterval) {
+        minerTick(m, now);
+      }
+    }
+    updateLight();
+    tickHandle = requestAnimationFrame(loop);
+  };
+  tickHandle = requestAnimationFrame(loop);
+}
+function stopLoop() {
+  if (tickHandle) { cancelAnimationFrame(tickHandle); tickHandle = null; }
+}
+
+// =====================================================
+//  RENDER
+// =====================================================
+function renderAll() {
+  renderHeader();
+  renderStats();
+  renderMain();
+  renderChain();
+  renderPreStart();
+  renderRulesChip();
+}
+
+function renderHeader() {
+  const el = document.getElementById('header-el');
+  const btnLabel = state.running ? '⏸ Szünet' : (state.chain.length === 0 && !state.startedAt ? '▶ Start' : '▶ Folytatás');
+  const btnCls = (!state.running && state.chain.length === 0) ? 'main-btn pulse' : 'main-btn';
+  // Setup vezérlők csak akkor editálhatók, ha még nem indult a játék
+  const lockedTarget = state.startedAt !== null || state.chain.length > 0;
+  const canTMinus = !lockedTarget && state.initialTarget > MIN_TARGET;
+  const canTPlus  = !lockedTarget && state.initialTarget < MAX_TARGET;
+  const canRMinus = !lockedTarget && state.retargetInterval > MIN_RETARGET;
+  const canRPlus  = !lockedTarget && state.retargetInterval < MAX_RETARGET;
+  const lockTip = lockedTarget ? 'Csak reset után állítható' : '';
+  el.innerHTML = `
+    <div>
+      <div class="header-label">Bitcoin Miskolc · 2026</div>
+      <div class="header-title">🎲 BÁNYÁSZAT — KOCKADOBÁS</div>
+    </div>
+    <div class="header-controls">
+      <div class="target-setup ${lockedTarget ? 'locked' : ''}" title="${lockTip || 'Kezdő nehézségi szint'}">
+        <span class="setup-label">Kezdő &lt;</span>
+        <button class="target-btn" id="target-minus" ${canTMinus ? '' : 'disabled'}>−</button>
+        <span class="target-val" id="target-val">${state.initialTarget}</span>
+        <button class="target-btn" id="target-plus" ${canTPlus ? '' : 'disabled'}>+</button>
+      </div>
+      <div class="target-setup ${lockedTarget ? 'locked' : ''}" title="${lockTip || 'Retarget-ek közti blokkok száma'}">
+        <span class="setup-label">Retarget</span>
+        <button class="target-btn" id="retarget-minus" ${canRMinus ? '' : 'disabled'}>−</button>
+        <span class="target-val" id="retarget-val">${state.retargetInterval}</span>
+        <button class="target-btn" id="retarget-plus" ${canRPlus ? '' : 'disabled'}>+</button>
+      </div>
+      <div class="speed-group">
+        ${Object.entries(SPEED_PRESETS).map(([k, p]) => `
+          <button class="speed-btn ${state.speed === k ? 'active' : ''}" data-speed="${k}">${p.label}</button>
+        `).join('')}
+      </div>
+      <button class="icon-btn" id="btn-sound" title="Hang">${state.soundEnabled ? '🔊' : '🔇'}</button>
+      <button class="icon-btn" id="btn-fs" title="Teljes képernyő">⛶</button>
+      <button class="icon-btn" id="btn-reset" title="Reset">↻</button>
+      <button class="${btnCls}" id="btn-main">${btnLabel}</button>
+    </div>
+  `;
+  el.querySelector('#btn-main').onclick = toggleRun;
+  el.querySelector('#btn-reset').onclick = resetAll;
+  el.querySelector('#btn-sound').onclick = () => { state.soundEnabled = !state.soundEnabled; renderHeader(); };
+  el.querySelector('#btn-fs').onclick = toggleFullscreen;
+  // Kezdő target +/-
+  const tMinus = el.querySelector('#target-minus');
+  if (tMinus) tMinus.onclick = () => {
+    if (lockedTarget || state.initialTarget <= MIN_TARGET) return;
+    state.initialTarget--;
+    state.currentTarget = state.initialTarget;
+    renderAll();
+  };
+  const tPlus = el.querySelector('#target-plus');
+  if (tPlus) tPlus.onclick = () => {
+    if (lockedTarget || state.initialTarget >= MAX_TARGET) return;
+    state.initialTarget++;
+    state.currentTarget = state.initialTarget;
+    renderAll();
+  };
+  // Retarget interval +/-
+  const rMinus = el.querySelector('#retarget-minus');
+  if (rMinus) rMinus.onclick = () => {
+    if (lockedTarget || state.retargetInterval <= MIN_RETARGET) return;
+    state.retargetInterval--;
+    renderAll();
+  };
+  const rPlus = el.querySelector('#retarget-plus');
+  if (rPlus) rPlus.onclick = () => {
+    if (lockedTarget || state.retargetInterval >= MAX_RETARGET) return;
+    state.retargetInterval++;
+    renderAll();
+  };
+  el.querySelectorAll('.speed-btn').forEach(b => {
+    b.onclick = () => {
+      state.speed = b.dataset.speed;
+      pushEvent(`⚡ Sebesség: ${SPEED_PRESETS[state.speed].label}`);
+      renderHeader();
+      renderEvents();
+    };
+  });
+}
+
+function renderStats() {
+  const el = document.getElementById('stats-el');
+  const h = state.chain.length;
+  const interval = state.retargetInterval;
+  const inWindow = h % interval;
+  const remaining = interval - inWindow;
+  const progressPct = (inWindow / interval) * 100;
+  const runtime = state.startedAt ? Math.floor((Date.now() - state.startedAt) / 1000) : 0;
+  const avg = h > 0 && state.startedAt ? (runtime / h).toFixed(1) : '—';
+  const totalRolls = state.miners.reduce((a, m) => a + m.rolls, 0);
+
+  el.className = 'stats' + (state.flashRetarget ? ' retarget-shake' : '');
+  el.innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">Blokk</div>
+      <div id="s-height" class="stat-value orange">#${h}</div>
+      <div class="stat-sub">Eddig megtalált blokk</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Nehézségi szint</div>
+      <div id="s-target" class="stat-value orange">${state.currentTarget}</div>
+      <div class="stat-sub">Aki ennél <b>kisebbet dob</b> → nyer</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Köv. Retarget</div>
+      <div id="s-retarget" class="retarget-split"><span class="done">${inWindow}</span>/<span class="total">${interval}</span></div>
+      <div class="retarget-progress"><div class="retarget-progress-fill" style="width:${progressPct}%"></div></div>
+      <div class="stat-sub" style="margin-top:6px">Még <b>${remaining}</b> blokk a nehézség-változásig</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Összes dobás</div>
+      <div id="s-rolls" class="stat-value mono">${totalRolls.toLocaleString('hu-HU')}</div>
+      <div class="stat-sub">${state.miners.length} bányásztól</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Átlag blokkidő</div>
+      <div id="s-avg" class="stat-value mono">${avg}<span style="font-size:30px;opacity:0.7">s</span></div>
+      <div class="stat-sub">Cél: <b>${BLOCK_TARGET_SECONDS} mp</b> / blokk</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Futásidő</div>
+      <div id="s-time" class="stat-value mono">${formatTime(runtime)}</div>
+      <div class="stat-sub">${state.running ? '<span style="color:#22C55E">● Élőben</span>' : '<span style="color:#9CA3AF">❚❚ Szünet</span>'}</div>
+    </div>
+  `;
+}
+
+function renderMain() {
+  const el = document.getElementById('main-el');
+  el.innerHTML = `
+    <div class="miners-section">
+      <div class="section-title">
+        <span>🤖 Bányászok — kockadobók</span>
+        <span class="chip">${state.miners.length} aktív</span>
+      </div>
+      <div id="miners-grid" class="miners-grid">
+        ${state.miners.map(renderMinerTile).join('')}
+      </div>
+    </div>
+    <div class="sidebar">
+      <div class="leaderboard">
+        <div class="section-title"><span>🏆 Ranglista</span></div>
+        <div class="panel"><div id="lb-rows" class="lb-rows">${renderLeaderboardRows()}</div></div>
+      </div>
+      <div class="events">
+        <div class="section-title"><span>📡 Események</span></div>
+        <div class="panel events-list" id="events-list">${renderEventsList()}</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderMinerTile(m) {
+  const recentWon = m.justWon && (Date.now() - m.justWon < 1800);
+  const tileCls = recentWon ? 'miner-tile won' : m.isRolling ? 'miner-tile rolling' : 'miner-tile';
+  const diceHTML = renderDice(m);
+  return `
+    <div class="${tileCls}" data-miner-id="${m.id}">
+      <div class="miner-head">
+        <div class="miner-id">
+          <div class="miner-emoji">${m.emoji}</div>
+          <div>
+            <div class="miner-name">${m.name}</div>
+            <div class="miner-sub">${m.subtitle}</div>
+          </div>
+        </div>
+        <div class="miner-blocks-col">
+          <div class="miner-blocks-lbl">Blokk</div>
+          <div class="miner-blocks-num" data-blocks>${m.blocks}</div>
+        </div>
+      </div>
+      <div class="dice-area" data-dice-area>${diceHTML}</div>
+      <div class="miner-foot">
+        <div class="rolls" data-rolls>${m.rolls.toLocaleString('hu-HU')} dobás</div>
+        <div class="status"><div class="led ${m.isRolling ? 'on' : ''}" data-led></div><span data-state>${m.isRolling ? 'Dob!' : 'vár'}</span></div>
+      </div>
+    </div>
+  `;
+}
+
+function renderDice(m) {
+  const recentWon = m.justWon && (Date.now() - m.justWon < 1800);
+  const isRolling = m.isRolling ? 'rolling' : '';
+  const winCls = recentWon ? 'win' : '';
+
+  if (m.currentDice === null) {
+    return `
+      <div class="dice-row">
+        <div class="die">?</div><div class="die">?</div><div class="die">?</div>
+      </div>
+      <div class="dice-sum" style="opacity:0.4">—</div>
+      <div class="dice-sum-label">vár az első dobásra</div>
+    `;
+  }
+  const [a, b, c] = m.currentDice;
+  const sum = m.currentSum;
+  const won = sum < state.currentTarget;
+
+  let labelHtml;
+  if (recentWon) {
+    labelHtml = `<div class="dice-sum-label won">✓ ${sum} &lt; ${state.currentTarget} — BLOKK!</div>`;
+  } else if (won) {
+    labelHtml = `<div class="dice-sum-label won">${sum} &lt; ${state.currentTarget}</div>`;
+  } else {
+    labelHtml = `<div class="dice-sum-label">${sum} &gt; ${state.currentTarget}</div>`;
+  }
+
+  return `
+    <div class="dice-row">
+      <div class="die ${isRolling} ${winCls}">${a}</div>
+      <div class="die ${isRolling} ${winCls}">${b}</div>
+      <div class="die ${isRolling} ${winCls}">${c}</div>
+    </div>
+    <div class="dice-sum ${winCls}">${sum}</div>
+    ${labelHtml}
+  `;
+}
+
+function renderLeaderboardRows() {
+  const sorted = [...state.miners].sort((a, b) => b.blocks - a.blocks || b.rolls - a.rolls);
+  return sorted.map((m, i) => {
+    const rankCls = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : '';
+    const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i+1}.`;
+    return `
+      <div class="lb-row ${rankCls}">
+        <div class="lb-medal">${medal}</div>
+        <div class="lb-emoji">${m.emoji}</div>
+        <div class="lb-name">${m.name}</div>
+        <div class="lb-blocks">${m.blocks}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderEventsList() {
+  if (state.events.length === 0) return '<div style="opacity:0.4;font-size:14px">Nincs esemény még...</div>';
+  return state.events.slice(0, 10).map(ev => {
+    const ago = formatAgo(Date.now() - ev.at);
+    return `<div class="event type-${ev.type}"><span class="text">${ev.text}</span><span class="ago">${ago}</span></div>`;
+  }).join('');
+}
+
+function renderChain() {
+  const el = document.getElementById('chain-el');
+  const MAX_VISIBLE = 10;
+  const blocks = state.chain.slice(-MAX_VISIBLE);
+  el.innerHTML = `
+    <div class="section-title">
+      <span>⛓️ Blokklánc — utolsó ${Math.min(state.chain.length, MAX_VISIBLE)}</span>
+      <span class="chip">Összesen: ${state.chain.length} blokk</span>
+    </div>
+    <div class="chain-row">
+      ${blocks.length === 0
+        ? '<div class="chain-empty">Még egy blokk sem… Nyomd meg a ▶ Start-ot!</div>'
+        : blocks.map((b, i) => renderChainBlock(b, i === blocks.length - 1)).join('')}
+    </div>
+  `;
+}
+function renderChainBlock(b, isLatest) {
+  return `
+    <div class="chain-block ${isLatest ? 'latest' : ''}">
+      <div class="chain-block-top">
+        <div class="chain-height">#${b.height}</div>
+        <div class="chain-winning">${b.winningSum}</div>
+      </div>
+      <div class="chain-miner">
+        <span class="chain-miner-emoji">${b.minerEmoji}</span>
+        <span class="chain-miner-name">${b.minerName}</span>
+      </div>
+      <div class="chain-tries">${b.winningDice.join('+')} &lt; ${b.target}</div>
+    </div>
+  `;
+}
+
+function renderPreStart() {
+  const overlays = document.getElementById('overlays');
+  const existing = overlays.querySelector('.pre-start-overlay');
+  const shouldShow = !state.running && state.chain.length === 0 && !state.startedAt;
+  if (shouldShow && !existing) {
+    const d = document.createElement('div');
+    d.className = 'pre-start-overlay';
+    d.innerHTML = `
+      <div class="pre-start-box">
+        <div class="pre-start-title">▶ Nyomd meg a START gombot</div>
+        <div class="pre-start-sub">Vagy a <span class="pre-start-kbd">Szóköz</span> billentyűt</div>
+      </div>
+    `;
+    overlays.appendChild(d);
+  } else if (!shouldShow && existing) {
+    existing.remove();
+  }
+}
+
+function renderRulesChip() {
+  const overlays = document.getElementById('overlays');
+  let chip = overlays.querySelector('.rules-chip');
+  if (!chip) {
+    chip = document.createElement('div');
+    chip.className = 'rules-chip';
+    overlays.appendChild(chip);
+  }
+  chip.innerHTML = `
+    <b>A szabály:</b> 3 kocka összege legyen <b>kisebb, mint ${state.currentTarget}</b> → <b>BLOKK!</b>
+    A nehézségi szint <b>${state.retargetInterval} blokkonként</b> változik.
+  `;
+}
+
+function showBlockFoundOverlay(block) {
+  const overlays = document.getElementById('overlays');
+  const d = document.createElement('div');
+  d.className = 'block-overlay';
+  const [a, b, c] = block.winningDice;
+  d.innerHTML = `
+    <div class="overlay-content">
+      <div class="overlay-emoji">${block.minerEmoji}</div>
+      <div class="overlay-name">${block.minerName.toUpperCase()}</div>
+      <div class="overlay-block">BLOKK #${block.height}</div>
+      <div class="overlay-dice">
+        <div class="overlay-die">${a}</div>
+        <div class="overlay-die">${b}</div>
+        <div class="overlay-die">${c}</div>
+      </div>
+      <div class="overlay-explain">
+        Összeg: <b>${block.winningSum}</b> &nbsp;·&nbsp; Nehézségi szint: <b>${block.target}</b> &nbsp;·&nbsp; <b>${block.winningSum} &lt; ${block.target}</b> ✓
+      </div>
+    </div>
+  `;
+  overlays.appendChild(d);
+  setTimeout(() => d.remove(), 1800);
+}
+
+// ----- Light update -----
+function updateLight() {
+  const h = state.chain.length;
+  const interval = state.retargetInterval;
+  const inWindow = h % interval;
+  const runtime = state.startedAt ? Math.floor((Date.now() - state.startedAt) / 1000) : 0;
+  const avg = h > 0 && state.startedAt ? (runtime / h).toFixed(1) : '—';
+  const totalRolls = state.miners.reduce((a, m) => a + m.rolls, 0);
+  const elTime = document.getElementById('s-time');
+  if (elTime) elTime.textContent = formatTime(runtime);
+  const elAvg = document.getElementById('s-avg');
+  if (elAvg) elAvg.innerHTML = `${avg}<span style="font-size:30px;opacity:0.7">s</span>`;
+  const elRolls = document.getElementById('s-rolls');
+  if (elRolls) elRolls.textContent = totalRolls.toLocaleString('hu-HU');
+
+  for (const m of state.miners) updateMinerTile(m);
+  renderEvents();
+}
+
+function updateMinerTile(m) {
+  const tile = document.querySelector(`[data-miner-id="${m.id}"]`);
+  if (!tile) return;
+  const recentWon = m.justWon && (Date.now() - m.justWon < 1800);
+  const newCls = recentWon ? 'miner-tile won' : m.isRolling ? 'miner-tile rolling' : 'miner-tile';
+  if (tile.className !== newCls) tile.className = newCls;
+
+  const diceArea = tile.querySelector('[data-dice-area]');
+  if (diceArea) {
+    const diceKey = m.currentDice ? m.currentDice.join(',') : 'none';
+    const key = `${diceKey}-${m.currentSum}-${m.isRolling ? 1 : 0}-${recentWon ? 1 : 0}-${state.currentTarget}`;
+    if (diceArea.dataset.key !== key) {
+      diceArea.dataset.key = key;
+      diceArea.innerHTML = renderDice(m);
+    }
+  }
+
+  const blocksEl = tile.querySelector('[data-blocks]');
+  if (blocksEl && blocksEl.textContent !== String(m.blocks)) blocksEl.textContent = m.blocks;
+  const rollsEl = tile.querySelector('[data-rolls]');
+  if (rollsEl) {
+    const txt = `${m.rolls.toLocaleString('hu-HU')} dobás`;
+    if (rollsEl.textContent !== txt) rollsEl.textContent = txt;
+  }
+  const ledEl = tile.querySelector('[data-led]');
+  if (ledEl) {
+    const want = m.isRolling ? 'led on' : 'led';
+    if (ledEl.className !== want) ledEl.className = want;
+  }
+  const stEl = tile.querySelector('[data-state]');
+  if (stEl) {
+    const want = m.isRolling ? 'Dob!' : 'vár';
+    if (stEl.textContent !== want) stEl.textContent = want;
+  }
+}
+
+function renderEvents() {
+  const el = document.getElementById('events-list');
+  if (!el) return;
+  el.innerHTML = renderEventsList();
+}
+
+// ----- Helpers -----
+function formatTime(sec) {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+}
+function formatAgo(ms) {
+  const s = Math.floor(ms / 1000);
+  if (s < 2) return 'most';
+  if (s < 60) return `${s}s`;
+  return `${Math.floor(s / 60)}p`;
+}
+
+// ----- Actions -----
+function toggleRun() {
+  wakeAudio();
+  if (state.running) {
+    state.running = false;
+    stopLoop();
+    pushEvent('❚❚ Szünet');
+  } else {
+    if (!state.startedAt) {
+      state.startedAt = Date.now();
+      pushEvent('▶ Bányászat elindítva — dobják a kockákat!');
+    } else {
+      pushEvent('▶ Folytatás');
+    }
+    state.running = true;
+    startLoop();
+  }
+  renderAll();
+}
+function resetAll() {
+  if (!confirm('Biztos újraindítod? Minden blokk és statisztika törlődik.')) return;
+  state.running = false;
+  stopLoop();
+  state.chain = [];
+  state.startedAt = null;
+  state.currentTarget = state.initialTarget;
+  state.events = [];
+  initMiners();
+  pushEvent('🔄 Reset — új verseny!');
+  renderAll();
+}
+function toggleFullscreen() {
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+  else document.exitFullscreen();
+}
+
+// ----- Keyboard -----
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.code === 'Space') { e.preventDefault(); toggleRun(); }
+  else if (e.code === 'KeyR') resetAll();
+  else if (e.code === 'KeyM') { state.soundEnabled = !state.soundEnabled; renderHeader(); }
+  else if (e.code === 'KeyF') toggleFullscreen();
+  else if (e.code === 'Digit1') { state.speed = 'slow';   pushEvent(`⚡ Sebesség: ${SPEED_PRESETS.slow.label}`);   renderHeader(); renderEvents(); }
+  else if (e.code === 'Digit2') { state.speed = 'normal'; pushEvent(`⚡ Sebesség: ${SPEED_PRESETS.normal.label}`); renderHeader(); renderEvents(); }
+  else if (e.code === 'Digit3') { state.speed = 'fast';   pushEvent(`⚡ Sebesség: ${SPEED_PRESETS.fast.label}`);   renderHeader(); renderEvents(); }
+  else if (e.code === 'Digit4') { state.speed = 'turbo';  pushEvent(`⚡ Sebesség: ${SPEED_PRESETS.turbo.label}`);  renderHeader(); renderEvents(); }
+});
+
+// ----- Scale-to-fit -----
+function fitCanvas() {
+  const canvas = document.getElementById('canvas');
+  const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+  canvas.style.transform = `scale(${scale})`;
+}
+window.addEventListener('resize', fitCanvas);
+
+// ----- Init -----
+initMiners();
+pushEvent('🎬 Készen áll — nyomd a ▶ Start gombot');
+renderAll();
+fitCanvas();
+
+// Futásidő frissítése szünet közben is
+setInterval(() => { if (!state.running) updateLight(); }, 1000);
+
+/*
+================================================================
+  🎲 KOCKADOBÁSOS BITCOIN BÁNYÁSZAT — HASZNÁLAT
+================================================================
+
+Full HD (1920×1080) projektor, auto scale-to-fit bármilyen méretre.
+
+A SZABÁLY EGYSZERŰ
+------------------
+- Minden bányász 3 kockát dob → ez egy 3-jegyű szám (000-999)
+- Ha a szám KISEBB, mint a CÉLSZÁM → BLOKK! (narancsosodnak a kockák)
+- 5 blokk után automatikus nehézség-korrekció
+  - Ha gyorsabban jöttek a blokkok mint 15 mp: nehezebb lesz (kisebb célszám)
+  - Ha lassabban: könnyebb lesz (nagyobb célszám)
+
+NARRÁCIÓ KÖZÖNSÉGNEK
+--------------------
+"Minden bányász 3 kockát dob. A számnak kisebbnek kell lennie mint [célszám].
+ Kezdetben 015 a cél, tehát 000-014 közötti dobás nyer — 1.5% esély.
+ A Bitcoinban ugyanez történik, csak óriási számokkal (hash).
+ 5 blokk után a hálózat átszámol — ha túl gyorsan jönnek, nehezebb lesz."
+
+GYORSBILLENTYŰK
+---------------
+  Space    Start / Szünet
+  R        Reset
+  M        Hang be/ki
+  F        Teljes képernyő
+  1-2-3-4  Sebesség: Lassú / Normál / Gyors / Turbó
+
+================================================================
+*/
+</script>
+</body>
+</html>
