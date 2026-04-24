@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idegrendszer szabályozás — Hogyan szerezheted vissza az energiádat</title>
+    <meta name="description" content="Tudományosan megalapozott útmutató az idegrendszer szabályozásához. Tanuld meg, hogyan győzheted le a krónikus fáradtságot és szerezheted vissza az energiádat.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0f1a;
+            --bg-secondary: #111827;
+            --bg-card: #1a2332;
+            --bg-card-hover: #1f2b3d;
+            --accent-teal: #2dd4bf;
+            --accent-teal-dim: rgba(45, 212, 191, 0.15);
+            --accent-amber: #f59e0b;
+            --accent-amber-dim: rgba(245, 158, 11, 0.12);
+            --accent-rose: #f43f5e;
+            --accent-rose-dim: rgba(244, 63, 94, 0.12);
+            --accent-violet: #8b5cf6;
+            --accent-violet-dim: rgba(139, 92, 246, 0.12);
+            --accent-blue: #3b82f6;
+            --accent-blue-dim: rgba(59, 130, 246, 0.12);
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-color: rgba(255,255,255,0.06);
+            --glow-teal: 0 0 40px rgba(45, 212, 191, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* ── Ambient background ── */
+        .ambient-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .ambient-bg .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.3;
+            animation: float 20s ease-in-out infinite;
+        }
+        .ambient-bg .orb:nth-child(1) {
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(45,212,191,0.15), transparent);
+            top: -150px; right: -100px;
+            animation-delay: 0s;
+        }
+        .ambient-bg .orb:nth-child(2) {
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(139,92,246,0.12), transparent);
+            bottom: 20%; left: -100px;
+            animation-delay: -7s;
+        }
+        .ambient-bg .orb:nth-child(3) {
+            width: 350px; height: 350px;
+            background: radial-gradient(circle, rgba(59,130,246,0.1), transparent);
+            top: 50%; right: -50px;
+            animation-delay: -14s;
+        }
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -20px) scale(1.05); }
+            66% { transform: translate(-20px, 15px) scale(0.95); }
+        }
+
+        /* ── Main container ── */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ── Hero ── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 80px 24px 60px;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: var(--accent-teal-dim);
+            border: 1px solid rgba(45,212,191,0.2);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--accent-teal);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 32px;
+        }
+        .hero-badge svg { width: 16px; height: 16px; }
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.2rem, 6vw, 3.8rem);
+            font-weight: 700;
+            line-height: 1.15;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-teal) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            color: var(--text-secondary);
+            max-width: 560px;
+            margin-bottom: 48px;
+            line-height: 1.8;
+        }
+        .hero-scroll {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            animation: pulse-down 2s ease-in-out infinite;
+        }
+        .hero-scroll svg { width: 20px; height: 20px; }
+        @keyframes pulse-down {
+            0%, 100% { transform: translateY(0); opacity: 0.5; }
+            50% { transform: translateY(8px); opacity: 1; }
+        }
+
+        /* ── Section headers ── */
+        .section-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        .section-number {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent-teal);
+            margin-bottom: 16px;
+        }
+        .section-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.6rem, 4vw, 2.4rem);
+            font-weight: 700;
+            line-height: 1.25;
+            margin-bottom: 16px;
+        }
+        .section-header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            max-width: 560px;
+            margin: 0 auto;
+        }
+
+        /* ── Content sections ── */
+        section {
+            padding: 80px 0;
+        }
+        section + section {
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* ── Cards ── */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent-teal), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .card:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+            box-shadow: var(--glow-teal);
+        }
+        .card:hover::before { opacity: 1; }
+
+        .card h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
+        .card p:last-child { margin-bottom: 0; }
+
+        /* ── Icon circles ── */
+        .icon-circle {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .icon-circle svg {
+            width: 22px;
+            height: 22px;
+        }
+        .icon-teal { background: var(--accent-teal-dim); color: var(--accent-teal); }
+        .icon-amber { background: var(--accent-amber-dim); color: var(--accent-amber); }
+        .icon-rose { background: var(--accent-rose-dim); color: var(--accent-rose); }
+        .icon-violet { background: var(--accent-violet-dim); color: var(--accent-violet); }
+        .icon-blue { background: var(--accent-blue-dim); color: var(--accent-blue); }
+
+        /* ── Bullet list ── */
+        .benefit-list {
+            list-style: none;
+            padding: 0;
+            margin: 16px 0;
+        }
+        .benefit-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 0;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        .benefit-list li::before {
+            content: '';
+            display: none;
+        }
+        .check-icon {
+            width: 20px;
+            height: 20px;
+            min-width: 20px;
+            margin-top: 2px;
+            color: var(--accent-teal);
+        }
+
+        /* ── Warning / Info boxes ── */
+        .info-box {
+            border-radius: 16px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+        .info-box.warning {
+            background: var(--accent-rose-dim);
+            border: 1px solid rgba(244, 63, 94, 0.15);
+        }
+        .info-box.warning .info-title { color: var(--accent-rose); }
+        .info-box.tip {
+            background: var(--accent-teal-dim);
+            border: 1px solid rgba(45, 212, 191, 0.15);
+        }
+        .info-box.tip .info-title { color: var(--accent-teal); }
+        .info-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .info-box p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* ── Diagram: ANS ── */
+        .ans-diagram {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 32px 0;
+        }
+        .ans-side {
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+        }
+        .ans-side.fight {
+            background: var(--accent-rose-dim);
+            border: 1px solid rgba(244, 63, 94, 0.15);
+        }
+        .ans-side.rest {
+            background: var(--accent-teal-dim);
+            border: 1px solid rgba(45, 212, 191, 0.15);
+        }
+        .ans-side h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .ans-side.fight h4 { color: var(--accent-rose); }
+        .ans-side.rest h4 { color: var(--accent-teal); }
+        .ans-side .ans-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+        .ans-side ul {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+        }
+        .ans-side ul li {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            padding: 4px 0;
+            padding-left: 16px;
+            position: relative;
+        }
+        .ans-side ul li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+        }
+        .ans-side.fight ul li::before { color: var(--accent-rose); }
+        .ans-side.rest ul li::before { color: var(--accent-teal); }
+
+        /* ── Step number badges ── */
+        .step-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        .step-badge.teal { background: var(--accent-teal-dim); color: var(--accent-teal); }
+        .step-badge.violet { background: var(--accent-violet-dim); color: var(--accent-violet); }
+        .step-badge.blue { background: var(--accent-blue-dim); color: var(--accent-blue); }
+        .step-badge.amber { background: var(--accent-amber-dim); color: var(--accent-amber); }
+
+        /* ── Timeline ── */
+        .timeline {
+            position: relative;
+            padding-left: 32px;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 8px;
+            bottom: 8px;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--accent-teal), var(--accent-violet), var(--accent-amber));
+            border-radius: 2px;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 28px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -32px;
+            top: 8px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 3px solid var(--accent-teal);
+            background: var(--bg-primary);
+        }
+        .timeline-item:nth-child(2)::before { border-color: var(--accent-violet); }
+        .timeline-item:nth-child(3)::before { border-color: var(--accent-blue); }
+        .timeline-item:nth-child(4)::before { border-color: var(--accent-amber); }
+        .timeline-item h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .timeline-item p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* ── Caffeine rules ── */
+        .rule-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .rule-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+        }
+        .rule-icon {
+            font-size: 1.5rem;
+            min-width: 36px;
+            text-align: center;
+        }
+        .rule-item .rule-text {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+        .rule-item .rule-text strong {
+            color: var(--text-primary);
+        }
+
+        /* ── Summary strip ── */
+        .summary-strip {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin: 32px 0;
+        }
+        .summary-item {
+            text-align: center;
+            padding: 24px 12px;
+            border-radius: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+        }
+        .summary-item .emoji {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+        .summary-item h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .summary-item p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* ── Footer ── */
+        footer {
+            padding: 48px 0;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+        }
+        footer p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+        footer a {
+            color: var(--accent-teal);
+            text-decoration: none;
+        }
+        footer a:hover { text-decoration: underline; }
+
+        /* ── Nav dots ── */
+        .nav-dots {
+            position: fixed;
+            right: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .nav-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0;
+        }
+        .nav-dot:hover, .nav-dot.active {
+            background: var(--accent-teal);
+            box-shadow: 0 0 12px rgba(45, 212, 191, 0.4);
+        }
+        .nav-dot[title]::after {
+            content: attr(title);
+            position: absolute;
+            right: 24px;
+            white-space: nowrap;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 640px) {
+            .container { padding: 0 16px; }
+            section { padding: 56px 0; }
+            .card { padding: 24px; border-radius: 16px; }
+            .ans-diagram { grid-template-columns: 1fr; }
+            .summary-strip { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .nav-dots { display: none; }
+            .hero { padding: 60px 16px 40px; min-height: auto; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="ambient-bg">
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+</div>
+
+<!-- NAV DOTS -->
+<nav class="nav-dots" aria-label="Oldal navigáció">
+    <button class="nav-dot active" onclick="scrollToSection('hero')" title="Kezdet"></button>
+    <button class="nav-dot" onclick="scrollToSection('problem')" title="A probléma"></button>
+    <button class="nav-dot" onclick="scrollToSection('brain')" title="Az agy"></button>
+    <button class="nav-dot" onclick="scrollToSection('sunlight')" title="Napfény"></button>
+    <button class="nav-dot" onclick="scrollToSection('rest')" title="Pihenés"></button>
+    <button class="nav-dot" onclick="scrollToSection('darkness')" title="Sötétség"></button>
+    <button class="nav-dot" onclick="scrollToSection('caffeine')" title="Koffein"></button>
+    <button class="nav-dot" onclick="scrollToSection('summary')" title="Összegzés"></button>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="hero">
+    <div class="container">
+        <div class="hero-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            Tudományos alapokon
+        </div>
+        <h1>Hogyan szabályozd az idegrendszered és szerezheted vissza az energiádat</h1>
+        <p class="hero-subtitle">
+            A krónikus fáradtság és stressz mögött gyakran egy túlhajszolt idegrendszer áll.
+            Ez az útmutató bemutatja, hogyan hozhatod egyensúlyba — tudományosan alátámasztva.
+        </p>
+        <div class="hero-scroll">
+            <span>Görgess le</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+        </div>
+    </div>
+</header>
+
+<main>
+
+<!-- ═══════════════ A PROBLÉMA ═══════════════ -->
+<section id="problem">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-number">A probléma</span>
+            <h2>Amikor a tested túlélő módban ragad</h2>
+            <p>A krónikus stressz aktiválja az autonóm idegrendszert, ami egy alacsony intenzitású túlélési állapotba helyezi a testedet.</p>
+        </div>
+
+        <div class="card">
+            <h3>
+                <div class="icon-circle icon-rose">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                </div>
+                Mi történik krónikus stressz esetén?
+            </h3>
+            <p>Amikor krónikusan stresszes vagy, az autonóm idegrendszered (az agyad azon része, amely a stresszválaszokat és a regenerációt irányítja) aktiválódik.</p>
+            <p>Ez egy alacsony intenzitású túlélési állapotba helyezi a testedet — az úgynevezett <strong>harcolj-vagy-menekülj</strong> (fight-or-flight) módba.</p>
+
+            <div class="info-box warning">
+                <div class="info-title">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    Fontos felismerés
+                </div>
+                <p>Egyetlen élőlény sem tud fejlődni, ha túlélő módból működik. Az eredmény: olyan kimerültség, amit az alvás sem old meg.</p>
+            </div>
+        </div>
+
+        <div class="ans-diagram">
+            <div class="ans-side fight">
+                <h4>Szimpatikus</h4>
+                <div class="ans-label">Harcolj vagy menekülj</div>
+                <ul>
+                    <li>Emelkedett szívverés</li>
+                    <li>Felszínes légzés</li>
+                    <li>Fokozott kortizol</li>
+                    <li>Emésztés leáll</li>
+                    <li>Alvászavar</li>
+                    <li>Szorongás</li>
+                </ul>
+            </div>
+            <div class="ans-side rest">
+                <h4>Paraszimpatikus</h4>
+                <div class="ans-label">Pihenj és emészts</div>
+                <ul>
+                    <li>Nyugodt szívverés</li>
+                    <li>Mély légzés</li>
+                    <li>Alacsony kortizol</li>
+                    <li>Aktív emésztés</li>
+                    <li>Mély alvás</li>
+                    <li>Nyugalom</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ AZ AGY VÁLTOZÁSAI ═══════════════ -->
+<section id="brain">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-number">A tudomány</span>
+            <h2>A krónikus stressz fizikailag megváltoztatja az agyat</h2>
+        </div>
+
+        <div class="card">
+            <h3>
+                <div class="icon-circle icon-violet">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a9 9 0 019 9c0 3.1-1.6 5.8-4 7.3V21a1 1 0 01-1 1H8a1 1 0 01-1-1v-2.7A9 9 0 0112 2z"/><path d="M9 22h6"/></svg>
+                </div>
+                Prefrontális kéreg zsugorodása (Prefrontal Cortex)
+            </h3>
+            <p>A prefrontális kéreg felelős a racionális gondolkodásért és a döntéshozatalért. Krónikus stressz hatására ez az agyrész fizikailag zsugorodik.</p>
+        </div>
+
+        <div class="card">
+            <h3>
+                <div class="icon-circle icon-rose">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></svg>
+                </div>
+                Szürkeállomány csökkenése (Gray Matter)
+            </h3>
+            <p>Csökken a szürkeállomány az érzelmi szabályozásért felelős területeken. Ennek következtében fogékonyabbá válsz mentális egészségügyi problémákra.</p>
+        </div>
+
+        <div class="info-box warning">
+            <div class="info-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+                Az eredmény
+            </div>
+            <p>Szorongás, koncentrációs problémák, és képtelenség az érzelmeid szabályozására. De van jó hír...</p>
+        </div>
+
+        <div class="info-box tip">
+            <div class="info-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                Az idegrendszered plasztikus!
+            </div>
+            <p>Ez azt jelenti, hogy életmódváltoztatásokra válaszul <strong>fizikailag meg tud változni</strong>. Íme, ami valóban működik:</p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ 1. REGGELI NAPFÉNY ═══════════════ -->
+<section id="sunlight">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-number">1. módszer</span>
+            <h2>Reggeli napfény, telefon előtt</h2>
+            <p>Az első fény, amit reggel látsz, fontosabb, mint gondolnád.</p>
+        </div>
+
+        <div class="card">
+            <h3>
+                <div class="icon-circle icon-amber">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                </div>
+                20 perc napfény az ébredés után
+            </h3>
+            <p>Ébredés után az első 30–60 percben tölts legalább 20 percet természetes napfényben. Engedd, hogy a fény elérje a szemedet (napszemüveg nélkül, de sosem nézz közvetlenül a napba).</p>
+
+            <p style="font-weight: 600; color: var(--text-primary); margin-top: 20px;">Ez a következőket váltja ki:</p>
+            <ul class="benefit-list">
+                <li>
+                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span><strong>Elnyomja a melatonin termelést</strong> — jelezve a testednek, hogy nappal van</span>
+                </li>
+                <li>
+                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span><strong>Több mint 50%-kal növeli a kortizolt</strong> — ez az ébredési jeled, és ez jó!</span>
+                </li>
+                <li>
+                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span><strong>Újraállítja a cirkadián órát</strong> — belső biológiai órádat szinkronizálja</span>
+                </li>
+                <li>
+                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span><strong>Elmélyíti az esti alvást</strong> — a reggeli fény paradox módon javítja az éjszakai alvásminőséget</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ 2. MENTÁLIS PIHENÉS ═══════════════ -->
+<section id="rest">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-number">2. módszer</span>
+            <h2>Mentális pihenés — Théta agyhullámok</h2>
+            <p>Amikor nagyon ellazulsz, az agyad théta agyhullámokat termel (4–8 Hz), amelyek a gyógyulás kulcsai.</p>
+        </div>
+
+        <div class="card">
+            <h3>
+                <div class="icon-circle icon-violet">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12c2-4 4-6 6-6s4 4 6 0 4-6 6-6 4 2 6 6"/></svg>
+                </div>
+                10–20 perc théta állapot napközben
+            </h3>
+            <p>Napi 10–20 perc a théta agyhullám-állapotban napközben segíti a testedet:</p>
+            <ul class="benefit-list">
+                <li>
+                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span><strong>Csökkenti a kortizolt</strong> — a stresszhormon szintje mérhetően esik</span>
+                </li>
+                <li>
+                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span><strong>Deaktiválja a stresszválaszokat</strong> — az idegrendszer „pihenj és emészts" módba kapcsol</span>
+                </li>
+                <li>
+                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span><strong>Átkapcsol feszültségből regenerációba</strong> — ez a gyógyulás optimális zónája</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>
+                <div class="icon-circle icon-blue">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                </div>
+                Hogyan érd el a théta állapotot?
+            </h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>Délutáni power nap</h4>
+                    <p>Egy rövid, 10–20 perces szundikálás természetesen théta állapotba visz.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Yoga Nidra gyakorlat</h4>
+                    <p>A „jóga alvás" technika — vezérelt relaxáció éber állapotban. Rengeteg ingyenes verzió elérhető online.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Binaurális ütemek (Binaural Beats)</h4>
+                    <p>Csukott szemmel, fejhallgatóval hallgass 4–8 Hz-es binaurális ütemeket.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Vizualizáció alvómaszkkal</h4>
+                    <p>Vedd fel az alvómaszkot és képzeld el, hogy üres térben lebeg sz. Az agy gyorsan théta üzemmódba vált.</p>
+                </div>
+            </div>
+
+            <div class="info-box tip">
+                <div class="info-title">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg>
+                    Pro tipp
+                </div>
+                <p>Napi gyakorlással az agyad megtanul könnyebben belépni a théta állapotba. A mentális pihenés egy ingyenes szuperképesség, amit a legtöbb ember teljesen kihagy.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ 3. KOROMSÖTÉT SZOBA ═══════════════ -->
+<section id="darkness">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-number">3. módszer</span>
+            <h2>Koromsötét szoba éjszaka</h2>
+            <p>A mesterséges fény mindenhol jelen van, és zavarja az alvásunkat.</p>
+        </div>
+
+        <div class="card">
+            <h3>
+                <div class="icon-circle icon-blue">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                </div>
+                A mesterséges fény problémája
+            </h3>
+            <p>Utcai lámpák, TV-k és elektronikus eszközök mind mesterséges fényt bocsátanak ki. Még a halvány fény is elnyomja a melatonint — azt a hormont, amely beindítja az alvást.</p>
+            <p><strong>Az eredmény:</strong> a tested természetes alvás-ébrenlét ciklusa felborult. Az idegrendszered aktívabb állapotba kapcsol, amikor relaxálnia kellene.</p>
+        </div>
+
+        <div class="card">
+            <h3>
+                <div class="icon-circle icon-teal">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                A megoldás: teljes sötétség alvás közben
+            </h3>
+            <ul class="benefit-list">
+                <li>
+                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span><strong>Telefon másik szobában</strong> — ne legyen a hálóban alvás közben</span>
+                </li>
+                <li>
+                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span><strong>Húzd ki vagy takard le</strong> a fényt kibocsátó elektronikát</span>
+                </li>
+                <li>
+                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span><strong>Sötétítő függöny</strong> — fektess be minőségi blackout függönybe</span>
+                </li>
+                <li>
+                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span><strong>Alvómaszk</strong> — egyszerű és rendkívül hatékony megoldás</span>
+                </li>
+            </ul>
+
+            <div class="info-box tip">
+                <div class="info-title">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+                    Eredmény
+                </div>
+                <p>Ez biztosítja a legmélyebb, legregeneratívabb alvást a számodra.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ 4. KOFFEIN ═══════════════ -->
+<section id="caffeine">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-number">4. módszer</span>
+            <h2>Stratégiai koffeinfogyasztás</h2>
+            <p>Ha szeretnéd resetelni az idegrendszered, érdemes egy időre elhagyni a koffeint. De nem kell örökre lemondanod róla — csak stratégiailag kell fogyasztanod.</p>
+        </div>
+
+        <div class="card">
+            <h3>
+                <div class="icon-circle icon-amber">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 8h1a4 4 0 110 8h-1"/><path d="M3 8h14v9a4 4 0 01-4 4H7a4 4 0 01-4-4V8z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg>
+                </div>
+                A helyes koffeinfogyasztás szabályai
+            </h3>
+
+            <div class="rule-grid">
+                <div class="rule-item">
+                    <div class="rule-icon">⏰</div>
+                    <div class="rule-text"><strong>Ébredés után 90 perccel</strong> idd az első kávédat — ezzel elkerülöd a délutáni energiaesést</div>
+                </div>
+                <div class="rule-item">
+                    <div class="rule-icon">🚫</div>
+                    <div class="rule-text"><strong>Déli 12 után ne fogyassz koffeint</strong> — a felezési ideje 5–6 óra, este még a szervezetedben lesz</div>
+                </div>
+                <div class="rule-item">
+                    <div class="rule-icon">📏</div>
+                    <div class="rule-text"><strong>Maximum 100–200 mg naponta</strong> — ez kb. 1–2 csésze kávénak felel meg</div>
+                </div>
+            </div>
+
+            <p style="margin-top: 16px;">A koffeinnek számos előnye van, de csak akkor, ha <strong>tudatosan fogyasztod</strong>.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ ÖSSZEGZÉS ═══════════════ -->
+<section id="summary">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-number">Összefoglalás</span>
+            <h2>A szabályozott idegrendszer a gyógyulás alapja</h2>
+            <p>Minden más erre épül: fókusz, hangulat, energia, ellenálló képesség. Ezek az életmódbeli változások egyszerűek, de teljesen átalakíthatják az egészségedet.</p>
+        </div>
+
+        <div class="summary-strip">
+            <div class="summary-item">
+                <div class="emoji">☀️</div>
+                <h4>Reggeli napfény</h4>
+                <p>20 perc, 30-60 percen belül</p>
+            </div>
+            <div class="summary-item">
+                <div class="emoji">🧘</div>
+                <h4>Mentális pihenés</h4>
+                <p>10-20 perc théta állapot</p>
+            </div>
+            <div class="summary-item">
+                <div class="emoji">🌙</div>
+                <h4>Sötét szoba</h4>
+                <p>Teljes sötétség alváshoz</p>
+            </div>
+            <div class="summary-item">
+                <div class="emoji">☕</div>
+                <h4>Okos koffein</h4>
+                <p>90 perc után, dél előtt</p>
+            </div>
+        </div>
+
+        <div class="card" style="text-align: center; padding: 40px;">
+            <h3 style="justify-content: center; font-size: 1.3rem; margin-bottom: 20px;">
+                Kezdd el ma — egy lépéssel
+            </h3>
+            <p style="max-width: 480px; margin: 0 auto;">Nem kell mindent egyszerre megváltoztatnod. Válassz ki egyetlen módszert a fentiek közül, és gyakorold következetesen egy héten át. Az eredmények maguktól jönnek.</p>
+        </div>
+    </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <p>Tartalom forrása: <a href="https://x.com/thereallauster/status/2047308353760534881" target="_blank" rel="noopener">Laura Hanna (@Thereallauster) X szála</a></p>
+        <p>Laura Hanna — Biophysicist & Yoga Teacher</p>
+        <p style="margin-top: 16px; font-size: 0.75rem;">Tudományos hivatkozások:
+            <a href="https://www.scienceforsport.com/caffeine-and-sleep-relationship/" target="_blank" rel="noopener">Science for Sport</a> ·
+            <a href="https://lissarankin.com/polyvagal-theory-interoception-a-neuroscience-understanding-of-attachment-trauma/polyvagal-chart/" target="_blank" rel="noopener">Polyvagal Theory</a> ·
+            <a href="https://www.monash.edu/medicine/news/latest/2021-articles/recording-the-impact-of-artificial-light-on-our-bodies" target="_blank" rel="noopener">Monash University</a>
+        </p>
+    </div>
+</footer>
+
+<script>
+// Nav dot tracking
+const sections = document.querySelectorAll('section, header');
+const dots = document.querySelectorAll('.nav-dot');
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const id = entry.target.id;
+            const sectionIds = ['hero','problem','brain','sunlight','rest','darkness','caffeine','summary'];
+            const index = sectionIds.indexOf(id);
+            if (index !== -1) {
+                dots.forEach(d => d.classList.remove('active'));
+                dots[index].classList.add('active');
+            }
+        }
+    });
+}, { threshold: 0.3 });
+
+sections.forEach(s => observer.observe(s));
+
+function scrollToSection(id) {
+    document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+}
+
+// Subtle reveal animation
+const cards = document.querySelectorAll('.card, .ans-diagram, .info-box, .summary-strip');
+const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+        }
+    });
+}, { threshold: 0.1 });
+
+cards.forEach(card => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(20px)';
+    card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    revealObserver.observe(card);
+});
+</script>
+
+</body>
+</html>
