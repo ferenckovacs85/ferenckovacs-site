@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Old Vegas — Fremont Street Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Monoton&family=Bungee+Inline&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--navy:#0a0e1a;
+--navy-light:#111830;
+--neon-pink:#ff2d7b;
+--neon-cyan:#00f0ff;
+--neon-amber:#ffc400;
+--btc-orange:#f7931a;
+--text:#e8e6e3;
+--text-dim:#8a8a9a;
+--card-bg:rgba(17,24,48,0.85);
+}
+html{scroll-behavior:smooth}
+body{
+background:var(--navy);
+color:var(--text);
+font-family:'Fraunces',Georgia,serif;
+min-height:100vh;
+overflow-x:hidden;
+}
+body::before{
+content:'';
+position:fixed;
+top:0;left:0;right:0;bottom:0;
+background:repeating-linear-gradient(
+0deg,
+transparent,
+transparent 2px,
+rgba(0,240,255,0.015) 2px,
+rgba(0,240,255,0.015) 4px
+);
+pointer-events:none;
+z-index:9999;
+}
+header{
+text-align:center;
+padding:3rem 1.5rem 2rem;
+position:relative;
+}
+header::after{
+content:'';
+position:absolute;
+bottom:0;left:10%;right:10%;
+height:1px;
+background:linear-gradient(90deg,transparent,var(--neon-pink),var(--neon-cyan),var(--neon-amber),transparent);
+}.title-main{
+font-family:'Monoton',cursive;
+font-size:clamp(2.2rem,8vw,4.5rem);
+color:var(--neon-pink);
+text-shadow:
+0 0 7px var(--neon-pink),
+0 0 20px var(--neon-pink),
+0 0 42px rgba(255,45,123,0.4);
+line-height:1.1;
+letter-spacing:0.05em;
+}
+.title-sub{
+font-family:'Bungee Inline',cursive;
+font-size:clamp(0.9rem,3vw,1.3rem);
+color:var(--neon-cyan);
+text-shadow:0 0 10px var(--neon-cyan),0 0 30px rgba(0,240,255,0.3);
+margin-top:0.5rem;
+letter-spacing:0.15em;
+}
+.intro{
+max-width:640px;
+margin:1.5rem auto 0;
+font-size:0.95rem;
+color:var(--text-dim);
+line-height:1.6;
+font-style:italic;
+}
+.nav-pills{
+display:flex;
+gap:0.5rem;
+padding:1.2rem 1rem;
+overflow-x:auto;
+-webkit-overflow-scrolling:touch;
+scrollbar-width:none;
+}
+.nav-pills::-webkit-scrollbar{display:none}
+.pill{
+flex-shrink:0;
+padding:0.4rem 0.9rem;
+border:1px solid var(--neon-cyan);
+border-radius:999px;
+font-family:'Fraunces',serif;
+font-size:0.75rem;
+color:var(--neon-cyan);
+text-decoration:none;
+transition:all 0.3s;
+white-space:nowrap;
+}
+.pill:hover,.pill:active{
+background:var(--neon-cyan);
+color:var(--navy);
+box-shadow:0 0 12px var(--neon-cyan);
+}
+.pill.btc{border-color:var(--btc-orange);color:var(--btc-orange)}
+.pill.btc:hover,.pill.btc:active{background:var(--btc-orange);color:var(--navy);box-shadow:0 0 12px var(--btc-orange)}.cards{
+max-width:720px;
+margin:0 auto;
+padding:0.5rem 1rem 4rem;
+display:flex;
+flex-direction:column;
+gap:1.5rem;
+}
+.card{
+background:var(--card-bg);
+border:1px solid rgba(0,240,255,0.12);
+border-radius:12px;
+padding:1.5rem;
+position:relative;
+overflow:hidden;
+opacity:0;
+transform:translateY(30px);
+transition:opacity 0.6s ease,transform 0.6s ease;
+}
+.card.visible{opacity:1;transform:translateY(0)}
+.card::before{
+content:'';
+position:absolute;
+top:0;left:0;right:0;
+height:3px;
+background:linear-gradient(90deg,var(--neon-pink),var(--neon-cyan),var(--neon-amber));
+}
+.card-number{
+position:absolute;
+top:1rem;right:1.2rem;
+font-family:'Monoton',cursive;
+font-size:2.5rem;
+color:rgba(0,240,255,0.08);
+line-height:1;
+}
+.card-emoji{font-size:1.8rem;margin-bottom:0.5rem;display:block}
+.card-name{
+font-family:'Bungee Inline',cursive;
+font-size:clamp(1.05rem,3.5vw,1.3rem);
+color:var(--neon-amber);
+text-shadow:0 0 8px rgba(255,196,0,0.3);
+margin-bottom:0.3rem;
+}
+.card-meta{
+font-size:0.8rem;
+color:var(--text-dim);
+margin-bottom:0.8rem;
+display:flex;
+flex-wrap:wrap;
+gap:0.5rem;
+align-items:center;
+}
+.btc-badge{
+display:inline-flex;
+align-items:center;
+gap:0.25rem;
+background:rgba(247,147,26,0.15);
+border:1px solid var(--btc-orange);
+color:var(--btc-orange);
+font-size:0.7rem;
+font-weight:700;
+padding:0.15rem 0.5rem;
+border-radius:999px;
+text-shadow:0 0 6px rgba(247,147,26,0.4);
+animation:btcpulse 2s ease-in-out infinite;
+}
+@keyframes btcpulse{
+0%,100%{box-shadow:0 0 4px rgba(247,147,26,0.2)}
+50%{box-shadow:0 0 12px rgba(247,147,26,0.5)}
+}.card-desc{
+font-size:0.9rem;
+line-height:1.65;
+color:var(--text);
+}
+.card-tip{
+margin-top:0.8rem;
+padding:0.6rem 0.8rem;
+background:rgba(0,240,255,0.05);
+border-left:2px solid var(--neon-cyan);
+border-radius:0 6px 6px 0;
+font-size:0.82rem;
+color:var(--neon-cyan);
+}
+.card-tip strong{color:var(--neon-amber)}
+footer{
+text-align:center;
+padding:2rem 1rem 3rem;
+font-size:0.75rem;
+color:var(--text-dim);
+border-top:1px solid rgba(255,255,255,0.05);
+}
+footer .neon-line{
+display:block;
+margin:0 auto 1rem;
+width:60%;
+max-width:200px;
+height:1px;
+background:linear-gradient(90deg,transparent,var(--neon-pink),transparent);
+}
+@keyframes flicker{
+0%,19%,21%,23%,25%,54%,56%,100%{opacity:1}
+20%,24%,55%{opacity:0.6}
+}
+.title-main{animation:flicker 4s infinite}
+</style>
+</head>
+<body>
+
+<header>
+<div class="title-main">Old Vegas</div>
+<div class="title-sub">Fremont Street Guide</div>
+<p class="intro">A Strip csillogása helyett az igazi Vegas. Neon, történelem, karakteres helyek — és néhány, ahol satoshikkal fizethetsz.</p>
+</header>
+
+<nav class="nav-pills" aria-label="Helyszínek">
+<a href="#mob-museum" class="pill">Mob Museum</a>
+<a href="#neon-museum" class="pill">Neon Museum</a>
+<a href="#golden-gate" class="pill">Golden Gate</a>
+<a href="#the-d" class="pill btc">The D ⚡</a>
+<a href="#steak-n-shake" class="pill">Steak 'n Shake</a>
+<a href="#slotzilla" class="pill">SlotZilla</a>
+<a href="#heart-attack" class="pill">Heart Attack Grill</a>
+<a href="#circa" class="pill">Circa</a>
+<a href="#main-street" class="pill">Main Street Station</a>
+<a href="#atomic" class="pill">Atomic Liquors</a>
+<a href="#container-park" class="pill">Container Park</a>
+<a href="#fremont-exp" class="pill">Fremont Experience</a>
+</nav>
+
+<main class="cards">
+<article class="card" id="mob-museum">
+<span class="card-number">01</span>
+<span class="card-emoji">🔫</span>
+<h2 class="card-name">The Mob Museum</h2>
+<div class="card-meta"><span>300 Stewart Ave</span><span>•</span><span>Naponta 9:00–21:00</span></div>
+<p class="card-desc">A szervezett bűnözés és bűnüldözés nemzeti múzeuma egy 1933-as szövetségi épületben. Három emelet interaktív kiállítás: Al Capone, Bugsy Siegel, Vegas maffia-korszaka. A pincében illegális speakeasy bár működik — a Prohibition-korabeli koktélokhoz jelszó kell (a jegyeddel kapod meg). Van valódi géppuskatesztpálya is.</p>
+<div class="card-tip"><strong>Tipp:</strong> Délután kevesebb a tömeg. A speakeasy önmagában megéri — a jelszót a belépőjegyeden találod.</div>
+</article>
+
+<article class="card" id="neon-museum">
+<span class="card-number">02</span>
+<span class="card-emoji">💡</span>
+<h2 class="card-name">The Neon Museum</h2>
+<div class="card-meta"><span>770 Las Vegas Blvd N</span><span>•</span><span>Naponta, időpontra</span></div>
+<p class="card-desc">A "Neon Boneyard" — Vegas ikonikus neonreklámjainak temetője és múzeuma. Több mint 250 restaurált és eredeti neon felirat a szabadban, köztük a legendás Stardust, Moulin Rouge, Binion's és az eredeti Hard Rock gitár. Az esti túra a legjobb: kivilágítva, LED-mappinggel életre kelnek a vintage feliratok.</p>
+<div class="card-tip"><strong>Tipp:</strong> Az esti "Brilliant!" túrát foglald előre online — gyakran elkel. Fremont-tól Uber 5 perc.</div>
+</article>
+
+<article class="card" id="golden-gate">
+<span class="card-number">03</span>
+<span class="card-emoji">🎰</span>
+<h2 class="card-name">Golden Gate Hotel & Casino</h2>
+<div class="card-meta"><span>1 Fremont St</span><span>•</span><span>24/7</span></div>
+<p class="card-desc">Las Vegas legrégebbi szállodája és kaszinója, 1906 óta működik — még a város alapítása előttről. Az eredeti Fremont Street 1-es szám. Híres a $1.99-os shrimp cocktailról (1959 óta változatlan recept). Kicsi, zsúfolt, hangos, retro — pont úgy néz ki, ahogy Vegas-nak kinéznie kéne.</p>
+<div class="card-tip"><strong>Tipp:</strong> A shrimp cocktail tradíció — kötelező. A OneBar tetőterasza a Fremont Experience fölé néz.</div>
+</article>
+
+<article class="card" id="the-d">
+<span class="card-number">04</span>
+<span class="card-emoji">🎲</span>
+<h2 class="card-name">The D Las Vegas</h2>
+<div class="card-meta"><span>301 Fremont St</span><span>•</span><span>24/7</span><span class="btc-badge">₿ BTC ⚡ elfogadva</span></div>
+<p class="card-desc">Derek Stevens modern-retro kaszinója a Fremont Experience közepén. A második emeleten vintage coin-operated gépek működnek (igazi érmékkel!). A LONGBAR a leghosszabb bár Downtown-ban. Ami igazán fontos: az egyik első kaszinó, ahol Bitcoinnal fizethetsz — étteremben, bárban, és a szállodában is.</p>
+<div class="card-tip"><strong>Tipp:</strong> Kérdezd a recepciót a BTC fizetésről — Lightning-ot is támogatnak. A vintage második emelet kötelező.</div>
+</article>
+<article class="card" id="steak-n-shake">
+<span class="card-number">05</span>
+<span class="card-emoji">🍔</span>
+<h2 class="card-name">Steak 'n Shake</h2>
+<div class="card-meta"><span>Fremont St (The D mellett)</span><span>•</span><span>24/7</span></div>
+<p class="card-desc">Klasszikus amerikai diner a Fremont-on. Steakburger, milkshake, olcsó, gyors, az éjszaka közepén is nyitva. Nem gourmet — ez a 3 AM-es, kaszinó utáni burger, amit neonban eszel. A Downtown hangulat tökéletes megtestesítője.</p>
+<div class="card-tip"><strong>Tipp:</strong> Az Original Double 'n Cheese + Oreo milkshake a biztos választás. Ha a szerdai Bitcoin 2026 side event Steak 'n Shake 'n Sats itt lesz — csatlakozz.</div>
+</article>
+
+<article class="card" id="slotzilla">
+<span class="card-number">06</span>
+<span class="card-emoji">🦅</span>
+<h2 class="card-name">SlotZilla Zipline</h2>
+<div class="card-meta"><span>Fremont Street Experience</span><span>•</span><span>12:00–02:00</span></div>
+<p class="card-desc">Egy 12 emeletes nyerőgép-szobor tetejéről indul két zipline: a Zipline (alsó, ülve, 35 méter magasan) és a Zoomline (felső, Supermanben, 11 háztömbön át a teljes Fremont felett). 60 km/h sebesség, a Viva Vision LED-mennyezet alatt repülsz végig.</p>
+<div class="card-tip"><strong>Tipp:</strong> A Zoomline (felső) a jobb élmény — érdemes előre jegyet venni online, este a legszebb.</div>
+</article>
+
+<article class="card" id="heart-attack">
+<span class="card-number">07</span>
+<span class="card-emoji">💀</span>
+<h2 class="card-name">Heart Attack Grill</h2>
+<div class="card-meta"><span>450 Fremont St</span><span>•</span><span>11:00–01:00</span></div>
+<p class="card-desc">A világ legprovokálóbb étterme. Kórházi tematika: nővér-pincérnők, kórházi köpeny a vendégeknek, Bypass Burger (8 szelet sajttal). Aki 160 kg felett van, ingyen eszik. Aki nem eszi meg az adagját, fenékre csapják. Nem a kaja a lényeg — a teljes abszurditás.</p>
+<div class="card-tip"><strong>Tipp:</strong> Egyszer kötelező, a Quadruple Bypass-t ne rendeld — a Double elég kaland. Készülj fotókra a kórházi köpenyben.</div>
+</article>
+
+<article class="card" id="circa">
+<span class="card-number">08</span>
+<span class="card-emoji">🏊</span>
+<h2 class="card-name">Circa Resort & Casino</h2>
+<div class="card-meta"><span>8 Fremont St</span><span>•</span><span>24/7</span></div>
+<p class="card-desc">Downtown legújabb és legmenőbb szállodája (2020). Derek Stevens másik projektje. A Stadium Swim tetőmedence-komplexum 6 medencével és egy 40 méteres LED-kijelzővel — sportot nézhetsz a vízből. A Legacy Club a tetején a legjobb panoráma Downtown-ból (40. emelet, craft koktélok, Fremont kilátás).</p>
+<div class="card-tip"><strong>Tipp:</strong> A Legacy Club-ba menj napnyugtakor — a Strip és a hegyek látványa onnan a legjobb Vegasban.</div>
+</article>
+<article class="card" id="main-street">
+<span class="card-number">09</span>
+<span class="card-emoji">🚂</span>
+<h2 class="card-name">Main Street Station</h2>
+<div class="card-meta"><span>200 N Main St</span><span>•</span><span>24/7</span></div>
+<p class="card-desc">Viktoriánus-korabeli vasútállomás-tematikájú kaszinó, tele valódi antikvitásokkal. A bejáratnál eredeti gőzmozdony áll. A bárban a Berlini Fal egy darabja van beépítve (igen, az igazi). A férfi mosdóban Winston Churchill egykori kandallója. A Triple 7 sörfőzde házisörei kiválóak és olcsók.</p>
+<div class="card-tip"><strong>Tipp:</strong> A Triple 7 sörfőzde a legjobb ár-érték a Downtown-ban. Nézd meg a Berlini Fal-darabot a bárpultnál.</div>
+</article>
+
+<article class="card" id="atomic">
+<span class="card-number">10</span>
+<span class="card-emoji">☢️</span>
+<h2 class="card-name">Atomic Liquors</h2>
+<div class="card-meta"><span>917 Fremont St</span><span>•</span><span>16:00–02:00</span></div>
+<p class="card-desc">Las Vegas legrégebbi önálló bárja (1952). Az ötvenes években innen nézték a vendégek a sivatagi atomrobbantásokat a tetőteraszról — koktéllal a kézben. Ma craft koktélbár, vintage hangulattal, eredeti neonnal. A Fremont East "művész-negyed" szíve — a turistatömegtől pár utcányira.</p>
+<div class="card-tip"><strong>Tipp:</strong> Az Atomic Cocktail a ház specialitása. A tetőterasz este a legjobb — a történelmi hangulat megér egy órát.</div>
+</article>
+
+<article class="card" id="container-park">
+<span class="card-number">11</span>
+<span class="card-emoji">📦</span>
+<h2 class="card-name">Downtown Container Park</h2>
+<div class="card-meta"><span>707 Fremont St</span><span>•</span><span>11:00–23:00</span></div>
+<p class="card-desc">Szállítókonténerekből épített open-air bevásárló- és szórakozóközpont. A bejáratnál egy 12 méteres tűzokádó sáska-szobor áll (este tényleg lángol, 15 percenként). Belül kis boltok, éttermek, bár, és egy hatalmas fa-játszótér. A Fremont East kreatív negyedének találkozási pontja.</p>
+<div class="card-tip"><strong>Tipp:</strong> Este menj a tűzokádó sáska miatt — fotóhoz tökéletes. Az Oak & Ivy craft koktélbár itt az egyik legjobb Downtown-ban.</div>
+</article>
+
+<article class="card" id="fremont-exp">
+<span class="card-number">12</span>
+<span class="card-emoji">✨</span>
+<h2 class="card-name">Fremont Street Experience</h2>
+<div class="card-meta"><span>Fremont St (5 háztömb)</span><span>•</span><span>24/7 (show: sötétedéstől)</span></div>
+<p class="card-desc">A "Viva Vision" — a világ legnagyobb LED-kijelzője: 450 méter hosszú, 27 méter széles mennyezet 5 háztömb felett. Óránként ingyenes fény- és hangshow (este 18:00-tól éjfélig). Alatta élő zene több színpadon, utcai előadók, és a Downtown kaszinók bejáratai. Ez a Fremont-élmény — az egész utca egyetlen óriási neon-buli.</p>
+<div class="card-tip"><strong>Tipp:</strong> A show sötétedés után a legjobb. Sétálj végig a teljes 5 blokkot, mindegyik más hangulatú. A 1st Street és 3rd Street közötti szakasz a legélénkebb.</div>
+</article>
+
+</main>
+
+<footer>
+<span class="neon-line"></span>
+<p>Old Vegas Fremont Street Guide — 2026<br>
+<span style="color:var(--btc-orange)">₿</span> = Bitcoin elfogadva &nbsp;|&nbsp; ⚡ = Lightning Network</p>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.card').forEach(card => observer.observe(card));
+document.querySelectorAll('.pill').forEach(pill => {
+  pill.addEventListener('click', (e) => {
+    const nav = document.querySelector('.nav-pills');
+    const pillRect = pill.getBoundingClientRect();
+    const navRect = nav.getBoundingClientRect();
+    nav.scrollTo({
+      left: nav.scrollLeft + pillRect.left - navRect.left - navRect.width / 2 + pillRect.width / 2,
+      behavior: 'smooth'
+    });
+  });
+});
+</script>
+</body>
+</html>
