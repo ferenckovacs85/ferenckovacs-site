@@ -4,6 +4,34 @@ A ferenckovacs.com változásnaplója. A formátum a [Keep a Changelog](https://
 irányelveit követi. A git commit történet a teljes forrás; itt csak a szembetűnő felhasználói
 változások vannak összegyűjtve.
 
+## [2026-04-30] — KV Homes BNI Select Prime pitch deck (HU + EN)
+
+### Added — új tartalom
+- **`/eloadasok/kvhomes-bni/`** — KV Homes pitch a BNI Select Prime chapter-nek (2026. május 12.)
+  - 15 dia / 20 perc · single-file HTML · click-reveal step-by-step
+  - Slide 3 — Apple-style feature grid SVG ikonokkal (100 m², A+++, hőszivattyú, aktív szellőzés, 6 kW PV, 10 kWh akku) — egyenként pop-up
+  - Slide 4 — Átlag/KV összehasonlító dashboard 6 sorral, soronként rise-animációval; energia-sor 2-fázisú: phase-1 (147 vs 12) → phase-2 (∞ AKTÍV HÁZ + negatív bar bekúszás)
+  - Slide 8–10 — Kolor Garden projekt: helyszín / adatok (32 618 m² · 80 lakás · 37 családi ház · ~15 500 m² park) / filozófia (Miért + Hogyan)
+  - Slide 13 — BNI ask: 4 konkrét referral-helyzet (építkező / fejlesztő / önkormányzat / generálkivitelező), trigger-mondatokkal
+  - Full HD-re méretezve (4 m vászon, 10–25 m olvasási távolság), mobil-tap zónákkal és presenter-clicker keyboard-támogatással
+- **`/en/talks/kvhomes-bni/`** — teljes angol fordítás
+- **Új szekció a `/eloadasok/` és `/en/talks/` listákon:** „Üzleti hálózat / közösségi" / „Business networking / community" — első tényleges kártyával
+
+### Technical
+- `data-steps` engine kibővítve: a slide-on belüli step-state-en kívül `phase-2` toggle az energia-soron (∞ AKTÍV HÁZ climax)
+- HUD step-dots — vizuális indikátor a dia-belüli pozícióhoz (lent középen)
+- `?slide=N&step=M` deeplink (próbához)
+- Pointer/touch dedupe (220 ms ablak) — a korábbi mobil dupla-click hiba ellen
+- Negatív bar visszafelé-növekedés `position:absolute; right:82%` triggerrel, piros gradient + glow
+
+### Convention
+- Magyar + angol pár kötelező — mindkét nyelv készen, /en/talks/ index frissítve
+
+### Relevant commits
+- `(ez a commit)` — KV Homes BNI Select Prime deck élesbe (HU + EN) + index-kártyák
+
+---
+
 ## [2026-04-22] — Interaktív bányászat-szimulátor
 
 ### Added
