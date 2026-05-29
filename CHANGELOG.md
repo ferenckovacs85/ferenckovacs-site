@@ -4,6 +4,55 @@ A ferenckovacs.com változásnaplója. A formátum a [Keep a Changelog](https://
 irányelveit követi. A git commit történet a teljes forrás; itt csak a szembetűnő felhasználói
 változások vannak összegyűjtve.
 
+## [2026-05-28] — KV Homes Berentei előadás (HU)
+
+### Added — új tartalom
+- **`/eloadasok/kvhomes-berente/`** — KV Homes előadás a Berentei Ipari Csarnokban
+  - 23 dia · interaktív · ~25 perc
+  - Közönség: kivitelezők, beruházók, finanszírozók, építőipari szakma
+  - Tartalmi pillérek: paradigmaváltás üzenet, KV Homes válasz (A+++ · 3 hónap), Kolor Garden
+    Kazincbarcika (5 dia részletes bemutatóval: hero render, helyszínrajz, földszint, emeleti
+    szintek, lakásméretek), 5 célcsoport B2C/B2B/B2G kategorizálással, Nyíregyháza NORDii Homes
+    referenciaprojekt, 5% ÁFA-időablak 2026.12.31. határidővel, paradigmaváltás takeaway
+  - Videók: tech-render-nordii (NORDii rendszer animáció), technologia-1 (vasbeton térelem-szerelés),
+    nyiregyhaza-2026-05-12 (élő építkezés Nyíregyházán), blokk-berlakas-program (BLOKK by NORDii
+    bérlakás)
+  - Optimalizált videók web-megjelenítésre (mind .mp4 H.264, 720–1080p, össz. 128MB)
+- **Új deck-kártya a `/eloadasok/` listán** — KV Homes és lakhatás jövője szekcióhoz, BNI Select
+  Prime kártya mellett
+- **Számláló frissítve:** 8 → 9 elérhető előadás
+
+### Notes
+- A forrás HTML deck (`Előadás/KV_Homes_Berente_Csarnok_2026-05-28/`) helyi prezentációra
+  készült (Full HD vetítés). A web-másolat azonos, csak a videók kompresszálva GitHub 100MB
+  limit alá (tech-render 244MB → 13MB, blokk 169MB → 81MB)
+
+---
+
+## [2026-05-07] — Forint M2 trendelemzés (HU + EN)
+
+### Added — új tartalom
+- **`/eloadasok/forint-m2-elemzes/`** — Monetáris/makro elemzés prezentáció a forint, dollár és euró
+  hosszú távú M2-trendjeiről (1986–2026)
+  - 15 dia · interaktív · single-file HTML
+  - 3 historikus M2 trend-grafikon (USA, Eurozóna, Magyarország) regressziós trendvonallal és
+    deviáció-mutatóval (USA +4%, EU −13%, HU +12,5% a 30 éves trendhez képest)
+  - USD/HUF és EUR/HUF M2-implikált fair value számítás (CAGR-ben)
+  - EUR/USD M2 PPP elemzés (USD reservevaluta prémium kvantifikálása)
+  - Bull/Bear/Semleges forgatókönyvek konkrét célárakkal
+  - Üzleti döntéshozói akció-üzenetek (hedge stratégia, deviza-kosár, befektetési időtáv)
+  - Mobil-reszponzív (swipe), keyboard-navigáció (arrow/space/PageDown), HU/EN nyelvváltó
+- **`/en/talks/forint-m2-analysis/`** — teljes angol fordítás
+- **Új szekció a `/eloadasok/` és `/en/talks/` listákon:** „Pénzügy / Makro" / „Finance / Macro"
+  zöld badge-dzsel és 📊 ikonnal — első kártyával
+
+### Data sources
+- FRED M2SL · MYAGM2EZM196N · MABMM301HUM189N · DEXUSEU
+- ECB Monetary Developments · MNB középárfolyam-archívum
+
+### Convention
+- Magyar + angol pár teljesítve egy session-ben (a 2026-04-22 új konvenció szerint)
+
 ## [2026-04-30] — KV Homes BNI Select Prime pitch deck (HU + EN)
 
 ### Added — új tartalom
