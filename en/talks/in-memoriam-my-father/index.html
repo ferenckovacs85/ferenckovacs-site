@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ferenc Kovács — In Memoriam</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#14100c; --ink-2:#0c0907;
+  --cream:#f3e9d6; --cream-dim:#cdbfa4;
+  --gold:#c8a667; --gold-bright:#e3c890;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:var(--ink-2);overflow:hidden}
+body{
+  font-family:'Cormorant Garamond','Cormorant',Georgia,'Times New Roman',serif;
+  color:var(--cream); -webkit-font-smoothing:antialiased;
+  cursor:default; user-select:none;
+}
+#deck{position:fixed;inset:0;background:var(--ink-2)}
+
+.slide{position:absolute;inset:0;opacity:0;visibility:hidden}
+.slide.active{opacity:1;visibility:visible;z-index:2}
+
+/* ---- photo stage with blurred fill + Ken Burns ---- */
+.stage{position:absolute;inset:0;overflow:hidden;background:var(--ink-2)}
+.photo{position:absolute;inset:0;opacity:0;transform:translateZ(0)}
+.photo.on{opacity:1}
+.photo .bg{position:absolute;inset:-8%;background-image:var(--src);
+  background-size:cover;background-position:center;
+  filter:blur(28px) brightness(.42) saturate(.85);transform:scale(1.14) translateZ(0)}
+.photo .fg{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+  transform:translateZ(0);backface-visibility:hidden;will-change:transform}
+.photo.on .fg{animation:kb 18s ease-out both}
+.cover .photo .fg{object-fit:cover}
+/* Ken Burns always starts from the neutral resting transform (no snap on reveal) */
+@keyframes kb{from{transform:scale(1) translate(0,0)}to{transform:scale(1.085) translate(1.4%,-1.2%)}}
+
+/* ---- scrims ---- */
+.scrim-bottom{position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:linear-gradient(180deg, rgba(12,9,7,.86) 0%, rgba(12,9,7,.32) 26%, rgba(12,9,7,0) 50%)}
+.scrim-cover{position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:
+   linear-gradient(102deg, rgba(10,7,5,.86) 0%, rgba(10,7,5,.40) 34%, rgba(10,7,5,.05) 62%, rgba(10,7,5,.42) 100%),
+   linear-gradient(0deg, rgba(10,7,5,.90) 0%, rgba(10,7,5,0) 46%)}
+.scrim-full{position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:linear-gradient(0deg, rgba(9,6,4,.92) 0%, rgba(9,6,4,.42) 45%, rgba(9,6,4,.15) 100%)}
+
+/* ---- meta (eyebrow / caption / date) ---- */
+.meta{position:absolute;right:5.5vw;top:8vh;max-width:42ch;z-index:6;text-align:right}
+.eyebrow{color:var(--gold);letter-spacing:.32em;text-transform:uppercase;
+  font-size:.95rem;font-weight:600}
+.cap{color:var(--cream);font-size:clamp(1.7rem,3vw,2.6rem);line-height:1.3;
+  margin-top:.5em;font-weight:500;text-shadow:0 2px 20px rgba(0,0,0,.62)}
+.date{color:var(--gold-bright);font-style:italic;font-size:clamp(1.1rem,1.7vw,1.45rem);
+  margin-top:.6em;opacity:.92}
+/* per-slide caption / scrim variants */
+.scrim-low{position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:linear-gradient(0deg, rgba(10,7,5,.86) 0%, rgba(10,7,5,.30) 30%, rgba(10,7,5,0) 56%)}
+.meta.m-bl{right:auto;left:6.2vw;top:auto;bottom:8vh;text-align:left}
+.meta.m-lowcenter{right:0;left:0;top:auto;bottom:15vh;max-width:none;text-align:center;padding:0 8vw}
+.meta.m-plate{background:rgba(10,7,5,.46);-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);
+  padding:.7em 1.05em .85em;border-radius:7px}
+.full .photo .fg{object-fit:cover}
+.imgtop .photo .fg{object-position:top}
+/* eredeti arány + elmosott, közel fekete szélek */
+.blurdark .photo .fg{object-fit:contain}
+.blurdark .photo .bg{filter:blur(42px) brightness(.14) saturate(.7)}
+.lowphoto .photo .fg{top:auto;bottom:0;height:72%}
+
+/* ---- cover ---- */
+.cover-title{position:absolute;left:6.2vw;bottom:10vh;z-index:6}
+.cover-title .eyebrow{margin-bottom:.7em;display:block}
+.cover-title h1{font-size:clamp(3.2rem,8vw,6.4rem);font-weight:500;color:var(--cream);
+  line-height:1;letter-spacing:.01em;text-shadow:0 3px 30px rgba(0,0,0,.6)}
+.cover-title .years{font-size:clamp(1.2rem,2.4vw,1.9rem);color:var(--gold-bright);
+  font-style:italic;margin-top:.55em;letter-spacing:.12em}
+
+/* ---- welcome (köszöntő) opening slide ---- */
+.welcome .photo .fg{object-fit:cover;filter:brightness(.40) saturate(.92)}
+.welcome-scrim{position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:radial-gradient(125% 95% at 50% 44%, rgba(10,7,5,.60) 0%, rgba(8,5,3,.93) 100%)}
+.welcome-title{position:absolute;inset:0;z-index:6;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;padding:6vw}
+.welcome-title .eyebrow{margin-bottom:1em}
+.welcome-title .wt{font-size:clamp(3rem,7.4vw,5.8rem);font-weight:500;color:var(--cream);
+  line-height:1;letter-spacing:.03em;text-shadow:0 3px 30px rgba(0,0,0,.6)}
+.welcome-title .wdate{font-size:clamp(1.1rem,2.2vw,1.65rem);color:var(--gold-bright);
+  font-style:italic;margin-top:.9em;letter-spacing:.12em}
+
+/* ---- centered title / quote slides ---- */
+.center{display:flex;align-items:center;justify-content:center;text-align:center;padding:6vw;z-index:2}
+.center .inner{width:min(92vw,1120px)}
+.triad{font-size:clamp(1.7rem,3.7vw,3.05rem);color:var(--cream);font-weight:400;letter-spacing:.03em}
+.triad .sep{color:var(--gold)}
+.triad .role,.triad .sep{transition:opacity 1s ease}
+.slide.emph.e-arch .r-ent,.slide.emph.e-arch .r-fam,.slide.emph.e-arch .sep{opacity:.24}
+.slide.emph.e-ent .r-arch,.slide.emph.e-ent .r-fam,.slide.emph.e-ent .sep{opacity:.24}
+.slide.emph.e-fam .r-arch,.slide.emph.e-fam .r-ent,.slide.emph.e-fam .sep{opacity:.24}
+.stepfade{opacity:0;transition:opacity 1.6s ease}
+.slide.active .stepfade.show{opacity:1}
+.deathdate{color:var(--gold-bright);font-style:italic;letter-spacing:.14em;
+  font-size:clamp(1.2rem,2.3vw,1.8rem);margin-top:1.05em}
+/* záró-híd dia: kép eredeti arányban, lágy elmosott sötét szélek; idézet középen fent; dátum középen (2x) */
+.finale .stage{background:#000}
+.finale .photo .bg{filter:blur(42px) brightness(.22) saturate(.7)}
+.finale .photo.on .fg{animation:none}
+.finale-quote{position:absolute;left:0;right:0;top:13vh;z-index:6;text-align:center;padding:0 8vw;
+  font-style:italic;color:var(--cream);font-size:clamp(1.7rem,3.4vw,2.8rem);line-height:1.25;
+  text-shadow:0 2px 18px rgba(0,0,0,.85)}
+.finale-date{position:absolute;left:0;right:0;top:50%;transform:translateY(calc(-50% - 0.5em));z-index:6;
+  text-align:center;color:var(--gold-bright);font-style:italic;letter-spacing:.12em;
+  font-size:clamp(2.4rem,4.6vw,3.6rem);text-shadow:0 2px 30px rgba(0,0,0,.92),0 0 70px rgba(0,0,0,.7)}
+/* F1 záró metafora dia */
+.f1slide .photo .fg{object-fit:cover}
+.f1slide .photo.on .fg{animation:none}
+.f1scrim{position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:linear-gradient(200deg, rgba(8,6,4,.74) 0%, rgba(8,6,4,.18) 38%, rgba(8,6,4,0) 60%)}
+.f1text{position:absolute;right:6vw;top:9vh;z-index:6;max-width:30ch;text-align:right}
+.f1line{font-style:italic;color:var(--cream);font-size:clamp(1.5rem,2.9vw,2.3rem);line-height:1.3;
+  text-shadow:0 2px 16px rgba(0,0,0,.88)}
+/* duó dia: egy álló + egy fekvő kép egymás mellett */
+.duo .stage,.duo{background:var(--ink-2)}
+.duo-wrap{position:absolute;left:0;right:0;top:6vh;bottom:24vh;display:flex;align-items:center;
+  justify-content:center;gap:4vw;padding:0 6vw;z-index:2}
+.duo-cell{display:flex;align-items:center;justify-content:center;max-width:48vw;height:100%}
+.duo-img{max-width:46vw;max-height:60vh;object-fit:contain;
+  border:1px solid rgba(243,233,214,.18);border-radius:3px;
+  box-shadow:0 22px 55px rgba(0,0,0,.62), 0 3px 10px rgba(0,0,0,.45)}
+.duo-cell:first-child .duo-img{max-width:40vw;max-height:52vh}
+.bigquote{font-size:clamp(2.1rem,5.4vw,4.2rem);font-style:italic;color:var(--cream);
+  line-height:1.22;font-weight:400}
+.rule{width:78px;height:1px;background:var(--gold);margin:1.4em auto;opacity:.7}
+.closing-name{color:var(--gold-bright);font-style:italic;letter-spacing:.14em;
+  font-size:clamp(1rem,1.6vw,1.2rem);margin-top:2.4em}
+
+/* ---- quote-over-photo ---- */
+.quotewrap{position:absolute;inset:0;z-index:6;display:flex;flex-direction:column;
+  justify-content:flex-end;padding:0 6.2vw 11vh}
+.quotewrap .eyebrow{margin-bottom:1.1em}
+.qcard{font-size:clamp(1.7rem,3.6vw,2.9rem);font-style:italic;color:var(--cream);
+  line-height:1.25;margin:.42em 0;opacity:0;transform:translateY(16px);
+  transition:opacity 1.1s ease, transform 1.1s ease;text-shadow:0 2px 20px rgba(0,0,0,.6)}
+.qcard::before{content:"„";color:var(--gold);margin-right:.04em}
+.qcard::after{content:"”";color:var(--gold);margin-left:.02em}
+.slide.active .qcard.show{opacity:1;transform:none}
+
+/* ---- video ---- */
+.video-stage{display:grid;place-items:center;background:#000}
+.video-stage video{width:100%;height:100%;object-fit:contain;background:#000}
+.playbtn{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:96px;height:96px;border-radius:50%;border:1px solid rgba(243,233,214,.55);
+  background:rgba(10,7,5,.32);color:var(--cream);cursor:pointer;z-index:9;
+  display:grid;place-items:center;backdrop-filter:blur(3px);transition:.35s}
+.playbtn:hover{background:rgba(10,7,5,.55);border-color:var(--gold);transform:translate(-50%,-50%) scale(1.06)}
+.playbtn svg{width:30px;height:30px;margin-left:5px;fill:var(--cream)}
+.vprogress{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(243,233,214,.16);z-index:8}
+.vbar{height:100%;width:0;background:var(--gold);transition:width .25s linear}
+.vtime{position:absolute;left:3.2vw;bottom:2.2vh;z-index:8;color:var(--cream);opacity:.72;
+  font-size:1rem;letter-spacing:.06em;font-variant-numeric:tabular-nums;text-shadow:0 1px 8px rgba(0,0,0,.7)}
+
+/* entrance motion for text */
+.slide.active .meta,.slide.active .cover-title,.slide.active .welcome-title,.slide.active .inner{animation:rise 1.5s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+/* ---- film grain + vignette overlays ---- */
+.grain{position:fixed;inset:0;z-index:40;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size:170px 170px}
+.vignette{position:fixed;inset:0;z-index:39;pointer-events:none;
+  background:radial-gradient(120% 100% at 50% 42%, rgba(0,0,0,0) 52%, rgba(0,0,0,.55) 100%)}
+/* dip-to-black veil: every slide change happens hidden behind this */
+#veil{position:fixed;inset:0;z-index:60;background:#000;opacity:1;pointer-events:none;
+  transition:opacity .44s ease}
+
+/* ---- HUD ---- */
+/* discreet overall-progress line at the very top edge */
+.deckbar{position:fixed;top:0;left:0;right:0;height:2px;background:rgba(243,233,214,.07);z-index:46;pointer-events:none}
+.deckbar-fill{height:100%;width:0;background:var(--gold);opacity:.55;transition:width .5s ease}
+.counter{position:fixed;bottom:2.2vh;right:3.2vw;z-index:45;color:var(--cream-dim);
+  font-size:.95rem;letter-spacing:.18em;opacity:.6;font-variant-numeric:tabular-nums}
+@media(max-width:640px){.meta{left:7vw;bottom:9vh}}
+</style>
+</head>
+<body>
+<div id="deck">
+
+  <!-- 1 — WELCOME -->
+  <section class="slide welcome">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/00-koszonto.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/00-koszonto.jpg" alt=""></div></div>
+    <div class="welcome-scrim"></div>
+    <div class="welcome-title">
+      <span class="eyebrow">Kovács Ferenc</span>
+      <h1 class="wt">In Memoriam</h1>
+      <div class="wdate">30 May 2026</div>
+    </div>
+  </section>
+
+  <!-- 2 — COVER -->
+  <section class="slide cover">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/00-borito.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/00-borito.jpg" alt=""></div></div>
+    <div class="scrim-cover"></div>
+    <div class="cover-title">
+      <span class="eyebrow">In Memoriam</span>
+      <h1>Kovács&nbsp;Ferenc</h1>
+      <div class="years">1958 – 2022</div>
+    </div>
+  </section>
+
+  <!-- 3 — TRIAD (first click emphasises "Architect") -->
+  <section class="slide center e-arch" id="triad" data-steps="2">
+    <div class="inner"><div class="triad"><span class="role r-arch">Architect</span> <span class="sep">·</span> <span class="role r-ent">Entrepreneur</span> <span class="sep">·</span> <span class="role r-fam">Family man</span></div></div>
+  </section>
+
+  <!-- 4 — PÁNYOK (a) -->
+  <section class="slide photos">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/01-panyok.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/01-panyok.jpg" alt=""></div></div>
+    <div class="scrim-low"></div>
+    <div class="meta m-lowcenter"><div class="eyebrow">Where he came from</div><div class="cap">The village he came from — two honest parents and his own will</div><div class="date">1958 · Pányok</div></div>
+  </section>
+
+  <!-- 5 — PÁNYOK (b) -->
+  <section class="slide photos">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/01a-panyok.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/01a-panyok.jpg" alt=""></div></div>
+    <div class="scrim-bottom"></div>
+    <div class="meta"><div class="eyebrow">Where he came from</div><div class="cap">The boy who broke out with no example to follow</div><div class="date">1958 · Pányok</div></div>
+  </section>
+
+  <!-- 6 — THE BEGINNING (young engineer) -->
+  <section class="slide photos">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/02a-banya.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/02a-banya.jpg" alt=""></div></div>
+    <div class="scrim-bottom"></div>
+    <div class="meta"><div class="eyebrow">The beginning</div><div class="cap">The young engineer — Borsod Coal Mines</div><div class="date">the work of two hands</div></div>
+  </section>
+
+  <!-- 7 — THE BEGINNING (mine) -->
+  <section class="slide photos">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/02-banya.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/02-banya.jpg" alt=""></div></div>
+    <div class="scrim-bottom"></div>
+    <div class="meta"><div class="eyebrow">The beginning</div><div class="cap">The early career years</div><div class="date">the work of two hands</div></div>
+  </section>
+
+  <!-- 8 — THE BEGINNING (house) -->
+  <section class="slide photos">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/03-sajoszentpeter-haz.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/03-sajoszentpeter-haz.jpg" alt=""></div></div>
+    <div class="scrim-low"></div>
+    <div class="meta m-bl"><div class="eyebrow">The beginning</div><div class="cap">The house he built with his own hands — Sajószentpéter</div><div class="date">the work of two hands</div></div>
+  </section>
+
+  <!-- 9 — THE BEGINNING (drawing board) -->
+  <section class="slide photos">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/04b-tervezoasztal.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/04b-tervezoasztal.jpg" alt=""></div></div>
+    <div class="scrim-bottom"></div>
+    <div class="meta"><div class="eyebrow">The beginning</div><div class="cap">Evenings at the drawing board — until 2 a.m., for others</div><div class="date">the work of two hands</div></div>
+  </section>
+
+  <!-- ENTREPRENEUR (section title — click emphasises "Entrepreneur") -->
+  <section class="slide center e-ent" data-steps="2">
+    <div class="inner"><div class="triad"><span class="role r-arch">Architect</span> <span class="sep">·</span> <span class="role r-ent">Entrepreneur</span> <span class="sep">·</span> <span class="role r-fam">Family man</span></div></div>
+  </section>
+
+  <!-- 10 — THE PIONEER (premises) -->
+  <section class="slide photos">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/04-elso-telephely.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/04-elso-telephely.jpg" alt=""></div></div>
+    <div class="scrim-bottom"></div>
+    <div class="meta"><div class="eyebrow">The pioneer</div><div class="cap">The first premises — a business after the regime change</div><div class="date">two decades ahead of his time</div></div>
+  </section>
+
+  <!-- PIONEER — early business, extra photo — 04b-uttoro.jpg -->
+  <section class="slide photos">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/04b-uttoro.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/04b-uttoro.jpg" alt="" onerror="this.style.display='none'"></div></div>
+    <div class="scrim-bottom"></div>
+    <div class="meta"><div class="eyebrow">The pioneer</div><div class="cap">The early construction business</div><div class="date">two decades ahead of his time</div></div>
+  </section>
+
+  <!-- 11 — THE PIONEER (Germany) -->
+  <section class="slide photos">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/05-nemetorszag.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/05-nemetorszag.jpg" alt=""></div></div>
+    <div class="scrim-bottom"></div>
+    <div class="meta"><div class="eyebrow">The pioneer</div><div class="cap">Germany — back and forth twice a week</div><div class="date">two decades ahead of his time</div></div>
+  </section>
+
+  <!-- 12 — THE PIONEER (own development) -->
+  <section class="slide photos">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/06-elso-sajat-beruhazas.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/06-elso-sajat-beruhazas.jpg" alt=""></div></div>
+    <div class="scrim-bottom"></div>
+    <div class="meta m-plate"><div class="eyebrow">The pioneer</div><div class="cap">The first development of his own — built for himself</div><div class="date">two decades ahead of his time</div></div>
+  </section>
+
+  <!-- 13 — PRIMA PRIMISSIMA (video) -->
+  <section class="slide">
+    <div class="stage video-stage">
+      <video id="primaVideo" preload="auto" playsinline poster="../../../eloadasok/emlekest-edesapam/videos/prima-poster.jpg">
+        <source src="../../../eloadasok/emlekest-edesapam/videos/prima.mp4" type="video/mp4">
+      </video>
+      <button class="playbtn" id="primaPlay" aria-label="Lejátszás"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+      <div class="vtime" id="vtime"></div>
+      <div class="vprogress"><div class="vbar" id="vbar"></div></div>
+    </div>
+    <div class="scrim-bottom"></div>
+    <div class="meta"><div class="eyebrow">Prima Primissima</div><div class="cap">Construction Entrepreneur of the Year — the profession’s recognition</div><div class="date">2015</div></div>
+  </section>
+
+  <!-- TWO ON ONE TRACK (after Prima) — cropped double portrait -->
+  <section class="slide photos">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/13-diplomaoszto.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/13-diplomaoszto.jpg" alt=""></div></div>
+    <div class="scrim-bottom"></div>
+    <div class="meta"><div class="eyebrow">Two of us on one track</div><div class="cap">He saw it first: I’m a civil engineer, not an architect</div><div class="date">my graduation</div></div>
+  </section>
+
+  <!-- FROM 2010 TOGETHER — working together (egyutt-2010.jpg) -->
+  <section class="slide photos">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/egyutt-2010.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/egyutt-2010.jpg" alt="" onerror="this.style.display='none'"></div></div>
+    <div class="scrim-bottom"></div>
+    <div class="meta"><div class="eyebrow">Two of us on one track</div><div class="cap">From 2010 we worked together</div></div>
+  </section>
+
+  <!-- MEGVALÓSULT PROJEKTEK (1) — Bodóterasz Residences -->
+  <section class="slide photos">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/projekt-bodoterasz.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/projekt-bodoterasz.jpg" alt=""></div></div>
+    <div class="scrim-bottom"></div>
+    <div class="meta"><div class="eyebrow">Completed projects</div><div class="cap">Bodóterasz Residences</div></div>
+  </section>
+
+  <!-- COMPLETED PROJECTS (2) — Hotel Atlantis -->
+  <section class="slide photos">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/projekt-atlantis.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/projekt-atlantis.jpg" alt=""></div></div>
+    <div class="scrim-bottom"></div>
+    <div class="meta"><div class="eyebrow">Completed projects</div><div class="cap">Hotel Atlantis</div></div>
+  </section>
+
+  <!-- COMPLETED PROJECTS (3) — Hotel Aurora -->
+  <section class="slide photos">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/projekt-aurora.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/projekt-aurora.jpg" alt=""></div></div>
+    <div class="scrim-bottom"></div>
+    <div class="meta"><div class="eyebrow">Completed projects</div><div class="cap">Hotel Aurora</div></div>
+  </section>
+
+  <!-- 14 — WHAT I LEARNED FROM HIM -->
+  <section class="slide">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/07-portre.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/07-portre.jpg" alt=""></div></div>
+    <div class="scrim-full"></div>
+    <div class="quotewrap">
+      <div class="eyebrow">What I learned from him</div>
+      <div class="qcard">Honour is not for sale.</div>
+      <div class="qcard" style="transition-delay:.55s">I’m here. I take responsibility.</div>
+      <div class="qcard" style="transition-delay:1.1s">They can take anything from you in life — but not your knowledge and your work ethic.</div>
+    </div>
+  </section>
+
+  <!-- 15 — BACK TO PÁNYOK -->
+  <section class="slide photos">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/08-panyok-falu.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/08-panyok-falu.jpg" alt=""></div></div>
+    <div class="scrim-bottom"></div>
+    <div class="meta"><div class="eyebrow">Back to Pányok</div><div class="cap">Church elder, honorary citizen — for the village, to the end</div><div class="date">Honorary citizen of Pányok</div></div>
+  </section>
+
+  <!-- BACK TO PÁNYOK — 2nd photo, full screen — 08b-panyok-falu.jpg -->
+  <section class="slide photos full">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/08b-panyok-falu.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/08b-panyok-falu.jpg" alt="" onerror="this.style.display='none'"></div></div>
+    <div class="scrim-bottom"></div>
+    <div class="meta"><div class="eyebrow">Back to Pányok</div><div class="cap">Church elder, honorary citizen — for the village, to the end</div><div class="date">Honorary citizen of Pányok</div></div>
+  </section>
+
+  <!-- FAMILY MAN (section title — click emphasises "Family man") -->
+  <section class="slide center e-fam" data-steps="2">
+    <div class="inner"><div class="triad"><span class="role r-arch">Architect</span> <span class="sep">·</span> <span class="role r-ent">Entrepreneur</span> <span class="sep">·</span> <span class="role r-fam">Family man</span></div></div>
+  </section>
+
+  <!-- 17 — WHAT REMAINS (parents) -->
+  <section class="slide photos">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/09-szulok.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/09-szulok.jpg" alt=""></div></div>
+    <div class="scrim-bottom"></div>
+    <div class="meta"><div class="eyebrow">What remains</div><div class="cap">With Erzsébet — met 1983, married 1985</div><div class="date">family</div></div>
+  </section>
+
+  <!-- 18 — WHAT REMAINS (early years) -->
+  <section class="slide photos">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/10a-fiatal-csalad.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/10a-fiatal-csalad.jpg" alt=""></div></div>
+    <div class="scrim-bottom"></div>
+    <div class="meta"><div class="eyebrow">What remains</div><div class="cap">The early years</div><div class="date">family</div></div>
+  </section>
+
+  <!-- 19 — WHAT REMAINS (young family) -->
+  <section class="slide photos">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/10-fiatal-csalad.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/10-fiatal-csalad.jpg" alt=""></div></div>
+    <div class="scrim-bottom"></div>
+    <div class="meta"><div class="eyebrow">What remains</div><div class="cap">The young family — Kazincbarcika</div><div class="date">family</div></div>
+  </section>
+
+  <!-- WHAT REMAINS — pig-slaughter, family memories — disznovagas.jpg -->
+  <section class="slide photos full">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/disznovagas.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/disznovagas.jpg" alt="" onerror="this.style.display='none'"></div></div>
+    <div class="scrim-low"></div>
+    <div class="meta m-lowcenter"><div class="eyebrow">What remains</div><div class="cap">Pig-slaughter in Pányok — weekends at the family house</div></div>
+  </section>
+
+  <!-- WHAT REMAINS — extra family photo 2 — csalad-extra-2.jpg -->
+  <section class="slide photos blurdark">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/csalad-extra-2.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/csalad-extra-2.jpg" alt="" onerror="this.style.display='none'"></div></div>
+  </section>
+
+  <!-- 20 — WHAT REMAINS (grandchildren) -->
+  <section class="slide photos">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/11-unokak.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/11-unokak.jpg" alt=""></div></div>
+    <div class="scrim-bottom"></div>
+    <div class="meta"><div class="eyebrow">What remains</div><div class="cap">The grandchildren he always welcomed with a hug</div><div class="date">family</div></div>
+  </section>
+
+  <!-- 21 — WHAT REMAINS (grandfather) -->
+  <section class="slide photos">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/11a-unokak.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/11a-unokak.jpg" alt=""></div></div>
+    <div class="scrim-bottom"></div>
+    <div class="meta"><div class="eyebrow">What remains</div><div class="cap">As a grandfather</div><div class="date">family</div></div>
+  </section>
+
+  <!-- WHAT REMAINS — one more photo (grandchildren) — 11b-unokak.jpg -->
+  <section class="slide photos">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/11b-unokak.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/11b-unokak.jpg" alt="" onerror="this.style.display='none'"></div></div>
+    <div class="scrim-bottom"></div>
+    <div class="meta"><div class="eyebrow">What remains</div><div class="cap">Among the grandchildren</div><div class="date">family</div></div>
+  </section>
+
+  <!-- WHAT REMAINS — Travels, memories (before Bordeaux) — csalad-extra.jpg -->
+  <section class="slide photos full imgtop">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/csalad-extra.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/csalad-extra.jpg" alt="" onerror="this.style.display='none'"></div></div>
+    <div class="scrim-bottom"></div>
+    <div class="meta"><div class="eyebrow">What remains</div><div class="cap">Travels, memories — and so much more</div></div>
+  </section>
+
+  <!-- 22 — BORDEAUX (match) -->
+  <section class="slide photos">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/12-franciaorszag.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/12-franciaorszag.jpg" alt=""></div></div>
+    <div class="scrim-bottom"></div>
+    <div class="meta"><div class="eyebrow">2016 · Bordeaux</div><div class="cap">Hungary–Austria 2–0 — the first in 44 years</div><div class="date">what we gather is what remains</div></div>
+  </section>
+
+  <!-- 23 — BORDEAUX (the three of us) -->
+  <section class="slide photos">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/12a-franciaorszag.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/12a-franciaorszag.jpg" alt=""></div></div>
+    <div class="scrim-bottom"></div>
+    <div class="meta"><div class="eyebrow">2016 · Bordeaux</div><div class="cap">The last match we watched together</div><div class="date">what we gather is what remains</div></div>
+  </section>
+
+  <!-- BODÓTERASZ — last shared project (portrait + landscape) -->
+  <section class="slide duo">
+    <div class="duo-wrap">
+      <div class="duo-cell"><img class="duo-img" src="../../../eloadasok/emlekest-edesapam/images/web/bodoterasz-allo.jpg" alt="" onerror="this.style.display='none'"></div>
+      <div class="duo-cell"><img class="duo-img" src="../../../eloadasok/emlekest-edesapam/images/web/bodoterasz-fekvo.jpg" alt="" onerror="this.style.display='none'"></div>
+    </div>
+    <div class="meta m-lowcenter"><div class="eyebrow">Bodóterasz</div><div class="cap">The last project we did together — but I finished it.</div></div>
+  </section>
+
+  <!-- CLOSING BRIDGE: image on black; quote top; date centered, fades in -->
+  <section class="slide finale" data-steps="2">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/megoldjuk.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/megoldjuk.jpg" alt="" onerror="this.style.display='none'"></div></div>
+    <div class="finale-quote">Whatever happens — we’ll solve it.</div>
+    <div class="finale-date stepfade">1958 – 2022. december 31.</div>
+  </section>
+
+  <!-- 37 — FINAL: F1 metaphor ("I drove on") — f1.jpg -->
+  <section class="slide f1slide" data-steps="2">
+    <div class="stage"><div class="photo" style="--src:url('../../../eloadasok/emlekest-edesapam/images/web/f1.jpg')"><div class="bg"></div><img class="fg" src="../../../eloadasok/emlekest-edesapam/images/web/f1.jpg" alt=""></div></div>
+    <div class="f1scrim"></div>
+    <div class="f1text">
+      <div class="f1line">He was the number-one driver, I was the second.</div>
+      <div class="f1line stepfade" style="margin-top:.75em">But the team counted on me, so I drove on.</div>
+    </div>
+  </section>
+
+</div>
+
+<div class="grain"></div>
+<div class="vignette"></div>
+<div id="veil"></div>
+<div class="deckbar"><div class="deckbar-fill" id="deckfill"></div></div>
+<div class="counter" id="counter"></div>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var veil = document.getElementById('veil');
+  var counter = document.getElementById('counter');
+  var deckfill = document.getElementById('deckfill');
+  var cur = 0, step = 0, busy = false;
+
+  function maxStep(s){ return (parseInt(s.getAttribute('data-steps'),10)||1) - 1; }
+  // in-slide sub-step effects (currently only the triad: emphasise the role)
+  function applyStep(s){
+    if(!s) return;
+    s.classList.toggle('emph', step>=1);
+    Array.prototype.slice.call(s.querySelectorAll('.stepfade')).forEach(function(el){ el.classList.toggle('show', step>=1); });
+  }
+
+  function activate(s){
+    s.classList.add('active');
+    var ph=s.querySelector('.photo'); if(ph) ph.classList.add('on');
+    Array.prototype.slice.call(s.querySelectorAll('.qcard')).forEach(function(c){ c.classList.add('show'); });
+    var v=s.querySelector('video');
+    if(v){
+      try{ v.currentTime=0; }catch(e){}
+      var pb=s.querySelector('.playbtn'); if(pb) pb.style.display='none';
+      var pr=v.play(); if(pr && pr.catch) pr.catch(function(){ if(pb) pb.style.display=''; });
+    }
+  }
+  function deactivate(s){
+    s.classList.remove('active');
+    var v=s.querySelector('video'); if(v){ try{ v.pause(); }catch(e){} }
+    var ph=s.querySelector('.photo'); if(ph) ph.classList.remove('on');
+    Array.prototype.slice.call(s.querySelectorAll('.qcard')).forEach(function(c){ c.classList.remove('show'); });
+  }
+  function go(n){
+    if(n<0||n>=slides.length) return;
+    if(n!==cur) deactivate(slides[cur]);
+    cur=n; step=0;
+    activate(slides[cur]);
+    applyStep(slides[cur]);
+    if(counter) counter.textContent=(cur+1)+' / '+slides.length;
+    if(deckfill) deckfill.style.width=((cur+1)/slides.length*100)+'%';
+  }
+
+  // dip-to-black: fade to black, change slide while hidden, fade up from black
+  function dip(change){
+    if(busy) return; busy=true;
+    veil.style.opacity='1';
+    setTimeout(function(){
+      change();
+      setTimeout(function(){ veil.style.opacity='0'; busy=false; }, 90);
+    }, 440);
+  }
+
+  function next(){
+    var s=slides[cur];
+    // on the video slide: if the video isn't running yet, first forward press starts it
+    var vid=s.querySelector('video');
+    if(vid && vid.paused && !vid.ended && vid.currentTime < 0.15){
+      var pb=s.querySelector('.playbtn'); if(pb) pb.style.display='none';
+      var pr=vid.play(); if(pr && pr.catch) pr.catch(function(){});
+      return;
+    }
+    // in-slide sub-step (e.g. triad emphasis) — happens in place, no dip
+    if(step < maxStep(s)){ step++; applyStep(s); return; }
+    if(cur < slides.length-1){ dip(function(){ go(cur+1); }); return; }
+    // önálló webes verzió: az utolsó dia után megáll (nincs KV Homes átfűzés)
+  }
+  function prev(){
+    var s=slides[cur];
+    if(step > 0){ step--; applyStep(s); return; }
+    if(cur>0) dip(function(){ go(cur-1); });
+  }
+
+  document.addEventListener('keydown', function(e){
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key==='Enter'||e.key==='.'){ next(); e.preventDefault(); }
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){ prev(); e.preventDefault(); }
+    else if(e.key===' '){
+      var v=slides[cur].querySelector('video');
+      if(v){ if(v.paused){ v.play(); var pb=slides[cur].querySelector('.playbtn'); if(pb) pb.style.display='none'; } else v.pause(); }
+      else next();
+      e.preventDefault();
+    } else if(e.key==='Home'){ if(cur!==0) dip(function(){go(0);}); e.preventDefault(); }
+      else if(e.key==='End'){ if(cur!==slides.length-1) dip(function(){go(slides.length-1);}); e.preventDefault(); }
+  });
+
+  document.getElementById('deck').addEventListener('click', function(e){
+    if(e.target.closest('video')||e.target.closest('.playbtn')) return;
+    var x=e.clientX, w=window.innerWidth;
+    if(x < w*0.28) prev(); else next();
+  });
+
+  var pbtn=document.getElementById('primaPlay');
+  if(pbtn){ pbtn.addEventListener('click', function(e){ e.stopPropagation(); var v=document.getElementById('primaVideo'); v.play(); pbtn.style.display='none'; }); }
+
+  // video: progress bar + remaining-time countdown + auto-advance at end
+  var pv=document.getElementById('primaVideo');
+  if(pv){
+    var fmt=function(t){ t=Math.max(0,Math.round(t)); return Math.floor(t/60)+':'+('0'+(t%60)).slice(-2); };
+    pv.addEventListener('timeupdate', function(){
+      var d=pv.duration||66, bar=document.getElementById('vbar'), tm=document.getElementById('vtime');
+      if(bar) bar.style.width=(100*pv.currentTime/d)+'%';
+      if(tm) tm.textContent='–'+fmt(d-pv.currentTime);
+    });
+    pv.addEventListener('ended', function(){ var bar=document.getElementById('vbar'); if(bar) bar.style.width='100%'; next(); });
+  }
+
+  // touch swipe
+  var sx=0;
+  document.addEventListener('touchstart',function(e){ sx=e.touches[0].clientX; },{passive:true});
+  document.addEventListener('touchend',function(e){ var dx=e.changedTouches[0].clientX-sx; if(Math.abs(dx)>50){ if(dx<0) next(); else prev(); } },{passive:true});
+
+  // pre-decode photos so the first reveal of each is instant
+  slides.forEach(function(s){ var img=s.querySelector('img.fg'); if(img && img.decode){ try{ img.decode().catch(function(){}); }catch(e){} } });
+
+  // init — open with a fade up from black
+  go(0);
+  setTimeout(function(){ if(veil) veil.style.opacity='0'; }, 280);
+})();
+</script>
+</body>
+</html>
