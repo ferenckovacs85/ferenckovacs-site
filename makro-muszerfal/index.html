@@ -62,6 +62,20 @@
 
     .section-title { font-size: 13px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 20px; }
 
+    /* Élő piaci puls */
+    .pulse { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 40px; }
+    .pulse-cell { background: var(--bg-elevated); border: 1px solid var(--border-muted); border-radius: 12px; padding: 16px 18px; }
+    .pulse-label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+    .pulse-val { font-size: 24px; font-weight: 500; color: var(--text); letter-spacing: -0.5px; line-height: 1.1; }
+    .pulse-sub { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+    .pulse-sub.up { color: var(--green); } .pulse-sub.down { color: var(--red); }
+    .live-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--green); }
+    .live-badge .blink { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: blink 1.6s ease-in-out infinite; }
+    .live-badge.stale { color: var(--text-dim); } .live-badge.stale .blink { background: var(--text-dim); animation: none; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+    .updated { font-size: 12px; color: var(--text-dim); margin-bottom: 28px; }
+    @media (max-width: 600px) { .pulse { grid-template-columns: 1fr; } }
+
     .cards { display: grid; gap: 16px; margin-bottom: 40px; }
     .card { background: var(--bg-elevated); border: 1px solid var(--border-muted); border-radius: 16px; padding: 24px 26px; transition: all 0.2s ease; }
     .card:hover { border-color: var(--border); }
@@ -146,6 +160,25 @@
       </div>
     </header>
 
+    <div class="pulse">
+      <div class="pulse-cell">
+        <div class="pulse-label"><span id="btc-live" class="live-badge stale"><span class="blink"></span>élő</span> Bitcoin</div>
+        <div class="pulse-val" id="btc-price">—</div>
+        <div class="pulse-sub" id="btc-chg">24ó betöltése…</div>
+      </div>
+      <div class="pulse-cell">
+        <div class="pulse-label">BTC dominancia</div>
+        <div class="pulse-val" id="btc-dom">—</div>
+        <div class="pulse-sub">a kripto-figyelem aránya</div>
+      </div>
+      <div class="pulse-cell">
+        <div class="pulse-label">Kripto össz-kapitalizáció</div>
+        <div class="pulse-val" id="total-mcap">—</div>
+        <div class="pulse-sub" id="total-chg">a teljes mezőny mérete</div>
+      </div>
+    </div>
+    <div class="updated" id="updated">Élő adatok betöltése…</div>
+
     <div class="section-title">A műszerfal — öt mutató</div>
     <div class="cards">
 
@@ -187,11 +220,11 @@
             <div class="card-num">02 · A gravitáció</div>
             <h3 class="card-title">10 éves reálhozam (TIPS)</h3>
           </div>
-          <span class="light red"><span class="dot"></span>Magas</span>
+          <span class="light red" id="ry-light"><span class="dot"></span>Magas</span>
         </div>
         <div class="card-role">A legfontosabb mutató — minden hosszú durációjú eszköz erre érzékeny.</div>
         <div class="readings">
-          <div class="reading"><div class="reading-label">Hozzávetőleges szint</div><div class="reading-value">~2,0%<span class="sub">pozitív reálhozam = gravitáció erős</span></div></div>
+          <div class="reading"><div class="reading-label" id="ry-label">Hozzávetőleges szint</div><div class="reading-value"><span id="ry-val">~2,0%</span><span class="sub" id="ry-sub">pozitív reálhozam = gravitáció erős</span></div></div>
           <div class="reading"><div class="reading-label">Mit jelez</div><div class="reading-value">Drága a pénz<span class="sub">a kemény eszközöket nyomja</span></div></div>
         </div>
         <div class="signal">
@@ -245,12 +278,12 @@
             <div class="card-num">04 · A hitelpiaci kanári</div>
             <h3 class="card-title">Hyperscaler CDS &amp; hitelfeszültség</h3>
           </div>
-          <span class="light yellow"><span class="dot"></span>Tágul</span>
+          <span class="light yellow" id="hy-light"><span class="dot"></span>Tágul</span>
         </div>
         <div class="card-role">A „törés” itt jelez először — az AI-hitelkomplexum repedése a korrelált risk-off kiváltója.</div>
         <div class="readings">
           <div class="reading"><div class="reading-label">Figyelt nevek</div><div class="reading-value">Oracle, Amazon<span class="sub">CDS-tágulás = stressz</span></div></div>
-          <div class="reading"><div class="reading-label">Olcsó proxy</div><div class="reading-value">HYG / LQD, MOVE<span class="sub">hitel-spread és kötvény-vol</span></div></div>
+          <div class="reading"><div class="reading-label" id="hy-label">Olcsó proxy</div><div class="reading-value"><span id="hy-val">HYG / LQD, MOVE</span><span class="sub" id="hy-sub">hitel-spread és kötvény-vol</span></div></div>
         </div>
         <div class="signal">
           <div class="signal-label">Jelzés-küszöb</div>
@@ -276,11 +309,11 @@
             <div class="card-num">05 · A fordulat kapcsolója</div>
             <h3 class="card-title">CPI-pálya &amp; az első FOMC</h3>
           </div>
-          <span class="light red"><span class="dot"></span>Ragadós</span>
+          <span class="light red" id="cpi-light"><span class="dot"></span>Ragadós</span>
         </div>
         <div class="card-role">A „lazítás” fázis startpisztolya — a CPI lefelé fordulása nyitja meg a vágás útját.</div>
         <div class="readings">
-          <div class="reading"><div class="reading-label">CPI irány</div><div class="reading-value">Magas / ragadós<span class="sub">AI-capex inflációs az építési fázisban</span></div></div>
+          <div class="reading"><div class="reading-label" id="cpi-label">CPI irány</div><div class="reading-value"><span id="cpi-val">Magas / ragadós</span><span class="sub" id="cpi-sub">AI-capex inflációs az építési fázisban</span></div></div>
           <div class="reading"><div class="reading-label">Esemény</div><div class="reading-value">Első vágás FOMC<span class="sub">a lazítás belépője</span></div></div>
         </div>
         <div class="signal">
@@ -316,5 +349,118 @@
       <p class="upd">Az olvasatokat kézzel frissítsd a forrás-gombokból. A küszöbök a tartós részek, a színek a saját megítélésed.</p>
     </footer>
   </div>
+
+  <script>
+  (function () {
+    var $ = function (id) { return document.getElementById(id); };
+    var nfUSD = new Intl.NumberFormat('hu-HU', { maximumFractionDigits: 0 });
+
+    function setLight(el, level, label) {
+      if (!el) return;
+      el.className = 'light ' + level;
+      el.innerHTML = '<span class="dot"></span>' + label;
+    }
+    function markLive(badge, ok) {
+      if (!badge) return;
+      badge.className = 'live-badge' + (ok ? '' : ' stale');
+    }
+    function stamp() {
+      var d = new Date();
+      $('updated').textContent = 'Frissítve: ' + d.toLocaleString('hu-HU') +
+        ' · a makró-sorok forrása FRED, a piaci puls CoinGecko · kézi visszaesés, ha a böngésző blokkol';
+    }
+
+    // 1) Piaci puls — CoinGecko (CORS-barát, engedélyezett)
+    function loadCoinGecko() {
+      fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true')
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          var p = d.bitcoin.usd, c = d.bitcoin.usd_24h_change;
+          $('btc-price').textContent = '$' + nfUSD.format(p);
+          var chg = $('btc-chg');
+          chg.textContent = (c >= 0 ? '▲ +' : '▼ ') + c.toFixed(2) + '% · 24 óra';
+          chg.className = 'pulse-sub ' + (c >= 0 ? 'up' : 'down');
+          markLive($('btc-live'), true);
+        })
+        .catch(function () { $('btc-chg').textContent = '24ó nem elérhető'; });
+
+      fetch('https://api.coingecko.com/api/v3/global')
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          var g = d.data;
+          $('btc-dom').textContent = g.market_cap_percentage.btc.toFixed(1) + '%';
+          var mc = g.total_market_cap.usd;
+          $('total-mcap').textContent = '$' + (mc / 1e12).toFixed(2) + ' B';
+          var ch = g.market_cap_change_percentage_24h_usd;
+          if (typeof ch === 'number') {
+            var t = $('total-chg');
+            t.textContent = (ch >= 0 ? '▲ +' : '▼ ') + ch.toFixed(2) + '% · 24 óra';
+            t.className = 'pulse-sub ' + (ch >= 0 ? 'up' : 'down');
+          }
+        })
+        .catch(function () {});
+    }
+
+    // 2) FRED CSV — utolsó érvényes érték (best effort, CORS-függő)
+    function lastValid(csv) {
+      var rows = csv.trim().split('\n').slice(1), vals = [];
+      for (var i = 0; i < rows.length; i++) {
+        var p = rows[i].split(','), v = parseFloat(p[1]);
+        if (!isNaN(v)) vals.push({ date: p[0], val: v });
+      }
+      return vals;
+    }
+    function fredURL(id) {
+      var d = new Date(); d.setDate(d.getDate() - 800);
+      var cosd = d.toISOString().slice(0, 10);
+      return 'https://fred.stlouisfed.org/graph/fredgraph.csv?id=' + id + '&cosd=' + cosd;
+    }
+    function fred(id) {
+      return fetch(fredURL(id)).then(function (r) {
+        if (!r.ok) throw 0; return r.text();
+      }).then(lastValid);
+    }
+
+    // Reálhozam — DFII10
+    fred('DFII10').then(function (v) {
+      if (!v.length) return;
+      var x = v[v.length - 1].val;
+      $('ry-label').textContent = 'Élő — 10Y TIPS';
+      $('ry-val').textContent = x.toFixed(2) + '%';
+      $('ry-sub').textContent = 'reálhozam · ' + v[v.length - 1].date;
+      if (x < 1.5) setLight($('ry-light'), 'green', 'Enyhül');
+      else if (x < 2.0) setLight($('ry-light'), 'yellow', 'Közepes');
+      else setLight($('ry-light'), 'red', 'Magas');
+    }).catch(function () {});
+
+    // Hitel-spread proxy — HY OAS (BAMLH0A0HYM2)
+    fred('BAMLH0A0HYM2').then(function (v) {
+      if (!v.length) return;
+      var x = v[v.length - 1].val;
+      $('hy-label').textContent = 'Élő — HY hitel-spread';
+      $('hy-val').textContent = x.toFixed(2) + '%';
+      $('hy-sub').textContent = 'high-yield OAS · ' + v[v.length - 1].date;
+      if (x < 3.5) setLight($('hy-light'), 'green', 'Nyugodt');
+      else if (x < 5.0) setLight($('hy-light'), 'yellow', 'Tágul');
+      else setLight($('hy-light'), 'red', 'Stressz');
+    }).catch(function () {});
+
+    // CPI év/év — CPIAUCSL
+    fred('CPIAUCSL').then(function (v) {
+      if (v.length < 13) return;
+      var last = v[v.length - 1], prev = v[v.length - 13];
+      var yoy = (last.val / prev.val - 1) * 100;
+      $('cpi-label').textContent = 'Élő — CPI év/év';
+      $('cpi-val').textContent = yoy.toFixed(1) + '%';
+      $('cpi-sub').textContent = 'infláció · ' + last.date;
+      if (yoy < 3) setLight($('cpi-light'), 'green', 'Hűl');
+      else if (yoy < 4) setLight($('cpi-light'), 'yellow', 'Közepes');
+      else setLight($('cpi-light'), 'red', 'Ragadós');
+    }).catch(function () {});
+
+    loadCoinGecko();
+    stamp();
+  })();
+  </script>
 </body>
 </html>
