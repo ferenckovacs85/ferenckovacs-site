@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow">
+  <title>Makró Műszerfal — AI tőkeáramlás & Bitcoin</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📟</text></svg>">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0a0b0d;
+      --bg-elevated: #141619;
+      --bg-elevated-2: #1a1d21;
+      --orange: #F7931A;
+      --orange-hover: #FFB347;
+      --green: #22c55e;
+      --yellow: #f5b431;
+      --red: #ef4444;
+      --gray: #4a4f57;
+      --text: #ffffff;
+      --text-muted: #8a919e;
+      --text-dim: #5a606a;
+      --border: rgba(247, 147, 26, 0.15);
+      --border-muted: rgba(138, 145, 158, 0.12);
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      letter-spacing: -0.011em;
+    }
+    .container { max-width: 880px; margin: 0 auto; padding: 48px 24px 96px; }
+    header { padding-bottom: 40px; border-bottom: 1px solid var(--border); margin-bottom: 40px; }
+    .badge {
+      display: inline-block; padding: 6px 14px;
+      background: rgba(247, 147, 26, 0.1); border: 1px solid var(--border);
+      border-radius: 56px; color: var(--orange); font-size: 13px; font-weight: 500;
+      letter-spacing: 0.02em; margin-bottom: 20px; text-transform: uppercase;
+    }
+    h1 { font-size: 46px; font-weight: 300; line-height: 1.05; letter-spacing: -1.2px; margin-bottom: 16px; }
+    h1 .accent { color: var(--orange); }
+    .subtitle { font-size: 19px; color: var(--text-muted); font-weight: 300; max-width: 660px; line-height: 1.45; }
+    .meta { display: flex; gap: 24px; margin-top: 24px; flex-wrap: wrap; }
+    .meta-item { font-size: 14px; color: var(--text-muted); }
+    .meta-item strong { color: var(--text); font-weight: 500; }
+
+    /* Rezsim sáv */
+    .regime {
+      margin-top: 28px; padding: 20px 22px; border-radius: 14px;
+      background: var(--bg-elevated); border: 1px solid var(--border-muted);
+    }
+    .regime-title { font-size: 11px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 14px; }
+    .regime-flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 14px; }
+    .regime-step { padding: 6px 12px; border-radius: 8px; background: var(--bg-elevated-2); color: var(--text-muted); white-space: nowrap; }
+    .regime-step.active { background: rgba(245, 180, 49, 0.14); color: var(--yellow); border: 1px solid rgba(245, 180, 49, 0.3); font-weight: 600; }
+    .regime-arrow { color: var(--text-dim); }
+    .regime-note { margin-top: 14px; font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+    .section-title { font-size: 13px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 20px; }
+
+    .cards { display: grid; gap: 16px; margin-bottom: 40px; }
+    .card { background: var(--bg-elevated); border: 1px solid var(--border-muted); border-radius: 16px; padding: 24px 26px; transition: all 0.2s ease; }
+    .card:hover { border-color: var(--border); }
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 6px; }
+    .card-num { font-size: 11px; font-weight: 600; color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase; }
+    .card-title { font-size: 21px; font-weight: 400; letter-spacing: -0.4px; line-height: 1.2; margin-bottom: 4px; }
+    .card-role { font-size: 13px; color: var(--orange); margin-bottom: 16px; }
+
+    .light { flex-shrink: 0; display: inline-flex; align-items: center; gap: 8px; padding: 5px 12px; border-radius: 56px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; }
+    .dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .light.green { background: rgba(34,197,94,0.12); color: var(--green); } .light.green .dot { background: var(--green); box-shadow: 0 0 8px rgba(34,197,94,0.6); }
+    .light.yellow { background: rgba(245,180,49,0.12); color: var(--yellow); } .light.yellow .dot { background: var(--yellow); box-shadow: 0 0 8px rgba(245,180,49,0.6); }
+    .light.red { background: rgba(239,68,68,0.12); color: var(--red); } .light.red .dot { background: var(--red); box-shadow: 0 0 8px rgba(239,68,68,0.6); }
+
+    .readings { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    .reading { background: var(--bg-elevated-2); border-radius: 10px; padding: 12px 14px; }
+    .reading-label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 5px; }
+    .reading-value { font-size: 16px; font-weight: 500; color: var(--text); line-height: 1.3; }
+    .reading-value .sub { display: block; font-size: 12px; color: var(--text-muted); font-weight: 400; margin-top: 2px; }
+
+    .signal { background: rgba(247,147,26,0.05); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; }
+    .signal-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--orange); margin-bottom: 6px; }
+    .signal-text { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
+    .signal-text strong { color: var(--text); font-weight: 600; }
+
+    .desc { font-size: 14px; color: var(--text-muted); line-height: 1.55; margin-bottom: 16px; }
+
+    .sources { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px; border-radius: 56px; font-size: 13px; font-weight: 500; text-decoration: none; transition: all 0.15s ease; border: 1px solid var(--border); background: rgba(247,147,26,0.06); color: var(--orange); letter-spacing: -0.01em; }
+    .btn:hover { background: rgba(247,147,26,0.14); border-color: var(--orange); }
+    .btn svg { width: 14px; height: 14px; }
+
+    footer { padding-top: 32px; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-muted); text-align: center; }
+    footer .private { display: inline-block; padding: 4px 12px; background: rgba(247,147,26,0.05); border: 1px solid var(--border); border-radius: 56px; color: var(--orange); margin-bottom: 8px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+    footer .upd { font-size: 12px; color: var(--text-dim); margin-top: 10px; }
+
+    .refresh-btn { position: fixed; top: 14px; right: 14px; z-index: 999; display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px 8px 12px; background: rgba(247,147,26,0.14); color: var(--orange); border: 1px solid rgba(247,147,26,0.42); border-radius: 999px; font: 600 13px/1 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; letter-spacing: -0.01em; cursor: pointer; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 4px 14px rgba(0,0,0,0.4); transition: all 0.2s ease; }
+    .refresh-btn:hover, .refresh-btn:active { background: rgba(247,147,26,0.22); border-color: var(--orange); color: var(--orange-hover); transform: translateY(-1px); }
+    .refresh-btn svg { display: block; }
+
+    @media (max-width: 600px) {
+      .container { padding: 32px 20px 64px; }
+      h1 { font-size: 34px; letter-spacing: -0.8px; }
+      .subtitle { font-size: 16px; }
+      .card { padding: 20px; }
+      .card-title { font-size: 18px; }
+      .card-top { flex-direction: column; align-items: flex-start; }
+      .readings { grid-template-columns: 1fr; }
+      .refresh-btn { top: 10px; right: 10px; padding: 7px 12px 7px 10px; font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <button class="refresh-btn" onclick="location.href=location.pathname+'?v='+Date.now()" aria-label="Frissítés" title="Legújabb verzió letöltése">
+    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>
+    <span>Frissítés</span>
+  </button>
+
+  <div class="container">
+    <header>
+      <div class="badge">📟 Makró műszerfal</div>
+      <h1>AI tőkeáramlás <span class="accent">&amp;</span> Bitcoin</h1>
+      <p class="subtitle">Öt mutató, amit nem dátum, hanem feltétel szerint figyelünk. A pénz a kockázati görbén mozog — a reálhozam a gravitáció. A cél a sorrend leolvasása, nem a jóslás.</p>
+      <div class="meta">
+        <div class="meta-item"><strong>5 mutató</strong></div>
+        <div class="meta-item">Heti ránézés elég</div>
+        <div class="meta-item">Mobilra optimalizálva</div>
+      </div>
+
+      <div class="regime">
+        <div class="regime-title">A ciklus logikája — hol állunk</div>
+        <div class="regime-flow">
+          <span class="regime-step active">Feszülés</span>
+          <span class="regime-arrow">→</span>
+          <span class="regime-step">Törés</span>
+          <span class="regime-arrow">→</span>
+          <span class="regime-step">Lazítás</span>
+          <span class="regime-arrow">→</span>
+          <span class="regime-step">Kemény eszközök</span>
+        </div>
+        <p class="regime-note">Az AI tőkeelszívása valós flow-jelenség, nem értékítélet. Az első mozdulat egy törésnél korrelált risk-off: a BTC az AI-val <em>együtt</em> esik, mielőtt a lazításból profitálna. A pénz nem a pop helyett, hanem utána jön vissza — a kemény eszközök fázisa a vége, nem az eleje.</p>
+      </div>
+    </header>
+
+    <div class="section-title">A műszerfal — öt mutató</div>
+    <div class="cards">
+
+      <!-- 1 -->
+      <div class="card">
+        <div class="card-top">
+          <div>
+            <div class="card-num">01 · A szelep</div>
+            <h3 class="card-title">Heti Bitcoin ETF nettó flow</h3>
+          </div>
+          <span class="light yellow"><span class="dot"></span>Kiáramlás</span>
+        </div>
+        <div class="card-role">Ez a legközvetlenebb szelep — a rotáció itt látszik először.</div>
+        <div class="readings">
+          <div class="reading"><div class="reading-label">Legutóbbi olvasat</div><div class="reading-value">Nettó kiáramlás<span class="sub">elhúzódó negatív széria</span></div></div>
+          <div class="reading"><div class="reading-label">Mit jelez</div><div class="reading-value">Risk-off rotáció<span class="sub">alternatívaköltség-vezérelt</span></div></div>
+        </div>
+        <div class="signal">
+          <div class="signal-label">Jelzés-küszöb</div>
+          <p class="signal-text">Fordulat jele: <strong>két egymást követő hét nettó beáramlás</strong>. Addig a szelep nyitva — a flow kifelé megy.</p>
+        </div>
+        <p class="desc">Az ETF-flow a heti hozamingadozás jelentős részét magyarázza. A tartós kiáramlás kapitulációs aljat is hozhat, de a beáramlásra fordulás a tisztább „vissza a kockázatba” jel.</p>
+        <div class="sources">
+          <a class="btn" href="https://farside.co.uk/btc/" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Farside — napi BTC flow
+          </a>
+          <a class="btn" href="https://www.coinglass.com/bitcoin-etf" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            CoinGlass ETF
+          </a>
+        </div>
+      </div>
+
+      <!-- 2 -->
+      <div class="card">
+        <div class="card-top">
+          <div>
+            <div class="card-num">02 · A gravitáció</div>
+            <h3 class="card-title">10 éves reálhozam (TIPS)</h3>
+          </div>
+          <span class="light red"><span class="dot"></span>Magas</span>
+        </div>
+        <div class="card-role">A legfontosabb mutató — minden hosszú durációjú eszköz erre érzékeny.</div>
+        <div class="readings">
+          <div class="reading"><div class="reading-label">Hozzávetőleges szint</div><div class="reading-value">~2,0%<span class="sub">pozitív reálhozam = gravitáció erős</span></div></div>
+          <div class="reading"><div class="reading-label">Mit jelez</div><div class="reading-value">Drága a pénz<span class="sub">a kemény eszközöket nyomja</span></div></div>
+        </div>
+        <div class="signal">
+          <div class="signal-label">Jelzés-küszöb</div>
+          <p class="signal-text">Fordulat jele: a reálhozam <strong>1,5% alá</strong> esik. Ott kezd a gravitáció enyhülni — kedvező a BTC és az arany felé.</p>
+        </div>
+        <p class="desc">Amíg a reálhozam pozitív és magas, fizetnek a várakozásért — a tőke a biztonságos hozamban marad. A süllyedés a kemény eszközök fázisának előhírnöke. Közös nevező a BTC-vel és az arannyal egyaránt.</p>
+        <div class="sources">
+          <a class="btn" href="https://fred.stlouisfed.org/series/DFII10" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            FRED — DFII10 (10Y TIPS)
+          </a>
+        </div>
+      </div>
+
+      <!-- 3 -->
+      <div class="card">
+        <div class="card-top">
+          <div>
+            <div class="card-num">03 · Az elsődleges kibocsátás</div>
+            <h3 class="card-title">IPO-árazási dátumok</h3>
+          </div>
+          <span class="light yellow"><span class="dot"></span>Aktív ablak</span>
+        </div>
+        <div class="card-role">Az IPO kiszívja a készpénzt a másodlagos piacról — a cégnél landol, chipre megy.</div>
+        <div class="readings">
+          <div class="reading"><div class="reading-label">Naptár</div><div class="reading-value">Mega-IPO sor<span class="sub">SpaceX, OpenAI, Anthropic-pálya</span></div></div>
+          <div class="reading"><div class="reading-label">Mit jelez</div><div class="reading-value">Elsődleges elszívás<span class="sub">likviditás kifelé</span></div></div>
+        </div>
+        <div class="signal">
+          <div class="signal-label">Jelzés-küszöb</div>
+          <p class="signal-text">A nagy árazási dátumok <strong>környékén likviditási nyomás</strong> a BTC-n. A naptár kiürülése (vagy gyenge fogadtatás) enyhíti az elszívást.</p>
+        </div>
+        <p class="desc">Az AI-tőkebevonások 2026-ban óriásiak lehetnek; a bankok agresszívan tolják a mega-IPO-kat. Az árazási dátumokat előre lehet látni — ezek a másodlagos piaci készpénz lekötési pontjai.</p>
+        <div class="sources">
+          <a class="btn" href="https://www.nasdaq.com/market-activity/ipos" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Nasdaq IPO naptár
+          </a>
+          <a class="btn" href="https://stockanalysis.com/ipos/calendar/" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            StockAnalysis naptár
+          </a>
+        </div>
+      </div>
+
+      <!-- 4 -->
+      <div class="card">
+        <div class="card-top">
+          <div>
+            <div class="card-num">04 · A hitelpiaci kanári</div>
+            <h3 class="card-title">Hyperscaler CDS &amp; hitelfeszültség</h3>
+          </div>
+          <span class="light yellow"><span class="dot"></span>Tágul</span>
+        </div>
+        <div class="card-role">A „törés” itt jelez először — az AI-hitelkomplexum repedése a korrelált risk-off kiváltója.</div>
+        <div class="readings">
+          <div class="reading"><div class="reading-label">Figyelt nevek</div><div class="reading-value">Oracle, Amazon<span class="sub">CDS-tágulás = stressz</span></div></div>
+          <div class="reading"><div class="reading-label">Olcsó proxy</div><div class="reading-value">HYG / LQD, MOVE<span class="sub">hitel-spread és kötvény-vol</span></div></div>
+        </div>
+        <div class="signal">
+          <div class="signal-label">Jelzés-küszöb</div>
+          <p class="signal-text">Veszély: <strong>tovább táguló CDS + szélesedő hitel-spread</strong> együtt. Ez a „feszülés → törés” átmenet — ilyenkor a BTC az AI-val együtt eshet.</p>
+        </div>
+        <p class="desc">Az AI-építés nagyrészt adósságból finanszírozott, koncentrált ügyfélkockázattal. A CDS retail-forrásból nehéz; a HYG/LQD spread és a MOVE-index hozzáférhető proxy a hitelpiaci stresszre. Ez a műszerfal kanárija.</p>
+        <div class="sources">
+          <a class="btn" href="https://fred.stlouisfed.org/series/BAMLH0A0HYM2" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            FRED — HY hitel-spread
+          </a>
+          <a class="btn" href="https://www.cboe.com/us/indices/dashboard/MOVE/" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            MOVE index
+          </a>
+        </div>
+      </div>
+
+      <!-- 5 -->
+      <div class="card">
+        <div class="card-top">
+          <div>
+            <div class="card-num">05 · A fordulat kapcsolója</div>
+            <h3 class="card-title">CPI-pálya &amp; az első FOMC</h3>
+          </div>
+          <span class="light red"><span class="dot"></span>Ragadós</span>
+        </div>
+        <div class="card-role">A „lazítás” fázis startpisztolya — a CPI lefelé fordulása nyitja meg a vágás útját.</div>
+        <div class="readings">
+          <div class="reading"><div class="reading-label">CPI irány</div><div class="reading-value">Magas / ragadós<span class="sub">AI-capex inflációs az építési fázisban</span></div></div>
+          <div class="reading"><div class="reading-label">Esemény</div><div class="reading-value">Első vágás FOMC<span class="sub">a lazítás belépője</span></div></div>
+        </div>
+        <div class="signal">
+          <div class="signal-label">Jelzés-küszöb</div>
+          <p class="signal-text">Fordulat jele: <strong>egyértelműen lefelé hajló CPI</strong> + az első kamatvágás. A 2000-es analógia: csúcs → vágás → kemény eszközök bikapiaca.</p>
+        </div>
+        <p class="desc">Az AI fizikai erőforrásokért is versenyez (áram, chip, építőkapacitás), ezért az építési fázisban inflációs — magasan tartja a pénz árát. A CPI megtörése és az első vágás a sorrend utolsó kapcsolója a kemény eszközök felé.</p>
+        <div class="sources">
+          <a class="btn" href="https://www.bls.gov/cpi/" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            BLS — CPI kiadás
+          </a>
+          <a class="btn" href="https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            FOMC naptár
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="section-title">Hogyan olvasd</div>
+    <div class="card" style="margin-bottom: 40px;">
+      <p class="desc" style="margin-bottom: 14px;">A jelzések nem külön-külön számítanak, hanem <strong style="color:var(--text)">együtt rajzolják ki a fázist</strong>:</p>
+      <p class="desc" style="margin-bottom: 10px;"><span class="light yellow" style="margin-right:8px;"><span class="dot"></span>Feszülés</span> magas reálhozam + ETF-kiáramlás + aktív IPO-ablak — a flow kifelé megy, a türelem fizet.</p>
+      <p class="desc" style="margin-bottom: 10px;"><span class="light red" style="margin-right:8px;"><span class="dot"></span>Törés</span> CDS/hitel-spread tágul — korrelált risk-off, a BTC az AI-val együtt eshet. Ez nem a vég, hanem a sorrend.</p>
+      <p class="desc" style="margin-bottom: 0;"><span class="light green" style="margin-right:8px;"><span class="dot"></span>Fordulat</span> reálhozam 1,5% alatt + CPI lefelé + első vágás + ETF-beáramlás — a kemény eszközök fázisa. A pénz visszajön — a pop után.</p>
+    </div>
+
+    <footer>
+      <div class="private">Privát · Nem indexelt</div>
+      <p>Csak referenciaszintek és élő forrás-linkek. Nem befektetési tanács.</p>
+      <p class="upd">Az olvasatokat kézzel frissítsd a forrás-gombokból. A küszöbök a tartós részek, a színek a saját megítélésed.</p>
+    </footer>
+  </div>
+</body>
+</html>

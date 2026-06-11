@@ -7,5 +7,6 @@ Disallow: /bitcoin-2026-Q3/
 Disallow: /bitcoin-2026-Q4/
 Disallow: /vibecoding/
 Disallow: /kvhomes-workshop/
+Disallow: /makro-muszerfal/
 
 Sitemap: https://ferenckovacs.com/sitemap.xml
