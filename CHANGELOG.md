@@ -4,6 +4,26 @@ A ferenckovacs.com változásnaplója. A formátum a [Keep a Changelog](https://
 irányelveit követi. A git commit történet a teljes forrás; itt csak a szembetűnő felhasználói
 változások vannak összegyűjtve.
 
+## [2026-09-07] — KV BIM Web teszt-nézet (jelszóvédett, ideiglenes)
+
+### Added — új tartalom
+- **`/kvbim-teszt/`** — a KV BIM Web 0.1.0 (Codex, 2026-09-07) böngészős IFC-átnéző statikus,
+  csak megjelenítő változata a TwinMini REV11 modellel (1909 elem, 2 szint, szakági/szerkezeti
+  láthatóság, metszés, mérés, keresés, elemadatok, eredeti tervlapok)
+  - Nincs Python-backend: az `/api/project` és `/api/revisions` válaszokat statikus JSON adja,
+    a szerkesztő és AI vezérlők a buildben ki vannak kapcsolva (`VITE_KV_BIM_STATIC=1`)
+  - Forrás IFC szándékosan nincs kint; csak a webes geometria (positions/indices bin + model.json)
+- **`netlify/edge-functions/kvbim-auth.ts`** — HTTP Basic Auth jelszóvédelem a `/kvbim-teszt/*`
+  útvonalra (a jelszó a Netlify `KVBIM_TESZT_AUTH` környezeti változóban, nem a repóban);
+  az edge function állítja a noindex/CSP/cache fejléceket is
+- `robots.txt`: `Disallow: /kvbim-teszt/` · `netlify.toml`: `/netlify/*` forrás nem szolgálható ki
+
+### Notes
+- Ideiglenes tesztfelület kollégáknak; a végleges KV BIM online változat külön backenddel készül.
+  Forrás és dokumentáció: OneDrive `Claude-Munkalapok/06-Energia-IT-Infra/KV BIM fejlesztés/Web/`
+
+---
+
 ## [2026-05-28] — KV Homes Berentei előadás (HU)
 
 ### Added — új tartalom

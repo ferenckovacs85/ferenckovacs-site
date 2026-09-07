@@ -1,0 +1,27 @@
+{
+ "currentRevision": "r0000-source",
+ "revisions": [
+  {
+   "id": "r0000-source",
+   "parentId": null,
+   "createdAt": "2026-09-07T11:03:35.535+00:00",
+   "summary": "Twinmini forrásmodell",
+   "operation": "source",
+   "sourceChecksum": "ddf02bd3184cd5b4ee740ee39c78d8052071efcbfae88910e1ca9ecceabfc9bd",
+   "ifcChecksum": "ddf02bd3184cd5b4ee740ee39c78d8052071efcbfae88910e1ca9ecceabfc9bd",
+   "validation": {
+    "sourceCopyMatches": true,
+    "duplicateGuids": false
+   },
+   "counts": {
+    "products": 1909,
+    "vertices": 117391,
+    "indices": 676443,
+    "triangles": 225481,
+    "sourceProducts": 2546,
+    "sourceRepresentedProducts": 1943,
+    "excludedVoidOrSpaceProducts": 34
+   }
+  }
+ ]
+}

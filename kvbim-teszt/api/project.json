@@ -1,0 +1,62 @@
+{
+ "project": {
+  "id": "twinmini",
+  "name": "KV Homes Twin Mini 007 — REV10 közmű, tető és PV koordináció"
+ },
+ "currentRevision": "r0000-source",
+ "sourceChecksum": "ddf02bd3184cd5b4ee740ee39c78d8052071efcbfae88910e1ca9ecceabfc9bd",
+ "model": {
+  "metadata": "/kvbim-teszt/data/r0000-source/model.json",
+  "positions": "/kvbim-teszt/data/r0000-source/positions.bin",
+  "indices": "/kvbim-teszt/data/r0000-source/indices.bin"
+ },
+ "elementCount": 1909,
+ "bounds": [
+  [
+   -137.20693969726562,
+   -135.2320556640625,
+   -0.66498202085495
+  ],
+  [
+   -124.5169448852539,
+   -123.85600280761719,
+   7.193049430847168
+  ]
+ ],
+ "coordinateSystem": "IFC world metres, Z up",
+ "revision": {
+  "id": "r0000-source",
+  "parentId": null,
+  "createdAt": "2026-09-07T11:03:35.535+00:00",
+  "summary": "Twinmini forrásmodell",
+  "operation": "source",
+  "sourceChecksum": "ddf02bd3184cd5b4ee740ee39c78d8052071efcbfae88910e1ca9ecceabfc9bd",
+  "ifcChecksum": "ddf02bd3184cd5b4ee740ee39c78d8052071efcbfae88910e1ca9ecceabfc9bd",
+  "validation": {
+   "sourceCopyMatches": true,
+   "duplicateGuids": false
+  },
+  "counts": {
+   "products": 1909,
+   "vertices": 117391,
+   "indices": 676443,
+   "triangles": 225481,
+   "sourceProducts": 2546,
+   "sourceRepresentedProducts": 1943,
+   "excludedVoidOrSpaceProducts": 34
+  }
+ },
+ "capabilities": {
+  "createPartitionWall": false,
+  "editMetadata": false,
+  "static": true,
+  "ai": {
+   "enabled": false,
+   "status": "disabled",
+   "provider": null,
+   "message": "Ebben a statikus teszt-nézetben nincs AI-kapcsolat.",
+   "consentRequired": false,
+   "supported": []
+  }
+ }
+}

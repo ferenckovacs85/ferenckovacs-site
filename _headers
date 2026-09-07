@@ -28,3 +28,6 @@
   X-Robots-Tag: noindex, nofollow, noarchive, nosnippet
   Cache-Control: private, no-cache, no-store, must-revalidate
   Referrer-Policy: no-referrer
+
+# /kvbim-teszt/* — jelszóvédett KV BIM teszt: a fejléceket (noindex, CSP, cache) a
+# netlify/edge-functions/kvbim-auth.ts edge function állítja be; ezen az útvonalon a _headers nem érvényesül.
