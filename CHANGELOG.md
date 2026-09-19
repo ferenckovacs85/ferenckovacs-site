@@ -4,6 +4,23 @@ A ferenckovacs.com változásnaplója. A formátum a [Keep a Changelog](https://
 irányelveit követi. A git commit történet a teljes forrás; itt csak a szembetűnő felhasználói
 változások vannak összegyűjtve.
 
+## [2026-09-19] — BTC treasury P/L javítás
+
+### Fixed
+- **A megjelenített BTC P/L 2026-08-06 óta befagyott `-26%`-on.** A
+  bitcointreasuries.net rövidített alakra váltott (`Total Cost Basis $163.52K`), a
+  `_num()` parse a `K` szorzót eldobta, így a számított P/L `92563%` lett. Ezt az
+  épségellenőrzés (`-100..1000` tartomány) helyesen kiszűrte — az oldalra tehát nem
+  került hibás adat, de a P/L nem frissült tovább. A napi GitHub Action mindvégig
+  lefutott és sikeres volt, csak nem keletkezett belőle változás.
+  - `_num()`: `K` / `M` / `B` / `T` szorzók kezelése
+  - a `BTC Value` és `Total Cost Basis` regex befogja a rövidítést, de **szóköz nélkül**
+    — a `"$151,523.2 Total Cost Basis"` szövegben a `Total` szó `T` betűje nem szorzó
+  - `hu/index.html`, `en/index.html`: P/L `-26%` → `-7%`
+    (ellenőrizve: `$151,562 / $163,520 - 1 = -7,3%`)
+
+---
+
 ## [2026-09-07] — KV BIM Web teszt-nézet (jelszóvédett, ideiglenes)
 
 ### Added — új tartalom

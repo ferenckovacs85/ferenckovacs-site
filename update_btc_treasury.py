@@ -54,9 +54,20 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 
+_SUFFIX = {"K": 1e3, "M": 1e6, "B": 1e9, "T": 1e12}
+
+
 def _num(s: str) -> float:
-    """Szám parse-olása ezres elválasztó vesszőkkel."""
-    return float(s.replace(",", ""))
+    """Szám parse-olása ezres elválasztó vesszőkkel és K/M/B/T rövidítéssel.
+
+    A bitcointreasuries.net rövidített alakra váltott ("$163.52K"); a korábbi
+    parse a szorzót eldobta, így a P/L ezerszeres lett (92563%), amit az
+    épségellenőrzés kiszűrt — ezért a P/L 2026-08-06 óta befagyott.
+    """
+    s = s.strip().replace(",", "").replace("$", "")
+    if s and s[-1].upper() in _SUFFIX:
+        return float(s[:-1]) * _SUFFIX[s[-1].upper()]
+    return float(s)
 
 
 def fetch_treasury_data() -> dict:
@@ -97,8 +108,8 @@ def fetch_treasury_data() -> dict:
         raise ValueError(f"Gyanús BTC érték: {data['btc']} — frissítés kihagyva.")
 
     # --- P/L számítás: BTC Value / Total Cost Basis ---
-    vm = re.search(r"BTC Value\s*\$?\s*([\d,]+\.?\d*)", page_text)
-    cm = re.search(r"Total Cost Basis\s*\$?\s*([\d,]+\.?\d*)", page_text)
+    vm = re.search(r"BTC Value\s*\$?\s*([\d,]+(?:\.\d+)?[KMBT]?)(?![\w.])", page_text)
+    cm = re.search(r"Total Cost Basis\s*\$?\s*([\d,]+(?:\.\d+)?[KMBT]?)(?![\w.])", page_text)
     if vm and cm:
         value = _num(vm.group(1))
         cost = _num(cm.group(1))
